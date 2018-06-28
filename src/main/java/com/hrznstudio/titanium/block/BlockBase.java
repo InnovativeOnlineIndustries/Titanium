@@ -15,6 +15,7 @@ public abstract class BlockBase extends Block {
     public BlockBase(String name, Material materialIn) {
         super(materialIn);
         setRegistryName(name);
+        setUnlocalizedName(Objects.requireNonNull(getRegistryName()).toString().replace(':', '.'));
     }
 
     public IFactory<ItemBlock> getItemBlockFactory() {

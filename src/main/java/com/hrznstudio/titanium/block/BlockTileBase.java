@@ -5,9 +5,14 @@
 package com.hrznstudio.titanium.block;
 
 import com.hrznstudio.titanium.api.IFactory;
+import com.hrznstudio.titanium.block.tile.TileBase;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -15,7 +20,7 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.Optional;
 
-public abstract class BlockTileBase<T extends TileEntity> extends BlockBase {
+public abstract class BlockTileBase<T extends TileBase> extends BlockBase {
     private final Class<T> tileClass;
 
     public BlockTileBase(String name, Material materialIn, Class<T> tileClass) {
@@ -28,6 +33,16 @@ public abstract class BlockTileBase<T extends TileEntity> extends BlockBase {
     @Override
     public boolean hasTileEntity(IBlockState state) {
         return true;
+    }
+
+    @Override
+    public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
+        getTile(worldIn, pos).ifPresent(tile -> tile.onNeighborChanged(blockIn, fromPos));
+    }
+
+    @Override
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        return getTile(worldIn, pos).map(tile -> tile.onActivated(playerIn, hand, facing, hitX, hitY, hitZ)).orElseGet(() -> super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ));
     }
 
     @Nullable

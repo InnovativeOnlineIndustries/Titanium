@@ -18,13 +18,6 @@ public interface IItemStackQuery extends Predicate<ItemStack> {
     IItemStackQuery ANYTHING = stack -> true;
     IItemStackQuery NOTHING = stack -> false;
 
-    boolean matches(ItemStack stack);
-
-    @Override
-    default boolean test(ItemStack stack) {
-        return matches(stack);
-    }
-
     static IItemStackQuery of(Item item) {
         return new ItemQuery(item);
     }
@@ -35,6 +28,13 @@ public interface IItemStackQuery extends Predicate<ItemStack> {
 
     static IItemStackQuery of(Block block) {
         return of(Item.getItemFromBlock(block));
+    }
+
+    boolean matches(ItemStack stack);
+
+    @Override
+    default boolean test(ItemStack stack) {
+        return matches(stack);
     }
 
     interface IItemStackQueryRecipe extends IItemStackQuery {

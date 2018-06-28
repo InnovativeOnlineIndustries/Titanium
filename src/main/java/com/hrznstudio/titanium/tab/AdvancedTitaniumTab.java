@@ -24,7 +24,7 @@ public class AdvancedTitaniumTab extends TitaniumTab {
     public AdvancedTitaniumTab(String label, boolean randomise) {
         super(label, null);
         stackSupplier = this::getCurrentIcon;
-        this.shouldRandomise=randomise;
+        this.shouldRandomise = randomise;
         watch = Stopwatch.createStarted();
         random = new Random();
     }

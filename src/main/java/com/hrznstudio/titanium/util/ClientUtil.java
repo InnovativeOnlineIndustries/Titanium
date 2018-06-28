@@ -32,6 +32,7 @@ public class ClientUtil {
             }
         }
     }
+
     public static void registerToVariant(Block block, String variant) {
         if (block != null) {
             final String resourcePath = block.getRegistryName().toString();

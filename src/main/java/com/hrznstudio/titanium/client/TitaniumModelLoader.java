@@ -4,6 +4,7 @@
  */
 package com.hrznstudio.titanium.client;
 
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ICustomModelLoader;
@@ -11,9 +12,13 @@ import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.HashMap;
 import java.util.Map;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class TitaniumModelLoader implements ICustomModelLoader {
     private final Map<ResourceLocation, IModel> MODEL_MAP = new HashMap<>();
 
@@ -23,7 +28,8 @@ public class TitaniumModelLoader implements ICustomModelLoader {
     }
 
     @Override
-    public IModel loadModel(ResourceLocation modelLocation) throws Exception {
+    @Nonnull
+    public IModel loadModel(ResourceLocation modelLocation) {
         return MODEL_MAP.get(modelLocation);
     }
 
