@@ -1,0 +1,16 @@
+[
+{
+  "modid": "titanium",
+  "name": "Titanium",
+  "description": "Library mod for Horizon Studio.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Horizon Studio", "Coded"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

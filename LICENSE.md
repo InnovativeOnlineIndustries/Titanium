@@ -1,0 +1,1 @@
+Copyright (C) 2018, Horizon Studio <contact@hrznstudio.com>, All rights reserved.
