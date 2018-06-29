@@ -36,6 +36,11 @@ public abstract class ItemBase extends Item {
         ITEMS.add(this);
     }
 
+    @Override
+    public int getMetadata(int damage) {
+        return getHasSubtypes() ? damage : 0;
+    }
+
     public abstract void registerModels();
 
     @Override
