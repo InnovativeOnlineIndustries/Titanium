@@ -1,0 +1,97 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "builtin/generated",
+    "textures": {
+      "layer0": "matteroverdrive:items/gold/ingot"
+    },
+    "transform": "forge:default-item"
+  },
+  "variants": {
+    "normal": [
+      {}
+    ],
+    "inventory": [
+      {}
+    ],
+    "type": {
+
+      "ingot": {
+        "textures": {
+          "layer0": "matteroverdrive:items/gold/ingot"
+        }
+      },
+      "nugget": {
+        "textures": {
+          "layer0": "matteroverdrive:items/gold/nugget"
+        }
+      },
+      "plate": {
+        "textures": {
+          "layer0": "matteroverdrive:items/gold/plate"
+        }
+      },
+      "dust": {
+        "textures": {
+          "layer0": "matteroverdrive:items/gold/dust"
+        }
+      },
+      "reinforced_plate": {
+        "textures": {
+          "layer0": "matteroverdrive:items/gold/reinforced_plate"
+        }
+      },
+      "casing": {
+        "textures": {
+          "layer0": "matteroverdrive:items/gold/casing"
+        }
+      },
+      "chunk": {
+        "textures": {
+          "layer0": "matteroverdrive:items/gold/chunk"
+        }
+      },
+      "clump": {
+        "textures": {
+          "layer0": "matteroverdrive:items/gold/scrap"
+        }
+      },
+      "purified": {
+        "textures": {
+          "layer0": "matteroverdrive:items/gold/purified"
+        }
+      },
+      "dense_plate": {
+        "textures": {
+          "layer0": "matteroverdrive:items/gold/dense_plate"
+        }
+      },
+      "flakes": {
+        "textures": {
+          "layer0": "matteroverdrive:items/gold/flakes"
+        }
+      },
+      "grindings": {
+        "textures": {
+          "layer0": "matteroverdrive:items/gold/grindings"
+        }
+      },
+      "stone": {
+        "textures": {
+          "layer0": "matteroverdrive:items/gold/shard"
+        }
+      },
+      "gear": {
+        "textures": {
+          "layer0": "matteroverdrive:items/gold/gear"
+        }
+      },
+      "pebbles": {
+        "textures": {
+          "layer0": "matteroverdrive:items/gold/clumps"
+        }
+      }
+
+    }
+  }
+}
