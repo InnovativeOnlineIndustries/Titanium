@@ -4,6 +4,8 @@
  */
 package com.hrznstudio.titanium.util;
 
+import org.apache.commons.io.FilenameUtils;
+
 import java.io.File;
 
 public enum FilenameFilter implements java.io.FilenameFilter {
@@ -12,6 +14,7 @@ public enum FilenameFilter implements java.io.FilenameFilter {
     CFG("cfg"),
     CONF("conf"),
     ZENSCRIPT("zs"),
+    TITANIUM("ts"),
     ZIP("zip"),
     TXT("txt"),
     PNG("png"),
@@ -25,18 +28,25 @@ public enum FilenameFilter implements java.io.FilenameFilter {
     OBJ("obj"),
     CLASS("class");
 
-    private String suffix;
+    private String[] extensions;
 
-    FilenameFilter(String suffix) {
-        this.suffix = suffix;
+    FilenameFilter(String... suffix) {
+        this.extensions = suffix;
     }
 
-    public String getSuffix() {
-        return this.suffix;
+    public String[] getExtensions() {
+        return this.extensions;
+    }
+
+    public static boolean isKnown(File dir, String name) {
+        for(FilenameFilter filter : values())
+            if(filter.accept(dir, name))
+                return true;
+        return false;
     }
 
     @Override
     public boolean accept(File dir, String name) {
-        return name.toLowerCase().endsWith(String.format(".%s", getSuffix().toLowerCase()));
+        return FilenameUtils.isExtension(name, extensions);
     }
 }

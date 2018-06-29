@@ -19,12 +19,9 @@ public class ClientUtil {
     public static void registerToMapper(Block block) {
         if (block != null) {
             final String resourcePath = block.getRegistryName().toString();
-
             setCustomStateMapper(block, state -> new ModelResourceLocation(resourcePath, StateUtil.getPropertyString(state.getProperties())));
-
             NonNullList<ItemStack> subBlocks = NonNullList.create();
             block.getSubBlocks(null, subBlocks);
-
             for (ItemStack stack : subBlocks) {
                 //noinspection deprecation
                 IBlockState state = block.getStateFromMeta(stack.getMetadata());
@@ -36,12 +33,9 @@ public class ClientUtil {
     public static void registerToVariant(Block block, String variant) {
         if (block != null) {
             final String resourcePath = block.getRegistryName().toString();
-
             setCustomStateMapper(block, state -> new ModelResourceLocation(resourcePath, variant));
-
             NonNullList<ItemStack> subBlocks = NonNullList.create();
             block.getSubBlocks(null, subBlocks);
-
             for (ItemStack stack : subBlocks) {
                 ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), stack.getMetadata(), new ModelResourceLocation(resourcePath, variant));
             }

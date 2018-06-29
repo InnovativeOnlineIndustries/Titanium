@@ -4,7 +4,7 @@
  */
 package com.hrznstudio.titanium.util;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.item.EnumDyeColor;
 
@@ -16,6 +16,6 @@ public class PropertyColor extends PropertyEnum<EnumDyeColor> {
     }
 
     public static PropertyColor create(String name) {
-        return new PropertyColor(name, EnumDyeColor.class, Lists.newArrayList(EnumDyeColor.values()));
+        return new PropertyColor(name, EnumDyeColor.class, Sets.newHashSet(EnumDyeColor.values()));
     }
 }
