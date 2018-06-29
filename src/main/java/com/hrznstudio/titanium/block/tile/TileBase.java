@@ -14,5 +14,5 @@ import net.minecraft.util.math.BlockPos;
 public abstract class TileBase extends TileEntity {
     public abstract boolean onActivated(EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ);
 
-    public abstract boolean onNeighborChanged(Block blockIn, BlockPos fromPos);
+    public abstract void onNeighborChanged(Block blockIn, BlockPos fromPos);
 }

@@ -5,6 +5,7 @@
 package com.hrznstudio.titanium;
 
 import com.hrznstudio.titanium.client.TitaniumModelLoader;
+import com.hrznstudio.titanium.item.ItemBase;
 import com.hrznstudio.titanium.resource.ItemResource;
 import com.hrznstudio.titanium.resource.ResourceMaterial;
 import com.hrznstudio.titanium.resource.ResourceRegistry;
@@ -89,6 +90,6 @@ public class Titanium {
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public void modelRegistry(ModelRegistryEvent event) {
-        RESOURCE_ITEMS.forEach(ItemResource::registerModels);
+        ItemBase.ITEMS.forEach(ItemBase::registerModels);
     }
 }

@@ -7,9 +7,11 @@ package com.hrznstudio.titanium.item;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -20,15 +22,31 @@ import org.lwjgl.input.Keyboard;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ItemBase extends Item {
+public abstract class ItemBase extends Item {
+    public static List<ItemBase> ITEMS = new ArrayList<>();
     public ItemBase(String name) {
         setRegistryName(name);
         setUnlocalizedName(Objects.requireNonNull(getRegistryName()).toString().replace(':', '.'));
+        ITEMS.add(this);
+    }
+
+    public abstract void registerModels();
+
+    @Override
+    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
+        if(isInCreativeTab(tab)) {
+            listSubItems(tab,items);
+        }
+    }
+
+    public void listSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
+        items.add(new ItemStack(this));
     }
 
     @Override

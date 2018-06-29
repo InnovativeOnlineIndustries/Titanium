@@ -47,13 +47,11 @@ public class ItemResource extends ItemBase {
     }
 
     @Override
-    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
-        if (isInCreativeTab(tab)) {
-            ResourceRegistry.getMaterials().forEach(material -> {
-                if (!material.hasType(this.type))
-                    return;
-                items.add(new ItemStack(this, 1, material.meta));
-            });
-        }
+    public void listSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
+        ResourceRegistry.getMaterials().forEach(material -> {
+            if (!material.hasType(this.type))
+                return;
+            items.add(new ItemStack(this, 1, material.meta));
+        });
     }
 }
