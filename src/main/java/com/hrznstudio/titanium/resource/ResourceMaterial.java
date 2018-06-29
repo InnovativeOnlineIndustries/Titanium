@@ -63,7 +63,9 @@ public class ResourceMaterial {
     }
 
     public ResourceMaterial withType(ResourceType type) {
-        types.add(type);
+        type.setMaterial();
+        if (!types.contains(type))
+            types.add(type);
         return this;
     }
 
