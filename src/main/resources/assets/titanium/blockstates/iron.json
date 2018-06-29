@@ -3,7 +3,7 @@
   "defaults": {
     "model": "builtin/generated",
     "textures": {
-      "layer0": "matteroverdrive:items/iron/ingot"
+      "layer0": "titanium:items/iron/ingot"
     },
     "transform": "forge:default-item"
   },
@@ -18,77 +18,77 @@
 
       "ingot": {
         "textures": {
-          "layer0": "matteroverdrive:items/iron/ingot"
+          "layer0": "titanium:items/iron/ingot"
         }
       },
       "nugget": {
         "textures": {
-          "layer0": "matteroverdrive:items/iron/nugget"
+          "layer0": "titanium:items/iron/nugget"
         }
       },
       "plate": {
         "textures": {
-          "layer0": "matteroverdrive:items/iron/plate"
+          "layer0": "titanium:items/iron/plate"
         }
       },
       "dust": {
         "textures": {
-          "layer0": "matteroverdrive:items/iron/dust"
+          "layer0": "titanium:items/iron/dust"
         }
       },
       "reinforced_plate": {
         "textures": {
-          "layer0": "matteroverdrive:items/iron/reinforced_plate"
+          "layer0": "titanium:items/iron/reinforced_plate"
         }
       },
       "casing": {
         "textures": {
-          "layer0": "matteroverdrive:items/iron/casing"
+          "layer0": "titanium:items/iron/casing"
         }
       },
       "chunk": {
         "textures": {
-          "layer0": "matteroverdrive:items/iron/chunk"
+          "layer0": "titanium:items/iron/chunk"
         }
       },
       "clump": {
         "textures": {
-          "layer0": "matteroverdrive:items/iron/scrap"
+          "layer0": "titanium:items/iron/scrap"
         }
       },
       "purified": {
         "textures": {
-          "layer0": "matteroverdrive:items/iron/slurry"
+          "layer0": "titanium:items/iron/slurry"
         }
       },
       "dense_plate": {
         "textures": {
-          "layer0": "matteroverdrive:items/iron/dense_plate"
+          "layer0": "titanium:items/iron/dense_plate"
         }
       },
       "flakes": {
         "textures": {
-          "layer0": "matteroverdrive:items/iron/flakes"
+          "layer0": "titanium:items/iron/flakes"
         }
       },
       "grindings": {
         "textures": {
-          "layer0": "matteroverdrive:items/iron/grindings"
+          "layer0": "titanium:items/iron/grindings"
         }
       },
       "stone": {
         "textures": {
-          "layer0": "matteroverdrive:items/iron/shard"
+          "layer0": "titanium:items/iron/shard"
         }
       },
       "gear": {
         "textures": {
-          "layer0": "matteroverdrive:items/iron/gear"
+          "layer0": "titanium:items/iron/gear"
         }
       },
       "pebbles": {
         "textures": {
-          "layer0": "matteroverdrive:items/iron/clumps"
+          "layer0": "titanium:items/iron/clumps"
         }
       }
 

@@ -3,7 +3,7 @@
   "defaults": {
     "model": "builtin/generated",
     "textures": {
-      "layer0": "matteroverdrive:items/gold/ingot"
+      "layer0": "titanium:items/gold/ingot"
     },
     "transform": "forge:default-item"
   },
@@ -18,77 +18,77 @@
 
       "ingot": {
         "textures": {
-          "layer0": "matteroverdrive:items/gold/ingot"
+          "layer0": "titanium:items/gold/ingot"
         }
       },
       "nugget": {
         "textures": {
-          "layer0": "matteroverdrive:items/gold/nugget"
+          "layer0": "titanium:items/gold/nugget"
         }
       },
       "plate": {
         "textures": {
-          "layer0": "matteroverdrive:items/gold/plate"
+          "layer0": "titanium:items/gold/plate"
         }
       },
       "dust": {
         "textures": {
-          "layer0": "matteroverdrive:items/gold/dust"
+          "layer0": "titanium:items/gold/dust"
         }
       },
       "reinforced_plate": {
         "textures": {
-          "layer0": "matteroverdrive:items/gold/reinforced_plate"
+          "layer0": "titanium:items/gold/reinforced_plate"
         }
       },
       "casing": {
         "textures": {
-          "layer0": "matteroverdrive:items/gold/casing"
+          "layer0": "titanium:items/gold/casing"
         }
       },
       "chunk": {
         "textures": {
-          "layer0": "matteroverdrive:items/gold/chunk"
+          "layer0": "titanium:items/gold/chunk"
         }
       },
       "clump": {
         "textures": {
-          "layer0": "matteroverdrive:items/gold/scrap"
+          "layer0": "titanium:items/gold/scrap"
         }
       },
       "purified": {
         "textures": {
-          "layer0": "matteroverdrive:items/gold/purified"
+          "layer0": "titanium:items/gold/purified"
         }
       },
       "dense_plate": {
         "textures": {
-          "layer0": "matteroverdrive:items/gold/dense_plate"
+          "layer0": "titanium:items/gold/dense_plate"
         }
       },
       "flakes": {
         "textures": {
-          "layer0": "matteroverdrive:items/gold/flakes"
+          "layer0": "titanium:items/gold/flakes"
         }
       },
       "grindings": {
         "textures": {
-          "layer0": "matteroverdrive:items/gold/grindings"
+          "layer0": "titanium:items/gold/grindings"
         }
       },
       "stone": {
         "textures": {
-          "layer0": "matteroverdrive:items/gold/shard"
+          "layer0": "titanium:items/gold/shard"
         }
       },
       "gear": {
         "textures": {
-          "layer0": "matteroverdrive:items/gold/gear"
+          "layer0": "titanium:items/gold/gear"
         }
       },
       "pebbles": {
         "textures": {
-          "layer0": "matteroverdrive:items/gold/clumps"
+          "layer0": "titanium:items/gold/clumps"
         }
       }
 
