@@ -28,7 +28,7 @@ public class ResourceMaterial {
     }
 
     public String getLocalizedName() {
-        return I18n.translateToLocal("item.edxcore.material." + materialName + ".name");
+        return I18n.translateToLocal("item.titanium.material." + materialName + ".name");
     }
 
     public Function<ResourceType, ModelResourceLocation> getModelFunction() {
