@@ -36,7 +36,7 @@ public class EnergyStorageItemStack implements IEnergyStorage {
 
     public void setInternal(int energy) {
         NBTTagCompound energyTag = getStackEnergyTag();
-        energyTag.setInteger(ENERGY,Math.min());
+        energyTag.setInteger(ENERGY, Math.min(energyTag.getInteger(ENERGY) + energy, energyTag.getInteger(MAX)));
     }
 
     private NBTTagCompound getStackEnergyTag() {
