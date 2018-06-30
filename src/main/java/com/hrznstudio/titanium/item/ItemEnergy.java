@@ -7,9 +7,11 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Optional;
 
 public class ItemEnergy extends ItemBase {
     private final int capacity;
@@ -27,10 +29,29 @@ public class ItemEnergy extends ItemBase {
         this(name, capacity, throughput, throughput);
     }
 
+    @Override
+    public boolean showDurabilityBar(ItemStack stack) {
+        return getEnergyStorage(stack).isPresent();
+    }
+
+    @Override
+    public double getDurabilityForDisplay(ItemStack stack) {
+        return getEnergyStorage(stack).map(storage -> 1 - (double) storage.getEnergyStored() / (double) storage.getMaxEnergyStored()).orElse(0.0);
+    }
+
+    @Override
+    public int getRGBDurabilityForDisplay(ItemStack stack) {
+        return 0x00E93232;
+    }
+
+    public Optional<IEnergyStorage> getEnergyStorage(ItemStack stack){
+        return Optional.ofNullable(stack.getCapability(CapabilityEnergy.ENERGY,null));
+    }
+
     @Nullable
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable NBTTagCompound nbt) {
-        return new CapabilityProvider(new EnergyStorageItemStack(stack, 0, capacity, input, output));
+        return new CapabilityProvider(new EnergyStorageItemStack(stack, capacity, input, output));
     }
 
     public static class CapabilityProvider implements ICapabilityProvider {
