@@ -6,6 +6,7 @@ package com.hrznstudio.titanium.item;
 
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -14,6 +15,7 @@ import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.StringUtils;
@@ -28,8 +30,9 @@ import java.util.Objects;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class ItemBase extends Item {
+public class ItemBase extends Item {
     public static List<ItemBase> ITEMS = new ArrayList<>();
+
     public ItemBase(String name) {
         setRegistryName(name);
         setUnlocalizedName(Objects.requireNonNull(getRegistryName()).toString().replace(':', '.'));
@@ -41,12 +44,14 @@ public abstract class ItemBase extends Item {
         return getHasSubtypes() ? damage : 0;
     }
 
-    public abstract void registerModels();
+    public void registerModels() {
+        ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(getRegistryName(), "inventory"));
+    }
 
     @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
-        if(isInCreativeTab(tab)) {
-            listSubItems(tab,items);
+        if (isInCreativeTab(tab)) {
+            listSubItems(tab, items);
         }
     }
 
