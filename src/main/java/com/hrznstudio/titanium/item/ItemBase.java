@@ -4,6 +4,7 @@
  */
 package com.hrznstudio.titanium.item;
 
+import com.hrznstudio.titanium.api.internal.IModelRegistrar;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -30,7 +31,7 @@ import java.util.Objects;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ItemBase extends Item {
+public class ItemBase extends Item implements IModelRegistrar {
     public static List<ItemBase> ITEMS = new ArrayList<>();
 
     public ItemBase(String name) {
@@ -44,6 +45,7 @@ public class ItemBase extends Item {
         return getHasSubtypes() ? damage : 0;
     }
 
+    @Override
     public void registerModels() {
         ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(getRegistryName(), "inventory"));
     }
