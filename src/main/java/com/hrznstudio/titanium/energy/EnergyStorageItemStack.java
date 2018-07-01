@@ -13,6 +13,7 @@ public class EnergyStorageItemStack implements IEnergyStorage {
     private static final String OUTPUT = "out";
 
     public EnergyStorageItemStack(ItemStack stack, int capacity, int in, int out) {
+        this.stack = stack;
         boolean hasTags = stack.hasTagCompound();
         if (!hasTags || !stack.getTagCompound().hasKey("energy")) {
             if (!hasTags) {
@@ -31,7 +32,6 @@ public class EnergyStorageItemStack implements IEnergyStorage {
             energyTag.setInteger(INPUT, in);
             energyTag.setInteger(OUTPUT, out);
         }
-        this.stack = stack;
     }
 
     public void setInternal(int energy) {
