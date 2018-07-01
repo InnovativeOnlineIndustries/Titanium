@@ -8,6 +8,7 @@ import com.hrznstudio.titanium.energy.EnergyStorageItemStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -15,6 +16,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Optional;
 
 public class ItemEnergy extends ItemBase {
@@ -27,6 +29,30 @@ public class ItemEnergy extends ItemBase {
         this.capacity = capacity;
         this.input = input;
         this.output = output;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public int getInput() {
+        return input;
+    }
+
+    public int getOutput() {
+        return output;
+    }
+
+    @Override
+    public boolean hasDetails(@Nullable Key key) {
+        return key == Key.SHIFT;
+    }
+
+    @Override
+    public void addDetails(@Nullable Key key, ItemStack stack, List<String> tooltip, boolean advanced) {
+        if (key == Key.SHIFT) {
+            getEnergyStorage(stack).ifPresent(storage -> tooltip.add(TextFormatting.YELLOW + "Energy: " + TextFormatting.RED + storage.getEnergyStored() + TextFormatting.YELLOW + "/" + TextFormatting.RED + storage.getMaxEnergyStored() + TextFormatting.RESET));
+        }
     }
 
     public ItemEnergy(String name, int capacity, int throughput) {
@@ -48,8 +74,8 @@ public class ItemEnergy extends ItemBase {
         return 0x00E93232;
     }
 
-    public Optional<IEnergyStorage> getEnergyStorage(ItemStack stack){
-        return Optional.ofNullable(stack.getCapability(CapabilityEnergy.ENERGY,null));
+    public Optional<IEnergyStorage> getEnergyStorage(ItemStack stack) {
+        return Optional.ofNullable(stack.getCapability(CapabilityEnergy.ENERGY, null));
     }
 
     @Nullable
