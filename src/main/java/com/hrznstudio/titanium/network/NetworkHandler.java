@@ -18,4 +18,7 @@ public class NetworkHandler {
         NETWORK.registerMessage(handler, message, i++, side);
     }
 
+    public static <REQ extends Message<REQ>> void registerMessage(Class<REQ> message, Side side) {
+        registerMessage(message, message, side);
+    }
 }

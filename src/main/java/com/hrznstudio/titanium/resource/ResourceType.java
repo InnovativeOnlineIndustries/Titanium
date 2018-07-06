@@ -40,12 +40,12 @@ public enum ResourceType implements IStringSerializable {
         this.oreDict = oreDict;
     }
 
-    public String getOreDict() {
-        return oreDict;
-    }
-
     ResourceType() {
         this.oreDict = getName();
+    }
+
+    public String getOreDict() {
+        return oreDict;
     }
 
     public boolean hasMaterial() {

@@ -53,6 +53,7 @@ public class ResourceMaterial {
         types.forEach(this::withType);
         return this;
     }
+
     public ResourceMaterial withTypes(ResourceType... types) {
         ArrayUtil.forEach(this::withType, types);
         return this;

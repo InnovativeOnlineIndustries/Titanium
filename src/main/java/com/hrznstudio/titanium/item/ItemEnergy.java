@@ -29,6 +29,11 @@ public class ItemEnergy extends ItemBase {
         this.capacity = capacity;
         this.input = input;
         this.output = output;
+        setMaxStackSize(1);
+    }
+
+    public ItemEnergy(String name, int capacity, int throughput) {
+        this(name, capacity, throughput, throughput);
     }
 
     public int getCapacity() {
@@ -45,18 +50,15 @@ public class ItemEnergy extends ItemBase {
 
     @Override
     public boolean hasDetails(@Nullable Key key) {
-        return key == Key.SHIFT;
+        return key == Key.SHIFT || super.hasDetails(key);
     }
 
     @Override
     public void addDetails(@Nullable Key key, ItemStack stack, List<String> tooltip, boolean advanced) {
+        super.addDetails(key, stack, tooltip, advanced);
         if (key == Key.SHIFT) {
             getEnergyStorage(stack).ifPresent(storage -> tooltip.add(TextFormatting.YELLOW + "Energy: " + TextFormatting.RED + storage.getEnergyStored() + TextFormatting.YELLOW + "/" + TextFormatting.RED + storage.getMaxEnergyStored() + TextFormatting.RESET));
         }
-    }
-
-    public ItemEnergy(String name, int capacity, int throughput) {
-        this(name, capacity, throughput, throughput);
     }
 
     @Override

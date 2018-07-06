@@ -34,15 +34,15 @@ public enum FilenameFilter implements java.io.FilenameFilter {
         this.extensions = suffix;
     }
 
-    public String[] getExtensions() {
-        return this.extensions;
-    }
-
     public static boolean isKnown(File dir, String name) {
-        for(FilenameFilter filter : values())
-            if(filter.accept(dir, name))
+        for (FilenameFilter filter : values())
+            if (filter.accept(dir, name))
                 return true;
         return false;
+    }
+
+    public String[] getExtensions() {
+        return this.extensions;
     }
 
     @Override

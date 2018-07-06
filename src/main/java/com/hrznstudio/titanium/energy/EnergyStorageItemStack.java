@@ -9,12 +9,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.energy.IEnergyStorage;
 
 public class EnergyStorageItemStack implements IEnergyStorage {
-    private final ItemStack stack;
-
     private static final String ENERGY = "stored";
     private static final String MAX = "max";
     private static final String INPUT = "in";
     private static final String OUTPUT = "out";
+    private final ItemStack stack;
 
     public EnergyStorageItemStack(ItemStack stack, int capacity, int in, int out) {
         this.stack = stack;
