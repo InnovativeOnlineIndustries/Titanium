@@ -16,8 +16,10 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import javax.annotation.Nullable;
+import java.util.Objects;
 import java.util.Optional;
 
 public abstract class BlockTileBase<T extends TileBase> extends BlockBase {
@@ -26,6 +28,8 @@ public abstract class BlockTileBase<T extends TileBase> extends BlockBase {
     public BlockTileBase(String name, Material materialIn, Class<T> tileClass) {
         super(name, materialIn);
         this.tileClass = tileClass;
+        if (TileEntity.getKey(tileClass) == null)
+            GameRegistry.registerTileEntity(tileClass, Objects.requireNonNull(getRegistryName()).toString());
     }
 
     public abstract IFactory<T> getTileEntityFactory();

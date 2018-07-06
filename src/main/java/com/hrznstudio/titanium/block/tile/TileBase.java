@@ -11,8 +11,12 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 
-public abstract class TileBase extends TileEntity {
-    public abstract boolean onActivated(EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ);
+public class TileBase extends TileEntity {
+    public boolean onActivated(EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        return false;
+    }
 
-    public abstract void onNeighborChanged(Block blockIn, BlockPos fromPos);
+    public void onNeighborChanged(Block blockIn, BlockPos fromPos) {
+
+    }
 }
