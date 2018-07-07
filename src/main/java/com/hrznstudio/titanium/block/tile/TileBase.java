@@ -4,19 +4,92 @@
  */
 package com.hrznstudio.titanium.block.tile;
 
+import com.hrznstudio.titanium.block.tile.container.capability.items.MultiInventoryHandler;
+import com.hrznstudio.titanium.block.tile.container.capability.items.PosInvHandler;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.items.CapabilityItemHandler;
+
+import javax.annotation.Nullable;
 
 public class TileBase extends TileEntity {
+
+    private MultiInventoryHandler multiInventoryHandler;
+
     public boolean onActivated(EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         return false;
     }
 
     public void onNeighborChanged(Block blockIn, BlockPos fromPos) {
 
+    }
+
+    /*
+        Capability Handling
+     */
+    public void addInventory(PosInvHandler handler) {
+        if (multiInventoryHandler == null) multiInventoryHandler = new MultiInventoryHandler();
+        multiInventoryHandler.addInventory(handler);
+    }
+
+    @Override
+    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && multiInventoryHandler != null && multiInventoryHandler.getCapabilityForSide(facing).getSlots() > 0)
+            return true;
+        return super.hasCapability(capability, facing);
+    }
+
+    @Nullable
+    @Override
+    public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(multiInventoryHandler.getCapabilityForSide(facing));
+        return super.getCapability(capability, facing);
+    }
+
+    public MultiInventoryHandler getMultiInventoryHandler() {
+        return multiInventoryHandler;
+    }
+
+    /*
+        NBT Syncing
+     */
+
+    public void markForUpdate() {
+        this.world.notifyBlockUpdate(getPos(), getWorld().getBlockState(getPos()), getWorld().getBlockState(getPos()), 3);
+        markDirty();
+    }
+
+    @Override
+    public NBTTagCompound getUpdateTag() {
+        return writeToNBT(new NBTTagCompound());
+    }
+
+    @Override
+    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
+        return oldState.getBlock() != newSate.getBlock();
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+        readFromNBT(pkt.getNbtCompound());
+    }
+
+    @Nullable
+    @Override
+    public SPacketUpdateTileEntity getUpdatePacket() {
+        NBTTagCompound tag = new NBTTagCompound();
+        writeToNBT(tag);
+        return new SPacketUpdateTileEntity(getPos(), 1, tag);
     }
 }
