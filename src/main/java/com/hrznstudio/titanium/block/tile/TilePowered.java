@@ -63,6 +63,6 @@ public abstract class TilePowered extends TileBase {
     @Nullable
     @Override
     public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
-        return capability == CapabilityEnergy.ENERGY && getValidEnergyFaces().contains(facing) ? CapabilityEnergy.ENERGY.cast(energyHandler) : super.getCapability(capability, facing);
+        return capability == CapabilityEnergy.ENERGY && (facing == null || getValidEnergyFaces().contains(facing)) ? CapabilityEnergy.ENERGY.cast(energyHandler) : super.getCapability(capability, facing);
     }
 }
