@@ -4,7 +4,10 @@
  */
 package com.hrznstudio.titanium;
 
+import com.hrznstudio.titanium._test.BlockTest;
+import com.hrznstudio.titanium._test.TileTest;
 import com.hrznstudio.titanium.client.TitaniumModelLoader;
+import com.hrznstudio.titanium.client.gui.GuiHandler;
 import com.hrznstudio.titanium.item.ItemBase;
 import com.hrznstudio.titanium.resource.ItemResource;
 import com.hrznstudio.titanium.resource.ResourceMaterial;
@@ -12,8 +15,10 @@ import com.hrznstudio.titanium.resource.ResourceRegistry;
 import com.hrznstudio.titanium.resource.ResourceType;
 import com.hrznstudio.titanium.tab.AdvancedTitaniumTab;
 import com.hrznstudio.titanium.util.SidedHandler;
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
@@ -22,6 +27,8 @@ import net.minecraftforge.event.RegistryEvent.Register;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
@@ -39,6 +46,8 @@ public class Titanium {
     public static AdvancedTitaniumTab RESOURCES_TAB;
 
     public static List<ItemResource> RESOURCE_ITEMS = new ArrayList<>();
+
+    public static Titanium INSTANCE;
 
     private static boolean vanilla;
 
@@ -60,10 +69,21 @@ public class Titanium {
         }
     }
 
+    public static BlockTest TEST;
+
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(this);
         SidedHandler.runOn(Side.CLIENT, () -> () -> ModelLoaderRegistry.registerLoader(new TitaniumModelLoader()));
+        INSTANCE = this;
+        //TEST
+        GameRegistry.registerTileEntity(TileTest.class, new ResourceLocation(MODID, "test_tile"));
+        NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
+    }
+
+    @SubscribeEvent
+    public void registerBlocks(Register<Block> event) {
+        event.getRegistry().register(TEST = new BlockTest());
     }
 
     @SubscribeEvent
@@ -85,6 +105,7 @@ public class Titanium {
                 });
             });
         }
+        event.getRegistry().register(new ItemBlock(TEST).setRegistryName(TEST.getRegistryName()));
     }
 
     @SubscribeEvent

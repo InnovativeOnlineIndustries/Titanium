@@ -4,6 +4,9 @@
  */
 package com.hrznstudio.titanium.inventory;
 
+import com.hrznstudio.titanium.api.client.IGuiAddon;
+import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
+import com.hrznstudio.titanium.client.gui.SlotsGuiAddon;
 import com.hrznstudio.titanium.container.capability.IFacingHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -15,7 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 
 
-public class MultiInventoryHandler {
+public class MultiInventoryHandler implements IGuiAddonProvider {
 
     private final HashSet<PosInvHandler> inventoryHandlers;
 
@@ -39,6 +42,13 @@ public class MultiInventoryHandler {
 
     public HashSet<PosInvHandler> getInventoryHandlers() {
         return inventoryHandlers;
+    }
+
+    @Override
+    public List<? extends IGuiAddon> getGuiAddons() {
+        List<IGuiAddon> addons = new ArrayList<>();
+        inventoryHandlers.forEach(posInvHandler -> addons.add(new SlotsGuiAddon(posInvHandler)));
+        return addons;
     }
 
     public static class MultiInvCapabilityHandler extends ItemStackHandler {

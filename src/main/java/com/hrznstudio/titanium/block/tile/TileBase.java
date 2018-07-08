@@ -4,6 +4,8 @@
  */
 package com.hrznstudio.titanium.block.tile;
 
+import com.hrznstudio.titanium.api.client.IGuiAddon;
+import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
 import com.hrznstudio.titanium.inventory.MultiInventoryHandler;
 import com.hrznstudio.titanium.inventory.PosInvHandler;
 import net.minecraft.block.Block;
@@ -22,8 +24,10 @@ import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
-public class TileBase extends TileEntity {
+public class TileBase extends TileEntity implements IGuiAddonProvider {
 
     private MultiInventoryHandler multiInventoryHandler;
 
@@ -61,6 +65,17 @@ public class TileBase extends TileEntity {
     }
 
     /*
+        Client
+     */
+
+    @Override
+    public List<? extends IGuiAddon> getGuiAddons() {
+        List<IGuiAddon> addons = new ArrayList<>();
+        if (multiInventoryHandler != null) addons.addAll(multiInventoryHandler.getGuiAddons());
+        return addons;
+    }
+
+    /*
         NBT Syncing
      */
 
@@ -92,4 +107,5 @@ public class TileBase extends TileEntity {
         writeToNBT(tag);
         return new SPacketUpdateTileEntity(getPos(), 1, tag);
     }
+
 }

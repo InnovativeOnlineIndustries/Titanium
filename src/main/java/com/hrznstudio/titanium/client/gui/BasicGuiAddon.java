@@ -1,0 +1,39 @@
+package com.hrznstudio.titanium.client.gui;
+
+import com.hrznstudio.titanium.api.client.IGuiAddon;
+
+public abstract class BasicGuiAddon implements IGuiAddon {
+
+    private int posX;
+    private int posY;
+
+    protected BasicGuiAddon(int posX, int posY) {
+        this.posX = posX;
+        this.posY = posY;
+    }
+
+    @Override
+    public boolean isInside(GuiContainerTile container, int mouseX, int mouseY) {
+        return mouseX > this.getPosX() && mouseX < this.getPosX() + getXSize() && mouseY > this.getPosY() && mouseY < this.getPosY() + getYSize();
+    }
+
+    public abstract int getXSize();
+
+    public abstract int getYSize();
+
+    public int getPosX() {
+        return posX;
+    }
+
+    public void setPosX(int posX) {
+        this.posX = posX;
+    }
+
+    public int getPosY() {
+        return posY;
+    }
+
+    public void setPosY(int posY) {
+        this.posY = posY;
+    }
+}

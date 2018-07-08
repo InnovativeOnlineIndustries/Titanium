@@ -22,16 +22,21 @@ public class ContainerTileBase<T extends TileBase> extends Container {
     public ContainerTileBase(T tile, InventoryPlayer player) {
         this.tile = tile;
         this.player = player;
-        for (PosInvHandler handler : tile.getMultiInventoryHandler().getInventoryHandlers()) {
-            int i = 0;
-            for (int y = 0; y < handler.getYSize(); ++y) {
-                for (int x = 0; x < handler.getXSize(); ++x) {
-                    addSlotToContainer(new SlotItemHandler(handler, i, handler.getXPos() + x * 18, handler.getYPos() + y * 18));
-                    ++i;
+        if (tile.getMultiInventoryHandler() != null) {
+            for (PosInvHandler handler : tile.getMultiInventoryHandler().getInventoryHandlers()) {
+                int i = 0;
+                for (int y = 0; y < handler.getYSize(); ++y) {
+                    for (int x = 0; x < handler.getXSize(); ++x) {
+                        addSlotToContainer(new SlotItemHandler(handler, i, handler.getXPos() + x * 18, handler.getYPos() + y * 18));
+                        ++i;
+                    }
                 }
             }
         }
         addPlayerChestInventory();
+        for (int k = 0; k < 9; k++) {
+            addSlotToContainer(new Slot(player, k, 8 + k * 18, 142 + 18));
+        }
     }
 
     public void addPlayerChestInventory() {
@@ -86,5 +91,9 @@ public class ContainerTileBase<T extends TileBase> extends Container {
         }
 
         return itemstack;
+    }
+
+    public T getTile() {
+        return tile;
     }
 }
