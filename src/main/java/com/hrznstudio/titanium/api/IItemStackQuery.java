@@ -39,10 +39,6 @@ public interface IItemStackQuery extends Predicate<ItemStack> {
         return matches(stack);
     }
 
-    interface IItemStackQueryRecipe extends IItemStackQuery {
-        ItemStack[] getMatchingStacks();
-    }
-
     default BiPredicate<ItemStack, Integer> toSlotFilter(int... slots) {
         return toSlotFilter((slot) -> ArrayUtils.contains(slots, slot));
     }
@@ -53,6 +49,10 @@ public interface IItemStackQuery extends Predicate<ItemStack> {
 
     default BiPredicate<ItemStack, Integer> toSlotFilter(int min, int max) {
         return toSlotFilter(slot -> slot >= min && slot <= max);
+    }
+
+    interface IItemStackQueryRecipe extends IItemStackQuery {
+        ItemStack[] getMatchingStacks();
     }
 
     @FunctionalInterface

@@ -4,7 +4,6 @@
  */
 package com.hrznstudio.titanium._test;
 
-import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.api.IItemStackQuery;
 import com.hrznstudio.titanium.block.tile.TileBase;
 import com.hrznstudio.titanium.inventory.PosInvHandler;
@@ -24,7 +23,7 @@ public class TileTest extends TileBase {
     @Override
     public boolean onActivated(EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         if (!world.isRemote) {
-            playerIn.openGui(Titanium.INSTANCE, 0, world, pos.getX(), pos.getY(), pos.getZ());
+            openGui(playerIn);
         }
         return true;
     }
