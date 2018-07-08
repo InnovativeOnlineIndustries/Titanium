@@ -1,4 +1,8 @@
-package com.hrznstudio.titanium.block.tile.container.capability.items;
+/*
+ * This file is part of Titanium
+ * Copyright (C) 2018, Horizon Studio <contact@hrznstudio.com>, All rights reserved.
+ */
+package com.hrznstudio.titanium.inventory;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
