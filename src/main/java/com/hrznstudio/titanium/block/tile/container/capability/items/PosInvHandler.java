@@ -22,6 +22,8 @@ public class PosInvHandler extends ItemStackHandler {
         this.name = name;
         this.xPos = xPos;
         this.yPos = yPos;
+        this.setSize(size);
+        this.setRange(size, 1);
         this.insertPredicate = (stack, integer) -> true;
         this.extractPredicate = (stack, integer) -> true;
     }
