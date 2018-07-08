@@ -6,6 +6,7 @@ package com.hrznstudio.titanium.block;
 
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.block.tile.TileBase;
+import com.hrznstudio.titanium.util.TileUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -56,9 +57,6 @@ public abstract class BlockTileBase<T extends TileBase> extends BlockBase {
     }
 
     public Optional<T> getTile(IBlockAccess access, BlockPos pos) {
-        TileEntity tile = access.getTileEntity(pos);
-        if (tile != null && tileClass.isInstance(tile))
-            return Optional.of(tileClass.cast(tile));
-        return Optional.empty();
+        return TileUtil.getTileEntity(access,pos,tileClass);
     }
 }

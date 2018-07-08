@@ -6,6 +6,8 @@ package com.hrznstudio.titanium.api.client;
 
 import com.hrznstudio.titanium.client.gui.GuiContainerTile;
 
+import javax.annotation.Nonnull;
+import java.util.Collections;
 import java.util.List;
 
 public interface IGuiAddon {
@@ -14,7 +16,9 @@ public interface IGuiAddon {
 
     void drawGuiContainerForegroundLayer(GuiContainerTile container, int mouseX, int mouseY);
 
-    List<String> getTooltipLines();
+    default List<String> getTooltipLines() {
+        return Collections.emptyList();
+    }
 
     boolean isInside(GuiContainerTile container, int mouseX, int mouseY);
 

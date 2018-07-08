@@ -90,7 +90,6 @@ public class TileBase extends TileEntity implements IGuiAddonProvider {
     }
 
     @Override
-    @Nonnull
     public NBTTagCompound getUpdateTag() {
         return writeToNBT(new NBTTagCompound());
     }
@@ -105,7 +104,6 @@ public class TileBase extends TileEntity implements IGuiAddonProvider {
         readFromNBT(pkt.getNbtCompound());
     }
 
-    @Nullable
     @Override
     public SPacketUpdateTileEntity getUpdatePacket() {
         NBTTagCompound tag = new NBTTagCompound();

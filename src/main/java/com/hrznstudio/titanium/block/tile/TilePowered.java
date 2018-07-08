@@ -26,12 +26,10 @@ public abstract class TilePowered extends TileBase {
         this.energyHandler = getEnergyHandlerFactory().create();
     }
 
-    @Nonnull
     protected IFactory<NBTEnergyHandler> getEnergyHandlerFactory() {
         return () -> new NBTEnergyHandler(10000);
     }
 
-    @Nonnull
     public IEnergyStorage getEnergyStorage() {
         return energyHandler;
     }
@@ -42,13 +40,11 @@ public abstract class TilePowered extends TileBase {
         compound.setTag("energy", energyHandler.serializeNBT());
     }
 
-    @Nonnull
     public Set<EnumFacing> getValidEnergyFaces() {
         return Sets.newHashSet(EnumFacing.VALUES);
     }
 
     @Override
-    @Nonnull
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
         if (compound.hasKey("energy", Constants.NBT.TAG_INT))
             energyHandler.deserializeNBT((NBTTagInt) compound.getTag("energy"));
