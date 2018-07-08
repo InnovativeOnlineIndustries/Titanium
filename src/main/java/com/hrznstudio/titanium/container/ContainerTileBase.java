@@ -1,7 +1,11 @@
-package com.hrznstudio.titanium.block.tile.container;
+/*
+ * This file is part of Titanium
+ * Copyright (C) 2018, Horizon Studio <contact@hrznstudio.com>, All rights reserved.
+ */
+package com.hrznstudio.titanium.container;
 
 import com.hrznstudio.titanium.block.tile.TileBase;
-import com.hrznstudio.titanium.block.tile.container.capability.items.PosInvHandler;
+import com.hrznstudio.titanium.inventory.PosInvHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;

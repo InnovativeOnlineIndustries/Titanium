@@ -1,4 +1,8 @@
-package com.hrznstudio.titanium.block.tile.container.capability;
+/*
+ * This file is part of Titanium
+ * Copyright (C) 2018, Horizon Studio <contact@hrznstudio.com>, All rights reserved.
+ */
+package com.hrznstudio.titanium.container.capability;
 
 import net.minecraft.util.EnumFacing;
 
@@ -15,7 +19,7 @@ public interface IFacingHandler {
 
     Rectangle getRectangle();
 
-    public enum FaceMode {
+    enum FaceMode {
         NONE(false, 0), ENABLED(true, 1), PUSH(true, 2), PULL(true, 3);
 
         private final boolean allowsConnection;

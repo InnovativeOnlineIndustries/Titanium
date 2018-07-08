@@ -4,8 +4,8 @@
  */
 package com.hrznstudio.titanium.block.tile;
 
-import com.hrznstudio.titanium.block.tile.container.capability.items.MultiInventoryHandler;
-import com.hrznstudio.titanium.block.tile.container.capability.items.PosInvHandler;
+import com.hrznstudio.titanium.inventory.MultiInventoryHandler;
+import com.hrznstudio.titanium.inventory.PosInvHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,6 +20,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class TileBase extends TileEntity {
@@ -44,9 +45,7 @@ public class TileBase extends TileEntity {
 
     @Override
     public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && multiInventoryHandler != null && multiInventoryHandler.getCapabilityForSide(facing).getSlots() > 0)
-            return true;
-        return super.hasCapability(capability, facing);
+        return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && multiInventoryHandler != null && multiInventoryHandler.getCapabilityForSide(facing).getSlots() > 0 || super.hasCapability(capability, facing);
     }
 
     @Nullable
@@ -71,12 +70,13 @@ public class TileBase extends TileEntity {
     }
 
     @Override
+    @Nonnull
     public NBTTagCompound getUpdateTag() {
         return writeToNBT(new NBTTagCompound());
     }
 
     @Override
-    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
+    public boolean shouldRefresh(World world, BlockPos pos, @Nonnull IBlockState oldState, @Nonnull IBlockState newSate) {
         return oldState.getBlock() != newSate.getBlock();
     }
 
