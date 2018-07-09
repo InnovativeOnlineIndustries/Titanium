@@ -6,6 +6,7 @@ package com.hrznstudio.titanium;
 
 import com.hrznstudio.titanium._test.BlockTest;
 import com.hrznstudio.titanium._test.TileTest;
+import com.hrznstudio.titanium.block.tile.TileBase;
 import com.hrznstudio.titanium.client.TitaniumModelLoader;
 import com.hrznstudio.titanium.client.gui.GuiHandler;
 import com.hrznstudio.titanium.item.ItemBase;
@@ -17,6 +18,7 @@ import com.hrznstudio.titanium.tab.AdvancedTitaniumTab;
 import com.hrznstudio.titanium.util.SidedHandler;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
@@ -48,8 +50,12 @@ public class Titanium {
     public static List<ItemResource> RESOURCE_ITEMS = new ArrayList<>();
 
     public static Titanium INSTANCE;
-
+    public static BlockTest TEST;
     private static boolean vanilla;
+
+    public static void openGui(TileBase tile, EntityPlayer player) {
+        player.openGui(INSTANCE, 0, tile.getWorld(), tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ());
+    }
 
     public static void registerVanillaMaterials() {
         if (!vanilla) {
@@ -68,8 +74,6 @@ public class Titanium {
             ).withTypes(ResourceType.VANILLA));
         }
     }
-
-    public static BlockTest TEST;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {

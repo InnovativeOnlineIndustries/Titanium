@@ -15,24 +15,21 @@ import java.util.Collections;
 import java.util.List;
 
 public class InventoryUtil {
-    @Nonnull
-    public static List<ItemStack> getStacks(@Nonnull ItemStack stack) {
+    public static List<ItemStack> getStacks(ItemStack stack) {
         IItemHandler handler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
         if (handler == null)
             return Collections.emptyList();
         return getStacks(handler);
     }
 
-    @Nonnull
-    public static List<ItemStack> getStacks(@Nonnull TileEntity tile) {
+    public static List<ItemStack> getStacks(TileEntity tile) {
         IItemHandler handler = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
         if (handler == null)
             return Collections.emptyList();
         return getStacks(handler);
     }
 
-    @Nonnull
-    public static List<ItemStack> getStacks(@Nonnull IItemHandler handler) {
+    public static List<ItemStack> getStacks(IItemHandler handler) {
         ImmutableList.Builder<ItemStack> builder = new ImmutableList.Builder<>();
         for (int slot = 0; slot < handler.getSlots(); slot++) {
             ItemStack subStack = handler.getStackInSlot(slot);

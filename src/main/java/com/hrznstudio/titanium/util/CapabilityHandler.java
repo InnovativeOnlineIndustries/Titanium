@@ -8,14 +8,15 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
+import javax.annotation.Nullable;
 import java.util.Optional;
 
 public class CapabilityHandler {
-    public static <T> Optional<T> getCapability(ICapabilityProvider provider, Capability<T> capability, EnumFacing facing) {
+    public static <T> Optional<T> getCapability(@Nullable ICapabilityProvider provider, Capability<T> capability, @Nullable EnumFacing facing) {
         return provider == null ? Optional.empty() : Optional.ofNullable(provider.getCapability(capability, facing));
     }
 
-    public static <T> Optional<T> getCapability(ICapabilityProvider provider, Capability<T> capability) {
+    public static <T> Optional<T> getCapability(@Nullable ICapabilityProvider provider, Capability<T> capability) {
         return getCapability(provider, capability, null);
     }
 }

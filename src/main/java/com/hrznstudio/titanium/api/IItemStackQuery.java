@@ -9,7 +9,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.NBTTagCompound;
+import org.apache.commons.lang3.ArrayUtils;
 
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
 @FunctionalInterface
@@ -35,6 +37,18 @@ public interface IItemStackQuery extends Predicate<ItemStack> {
     @Override
     default boolean test(ItemStack stack) {
         return matches(stack);
+    }
+
+    default BiPredicate<ItemStack, Integer> toSlotFilter(int... slots) {
+        return toSlotFilter((slot) -> ArrayUtils.contains(slots, slot));
+    }
+
+    default BiPredicate<ItemStack, Integer> toSlotFilter(Predicate<Integer> slotPredicate) {
+        return (stack, slot) -> slotPredicate.test(slot) && IItemStackQuery.this.test(stack);
+    }
+
+    default BiPredicate<ItemStack, Integer> toSlotFilter(int min, int max) {
+        return toSlotFilter(slot -> slot >= min && slot <= max);
     }
 
     interface IItemStackQueryRecipe extends IItemStackQuery {

@@ -4,6 +4,7 @@
  */
 package com.hrznstudio.titanium.block.tile;
 
+import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
 import com.hrznstudio.titanium.inventory.MultiInventoryHandler;
@@ -37,6 +38,10 @@ public class TileBase extends TileEntity implements IGuiAddonProvider {
 
     public void onNeighborChanged(Block blockIn, BlockPos fromPos) {
 
+    }
+
+    public void openGui(EntityPlayer player) {
+        Titanium.openGui(this, player);
     }
 
     /*
@@ -85,7 +90,6 @@ public class TileBase extends TileEntity implements IGuiAddonProvider {
     }
 
     @Override
-    @Nonnull
     public NBTTagCompound getUpdateTag() {
         return writeToNBT(new NBTTagCompound());
     }
@@ -100,7 +104,6 @@ public class TileBase extends TileEntity implements IGuiAddonProvider {
         readFromNBT(pkt.getNbtCompound());
     }
 
-    @Nullable
     @Override
     public SPacketUpdateTileEntity getUpdatePacket() {
         NBTTagCompound tag = new NBTTagCompound();

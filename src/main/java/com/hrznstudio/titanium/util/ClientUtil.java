@@ -14,31 +14,28 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.client.model.ModelLoader;
 
 import javax.annotation.Nonnull;
+import java.util.Objects;
 
 public class ClientUtil {
     public static void registerToMapper(Block block) {
-        if (block != null) {
-            final String resourcePath = block.getRegistryName().toString();
-            setCustomStateMapper(block, state -> new ModelResourceLocation(resourcePath, StateUtil.getPropertyString(state.getProperties())));
-            NonNullList<ItemStack> subBlocks = NonNullList.create();
-            block.getSubBlocks(null, subBlocks);
-            for (ItemStack stack : subBlocks) {
-                //noinspection deprecation
-                IBlockState state = block.getStateFromMeta(stack.getMetadata());
-                ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), stack.getMetadata(), new ModelResourceLocation(resourcePath, StateUtil.getPropertyString(state.getProperties())));
-            }
+        final String resourcePath = Objects.requireNonNull(block.getRegistryName()).toString();
+        setCustomStateMapper(block, state -> new ModelResourceLocation(resourcePath, StateUtil.getPropertyString(state.getProperties())));
+        NonNullList<ItemStack> subBlocks = NonNullList.create();
+        block.getSubBlocks(null, subBlocks);
+        for (ItemStack stack : subBlocks) {
+            //noinspection deprecation
+            IBlockState state = block.getStateFromMeta(stack.getMetadata());
+            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), stack.getMetadata(), new ModelResourceLocation(resourcePath, StateUtil.getPropertyString(state.getProperties())));
         }
     }
 
     public static void registerToVariant(Block block, String variant) {
-        if (block != null) {
-            final String resourcePath = block.getRegistryName().toString();
-            setCustomStateMapper(block, state -> new ModelResourceLocation(resourcePath, variant));
-            NonNullList<ItemStack> subBlocks = NonNullList.create();
-            block.getSubBlocks(null, subBlocks);
-            for (ItemStack stack : subBlocks) {
-                ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), stack.getMetadata(), new ModelResourceLocation(resourcePath, variant));
-            }
+        final String resourcePath = Objects.requireNonNull(block.getRegistryName()).toString();
+        setCustomStateMapper(block, state -> new ModelResourceLocation(resourcePath, variant));
+        NonNullList<ItemStack> subBlocks = NonNullList.create();
+        block.getSubBlocks(null, subBlocks);
+        for (ItemStack stack : subBlocks) {
+            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), stack.getMetadata(), new ModelResourceLocation(resourcePath, variant));
         }
     }
 

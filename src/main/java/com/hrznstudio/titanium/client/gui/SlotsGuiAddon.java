@@ -1,8 +1,10 @@
+/*
+ * This file is part of Titanium
+ * Copyright (C) 2018, Horizon Studio <contact@hrznstudio.com>, All rights reserved.
+ */
 package com.hrznstudio.titanium.client.gui;
 
 import com.hrznstudio.titanium.inventory.PosInvHandler;
-
-import java.util.List;
 
 public class SlotsGuiAddon extends BasicGuiAddon {
 
@@ -31,11 +33,6 @@ public class SlotsGuiAddon extends BasicGuiAddon {
     @Override
     public void drawGuiContainerForegroundLayer(GuiContainerTile container, int mouseX, int mouseY) {
 
-    }
-
-    @Override
-    public List<String> getTooltipLines() {
-        return null;
     }
 
     @Override
