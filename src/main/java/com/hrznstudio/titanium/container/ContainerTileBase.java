@@ -18,10 +18,12 @@ public class ContainerTileBase<T extends TileBase> extends Container {
     private T tile;
     private InventoryPlayer player;
     private boolean hasPlayerInventory;
+    private int totalSlots;
 
     public ContainerTileBase(T tile, InventoryPlayer player) {
         this.tile = tile;
         this.player = player;
+        this.totalSlots = 0;
         if (tile.getMultiInventoryHandler() != null) {
             for (PosInvHandler handler : tile.getMultiInventoryHandler().getInventoryHandlers()) {
                 int i = 0;
@@ -52,6 +54,26 @@ public class ContainerTileBase<T extends TileBase> extends Container {
     public void removeChestInventory() {
         this.inventorySlots.removeIf(slot -> slot.getSlotIndex() >= 9 && slot.getSlotIndex() < 9 + 3 * 9);
         hasPlayerInventory = false;
+    }
+
+    public void updateSlotPosition() {
+        if (tile.getMultiInventoryHandler() != null) {
+            for (PosInvHandler handler : tile.getMultiInventoryHandler().getInventoryHandlers()) {
+                int i = 0;
+                for (int y = 0; y < handler.getYSize(); ++y) {
+                    for (int x = 0; x < handler.getXSize(); ++x) {
+                        for (Slot inventorySlot : this.inventorySlots) {
+                            if (!(inventorySlot instanceof SlotItemHandler)) continue;
+                            if (((SlotItemHandler) inventorySlot).getItemHandler().equals(handler) && i == inventorySlot.getSlotIndex()) {
+                                inventorySlot.xPos = handler.getXPos() + x * 18;
+                                inventorySlot.yPos = handler.getYPos() + y * 18;
+                            }
+                        }
+                        ++i;
+                    }
+                }
+            }
+        }
     }
 
     @Override

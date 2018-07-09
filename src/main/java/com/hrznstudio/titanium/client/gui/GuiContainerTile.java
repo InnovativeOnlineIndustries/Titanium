@@ -36,6 +36,7 @@ public class GuiContainerTile extends GuiContainer {
         y = (height - ySize) / 2;
         drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
         addonList.forEach(iGuiAddon -> iGuiAddon.drawGuiContainerBackgroundLayer(this, partialTicks, mouseX, mouseY));
+        containerTileBase.updateSlotPosition();
     }
 
     @Override

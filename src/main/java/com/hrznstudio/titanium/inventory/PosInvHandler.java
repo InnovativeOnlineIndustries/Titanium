@@ -92,6 +92,14 @@ public class PosInvHandler extends ItemStackHandler {
         return ySize;
     }
 
+    public void setXPos(int xPos) {
+        this.xPos = xPos;
+    }
+
+    public void setYPos(int yPos) {
+        this.yPos = yPos;
+    }
+
     public TileEntity getTileEntity() {
         return tileEntity;
     }

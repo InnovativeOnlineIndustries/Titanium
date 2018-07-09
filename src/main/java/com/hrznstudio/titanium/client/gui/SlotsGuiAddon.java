@@ -18,8 +18,8 @@ public class SlotsGuiAddon extends BasicGuiAddon {
         container.mc.getTextureManager().bindTexture(container.getAssetProvider().getSlot().getResourceLocation());
         for (int x = 0; x < handler.getXSize(); x++) {
             for (int y = 0; y < handler.getYSize(); y++) {
-                container.drawTexturedModalRect(this.getPosX() + container.getAssetProvider().getSlot().getArea().width * x + container.getX() - 1,
-                        this.getPosY() + container.getAssetProvider().getSlot().getArea().height * y + container.getY() - 1,
+                container.drawTexturedModalRect(handler.getXPos() + container.getAssetProvider().getSlot().getArea().width * x + container.getX() - 1,
+                        handler.getYPos() + container.getAssetProvider().getSlot().getArea().height * y + container.getY() - 1,
                         container.getAssetProvider().getSlot().getArea().x,
                         container.getAssetProvider().getSlot().getArea().y,
                         container.getAssetProvider().getSlot().getArea().width,
