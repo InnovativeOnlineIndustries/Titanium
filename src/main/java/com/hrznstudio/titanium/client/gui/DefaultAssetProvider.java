@@ -37,6 +37,39 @@ public final class DefaultAssetProvider implements IAssetProvider {
             return new Rectangle(0, 0, 176, 184);
         }
     };
+    private final IAsset ENERGY_BAR = new IAsset() {
+        @Override
+        public ResourceLocation getResourceLocation() {
+            return DEFAULT_LOCATION;
+        }
+
+        @Override
+        public Rectangle getArea() {
+            return new Rectangle(211, 1, 11, 56);
+        }
+    };
+    private final IAsset ENERGY_FILL = new IAsset() {
+        @Override
+        public ResourceLocation getResourceLocation() {
+            return DEFAULT_LOCATION;
+        }
+
+        @Override
+        public Rectangle getArea() {
+            return new Rectangle(223, 1, 5, 50);
+        }
+    };
+    private final IAsset TANK = new IAsset() {
+        @Override
+        public ResourceLocation getResourceLocation() {
+            return DEFAULT_LOCATION;
+        }
+
+        @Override
+        public Rectangle getArea() {
+            return new Rectangle(177, 1, 18, 46);
+        }
+    };
 
     @Nonnull
     @Override
@@ -46,6 +79,12 @@ public final class DefaultAssetProvider implements IAssetProvider {
                 return BACKGROUND;
             case SLOT:
                 return SLOT;
+            case TANK:
+                return TANK;
+            case ENERGY_BAR:
+                return ENERGY_BAR;
+            case ENERGY_FILL:
+                return ENERGY_FILL;
         }
         throw new RuntimeException("An error has occurred, default provider encountered an unknown asset type");
     }
