@@ -67,6 +67,7 @@ public class ContainerTileBase<T extends TileBase> extends Container {
                             if (((SlotItemHandler) inventorySlot).getItemHandler().equals(handler) && i == inventorySlot.getSlotIndex()) {
                                 inventorySlot.xPos = handler.getXPos() + x * 18;
                                 inventorySlot.yPos = handler.getYPos() + y * 18;
+                                break;
                             }
                         }
                         ++i;
