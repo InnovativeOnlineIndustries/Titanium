@@ -4,6 +4,7 @@
  */
 package com.hrznstudio.titanium.client.gui;
 
+import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.inventory.PosInvHandler;
 
 public class SlotsGuiAddon extends BasicGuiAddon {
@@ -17,15 +18,16 @@ public class SlotsGuiAddon extends BasicGuiAddon {
 
     @Override
     public void drawGuiContainerBackgroundLayer(GuiContainerTile container, float partialTicks, int mouseX, int mouseY) {
-        container.mc.getTextureManager().bindTexture(container.getAssetProvider().getSlot().getResourceLocation());
+        IAsset slot = IAssetProvider.getAsset(container.getAssetProvider(), IAssetProvider.AssetType.SLOT);
+        container.mc.getTextureManager().bindTexture(slot.getResourceLocation());
         for (int x = 0; x < handler.getXSize(); x++) {
             for (int y = 0; y < handler.getYSize(); y++) {
-                container.drawTexturedModalRect(handler.getXPos() + container.getAssetProvider().getSlot().getArea().width * x + container.getX() - 1,
-                        handler.getYPos() + container.getAssetProvider().getSlot().getArea().height * y + container.getY() - 1,
-                        container.getAssetProvider().getSlot().getArea().x,
-                        container.getAssetProvider().getSlot().getArea().y,
-                        container.getAssetProvider().getSlot().getArea().width,
-                        container.getAssetProvider().getSlot().getArea().height);
+                container.drawTexturedModalRect(handler.getXPos() + slot.getArea().width * x + container.getX() - 1,
+                        handler.getYPos() + slot.getArea().height * y + container.getY() - 1,
+                        slot.getArea().x,
+                        slot.getArea().y,
+                        slot.getArea().width,
+                        slot.getArea().height);
             }
         }
     }

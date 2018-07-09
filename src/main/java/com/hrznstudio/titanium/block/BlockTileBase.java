@@ -57,6 +57,6 @@ public abstract class BlockTileBase<T extends TileBase> extends BlockBase {
     }
 
     public Optional<T> getTile(IBlockAccess access, BlockPos pos) {
-        return TileUtil.getTileEntity(access,pos,tileClass);
+        return TileUtil.getTileEntity(access, pos, tileClass);
     }
 }

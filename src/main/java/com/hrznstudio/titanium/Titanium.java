@@ -7,7 +7,6 @@ package com.hrznstudio.titanium;
 import com.hrznstudio.titanium._test.BlockTest;
 import com.hrznstudio.titanium._test.TileTest;
 import com.hrznstudio.titanium.block.tile.TileBase;
-import com.hrznstudio.titanium.client.TitaniumModelLoader;
 import com.hrznstudio.titanium.client.gui.GuiHandler;
 import com.hrznstudio.titanium.item.ItemBase;
 import com.hrznstudio.titanium.resource.ItemResource;
@@ -22,7 +21,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent.Register;
 import net.minecraftforge.fml.common.Mod;
@@ -56,11 +54,6 @@ public class Titanium extends TitaniumMod {
         player.openGui(INSTANCE, 0, tile.getWorld(), tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ());
     }
 
-    @Override
-    public String getModId() {
-        return MODID;
-    }
-
     public static void registerVanillaMaterials() {
         if (!vanilla) {
             vanilla = true;
@@ -77,6 +70,11 @@ public class Titanium extends TitaniumMod {
                     )
             ).withTypes(ResourceType.VANILLA));
         }
+    }
+
+    @Override
+    public String getModId() {
+        return MODID;
     }
 
     @Mod.EventHandler

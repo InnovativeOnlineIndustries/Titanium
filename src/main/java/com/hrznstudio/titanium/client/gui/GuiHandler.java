@@ -13,7 +13,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public class GuiHandler implements IGuiHandler {
 

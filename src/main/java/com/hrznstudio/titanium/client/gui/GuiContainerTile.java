@@ -4,6 +4,7 @@
  */
 package com.hrznstudio.titanium.client.gui;
 
+import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.block.tile.TileBase;
 import com.hrznstudio.titanium.container.ContainerTileBase;
@@ -25,8 +26,9 @@ public class GuiContainerTile<T extends TileBase> extends GuiContainer {
         super(containerTileBase);
         this.containerTileBase = containerTileBase;
         this.assetProvider = containerTileBase.getTile().getAssetProvider();
-        this.xSize = assetProvider.getBackground().getArea().width;
-        this.ySize = assetProvider.getBackground().getArea().height;
+        IAsset background = IAssetProvider.getAsset(assetProvider, IAssetProvider.AssetType.BACKGROUND);
+        this.xSize = background.getArea().width;
+        this.ySize = background.getArea().height;
         this.addonList = new ArrayList<>();
         containerTileBase.getTile().getGuiAddons().forEach(factory -> addonList.add(factory.create()));
     }
@@ -36,7 +38,8 @@ public class GuiContainerTile<T extends TileBase> extends GuiContainer {
         this.drawDefaultBackground();
         //BG RENDERING
         GlStateManager.color(1, 1, 1, 1);
-        mc.getTextureManager().bindTexture(assetProvider.getBackground().getResourceLocation());
+
+        mc.getTextureManager().bindTexture(IAssetProvider.getAsset(assetProvider, IAssetProvider.AssetType.BACKGROUND).getResourceLocation());
         x = (width - xSize) / 2;
         y = (height - ySize) / 2;
         drawTexturedModalRect(x, y, 0, 0, xSize, ySize);

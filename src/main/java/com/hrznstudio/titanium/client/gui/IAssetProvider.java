@@ -8,39 +8,33 @@ import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.api.client.IAsset;
 import net.minecraft.util.ResourceLocation;
 
-import java.awt.*;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public interface IAssetProvider {
     ResourceLocation DEFAULT_LOCATION = new ResourceLocation(Titanium.MODID, "textures/gui/background.png");
-    IAssetProvider DEFAULT_PROVIDER = new IAssetProvider() {
-    };
 
-    default IAsset getBackground() {
-        return new IAsset() {
-            @Override
-            public ResourceLocation getResourceLocation() {
-                return DEFAULT_LOCATION;
-            }
+    DefaultAssetProvider DEFAULT_PROVIDER = new DefaultAssetProvider();
 
-            @Override
-            public Rectangle getArea() {
-                return new Rectangle(0, 0, 176, 184);
-            }
-        };
+    @Nonnull
+    static IAsset getAsset(IAssetProvider provider, AssetType type) {
+        if (provider == DEFAULT_PROVIDER)
+            return DEFAULT_PROVIDER.getAsset(type);
+        IAsset asset = provider.getAsset(type);
+        return asset != null ? asset : DEFAULT_PROVIDER.getAsset(type);
     }
 
-    default IAsset getSlot() {
-        return new IAsset() {
-            @Override
-            public ResourceLocation getResourceLocation() {
-                return DEFAULT_LOCATION;
-            }
+    /**
+     * Provide custom assets to
+     *
+     * @param assetType The asset type requested
+     * @return The IAsset requested, if you don't wish to have a custom asset, return null
+     */
+    @Nullable
+    IAsset getAsset(AssetType assetType);
 
-            @Override
-            public Rectangle getArea() {
-                return new Rectangle(1, 185, 18, 18);
-            }
-        };
+    enum AssetType {
+        BACKGROUND,
+        SLOT
     }
-
 }

@@ -6,7 +6,6 @@ package com.hrznstudio.titanium.api.client;
 
 import com.hrznstudio.titanium.client.gui.GuiContainerTile;
 
-import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 

@@ -13,6 +13,7 @@ import java.util.Map;
 @IFMLLoadingPlugin.SortingIndex(1001)
 public class TitaniumLoader implements IFMLLoadingPlugin {
     public static boolean obfuscated = true;
+
     @Override
     public String[] getASMTransformerClass() {
         return new String[]{"com.hrznstudio.titanium.core.transform.TitaniumTransformer"};
