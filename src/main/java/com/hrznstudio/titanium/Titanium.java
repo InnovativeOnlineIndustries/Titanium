@@ -16,11 +16,10 @@ import com.hrznstudio.titanium.resource.ResourceRegistry;
 import com.hrznstudio.titanium.resource.ResourceType;
 import com.hrznstudio.titanium.tab.AdvancedTitaniumTab;
 import com.hrznstudio.titanium.util.SidedHandler;
-import net.minecraft.block.Block;
+import com.hrznstudio.titanium.util.TitaniumMod;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
@@ -40,7 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Mod(modid = Titanium.MODID, name = Titanium.NAME, version = Titanium.VERSION)
-public class Titanium {
+public class Titanium extends TitaniumMod {
     public static final String MODID = "titanium";
     public static final String NAME = "Titanium";
     public static final String VERSION = "1.0.0";
@@ -55,6 +54,11 @@ public class Titanium {
 
     public static void openGui(TileBase tile, EntityPlayer player) {
         player.openGui(INSTANCE, 0, tile.getWorld(), tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ());
+    }
+
+    @Override
+    public String getModId() {
+        return MODID;
     }
 
     public static void registerVanillaMaterials() {
@@ -78,17 +82,14 @@ public class Titanium {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(this);
-        SidedHandler.runOn(Side.CLIENT, () -> () -> ModelLoaderRegistry.registerLoader(new TitaniumModelLoader()));
         INSTANCE = this;
+        SidedHandler.runOn(Side.CLIENT, () -> TitaniumClient::registerModelLoader);
         //TEST
         GameRegistry.registerTileEntity(TileTest.class, new ResourceLocation(MODID, "test_tile"));
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
+        addBlocks(new BlockTest());
     }
 
-    @SubscribeEvent
-    public void registerBlocks(Register<Block> event) {
-        event.getRegistry().register(TEST = new BlockTest());
-    }
 
     @SubscribeEvent
     public void registerItems(Register<Item> event) {
@@ -109,7 +110,6 @@ public class Titanium {
                 });
             });
         }
-        event.getRegistry().register(new ItemBlock(TEST).setRegistryName(TEST.getRegistryName()));
     }
 
     @SubscribeEvent

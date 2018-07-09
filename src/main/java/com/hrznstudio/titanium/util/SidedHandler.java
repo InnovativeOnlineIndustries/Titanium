@@ -18,13 +18,17 @@ public final class SidedHandler {
     }
 
     public static void runOn(Side side, Supplier<Runnable> toRun) {
-        if (side == getSide()) {
+        if (is(side)) {
             toRun.get().run();
         }
     }
 
+    public static boolean is(Side side) {
+        return side == getSide();
+    }
+
     public static <T> T getSided(Supplier<Supplier<T>> clientTarget, Supplier<Supplier<T>> serverTarget) {
-        if (getSide().isClient()) {
+        if (is(Side.CLIENT)) {
             return clientTarget.get().get();
         } else {
             return serverTarget.get().get();
