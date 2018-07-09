@@ -5,6 +5,7 @@
 package com.hrznstudio.titanium.block.tile;
 
 import com.hrznstudio.titanium.Titanium;
+import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
 import com.hrznstudio.titanium.client.gui.IAssetProvider;
@@ -32,6 +33,12 @@ import java.util.List;
 public class TileBase extends TileEntity implements IGuiAddonProvider {
 
     private MultiInventoryHandler multiInventoryHandler;
+
+    private List<IFactory<? extends IGuiAddon>> guiAddons;
+
+    public TileBase() {
+        this.guiAddons = new ArrayList<>();
+    }
 
     public boolean onActivated(EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         return false;
@@ -74,9 +81,13 @@ public class TileBase extends TileEntity implements IGuiAddonProvider {
         Client
      */
 
+    public void addGuiAddonFactory(IFactory<? extends IGuiAddon> factory) {
+        this.guiAddons.add(factory);
+    }
+
     @Override
-    public List<? extends IGuiAddon> getGuiAddons() {
-        List<IGuiAddon> addons = new ArrayList<>();
+    public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
+        List<IFactory<? extends IGuiAddon>> addons = new ArrayList<>(guiAddons);
         if (multiInventoryHandler != null) addons.addAll(multiInventoryHandler.getGuiAddons());
         return addons;
     }

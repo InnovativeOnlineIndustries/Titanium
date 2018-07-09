@@ -4,6 +4,7 @@
  */
 package com.hrznstudio.titanium.inventory;
 
+import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
 import com.hrznstudio.titanium.client.gui.SlotsGuiAddon;
@@ -45,9 +46,9 @@ public class MultiInventoryHandler implements IGuiAddonProvider {
     }
 
     @Override
-    public List<? extends IGuiAddon> getGuiAddons() {
-        List<IGuiAddon> addons = new ArrayList<>();
-        inventoryHandlers.forEach(posInvHandler -> addons.add(new SlotsGuiAddon(posInvHandler)));
+    public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
+        List<IFactory<? extends IGuiAddon>> addons = new ArrayList<>();
+        inventoryHandlers.forEach(posInvHandler -> addons.add(() -> new SlotsGuiAddon(posInvHandler)));
         return addons;
     }
 
