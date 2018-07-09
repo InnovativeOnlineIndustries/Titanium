@@ -28,7 +28,7 @@ public class GuiContainerTile<T extends TileBase> extends GuiContainer {
         this.xSize = assetProvider.getBackground().getArea().width;
         this.ySize = assetProvider.getBackground().getArea().height;
         this.addonList = new ArrayList<>();
-        this.addonList.addAll(containerTileBase.getTile().getGuiAddons());
+        containerTileBase.getTile().getGuiAddons().forEach(factory -> addonList.add(factory.create()));
     }
 
     @Override
