@@ -16,7 +16,7 @@ import java.util.List;
 public class GuiContainerTile<T extends TileBase> extends GuiContainer {
 
     private final ContainerTileBase<T> containerTileBase;
-    private AssetProvider assetProvider;
+    private IAssetProvider assetProvider;
     private int x;
     private int y;
     private List<IGuiAddon> addonList;
@@ -24,7 +24,7 @@ public class GuiContainerTile<T extends TileBase> extends GuiContainer {
     public GuiContainerTile(ContainerTileBase<T> containerTileBase) {
         super(containerTileBase);
         this.containerTileBase = containerTileBase;
-        this.assetProvider = AssetProvider.get(containerTileBase.getTile().getClass());
+        this.assetProvider = containerTileBase.getTile().getAssetProvider();
         this.xSize = assetProvider.getBackground().getArea().width;
         this.ySize = assetProvider.getBackground().getArea().height;
         this.addonList = new ArrayList<>();
@@ -50,7 +50,7 @@ public class GuiContainerTile<T extends TileBase> extends GuiContainer {
         addonList.forEach(iGuiAddon -> iGuiAddon.drawGuiContainerForegroundLayer(this, mouseX, mouseY));
     }
 
-    public AssetProvider getAssetProvider() {
+    public IAssetProvider getAssetProvider() {
         return assetProvider;
     }
 
