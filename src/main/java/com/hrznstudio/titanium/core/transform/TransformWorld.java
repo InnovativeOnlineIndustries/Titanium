@@ -60,7 +60,7 @@ public class TransformWorld extends BaseTransformer {
                 InsnList list = new InsnList();
                 list.add(new MethodInsnNode(
                         INVOKESTATIC,
-                        "com/hrznstudio/edx/asm/event/EventDispatcher",
+                        "com/hrznstudio/titanium/core/event/EventDispatcher",
                         "getSunBrightness",
                         ASMUtils.buildDescription(Mappings.getClass("net/minecraft/world/World"), "F", "F", "F"),
                         false

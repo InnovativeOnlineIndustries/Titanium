@@ -59,7 +59,7 @@ public class TransformEntityRenderer extends BaseTransformer {
 
                         list.add(new MethodInsnNode(
                                 INVOKESTATIC,
-                                "com/hrznstudio/edx/asm/event/EventDispatcher",
+                                "com/hrznstudio/titanium/core/event/EventDispatcher",
                                 "updateLightmap",
                                 "(IIII)Lcom/hrznstudio/edx/asm/event/UpdateLightmapEvent;",
                                 false

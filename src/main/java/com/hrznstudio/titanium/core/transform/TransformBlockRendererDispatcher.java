@@ -68,7 +68,7 @@ public class TransformBlockRendererDispatcher extends BaseTransformer {
 
             list.add(new MethodInsnNode(
                     INVOKESTATIC,
-                    "com/hrznstudio/edx/asm/event/EventDispatcher",
+                    "com/hrznstudio/titanium/core/event/EventDispatcher",
                     "getBlockModel",
                     ASMUtils.buildDescription(
                             Mappings.getClass("net/minecraft/client/renderer/BlockModelShapes"),
