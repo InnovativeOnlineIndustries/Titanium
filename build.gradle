@@ -41,11 +41,14 @@ compileJava {
     sourceCompatibility = targetCompatibility = '1.8'
 }
 
+def core_plugin = "com.hrznstudio.titanium.core.TitaniumLoader"
 minecraft {
     version = "1.12.2-14.23.4.2714"
     runDir = "run"
 
     mappings = "snapshot_20171003"
+    clientJvmArgs = ["-Dfml.coreMods.load=$core_plugin"]
+    serverJvmArgs = ["-Dfml.coreMods.load=$core_plugin"]
 }
 
 changelog {
@@ -72,6 +75,56 @@ changelog {
         }
         input
     }
+}
+task apiJar(type: Jar, dependsOn: 'classes') {
+    classifier = 'api'
+    from(sourceSets.main.output) {
+        include 'com/hrznstudio/titanium/api/**'
+    }
+    group = 'build'
+}
+
+reobf {
+    coreJar {mappingType = 'SEARGE'}
+}
+
+task coreJar(type: Jar) {
+    from(sourceSets.main.output) {
+        include 'com/hrznstudio/titanium/core/**'
+    }
+    manifest {
+        attributes "FMLCorePlugin": "$core_plugin"
+        attributes 'Maven-Artifact': group+':'+archivesBaseName+':'+version+':core'
+    }
+    classifier 'core'
+    group = 'build'
+}
+
+task devJar(type: Jar, dependsOn: 'classes') {
+    from(sourceSets.main.output) {
+        include '**'
+    }
+    classifier = 'deobf'
+    group = 'build'
+}
+
+def libPrefix = 'META-INF/libraries'
+
+jar {
+    manifest {
+        attributes 'ContainedDeps': libPrefix+'/'+coreJar.archivePath.name
+        attributes 'Maven-Artifact': group+':'+archivesBaseName+':'+version
+    }
+    exclude 'com/hrznstudio/titanium/core/**'
+    from(coreJar.archivePath.absolutePath) {
+        include "$version-*-core.jar"
+        into libPrefix
+    }
+}
+
+artifacts {
+    archives devJar
+    archives apiJar
 }
 
 processResources {
