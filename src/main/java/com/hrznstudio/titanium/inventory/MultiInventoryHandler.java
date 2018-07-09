@@ -7,7 +7,7 @@ package com.hrznstudio.titanium.inventory;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
-import com.hrznstudio.titanium.client.gui.SlotsGuiAddon;
+import com.hrznstudio.titanium.client.gui.addon.SlotsGuiAddon;
 import com.hrznstudio.titanium.container.capability.IFacingHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;

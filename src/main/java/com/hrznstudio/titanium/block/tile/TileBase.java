@@ -8,7 +8,7 @@ import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
-import com.hrznstudio.titanium.client.gui.IAssetProvider;
+import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.inventory.MultiInventoryHandler;
 import com.hrznstudio.titanium.inventory.PosInvHandler;
 import net.minecraft.block.Block;

@@ -2,7 +2,7 @@
  * This file is part of Titanium
  * Copyright (C) 2018, Horizon Studio <contact@hrznstudio.com>, All rights reserved.
  */
-package com.hrznstudio.titanium.client.gui;
+package com.hrznstudio.titanium.client.gui.asset;
 
 import com.hrznstudio.titanium.api.client.IAsset;
 import net.minecraft.util.ResourceLocation;

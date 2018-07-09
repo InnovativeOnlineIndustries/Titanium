@@ -2,9 +2,10 @@
  * This file is part of Titanium
  * Copyright (C) 2018, Horizon Studio <contact@hrznstudio.com>, All rights reserved.
  */
-package com.hrznstudio.titanium.client.gui;
+package com.hrznstudio.titanium.client.gui.addon;
 
 import com.hrznstudio.titanium.api.client.IGuiAddon;
+import com.hrznstudio.titanium.client.gui.GuiContainerTile;
 
 public abstract class BasicGuiAddon implements IGuiAddon {
 
