@@ -10,6 +10,7 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.awt.*;
 
 public interface IAssetProvider {
     ResourceLocation DEFAULT_LOCATION = new ResourceLocation(Titanium.MODID, "textures/gui/background.png");
@@ -23,6 +24,10 @@ public interface IAssetProvider {
         IAsset asset = provider.getAsset(type);
         return asset != null ? asset : DEFAULT_PROVIDER.getAsset(type);
     }
+
+    Point getInventoryPosition();
+
+    Point getHotbarPosition();
 
     /**
      * Provide custom assets to

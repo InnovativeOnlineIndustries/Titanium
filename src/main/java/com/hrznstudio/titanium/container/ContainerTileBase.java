@@ -37,7 +37,7 @@ public class ContainerTileBase<T extends TileBase> extends Container {
         }
         addPlayerChestInventory();
         for (int k = 0; k < 9; k++) {
-            addSlotToContainer(new Slot(player, k, 8 + k * 18, 142 + 18));
+            addSlotToContainer(new Slot(player, k, tile.getAssetProvider().getHotbarPosition().x + k * 18, tile.getAssetProvider().getHotbarPosition().y));
         }
     }
 
@@ -45,7 +45,7 @@ public class ContainerTileBase<T extends TileBase> extends Container {
         if (hasPlayerInventory) return;
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {
-                addSlotToContainer(new Slot(player, j + i * 9 + 9, 8 + j * 18, 18 + 84 + i * 18));
+                addSlotToContainer(new Slot(player, j + i * 9 + 9, tile.getAssetProvider().getInventoryPosition().x + j * 18, tile.getAssetProvider().getInventoryPosition().y + i * 18));
             }
         }
         hasPlayerInventory = true;

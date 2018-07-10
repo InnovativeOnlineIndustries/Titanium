@@ -29,6 +29,19 @@ public final class DefaultAssetProvider implements IAssetProvider {
     };
     private final IAsset TANK = () -> new Rectangle(177, 1, 18, 46);
 
+    private final Point HOTBAR_POS = new Point(8, 160);
+    private final Point INV_POS = new Point(8, 102);
+
+    @Override
+    public Point getInventoryPosition() {
+        return INV_POS;
+    }
+
+    @Override
+    public Point getHotbarPosition() {
+        return HOTBAR_POS;
+    }
+
     @Nonnull
     @Override
     public IAsset getAsset(AssetType assetType) {
