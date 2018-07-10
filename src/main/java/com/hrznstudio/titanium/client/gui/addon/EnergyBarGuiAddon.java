@@ -38,7 +38,6 @@ public class EnergyBarGuiAddon extends BasicGuiAddon {
         int stored = handler.getEnergyStored();
         int capacity = handler.getMaxEnergyStored();
         int powerOffset = stored * area.height / capacity;
-        handler.receiveEnergy(10, false);
         container.drawTexturedModalRect(getPosX() + offset.x, getPosY() + offset.y + area.height - powerOffset, area.x, area.y + (area.height - powerOffset), area.width, powerOffset);
     }
 
