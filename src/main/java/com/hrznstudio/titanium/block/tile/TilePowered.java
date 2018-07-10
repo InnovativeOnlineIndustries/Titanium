@@ -5,20 +5,20 @@
 package com.hrznstudio.titanium.block.tile;
 
 import com.google.common.collect.Sets;
+import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.energy.NBTEnergyHandler;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nullable;
 import java.util.Set;
 
-public abstract class TilePowered extends TileBase {
+public class TilePowered extends TileBase {
+
+    @Save
     private NBTEnergyHandler energyHandler;
 
     public TilePowered() {
@@ -33,21 +33,8 @@ public abstract class TilePowered extends TileBase {
         return energyHandler;
     }
 
-    @Override
-    public void readFromNBT(NBTTagCompound compound) {
-        super.readFromNBT(compound);
-        compound.setTag("energy", energyHandler.serializeNBT());
-    }
-
     public Set<EnumFacing> getValidEnergyFaces() {
         return Sets.newHashSet(EnumFacing.VALUES);
-    }
-
-    @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-        if (compound.hasKey("energy", Constants.NBT.TAG_INT))
-            energyHandler.deserializeNBT((NBTTagInt) compound.getTag("energy"));
-        return super.writeToNBT(compound);
     }
 
     @Override

@@ -13,8 +13,9 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ITickable;
 
-public class TileTest extends TilePowered {
+public class TileTest extends TilePowered implements ITickable {
 
     public TileTest() {
         this.addInventory(new PosInvHandler("test", 20, 20, 3).setTile(this).setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
@@ -28,5 +29,16 @@ public class TileTest extends TilePowered {
             openGui(playerIn);
         }
         return true;
+    }
+
+    @Override
+    public void update() {
+        if (!world.isRemote) {
+            this.getEnergyStorage().receiveEnergy(10, false);
+            //System.out.println("E:" + this.getEnergyStorage().getEnergyStored());
+            markForUpdate();
+        } else {
+            //System.out.println("E:" +this.getEnergyStorage().getEnergyStored());
+        }
     }
 }

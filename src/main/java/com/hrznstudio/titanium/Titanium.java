@@ -5,7 +5,6 @@
 package com.hrznstudio.titanium;
 
 import com.hrznstudio.titanium._test.BlockTest;
-import com.hrznstudio.titanium._test.TileTest;
 import com.hrznstudio.titanium.block.tile.TileBase;
 import com.hrznstudio.titanium.client.gui.GuiHandler;
 import com.hrznstudio.titanium.item.ItemBase;
@@ -27,7 +26,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
@@ -83,7 +81,6 @@ public class Titanium extends TitaniumMod {
         INSTANCE = this;
         SidedHandler.runOn(Side.CLIENT, () -> TitaniumClient::registerModelLoader);
         //TEST
-        GameRegistry.registerTileEntity(TileTest.class, new ResourceLocation(MODID, "test_tile"));
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
         addBlocks(new BlockTest());
     }

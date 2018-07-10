@@ -11,6 +11,7 @@ import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.inventory.MultiInventoryHandler;
 import com.hrznstudio.titanium.inventory.PosInvHandler;
+import com.hrznstudio.titanium.nbthandler.NBTManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -95,6 +96,17 @@ public class TileBase extends TileEntity implements IGuiAddonProvider {
     /*
         NBT Syncing
      */
+
+    @Override
+    public void readFromNBT(NBTTagCompound compound) {
+        NBTManager.getInstance().readTileEntity(this, compound);
+        super.readFromNBT(compound);
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+        return NBTManager.getInstance().writeTileEntity(this, super.writeToNBT(compound));
+    }
 
     public void markForUpdate() {
         this.world.notifyBlockUpdate(getPos(), getWorld().getBlockState(getPos()), getWorld().getBlockState(getPos()), 3);

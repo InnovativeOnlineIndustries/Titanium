@@ -6,6 +6,7 @@ package com.hrznstudio.titanium.block;
 
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.block.tile.TileBase;
+import com.hrznstudio.titanium.nbthandler.NBTManager;
 import com.hrznstudio.titanium.util.TileUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -29,8 +30,10 @@ public abstract class BlockTileBase<T extends TileBase> extends BlockBase {
     public BlockTileBase(String name, Material materialIn, Class<T> tileClass) {
         super(name, materialIn);
         this.tileClass = tileClass;
-        if (TileEntity.getKey(tileClass) == null)
-            GameRegistry.registerTileEntity(tileClass, Objects.requireNonNull(getRegistryName()).toString());
+        if (TileEntity.getKey(tileClass) == null) {
+            GameRegistry.registerTileEntity(tileClass, Objects.requireNonNull(getRegistryName()));
+            NBTManager.getInstance().scanTileClassForAnnotations(tileClass);
+        }
     }
 
     public abstract IFactory<T> getTileEntityFactory();
