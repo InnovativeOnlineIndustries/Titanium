@@ -23,12 +23,13 @@ public class SlotsGuiAddon extends BasicGuiAddon {
     @Override
     public void drawGuiContainerBackgroundLayer(GuiContainerTile container, float partialTicks, int mouseX, int mouseY) {
         IAsset slot = IAssetProvider.getAsset(container.getAssetProvider(), IAssetProvider.AssetType.SLOT);
+        Point offset = slot.getOffset();
         Rectangle area = slot.getArea();
         container.mc.getTextureManager().bindTexture(slot.getResourceLocation());
         for (int x = 0; x < handler.getXSize(); x++) {
             for (int y = 0; y < handler.getYSize(); y++) {
-                container.drawTexturedModalRect(handler.getXPos() + area.width * x + container.getX() - 1,
-                        handler.getYPos() + area.height * y + container.getY() - 1,
+                container.drawTexturedModalRect(handler.getXPos() + area.width + offset.x * x + container.getX() - 1,
+                        handler.getYPos() + area.height + offset.y * y + container.getY() - 1,
                         area.x,
                         area.y,
                         area.width,

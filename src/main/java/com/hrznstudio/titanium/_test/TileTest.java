@@ -5,7 +5,8 @@
 package com.hrznstudio.titanium._test;
 
 import com.hrznstudio.titanium.api.IItemStackQuery;
-import com.hrznstudio.titanium.block.tile.TileBase;
+import com.hrznstudio.titanium.block.tile.TilePowered;
+import com.hrznstudio.titanium.client.gui.addon.EnergyBarGuiAddon;
 import com.hrznstudio.titanium.inventory.PosInvHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -13,11 +14,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 
-public class TileTest extends TileBase {
+public class TileTest extends TilePowered {
 
     public TileTest() {
         this.addInventory(new PosInvHandler("test", 20, 20, 3).setTile(this).setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
         this.addInventory(new PosInvHandler("test2", 80, 30, 6).setTile(this).setRange(3, 2).setInputFilter((stack, integer) -> stack.isItemEqual(new ItemStack(Blocks.COBBLESTONE))));
+        this.addGuiAddonFactory(() -> new EnergyBarGuiAddon(4, 10, getEnergyStorage()));
     }
 
     @Override
