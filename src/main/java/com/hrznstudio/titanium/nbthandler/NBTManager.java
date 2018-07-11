@@ -85,7 +85,6 @@ public class NBTManager {
         if (tileFieldList.containsKey(entity.getClass())) {
             for (Field field : tileFieldList.get(entity.getClass())) {
                 Save save = field.getAnnotation(Save.class);
-                System.out.println("Writing " + field.getName());
                 try {
                     if (field.get(entity) == null) continue;
                     compound = handleNBTWrite(compound, save.value().isEmpty() ? field.getName() : save.value(), field.get(entity));

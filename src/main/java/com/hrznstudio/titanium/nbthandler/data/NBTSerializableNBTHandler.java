@@ -27,7 +27,6 @@ public class NBTSerializableNBTHandler implements INBTHandler<INBTSerializable> 
     public INBTSerializable readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, INBTSerializable currentValue) {
         if (compound.hasKey(name)) {
             currentValue.deserializeNBT(compound.getTag(name));
-            System.out.println(currentValue.serializeNBT());
             return currentValue;
         }
         return null;

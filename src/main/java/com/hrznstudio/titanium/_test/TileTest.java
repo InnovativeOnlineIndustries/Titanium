@@ -35,10 +35,9 @@ public class TileTest extends TilePowered implements ITickable {
     public void update() {
         if (!world.isRemote) {
             this.getEnergyStorage().receiveEnergy(10, false);
-            //System.out.println("E:" + this.getEnergyStorage().getEnergyStored());
             markForUpdate();
         } else {
-            //System.out.println("E:" +this.getEnergyStorage().getEnergyStored());
+
         }
     }
 }
