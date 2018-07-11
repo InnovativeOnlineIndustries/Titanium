@@ -24,7 +24,7 @@ public final class DefaultAssetProvider implements IAssetProvider {
 
         @Override
         public Point getOffset() {
-            return new Point(3,3);
+            return new Point(3, 3);
         }
     };
     private final IAsset TANK = () -> new Rectangle(177, 1, 18, 46);

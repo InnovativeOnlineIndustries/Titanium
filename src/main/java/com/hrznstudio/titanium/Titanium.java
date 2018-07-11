@@ -5,6 +5,7 @@
 package com.hrznstudio.titanium;
 
 import com.hrznstudio.titanium._test.BlockTest;
+import com.hrznstudio.titanium.api.raytrace.DistanceRayTraceResult;
 import com.hrznstudio.titanium.block.tile.TileBase;
 import com.hrznstudio.titanium.client.gui.GuiHandler;
 import com.hrznstudio.titanium.item.ItemBase;
@@ -15,10 +16,15 @@ import com.hrznstudio.titanium.resource.ResourceType;
 import com.hrznstudio.titanium.tab.AdvancedTitaniumTab;
 import com.hrznstudio.titanium.util.SidedHandler;
 import com.hrznstudio.titanium.util.TitaniumMod;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent.Register;
@@ -111,5 +117,28 @@ public class Titanium extends TitaniumMod {
     @SideOnly(Side.CLIENT)
     public void modelRegistry(ModelRegistryEvent event) {
         ItemBase.ITEMS.forEach(ItemBase::registerModels);
+    }
+
+    @SubscribeEvent
+    @SideOnly(Side.CLIENT)
+    public void drawBlockHighlight(DrawBlockHighlightEvent event) {
+        BlockPos pos = event.getTarget().getBlockPos();
+        RayTraceResult hit = event.getTarget();
+        if (hit.typeOfHit == RayTraceResult.Type.BLOCK && hit instanceof DistanceRayTraceResult) {
+            event.setCanceled(true);
+            GlStateManager.enableBlend();
+            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+            GlStateManager.glLineWidth(2.0F);
+            GlStateManager.disableTexture2D();
+            GlStateManager.depthMask(false);
+            EntityPlayer player = event.getPlayer();
+            double x = player.lastTickPosX + (player.posX - player.lastTickPosX) * event.getPartialTicks();
+            double y = player.lastTickPosY + (player.posY - player.lastTickPosY) * event.getPartialTicks();
+            double z = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * event.getPartialTicks();
+            RenderGlobal.drawSelectionBoundingBox(((DistanceRayTraceResult) hit).getHitBox().offset(-x, -y, -z).offset(pos).grow(0.002), 0.0F, 0.0F, 0.0F, 0.4F);
+            GlStateManager.depthMask(true);
+            GlStateManager.enableTexture2D();
+            GlStateManager.disableBlend();
+        }
     }
 }
