@@ -52,6 +52,12 @@ public class GuiContainerTile<T extends TileBase> extends GuiContainer {
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
         addonList.forEach(iGuiAddon -> iGuiAddon.drawGuiContainerForegroundLayer(this, mouseX, mouseY));
+        renderHoveredToolTip(mouseX - x, mouseY - y);
+        for (IGuiAddon iGuiAddon : addonList) {
+            if (iGuiAddon.isInside(this, mouseX - x, mouseY - y) && !iGuiAddon.getTooltipLines().isEmpty()) {
+                drawHoveringText(iGuiAddon.getTooltipLines(), mouseX - x, mouseY - y);
+            }
+        }
     }
 
     public IAssetProvider getAssetProvider() {
