@@ -15,15 +15,16 @@ import net.minecraftforge.items.ItemStackHandler;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 
 public class MultiInventoryHandler implements IGuiAddonProvider {
 
-    private final HashSet<PosInvHandler> inventoryHandlers;
+    private final LinkedHashSet<PosInvHandler> inventoryHandlers;
 
     public MultiInventoryHandler() {
-        this.inventoryHandlers = new HashSet<>();
+        this.inventoryHandlers = new LinkedHashSet<>();
     }
 
     public void addInventory(PosInvHandler invHandler) {

@@ -37,12 +37,11 @@ public class GuiContainerTile<T extends TileBase> extends GuiContainer {
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         this.drawDefaultBackground();
-        //BG RENDERING
-        GlStateManager.color(1, 1, 1, 1);
-
-        mc.getTextureManager().bindTexture(IAssetProvider.getAsset(assetProvider, IAssetProvider.AssetType.BACKGROUND).getResourceLocation());
         x = (width - xSize) / 2;
         y = (height - ySize) / 2;
+        //BG RENDERING
+        GlStateManager.color(1, 1, 1, 1);
+        mc.getTextureManager().bindTexture(IAssetProvider.getAsset(assetProvider, IAssetProvider.AssetType.BACKGROUND).getResourceLocation());
         drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
         addonList.forEach(iGuiAddon -> iGuiAddon.drawGuiContainerBackgroundLayer(this, partialTicks, mouseX, mouseY));
         containerTileBase.updateSlotPosition();
