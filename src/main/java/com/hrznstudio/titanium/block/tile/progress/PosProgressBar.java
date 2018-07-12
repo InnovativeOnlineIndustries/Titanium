@@ -106,6 +106,7 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
 
     public void setProgress(int progress) {
         this.progress = progress;
+        if (tileBase != null) tileBase.markForUpdate();
     }
 
     public int getMaxProgress() {
