@@ -26,7 +26,8 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
     private int progressIncrease;
     private Predicate<TileEntity> canIncrease;
     private int tickingTime;
-    private Runnable work;
+    private Runnable onFinishWork;
+    private Runnable onTickWork;
     private TileBase tileBase;
 
     public PosProgressBar(int posX, int posY, int maxProgress) {
@@ -37,12 +38,14 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
         this.progressIncrease = 1;
         this.canIncrease = tileEntity -> false;
         this.tickingTime = 1;
-        this.work = () -> {
+        this.onFinishWork = () -> {
+        };
+        this.onTickWork = () -> {
         };
     }
 
-    public PosProgressBar setWork(Runnable runnable) {
-        this.work = work;
+    public PosProgressBar setOnFinishWork(Runnable runnable) {
+        this.onFinishWork = runnable;
         return this;
     }
 
@@ -60,10 +63,11 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
         if (tileBase != null && tileBase.getWorld().getTotalWorldTime() % tickingTime == 0) {
             this.progress += progressIncrease;
             tileBase.markForUpdate();
+            this.onTickWork.run();
         }
         if (progress > maxProgress) {
             this.progress = 0;
-            this.work.run();
+            this.onFinishWork.run();
         }
     }
 
