@@ -28,9 +28,10 @@ public final class DefaultAssetProvider implements IAssetProvider {
         }
     };
     private final IAsset TANK = () -> new Rectangle(177, 1, 18, 46);
-
     private final Point HOTBAR_POS = new Point(8, 160);
     private final Point INV_POS = new Point(8, 102);
+    private final IAsset PROGRESS_BAR = () -> new Rectangle(177, 61, 22, 15);
+    private final IAsset PROGRESS_BAR_FILL = () -> new Rectangle(177, 77, 22, 16);
 
     @Override
     public Point getInventoryPosition() {
@@ -56,6 +57,10 @@ public final class DefaultAssetProvider implements IAssetProvider {
                 return ENERGY_BAR;
             case ENERGY_FILL:
                 return ENERGY_FILL;
+            case PROGRESS_BAR:
+                return PROGRESS_BAR;
+            case PROGRESS_BAR_FILL:
+                return PROGRESS_BAR_FILL;
         }
         throw new RuntimeException("An error has occurred, default provider encountered an unknown asset type");
     }

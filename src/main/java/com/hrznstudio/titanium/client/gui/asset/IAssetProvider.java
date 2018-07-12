@@ -43,6 +43,8 @@ public interface IAssetProvider {
         SLOT,
         ENERGY_BAR,
         ENERGY_FILL,
-        TANK
+        TANK,
+        PROGRESS_BAR,
+        PROGRESS_BAR_FILL;
     }
 }

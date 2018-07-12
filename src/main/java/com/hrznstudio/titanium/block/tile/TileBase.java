@@ -8,6 +8,8 @@ import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
+import com.hrznstudio.titanium.block.tile.progress.MultiProgressBarHandler;
+import com.hrznstudio.titanium.block.tile.progress.PosProgressBar;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.inventory.MultiInventoryHandler;
 import com.hrznstudio.titanium.inventory.PosInvHandler;
@@ -21,6 +23,7 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -31,9 +34,10 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileBase extends TileEntity implements IGuiAddonProvider {
+public class TileBase extends TileEntity implements IGuiAddonProvider, ITickable {
 
     private MultiInventoryHandler multiInventoryHandler;
+    private MultiProgressBarHandler multiProgressBarHandler;
 
     private List<IFactory<? extends IGuiAddon>> guiAddons;
 
@@ -58,7 +62,12 @@ public class TileBase extends TileEntity implements IGuiAddonProvider {
      */
     public void addInventory(PosInvHandler handler) {
         if (multiInventoryHandler == null) multiInventoryHandler = new MultiInventoryHandler();
-        multiInventoryHandler.addInventory(handler);
+        multiInventoryHandler.addInventory(handler.setTile(this));
+    }
+
+    public void addProgressBar(PosProgressBar posProgressBar) {
+        if (multiProgressBarHandler == null) multiProgressBarHandler = new MultiProgressBarHandler();
+        multiProgressBarHandler.addBar(posProgressBar.setTile(this));
     }
 
     @Override
@@ -90,6 +99,7 @@ public class TileBase extends TileEntity implements IGuiAddonProvider {
     public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
         List<IFactory<? extends IGuiAddon>> addons = new ArrayList<>(guiAddons);
         if (multiInventoryHandler != null) addons.addAll(multiInventoryHandler.getGuiAddons());
+        if (multiProgressBarHandler != null) addons.addAll(multiProgressBarHandler.getGuiAddons());
         return addons;
     }
 
@@ -137,5 +147,12 @@ public class TileBase extends TileEntity implements IGuiAddonProvider {
 
     public IAssetProvider getAssetProvider() {
         return IAssetProvider.DEFAULT_PROVIDER;
+    }
+
+    @Override
+    public void update() {
+        if (!world.isRemote) {
+            if (multiProgressBarHandler != null) multiProgressBarHandler.update();
+        }
     }
 }
