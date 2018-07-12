@@ -7,7 +7,6 @@ package com.hrznstudio.titanium.inventory;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
-import com.hrznstudio.titanium.client.gui.addon.SlotsGuiAddon;
 import com.hrznstudio.titanium.container.capability.IFacingHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -48,7 +47,7 @@ public class MultiInventoryHandler implements IGuiAddonProvider {
     @Override
     public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
         List<IFactory<? extends IGuiAddon>> addons = new ArrayList<>();
-        inventoryHandlers.forEach(posInvHandler -> addons.add(() -> new SlotsGuiAddon(posInvHandler)));
+        inventoryHandlers.forEach(posInvHandler -> addons.addAll(posInvHandler.getGuiAddons()));
         return addons;
     }
 

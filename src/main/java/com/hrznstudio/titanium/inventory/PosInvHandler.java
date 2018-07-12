@@ -4,14 +4,20 @@
  */
 package com.hrznstudio.titanium.inventory;
 
+import com.hrznstudio.titanium.api.IFactory;
+import com.hrznstudio.titanium.api.client.IGuiAddon;
+import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
+import com.hrznstudio.titanium.client.gui.addon.SlotsGuiAddon;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.BiPredicate;
 
-public class PosInvHandler extends ItemStackHandler {
+public class PosInvHandler extends ItemStackHandler implements IGuiAddonProvider {
 
     private final String name;
     private int xPos;
@@ -110,5 +116,10 @@ public class PosInvHandler extends ItemStackHandler {
 
     public BiPredicate<ItemStack, Integer> getExtractPredicate() {
         return extractPredicate;
+    }
+
+    @Override
+    public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
+        return Collections.singletonList(() -> new SlotsGuiAddon(this));
     }
 }
