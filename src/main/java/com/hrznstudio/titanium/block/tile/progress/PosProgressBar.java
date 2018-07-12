@@ -49,6 +49,11 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
         return this;
     }
 
+    public PosProgressBar setOnTickWork(Runnable runnable) {
+        this.onTickWork = runnable;
+        return this;
+    }
+
     public PosProgressBar setTickingTime(int tickingTime) {
         this.tickingTime = tickingTime;
         return this;
