@@ -25,6 +25,7 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
     private int maxProgress;
     private int progressIncrease;
     private Predicate<TileEntity> canIncrease;
+    private Predicate<TileEntity> canReset;
     private int tickingTime;
     private Runnable onFinishWork;
     private Runnable onTickWork;
@@ -37,6 +38,7 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
         this.maxProgress = maxProgress;
         this.progressIncrease = 1;
         this.canIncrease = tileEntity -> false;
+        this.canReset = tileEntity -> true;
         this.tickingTime = 1;
         this.onFinishWork = () -> {
         };
@@ -61,6 +63,15 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
 
     public PosProgressBar setTile(TileBase tileBase) {
         this.tileBase = tileBase;
+        return this;
+    }
+
+    public Predicate<TileEntity> getCanReset() {
+        return canReset;
+    }
+
+    public PosProgressBar setCanReset(Predicate<TileEntity> canReset) {
+        this.canReset = canReset;
         return this;
     }
 

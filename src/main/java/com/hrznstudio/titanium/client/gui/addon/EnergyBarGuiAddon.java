@@ -18,6 +18,7 @@ import java.util.List;
 public class EnergyBarGuiAddon extends BasicGuiAddon {
 
     private final IEnergyStorage handler;
+    private IAsset background;
 
     public EnergyBarGuiAddon(int posX, int posY, IEnergyStorage handler) {
         super(posX, posY);
@@ -26,10 +27,10 @@ public class EnergyBarGuiAddon extends BasicGuiAddon {
 
     @Override
     public void drawGuiContainerBackgroundLayer(GuiContainerTile container, float partialTicks, int mouseX, int mouseY) {
-        IAsset asset = IAssetProvider.getAsset(container.getAssetProvider(), IAssetProvider.AssetType.ENERGY_BAR);
-        Point offset = asset.getOffset();
-        Rectangle area = asset.getArea();
-        container.mc.getTextureManager().bindTexture(asset.getResourceLocation());
+        background = IAssetProvider.getAsset(container.getAssetProvider(), IAssetProvider.AssetType.ENERGY_BAR);
+        Point offset = background.getOffset();
+        Rectangle area = background.getArea();
+        container.mc.getTextureManager().bindTexture(background.getResourceLocation());
         container.drawTexturedModalRect(container.getX() + getPosX() + offset.x, container.getY() + getPosY() + offset.y, area.x, area.y, area.width, area.height);
     }
 
@@ -52,11 +53,11 @@ public class EnergyBarGuiAddon extends BasicGuiAddon {
 
     @Override
     public int getXSize() {
-        return 0;
+        return background != null ? background.getArea().width : 0;
     }
 
     @Override
     public int getYSize() {
-        return 0;
+        return background != null ? background.getArea().height : 0;
     }
 }

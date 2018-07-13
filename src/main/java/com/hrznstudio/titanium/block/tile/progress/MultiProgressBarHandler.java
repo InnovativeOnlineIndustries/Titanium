@@ -27,7 +27,7 @@ public class MultiProgressBarHandler implements IGuiAddonProvider {
         for (PosProgressBar posWorkBar : posWorkBars) {
             if (posWorkBar.getCanIncrease().test(posWorkBar.getTileBase())) {
                 posWorkBar.increase();
-            } else {
+            } else if (posWorkBar.getCanReset().test(posWorkBar.getTileBase())) {
                 posWorkBar.setProgress(0);
             }
         }
