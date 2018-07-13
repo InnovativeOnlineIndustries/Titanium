@@ -112,7 +112,7 @@ def libPrefix = 'META-INF/libraries'
 
 jar {
     manifest {
-        attributes 'ContainedDeps': libPrefix+'/'+coreJar.archivePath.name
+        //attributes 'ContainedDeps': libPrefix+'/'+coreJar.archivePath.name
         attributes 'Maven-Artifact': group+':'+archivesBaseName+':'+version
     }
     exclude 'com/hrznstudio/titanium/core/**'
