@@ -122,6 +122,14 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
         return maxProgress;
     }
 
+    public void setMaxProgress(int maxProgress) {
+        this.maxProgress = maxProgress;
+    }
+
+    public int getTickingTime() {
+        return tickingTime;
+    }
+
     public int getProgressIncrease() {
         return progressIncrease;
     }
