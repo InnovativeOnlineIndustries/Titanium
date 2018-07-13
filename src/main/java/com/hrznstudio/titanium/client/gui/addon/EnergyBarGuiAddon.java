@@ -7,9 +7,13 @@ package com.hrznstudio.titanium.client.gui.addon;
 import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.client.gui.GuiContainerTile;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import java.awt.*;
+import java.text.DecimalFormat;
+import java.util.Arrays;
+import java.util.List;
 
 public class EnergyBarGuiAddon extends BasicGuiAddon {
 
@@ -39,6 +43,11 @@ public class EnergyBarGuiAddon extends BasicGuiAddon {
         int capacity = handler.getMaxEnergyStored();
         int powerOffset = stored * area.height / capacity;
         container.drawTexturedModalRect(getPosX() + offset.x, getPosY() + offset.y + area.height - powerOffset, area.x, area.y + (area.height - powerOffset), area.width, powerOffset);
+    }
+
+    @Override
+    public List<String> getTooltipLines() {
+        return Arrays.asList(TextFormatting.AQUA + "Power:", new DecimalFormat().format(handler.getEnergyStored()) + TextFormatting.GOLD + "/" + TextFormatting.WHITE + new DecimalFormat().format(handler.getMaxEnergyStored()));
     }
 
     @Override
