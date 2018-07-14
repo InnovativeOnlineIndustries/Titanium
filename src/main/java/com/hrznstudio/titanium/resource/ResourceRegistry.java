@@ -5,6 +5,9 @@
 package com.hrznstudio.titanium.resource;
 
 import com.google.common.collect.ImmutableList;
+import net.minecraftforge.fml.common.Loader;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,10 +17,24 @@ public class ResourceRegistry {
     private static HashMap<String, ResourceMaterial> nameToMaterial = new HashMap<>();
     private static HashMap<String, Integer> nameToMeta = new HashMap<>();
     private static HashMap<Integer, String> metaToName = new HashMap<>();
+    public static final Logger LOGGER = LogManager.getLogger("Titanium - Resource Registry");
     private static int nextID = -1;
+
+    private static boolean errorLog = false;
 
     public static ResourceMaterial addMaterial(String name, ResourceMaterial material) {
         material.materialName = name;
+        //TODO: Replace with incompatibility manager
+        if (!errorLog && Loader.isModLoaded("techreborn")) {
+            errorLog = true;
+            LOGGER.error("\n" +
+                    "***************************************************************************" +
+                    "* WARNING!!!" +
+                    "* Materials have been registered while tech reborn is loaded\n" +
+                    "* this is not compatible and most likely will break. DO NOT report this to Matter Overdrive\n" +
+                    "***************************************************************************"
+            );
+        }
         if (nameToMeta.containsKey(name)) {
             ResourceMaterial original = nameToMaterial.get(name);
             original.withTypes(material.getTypes());
