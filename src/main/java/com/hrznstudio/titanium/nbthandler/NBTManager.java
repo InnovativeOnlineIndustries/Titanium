@@ -25,6 +25,7 @@ public class NBTManager {
         handlerList = new ArrayList<>();
         tileFieldList = new HashMap<>();
         handlerList.add(new IntegerNBTHandler());
+        handlerList.add(new FloatNBTHandler());
         handlerList.add(new BlockPosNBTHandler());
         handlerList.add(new StringNBTHandler());
         handlerList.add(new ItemStackHandlerNBTHandler());
