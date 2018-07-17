@@ -26,7 +26,7 @@ public class TilePowered extends TileBase {
     }
 
     protected IFactory<NBTEnergyHandler> getEnergyHandlerFactory() {
-        return () -> new NBTEnergyHandler(10000);
+        return () -> new NBTEnergyHandler(this, 10000);
     }
 
     public IEnergyStorage getEnergyStorage() {
