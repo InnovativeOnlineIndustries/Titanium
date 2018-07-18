@@ -5,9 +5,9 @@
 package com.hrznstudio.titanium.client.gui.addon;
 
 import com.hrznstudio.titanium.api.client.IAsset;
-import com.hrznstudio.titanium.client.gui.GuiContainerTile;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.inventory.PosInvHandler;
+import net.minecraft.client.gui.GuiScreen;
 
 import java.awt.*;
 
@@ -21,15 +21,25 @@ public class SlotsGuiAddon extends BasicGuiAddon {
     }
 
     @Override
-    public void drawGuiContainerBackgroundLayer(GuiContainerTile container, float partialTicks, int mouseX, int mouseY) {
-        IAsset slot = IAssetProvider.getAsset(container.getAssetProvider(), IAssetProvider.AssetType.SLOT);
+    public int getXSize() {
+        return 0;
+    }
+
+    @Override
+    public int getYSize() {
+        return 0;
+    }
+
+    @Override
+    public void drawGuiContainerBackgroundLayer(GuiScreen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+        IAsset slot = IAssetProvider.getAsset(provider, IAssetProvider.AssetType.SLOT);
         Point offset = slot.getOffset();
         Rectangle area = slot.getArea();
-        container.mc.getTextureManager().bindTexture(slot.getResourceLocation());
+        screen.mc.getTextureManager().bindTexture(slot.getResourceLocation());
         for (int x = 0; x < handler.getXSize(); x++) {
             for (int y = 0; y < handler.getYSize(); y++) {
-                container.drawTexturedModalRect(handler.getXPos() + offset.x + area.width * x + container.getX() - 1,
-                        handler.getYPos() + offset.y + area.height * y + container.getY() - 1,
+                screen.drawTexturedModalRect(handler.getXPos() + offset.x + area.width * x + guiX - 1,
+                        handler.getYPos() + offset.y + area.height * y + guiY - 1,
                         area.x,
                         area.y,
                         area.width,
@@ -39,17 +49,7 @@ public class SlotsGuiAddon extends BasicGuiAddon {
     }
 
     @Override
-    public void drawGuiContainerForegroundLayer(GuiContainerTile container, int mouseX, int mouseY) {
+    public void drawGuiContainerForegroundLayer(GuiScreen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
 
-    }
-
-    @Override
-    public int getXSize() {
-        return 0;
-    }
-
-    @Override
-    public int getYSize() {
-        return 0;
     }
 }

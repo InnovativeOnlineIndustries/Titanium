@@ -5,15 +5,17 @@
 package com.hrznstudio.titanium.api.client;
 
 import com.hrznstudio.titanium.client.gui.GuiContainerTile;
+import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
+import net.minecraft.client.gui.GuiScreen;
 
 import java.util.Collections;
 import java.util.List;
 
 public interface IGuiAddon {
 
-    void drawGuiContainerBackgroundLayer(GuiContainerTile container, float partialTicks, int mouseX, int mouseY);
+    void drawGuiContainerBackgroundLayer(GuiScreen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks);
 
-    void drawGuiContainerForegroundLayer(GuiContainerTile container, int mouseX, int mouseY);
+    void drawGuiContainerForegroundLayer(GuiScreen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY);
 
     default List<String> getTooltipLines() {
         return Collections.emptyList();

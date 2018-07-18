@@ -5,8 +5,8 @@
 package com.hrznstudio.titanium.client.gui.addon;
 
 import com.hrznstudio.titanium.api.client.IAsset;
-import com.hrznstudio.titanium.client.gui.GuiContainerTile;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.energy.IEnergyStorage;
 
@@ -26,24 +26,24 @@ public class EnergyBarGuiAddon extends BasicGuiAddon {
     }
 
     @Override
-    public void drawGuiContainerBackgroundLayer(GuiContainerTile container, float partialTicks, int mouseX, int mouseY) {
-        background = IAssetProvider.getAsset(container.getAssetProvider(), IAssetProvider.AssetType.ENERGY_BAR);
+    public void drawGuiContainerBackgroundLayer(GuiScreen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+        background = IAssetProvider.getAsset(provider, IAssetProvider.AssetType.ENERGY_BAR);
         Point offset = background.getOffset();
         Rectangle area = background.getArea();
-        container.mc.getTextureManager().bindTexture(background.getResourceLocation());
-        container.drawTexturedModalRect(container.getX() + getPosX() + offset.x, container.getY() + getPosY() + offset.y, area.x, area.y, area.width, area.height);
+        screen.mc.getTextureManager().bindTexture(background.getResourceLocation());
+        screen.drawTexturedModalRect(guiX + getPosX() + offset.x, guiY + getPosY() + offset.y, area.x, area.y, area.width, area.height);
     }
 
     @Override
-    public void drawGuiContainerForegroundLayer(GuiContainerTile container, int mouseX, int mouseY) {
-        IAsset asset = IAssetProvider.getAsset(container.getAssetProvider(), IAssetProvider.AssetType.ENERGY_FILL);
+    public void drawGuiContainerForegroundLayer(GuiScreen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
+        IAsset asset = IAssetProvider.getAsset(provider, IAssetProvider.AssetType.ENERGY_FILL);
         Point offset = asset.getOffset();
         Rectangle area = asset.getArea();
-        container.mc.getTextureManager().bindTexture(asset.getResourceLocation());
+        screen.mc.getTextureManager().bindTexture(asset.getResourceLocation());
         int stored = handler.getEnergyStored();
         int capacity = handler.getMaxEnergyStored();
         int powerOffset = stored * area.height / capacity;
-        container.drawTexturedModalRect(getPosX() + offset.x, getPosY() + offset.y + area.height - powerOffset, area.x, area.y + (area.height - powerOffset), area.width, powerOffset);
+        screen.drawTexturedModalRect(getPosX() + offset.x, getPosY() + offset.y + area.height - powerOffset, area.x, area.y + (area.height - powerOffset), area.width, powerOffset);
     }
 
     @Override

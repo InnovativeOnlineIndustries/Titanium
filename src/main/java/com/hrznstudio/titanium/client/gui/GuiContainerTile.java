@@ -43,14 +43,14 @@ public class GuiContainerTile<T extends TileBase> extends GuiContainer {
         GlStateManager.color(1, 1, 1, 1);
         mc.getTextureManager().bindTexture(IAssetProvider.getAsset(assetProvider, IAssetProvider.AssetType.BACKGROUND).getResourceLocation());
         drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
-        addonList.forEach(iGuiAddon -> iGuiAddon.drawGuiContainerBackgroundLayer(this, partialTicks, mouseX, mouseY));
+        addonList.forEach(iGuiAddon -> iGuiAddon.drawGuiContainerBackgroundLayer(this, assetProvider, x, y, mouseX, mouseY, partialTicks));
         containerTileBase.updateSlotPosition();
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-        addonList.forEach(iGuiAddon -> iGuiAddon.drawGuiContainerForegroundLayer(this, mouseX, mouseY));
+        addonList.forEach(iGuiAddon -> iGuiAddon.drawGuiContainerForegroundLayer(this, assetProvider, x, y, mouseX, mouseY));
         renderHoveredToolTip(mouseX - x, mouseY - y);
         for (IGuiAddon iGuiAddon : addonList) {
             if (iGuiAddon.isInside(this, mouseX - x, mouseY - y) && !iGuiAddon.getTooltipLines().isEmpty()) {
