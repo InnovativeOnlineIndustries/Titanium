@@ -4,12 +4,12 @@
  */
 package com.hrznstudio.titanium._test;
 
-import com.hrznstudio.titanium.annotation.Save;
-import com.hrznstudio.titanium.api.IItemStackQuery;
-import com.hrznstudio.titanium.block.tile.TilePowered;
-import com.hrznstudio.titanium.block.tile.progress.PosProgressBar;
-import com.hrznstudio.titanium.client.gui.addon.EnergyBarGuiAddon;
-import com.hrznstudio.titanium.inventory.PosInvHandler;
+import com.hrznstudio.titanium.base.annotation.Save;
+import com.hrznstudio.titanium.base.api.IItemStackQuery;
+import com.hrznstudio.titanium.base.block.tile.TilePowered;
+import com.hrznstudio.titanium.base.block.tile.progress.PosProgressBar;
+import com.hrznstudio.titanium.cassandra.client.gui.addon.EnergyBarGuiAddon;
+import com.hrznstudio.titanium.base.inventory.PosInvHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;

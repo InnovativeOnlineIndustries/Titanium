@@ -4,8 +4,8 @@
  */
 package com.hrznstudio.titanium._test;
 
-import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.block.BlockTileBase;
+import com.hrznstudio.titanium.base.api.IFactory;
+import com.hrznstudio.titanium.base.block.BlockTileBase;
 import net.minecraft.block.material.Material;
 
 public class BlockTest extends BlockTileBase<TileTest> {
