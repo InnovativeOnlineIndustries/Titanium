@@ -10,9 +10,6 @@ import javax.annotation.Nonnull;
 import java.awt.*;
 
 public final class DefaultAssetProvider implements IAssetProvider {
-    DefaultAssetProvider() {
-    }
-
     private final IAsset SLOT = () -> new Rectangle(1, 185, 18, 18);
     private final IAsset BACKGROUND = () -> new Rectangle(0, 0, 176, 184);
     private final IAsset ENERGY_BAR = () -> new Rectangle(211, 1, 11, 56);
@@ -32,6 +29,8 @@ public final class DefaultAssetProvider implements IAssetProvider {
     private final Point INV_POS = new Point(8, 102);
     private final IAsset PROGRESS_BAR = () -> new Rectangle(177, 61, 22, 15);
     private final IAsset PROGRESS_BAR_FILL = () -> new Rectangle(177, 77, 22, 16);
+    DefaultAssetProvider() {
+    }
 
     @Override
     public Point getInventoryPosition() {

@@ -5,8 +5,8 @@
 package com.hrznstudio.titanium.cassandra.client.gui;
 
 import com.hrznstudio.titanium.base.block.tile.TileBase;
-import com.hrznstudio.titanium.cassandra.container.ContainerTileBase;
 import com.hrznstudio.titanium.base.util.TileUtil;
+import com.hrznstudio.titanium.cassandra.container.ContainerTileBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;

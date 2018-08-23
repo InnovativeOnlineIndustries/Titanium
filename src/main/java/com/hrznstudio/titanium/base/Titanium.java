@@ -20,8 +20,6 @@ import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -37,11 +35,6 @@ public class Titanium extends TitaniumMod {
     public static final String VERSION = "1.0.0";
 
     public static Titanium INSTANCE;
-    public static BlockTest TEST;
-
-    private static PulseManager PULSE_MANAGER = new PulseManager("titanium/modules");
-    private static PulseManager MOD_COMPAT = new PulseManager("titanium/compat");
-
     public static String[] MODULES = new String[]{
             "base",
             "commodore",
@@ -50,15 +43,17 @@ public class Titanium extends TitaniumMod {
             "perplex",
             "nucleus",
     };
+    private static PulseManager MODULE_MANAGER = new PulseManager("titanium/modules");
+    private static PulseManager COMPAT_MANAGER = new PulseManager("titanium/compat");
 
     static {
         for (String module : MODULES) {
             try {
                 Class<?> clazz = Class.forName(String.format("com.hrznstudio.titanium.%s.%s", module, StringUtils.capitalize(module)));
                 try {
-                    PULSE_MANAGER.registerPulse(clazz.getConstructor(PulseManager.class).newInstance(MOD_COMPAT));
+                    MODULE_MANAGER.registerPulse(clazz.getConstructor(PulseManager.class).newInstance(COMPAT_MANAGER));
                 } catch (NoSuchMethodException ex) {
-                    PULSE_MANAGER.registerPulse(clazz.getConstructor().newInstance());
+                    MODULE_MANAGER.registerPulse(clazz.getConstructor().newInstance());
                 }
             } catch (ClassNotFoundException e) {
                 // Not Found, Not an error!
@@ -84,17 +79,6 @@ public class Titanium extends TitaniumMod {
         SidedHandler.runOn(Side.CLIENT, () -> TitaniumClient::registerModelLoader);
         //TEST
         addBlocks(new BlockTest());
-        PULSE_MANAGER.propagateEvent(event);
-    }
-
-    @Mod.EventHandler
-    public void init(FMLInitializationEvent event) {
-        PULSE_MANAGER.propagateEvent(event);
-    }
-
-    @Mod.EventHandler
-    public void postInit(FMLPostInitializationEvent event) {
-        PULSE_MANAGER.propagateEvent(event);
     }
 
     @SubscribeEvent

@@ -23,12 +23,13 @@ import java.util.List;
 @Pulse(id = "corporis")
 public class Corporis {
     public static List<ItemResource> RESOURCE_ITEMS = new ArrayList<>();
+    public static AdvancedTitaniumTab RESOURCES_TAB;
+    private static boolean vanilla;
 
     public Corporis(PulseManager compatability) {
         compatability.registerPulse(new TinkersCompat());
     }
 
-    private static boolean vanilla;
     public static void registerVanillaMaterials() {
         if (!vanilla) {
             vanilla = true;
@@ -47,7 +48,6 @@ public class Corporis {
         }
     }
 
-    public static AdvancedTitaniumTab RESOURCES_TAB;
     @SubscribeEvent
     public void registerItems(RegistryEvent.Register<Item> event) {
         for (ResourceType type : ResourceType.values()) {

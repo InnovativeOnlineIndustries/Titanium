@@ -13,10 +13,10 @@ import java.util.List;
 import java.util.Optional;
 
 public class ResourceRegistry {
+    public static final Logger LOGGER = LogManager.getLogger("Titanium - Resource Registry");
     private static HashMap<String, ResourceMaterial> nameToMaterial = new HashMap<>();
     private static HashMap<String, Integer> nameToMeta = new HashMap<>();
     private static HashMap<Integer, String> metaToName = new HashMap<>();
-    public static final Logger LOGGER = LogManager.getLogger("Titanium - Resource Registry");
     private static int nextID = -1;
 
     private static boolean errorLog = false;

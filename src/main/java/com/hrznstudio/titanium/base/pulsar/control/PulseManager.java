@@ -16,6 +16,7 @@ import com.hrznstudio.titanium.base.pulsar.internal.CrashHandler;
 import com.hrznstudio.titanium.base.pulsar.pulse.Pulse;
 import com.hrznstudio.titanium.base.pulsar.pulse.PulseMeta;
 import joptsimple.internal.Strings;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.FMLModContainer;
 import net.minecraftforge.fml.common.Loader;
@@ -50,6 +51,7 @@ public class PulseManager {
     // Use the Google @Subscribe to avoid confusion/breaking changes.
     private final Flightpath flightpath = new Flightpath(new AnnotationLocator(Subscribe.class));
     private Logger log;
+
     private boolean blockNewRegistrations = false;
     private boolean configLoaded = false;
     private IConfiguration conf;
@@ -90,8 +92,8 @@ public class PulseManager {
         String modId = Loader.instance().activeModContainer().getModId();
         String modName = Loader.instance().activeModContainer().getName();
         this.id = modId;
-        this.name = Strings.isNullOrEmpty(modName)?modId:modName;
-        log = LogManager.getLogger(modName+"|Pulsar");
+        this.name = Strings.isNullOrEmpty(modName) ? modId : modName;
+        log = LogManager.getLogger(modName + "|Pulsar");
         flightpath.setExceptionHandler(new BusExceptionHandler(modId));
         FMLCommonHandler.instance().registerCrashCallable(new CrashHandler(modId, this));
         // Attach us to the mods FML bus
@@ -160,6 +162,8 @@ public class PulseManager {
         if (meta.isEnabled()) {
             pulses.put(pulse, meta);
             flightpath.register(pulse);
+
+            MinecraftForge.EVENT_BUS.register(pulse);
         }
     }
 
@@ -197,6 +201,7 @@ public class PulseManager {
      *
      * @param evt An event object.
      */
+    @Subscribe
     public void propagateEvent(Object evt) {
         if (evt instanceof FMLPreInitializationEvent) preInit((FMLPreInitializationEvent) evt);
         // We use individual buses due to the EventBus class using a Set rather than a List, thus losing the ordering.

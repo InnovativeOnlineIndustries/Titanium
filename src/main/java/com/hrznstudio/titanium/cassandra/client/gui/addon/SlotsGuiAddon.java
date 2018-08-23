@@ -5,8 +5,8 @@
 package com.hrznstudio.titanium.cassandra.client.gui.addon;
 
 import com.hrznstudio.titanium.base.api.client.IAsset;
-import com.hrznstudio.titanium.cassandra.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.base.inventory.PosInvHandler;
+import com.hrznstudio.titanium.cassandra.client.gui.asset.IAssetProvider;
 import net.minecraft.client.gui.GuiScreen;
 
 import java.awt.*;

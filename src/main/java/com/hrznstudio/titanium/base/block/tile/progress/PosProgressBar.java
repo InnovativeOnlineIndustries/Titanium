@@ -56,11 +56,6 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
         return this;
     }
 
-    public PosProgressBar setTickingTime(int tickingTime) {
-        this.tickingTime = tickingTime;
-        return this;
-    }
-
     public PosProgressBar setTile(TileBase tileBase) {
         this.tileBase = tileBase;
         return this;
@@ -141,6 +136,11 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
 
     public int getTickingTime() {
         return tickingTime;
+    }
+
+    public PosProgressBar setTickingTime(int tickingTime) {
+        this.tickingTime = tickingTime;
+        return this;
     }
 
     public int getProgressIncrease() {
