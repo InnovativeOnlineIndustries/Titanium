@@ -25,7 +25,7 @@ import java.util.Map;
  * @author Arkan <arkan@drakon.io>
  */
 @ParametersAreNonnullByDefault
-public class Configuration implements IConfiguration {
+public class JSONConfiguration implements IConfiguration {
 
     private static final int CONFIG_LEVEL = 1;
 
@@ -43,7 +43,7 @@ public class Configuration implements IConfiguration {
      * @param confName The config file name (without path or .json suffix)
      * @param logger   The logger to send debug info to.
      */
-    public Configuration(String confName, Logger logger) {
+    public JSONConfiguration(String confName, Logger logger) {
         this.confPath = Loader.instance().getConfigDir().toString() + File.separator + confName + ".json";
         this.logger = logger;
     }
@@ -135,13 +135,17 @@ public class Configuration implements IConfiguration {
 
     private void writeModulesToJson() {
         try {
-            JsonWriter writer = new JsonWriter(new OutputStreamWriter(new FileOutputStream(new File(confPath))));
+            File file = new File(confPath);
+            if (!file.exists()) {
+                file.getParentFile().mkdirs();
+            }
+            JsonWriter writer = new JsonWriter(new OutputStreamWriter(new FileOutputStream(file)));
             writer.setIndent("  ");
             GsonConfig out = new GsonConfig(CONFIG_LEVEL, modules);
             gson.toJson(out, GsonConfig.class, writer);
             writer.close();
         } catch (Exception ex) {
-            logger.warn("Could not write config? " + confPath);
+            logger.warn("Could not write config? " + confPath, ex);
         }
     }
 

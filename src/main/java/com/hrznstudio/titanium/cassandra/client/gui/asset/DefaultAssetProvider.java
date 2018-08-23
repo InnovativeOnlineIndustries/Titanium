@@ -29,6 +29,7 @@ public final class DefaultAssetProvider implements IAssetProvider {
     private final Point INV_POS = new Point(8, 102);
     private final IAsset PROGRESS_BAR = () -> new Rectangle(177, 61, 22, 15);
     private final IAsset PROGRESS_BAR_FILL = () -> new Rectangle(177, 77, 22, 16);
+
     DefaultAssetProvider() {
     }
 

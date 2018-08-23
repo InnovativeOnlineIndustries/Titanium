@@ -6,12 +6,12 @@ package com.hrznstudio.titanium.base.pulsar.control;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import com.hrznstudio.titanium.base.pulsar.config.ForgeConfiguration;
 import com.hrznstudio.titanium.base.pulsar.config.IConfiguration;
 import com.hrznstudio.titanium.base.pulsar.flightpath.Flightpath;
 import com.hrznstudio.titanium.base.pulsar.flightpath.IExceptionHandler;
 import com.hrznstudio.titanium.base.pulsar.flightpath.lib.AnnotationLocator;
 import com.hrznstudio.titanium.base.pulsar.internal.BusExceptionHandler;
-import com.hrznstudio.titanium.base.pulsar.internal.Configuration;
 import com.hrznstudio.titanium.base.pulsar.internal.CrashHandler;
 import com.hrznstudio.titanium.base.pulsar.pulse.Pulse;
 import com.hrznstudio.titanium.base.pulsar.pulse.PulseMeta;
@@ -66,9 +66,7 @@ public class PulseManager {
      * @param configName The config file name.
      */
     public PulseManager(String configName) {
-        init();
-        useConfig = true;
-        conf = new Configuration(configName, log);
+        this(new ForgeConfiguration(configName));
     }
 
     /**

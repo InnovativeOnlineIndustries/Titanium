@@ -26,8 +26,8 @@ public class Corporis {
     public static AdvancedTitaniumTab RESOURCES_TAB;
     private static boolean vanilla;
 
-    public Corporis(PulseManager compatability) {
-        compatability.registerPulse(new TinkersCompat());
+    public Corporis(PulseManager compats) {
+        compats.registerPulse(new TinkersCompat());
     }
 
     public static void registerVanillaMaterials() {

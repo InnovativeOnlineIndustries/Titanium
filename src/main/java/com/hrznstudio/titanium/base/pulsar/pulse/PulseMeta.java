@@ -15,8 +15,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class PulseMeta {
 
-    private String id, description;
-    private boolean forced, enabled, defaultEnabled;
+    private final String id, description;
+    private final boolean forced, defaultEnabled;
+    private boolean enabled;
     private boolean missingDeps = false;
 
     public PulseMeta(String id, @Nullable String description, boolean forced, boolean enabled, boolean defaultEnabled) {
