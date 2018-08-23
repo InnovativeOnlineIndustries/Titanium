@@ -61,7 +61,7 @@ public class TransformEntityRenderer extends BaseTransformer {
                                 INVOKESTATIC,
                                 "com/hrznstudio/titanium/core/event/EventDispatcher",
                                 "updateLightmap",
-                                "(IIII)Lcom/hrznstudio/edx/asm/event/UpdateLightmapEvent;",
+                                "(IIII)Lcom/hrznstudio/titanium/core/asm/event/UpdateLightmapEvent;",
                                 false
                         ));
 
@@ -71,7 +71,7 @@ public class TransformEntityRenderer extends BaseTransformer {
                         list.add(new VarInsnNode(ALOAD, 24));
                         list.add(new MethodInsnNode(
                                 INVOKEVIRTUAL,
-                                "com/hrznstudio/edx/asm/event/UpdateLightmapEvent",
+                                "com/hrznstudio/titanium/core/asm/event/UpdateLightmapEvent",
                                 "getRed",
                                 "()I",
                                 false
@@ -82,7 +82,7 @@ public class TransformEntityRenderer extends BaseTransformer {
                         list.add(new VarInsnNode(ALOAD, 24));
                         list.add(new MethodInsnNode(
                                 INVOKEVIRTUAL,
-                                "com/hrznstudio/edx/asm/event/UpdateLightmapEvent",
+                                "com/hrznstudio/titanium/core/asm/event/UpdateLightmapEvent",
                                 "getGreen",
                                 "()I",
                                 false
@@ -93,7 +93,7 @@ public class TransformEntityRenderer extends BaseTransformer {
                         list.add(new VarInsnNode(ALOAD, 24));
                         list.add(new MethodInsnNode(
                                 INVOKEVIRTUAL,
-                                "com/hrznstudio/edx/asm/event/UpdateLightmapEvent",
+                                "com/hrznstudio/titanium/core/asm/event/UpdateLightmapEvent",
                                 "getBlue",
                                 "()I",
                                 false
@@ -117,7 +117,7 @@ public class TransformEntityRenderer extends BaseTransformer {
     }
 
     private void saveBytecode(String name, byte[] bytes) {
-        File debugDir = new File("edx/debug/");
+        File debugDir = new File("Titanium/debug/");
         if (!debugDir.exists()) {
             debugDir.mkdirs();
         }

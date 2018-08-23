@@ -2,7 +2,7 @@
  * This file is part of Titanium
  * Copyright (C) 2018, Horizon Studio <contact@hrznstudio.com>, All rights reserved.
  */
-package com.hrznstudio.titanium.base.resource;
+package com.hrznstudio.titanium.corporis;
 
 //TODO: Make this an interface or something
 public enum Attribute {

@@ -19,20 +19,23 @@ import java.util.List;
 
 public class ModHacks {
     public static class ModEventHandlerHack {
-        private static final List<Method> METHODS = getMethods();
         private static final Field FIELD = getField();
+
+        public static void doHack(Object instance) {
+            addModEventHandlerMethods((FMLModContainer) Loader.instance().activeModContainer(), instance.getClass());
+        }
 
         static void doHack(TitaniumMod instance) {
             Loader.instance().getModList().stream()
                     .filter(modContainer -> modContainer instanceof FMLModContainer)
                     .filter(modContainer -> modContainer.getModId().equals(instance.getModId()))
-                    .forEach(modContainer -> addModEventHandlerMethods((FMLModContainer) modContainer));
+                    .forEach(modContainer -> addModEventHandlerMethods((FMLModContainer) modContainer, TitaniumMod.class));
         }
 
         @SuppressWarnings("unchecked")
-        private static void addModEventHandlerMethods(FMLModContainer modContainer) {
+        private static void addModEventHandlerMethods(FMLModContainer modContainer, Class tClass) {
             ListMultimap<Class<? extends FMLEvent>, Method> methodMap = getModEventMap(modContainer);
-            for (Method method : METHODS) {
+            for (Method method : getMethods(tClass)) {
                 Class<? extends FMLEvent> paramClass = (Class<? extends FMLEvent>) method.getParameterTypes()[0];
                 methodMap.put(paramClass, method);
             }
@@ -48,9 +51,9 @@ public class ModHacks {
             }
         }
 
-        private static List<Method> getMethods() {
+        private static List<Method> getMethods(Class tClass) {
             List<Method> foundMethods = new ArrayList<>();
-            for (Method method : TitaniumMod.class.getDeclaredMethods()) {
+            for (Method method : tClass.getDeclaredMethods()) {
                 for (Annotation a : method.getAnnotations()) {
                     if (a.annotationType().equals(Mod.EventHandler.class)) {
                         if (method.getParameterTypes().length == 1 && FMLEvent.class.isAssignableFrom(method.getParameterTypes()[0])) {

@@ -2,7 +2,7 @@
  * This file is part of Titanium
  * Copyright (C) 2018, Horizon Studio <contact@hrznstudio.com>, All rights reserved.
  */
-package com.hrznstudio.titanium.base.resource;
+package com.hrznstudio.titanium.corporis;
 
 import net.minecraft.util.IStringSerializable;
 
@@ -26,7 +26,8 @@ public enum ResourceType implements IStringSerializable {
     REINFORCED_PLATE("plateReinforced"),
     ROD,
     DENSE_ROD("rodDense"),
-    GEAR;
+    GEAR,
+    FLUID;
 
     public static final ResourceType[] DEFAULT = new ResourceType[]{INGOT, DUST, NUGGET, CHUNK, CLUMP, CRUSHED, PURIFIED, STONE, PEBBLES, FLAKES, GRINDINGS, SMALLDUST, PLATE, DENSE_PLATE, CASING, REINFORCED_PLATE, ROD, DENSE_ROD, GEAR};
     public static final ResourceType[] VANILLA = new ResourceType[]{DUST, CHUNK, CLUMP, CRUSHED, PURIFIED, STONE, PEBBLES, FLAKES, GRINDINGS, SMALLDUST, PLATE, DENSE_PLATE, CASING, REINFORCED_PLATE, ROD, DENSE_ROD, GEAR};

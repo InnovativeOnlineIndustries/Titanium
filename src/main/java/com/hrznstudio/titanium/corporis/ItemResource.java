@@ -2,15 +2,17 @@
  * This file is part of Titanium
  * Copyright (C) 2018, Horizon Studio <contact@hrznstudio.com>, All rights reserved.
  */
-package com.hrznstudio.titanium.base.resource;
+package com.hrznstudio.titanium.corporis;
 
 import com.hrznstudio.titanium.base.item.ItemBase;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.client.model.ModelLoader;
 
 import javax.annotation.Nonnull;
+import java.util.function.Function;
 
 public class ItemResource extends ItemBase {
     private ResourceType type;
@@ -26,8 +28,15 @@ public class ItemResource extends ItemBase {
 
     public void registerModels() {
         ResourceRegistry.getMaterials().forEach(material -> {
-            if (material.hasType(this.type))
-                ModelLoader.setCustomModelResourceLocation(this, material.meta, material.getModelFunction().apply(type));
+            if (material.hasType(this.type)) {
+                ModelResourceLocation location = null;
+                for (Function<ResourceType, ModelResourceLocation> function : material.getModelFunctions()) {
+                    location = function.apply(type);
+                    if (location != null)
+                        break;
+                }
+                if (location != null) ModelLoader.setCustomModelResourceLocation(this, material.meta, location);
+            }
         });
     }
 

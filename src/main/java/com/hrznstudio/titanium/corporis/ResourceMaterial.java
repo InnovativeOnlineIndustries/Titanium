@@ -2,7 +2,7 @@
  * This file is part of Titanium
  * Copyright (C) 2018, Horizon Studio <contact@hrznstudio.com>, All rights reserved.
  */
-package com.hrznstudio.titanium.base.resource;
+package com.hrznstudio.titanium.corporis;
 
 import com.google.common.collect.ImmutableList;
 import com.hrznstudio.titanium.base.util.ArrayUtil;
@@ -21,18 +21,18 @@ public class ResourceMaterial {
 
     private Map<Attribute, Float> attributeMap = new HashMap<>();
     private List<ResourceType> types = new ArrayList<>();
-    private Function<ResourceType, ModelResourceLocation> modelFunction;
+    private List<Function<ResourceType, ModelResourceLocation>> modelFunctions = new ArrayList<>();
 
     public ResourceMaterial(Function<ResourceType, ModelResourceLocation> modelFunction) {
-        this.modelFunction = modelFunction;
+        modelFunctions.add(modelFunction);
     }
 
     public String getLocalizedName() {
         return I18n.translateToLocal("item.titanium.material." + materialName + ".name");
     }
 
-    public Function<ResourceType, ModelResourceLocation> getModelFunction() {
-        return modelFunction;
+    public List<Function<ResourceType, ModelResourceLocation>> getModelFunctions() {
+        return modelFunctions;
     }
 
     public boolean hasType(ResourceType resource) {

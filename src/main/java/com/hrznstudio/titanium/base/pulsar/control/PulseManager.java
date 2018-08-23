@@ -197,7 +197,6 @@ public class PulseManager {
      *
      * @param evt An event object.
      */
-    @Subscribe
     public void propagateEvent(Object evt) {
         if (evt instanceof FMLPreInitializationEvent) preInit((FMLPreInitializationEvent) evt);
         // We use individual buses due to the EventBus class using a Set rather than a List, thus losing the ordering.
