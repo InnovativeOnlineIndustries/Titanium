@@ -71,7 +71,7 @@ public abstract class BlockBase extends Block implements IModelRegistrar, IItemB
         if (hasCustomBoxes(state, source, pos)) {
             List<IndexedAxisAlignedBB> cuboids = getBoundingBoxes(state, source, pos);
             if (cuboids.size() > 0)
-                return cuboids.get(0);
+                return cuboids.get(0).offset(pos);
         }
         return super.getBoundingBox(state, source, pos);
     }

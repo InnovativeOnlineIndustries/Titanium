@@ -74,11 +74,8 @@ public class Titanium extends TitaniumMod {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        MinecraftForge.EVENT_BUS.register(this);
         INSTANCE = this;
         SidedHandler.runOn(Side.CLIENT, () -> TitaniumClient::registerModelLoader);
-        //TEST
-        addBlocks(new BlockTest());
     }
 
     @SubscribeEvent

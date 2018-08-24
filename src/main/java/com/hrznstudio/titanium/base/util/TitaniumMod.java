@@ -25,8 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class TitaniumMod {
-    private static final List<Item> ITEMS = new ArrayList<>();
-    private static final List<Block> BLOCKS = new ArrayList<>();
+    private final List<Item> ITEMS = new ArrayList<>();
+    private final List<Block> BLOCKS = new ArrayList<>();
 
     public TitaniumMod() {
         ModHacks.ModEventHandlerHack.doHack(this);
