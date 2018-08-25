@@ -1,15 +1,17 @@
 /*
  * This file is part of Titanium
  * Copyright (C) 2018, Horizon Studio <contact@hrznstudio.com>, All rights reserved.
+ *
+ * This means no, you cannot steal this code. This is licensed for sole use by Horizon Studio and its subsidiaries, you MUST be granted specific written permission by Horizon Studio to use this code, thinking you have permission IS NOT PERMISSION!
  */
 package com.hrznstudio.titanium._test;
 
-import com.hrznstudio.titanium.annotation.Save;
-import com.hrznstudio.titanium.api.IItemStackQuery;
-import com.hrznstudio.titanium.block.tile.TilePowered;
-import com.hrznstudio.titanium.block.tile.progress.PosProgressBar;
-import com.hrznstudio.titanium.client.gui.addon.EnergyBarGuiAddon;
-import com.hrznstudio.titanium.inventory.PosInvHandler;
+import com.hrznstudio.titanium.base.annotation.Save;
+import com.hrznstudio.titanium.base.api.IItemStackQuery;
+import com.hrznstudio.titanium.base.block.tile.TilePowered;
+import com.hrznstudio.titanium.base.block.tile.progress.PosProgressBar;
+import com.hrznstudio.titanium.base.inventory.PosInvHandler;
+import com.hrznstudio.titanium.cassandra.client.gui.addon.EnergyBarGuiAddon;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;

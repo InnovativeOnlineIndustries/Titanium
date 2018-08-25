@@ -1,6 +1,8 @@
 /*
  * This file is part of Titanium
  * Copyright (C) 2018, Horizon Studio <contact@hrznstudio.com>, All rights reserved.
+ *
+ * This means no, you cannot steal this code. This is licensed for sole use by Horizon Studio and its subsidiaries, you MUST be granted specific written permission by Horizon Studio to use this code, thinking you have permission IS NOT PERMISSION!
  */
 package com.hrznstudio.titanium.core.transform;
 
@@ -61,7 +63,7 @@ public class TransformEntityRenderer extends BaseTransformer {
                                 INVOKESTATIC,
                                 "com/hrznstudio/titanium/core/event/EventDispatcher",
                                 "updateLightmap",
-                                "(IIII)Lcom/hrznstudio/edx/asm/event/UpdateLightmapEvent;",
+                                "(IIII)Lcom/hrznstudio/titanium/core/asm/event/UpdateLightmapEvent;",
                                 false
                         ));
 
@@ -71,7 +73,7 @@ public class TransformEntityRenderer extends BaseTransformer {
                         list.add(new VarInsnNode(ALOAD, 24));
                         list.add(new MethodInsnNode(
                                 INVOKEVIRTUAL,
-                                "com/hrznstudio/edx/asm/event/UpdateLightmapEvent",
+                                "com/hrznstudio/titanium/core/asm/event/UpdateLightmapEvent",
                                 "getRed",
                                 "()I",
                                 false
@@ -82,7 +84,7 @@ public class TransformEntityRenderer extends BaseTransformer {
                         list.add(new VarInsnNode(ALOAD, 24));
                         list.add(new MethodInsnNode(
                                 INVOKEVIRTUAL,
-                                "com/hrznstudio/edx/asm/event/UpdateLightmapEvent",
+                                "com/hrznstudio/titanium/core/asm/event/UpdateLightmapEvent",
                                 "getGreen",
                                 "()I",
                                 false
@@ -93,7 +95,7 @@ public class TransformEntityRenderer extends BaseTransformer {
                         list.add(new VarInsnNode(ALOAD, 24));
                         list.add(new MethodInsnNode(
                                 INVOKEVIRTUAL,
-                                "com/hrznstudio/edx/asm/event/UpdateLightmapEvent",
+                                "com/hrznstudio/titanium/core/asm/event/UpdateLightmapEvent",
                                 "getBlue",
                                 "()I",
                                 false
@@ -117,7 +119,7 @@ public class TransformEntityRenderer extends BaseTransformer {
     }
 
     private void saveBytecode(String name, byte[] bytes) {
-        File debugDir = new File("edx/debug/");
+        File debugDir = new File("Titanium/debug/");
         if (!debugDir.exists()) {
             debugDir.mkdirs();
         }
