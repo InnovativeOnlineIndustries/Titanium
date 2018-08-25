@@ -9,6 +9,7 @@ package com.hrznstudio.titanium.cassandra.client.gui;
 import com.hrznstudio.titanium.base.api.client.IAsset;
 import com.hrznstudio.titanium.base.api.client.IGuiAddon;
 import com.hrznstudio.titanium.base.block.tile.TileBase;
+import com.hrznstudio.titanium.cassandra.client.gui.addon.ICanMouseDrag;
 import com.hrznstudio.titanium.cassandra.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.cassandra.container.ContainerTileBase;
 import net.minecraft.client.gui.inventory.GuiContainer;
