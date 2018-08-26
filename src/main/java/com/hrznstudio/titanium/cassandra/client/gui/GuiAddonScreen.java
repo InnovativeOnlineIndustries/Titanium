@@ -68,10 +68,13 @@ public abstract class GuiAddonScreen extends GuiScreen {
 
     private void checkForMouseDrag(int mouseX, int mouseY) {
         if (Mouse.isButtonDown(0)) {
-            this.isMouseDragging = true;
-            for (IGuiAddon iGuiAddon : this.addonList) {
-                if (iGuiAddon instanceof ICanMouseDrag && iGuiAddon.isInside(null, mouseX - x, mouseY - y)) {
-                    ((ICanMouseDrag) iGuiAddon).drag(mouseX - dragX, mouseY - dragY);
+            if (!this.isMouseDragging) {
+                this.isMouseDragging = true;
+            } else {
+                for (IGuiAddon iGuiAddon : this.addonList) {
+                    if (iGuiAddon instanceof ICanMouseDrag && iGuiAddon.isInside(null, mouseX - x, mouseY - y)) {
+                        ((ICanMouseDrag) iGuiAddon).drag(mouseX - dragX, mouseY - dragY);
+                    }
                 }
             }
             this.dragX = mouseX;
