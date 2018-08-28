@@ -48,31 +48,72 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
         };
     }
 
+    /**
+     * Sets a runnable to be executed when the bar is completed
+     *
+     * @param runnable The runnable
+     * @return Self
+     */
     public PosProgressBar setOnFinishWork(Runnable runnable) {
         this.onFinishWork = runnable;
         return this;
     }
 
+    /**
+     * Sets a runnable to be executed every time the bar ticks
+     *
+     * @param runnable The runnable
+     * @return Self
+     */
     public PosProgressBar setOnTickWork(Runnable runnable) {
         this.onTickWork = runnable;
         return this;
     }
 
+    /**
+     * Sets the tile where this bar is running
+     *
+     * @param tileBase The tile
+     * @return Self
+     */
     public PosProgressBar setTile(TileBase tileBase) {
         this.tileBase = tileBase;
         return this;
     }
 
+    /**
+     * Gets the tile where this bar is running
+     *
+     * @return The tile
+     */
+    public TileBase getTileBase() {
+        return tileBase;
+    }
+
+    /**
+     * Gets if the bar can reset
+     *
+     * @return True if the bar can be reseted
+     */
     public Predicate<TileEntity> getCanReset() {
         return canReset;
     }
 
+    /**
+     * Sets if the the bar can be reseted when the progress is completed
+     *
+     * @param canReset A Predicate
+     * @return Self
+     */
     public PosProgressBar setCanReset(Predicate<TileEntity> canReset) {
         this.canReset = canReset;
         return this;
     }
 
-    public void increase() {
+    /**
+     * Ticks the bar so it can increase if possible, managed by {@link MultiProgressBarHandler#update()}
+     */
+    public void tickBar() {
         if (tileBase != null && tileBase.getWorld().getTotalWorldTime() % tickingTime == 0) {
             this.progress += progressIncrease;
             tileBase.markForUpdate();
@@ -82,6 +123,121 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
             this.progress = 0;
             this.onFinishWork.run();
         }
+    }
+
+    /**
+     * Gets where the bar is located in the X
+     * @return the x position
+     */
+    public int getPosX() {
+        return posX;
+    }
+
+    /**
+     * Gets where the bar is located in the X
+     * @return the y position
+     */
+    public int getPosY() {
+        return posY;
+    }
+
+    /**
+     * Gets if the progress can be increased
+     * @return A predicate
+     */
+    public Predicate<TileEntity> getCanIncrease() {
+        return canIncrease;
+    }
+
+    /**
+     * Sets a predicate to check if the bar can be increased
+     * @param canIncrease A predicate
+     * @return Self
+     */
+    public PosProgressBar setCanIncrease(Predicate<TileEntity> canIncrease) {
+        this.canIncrease = canIncrease;
+        return this;
+    }
+
+    /**
+     * Gets the current progress
+     * @return The progress
+     */
+    public int getProgress() {
+        return progress;
+    }
+
+    /**
+     * Sets the progress bar progress
+     * @param progress The progress to set
+     */
+    public void setProgress(int progress) {
+        this.progress = progress;
+        if (tileBase != null) tileBase.markForUpdate();
+    }
+
+    /**
+     * Gets the max progress of the bar
+     * @return The bas progress
+     */
+    public int getMaxProgress() {
+        return maxProgress;
+    }
+
+    /**
+     * Sets the max progress of the bar
+     *
+     * @param maxProgress The max progress
+     * @return Self
+     */
+    public PosProgressBar setMaxProgress(int maxProgress) {
+        this.maxProgress = maxProgress;
+        return this;
+    }
+
+    /**
+     * Gets how often the bar ticks
+     * @return The tick the bar tries to increase
+     */
+    public int getTickingTime() {
+        return tickingTime;
+    }
+
+    /**
+     * Sets how often the bar ticks
+     * @param tickingTime The ticking time
+     * @return Self
+     */
+    public PosProgressBar setTickingTime(int tickingTime) {
+        this.tickingTime = tickingTime;
+        return this;
+    }
+
+    /**
+     * Gets how much the bar increases when it can increase progress
+     * @return The amount it increases
+     */
+    public int getProgressIncrease() {
+        return progressIncrease;
+    }
+
+    /**
+     * Sets how much the bar will increase when it can increase
+     * @param progressIncrease The increase amount
+     * @return Self
+     */
+    public PosProgressBar setProgressIncrease(int progressIncrease) {
+        this.progressIncrease = progressIncrease;
+        return this;
+    }
+
+    /**
+     * Gets the Gui Addons that it will be added to the machine GUI
+     * @return A list of GUI addon factories
+     */
+    @Override
+    public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
+        return Collections.singletonList(() -> new ProgressBarGuiAddon(posX, posY, this));
     }
 
     @Override
@@ -96,66 +252,5 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
     public void deserializeNBT(NBTTagCompound nbt) {
         progress = nbt.getInteger("Tick");
         maxProgress = nbt.getInteger("MaxProgress");
-    }
-
-    public int getPosX() {
-        return posX;
-    }
-
-    public int getPosY() {
-        return posY;
-    }
-
-    public Predicate<TileEntity> getCanIncrease() {
-        return canIncrease;
-    }
-
-    public PosProgressBar setCanIncrease(Predicate<TileEntity> canIncrease) {
-        this.canIncrease = canIncrease;
-        return this;
-    }
-
-    public TileBase getTileBase() {
-        return tileBase;
-    }
-
-    public int getProgress() {
-        return progress;
-    }
-
-    public void setProgress(int progress) {
-        this.progress = progress;
-        if (tileBase != null) tileBase.markForUpdate();
-    }
-
-    public int getMaxProgress() {
-        return maxProgress;
-    }
-
-    public void setMaxProgress(int maxProgress) {
-        this.maxProgress = maxProgress;
-    }
-
-    public int getTickingTime() {
-        return tickingTime;
-    }
-
-    public PosProgressBar setTickingTime(int tickingTime) {
-        this.tickingTime = tickingTime;
-        return this;
-    }
-
-    public int getProgressIncrease() {
-        return progressIncrease;
-    }
-
-    public PosProgressBar setProgressIncrease(int progressIncrease) {
-        this.progressIncrease = progressIncrease;
-        return this;
-    }
-
-    @Override
-    public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
-        return Collections.singletonList(() -> new ProgressBarGuiAddon(posX, posY, this));
     }
 }

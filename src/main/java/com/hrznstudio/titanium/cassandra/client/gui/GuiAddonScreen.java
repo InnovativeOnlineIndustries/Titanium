@@ -24,13 +24,15 @@ public abstract class GuiAddonScreen extends GuiScreen {
     private int x;
     private int y;
     private List<IGuiAddon> addonList;
+    private boolean drawBackground;
 
     private boolean isMouseDragging;
     private int dragX;
     private int dragY;
 
-    public GuiAddonScreen(IAssetProvider assetProvider) {
+    public GuiAddonScreen(IAssetProvider assetProvider, boolean drawBackground) {
         this.assetProvider = assetProvider;
+        this.drawBackground = drawBackground;
     }
 
     @Override
@@ -45,11 +47,13 @@ public abstract class GuiAddonScreen extends GuiScreen {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         super.drawScreen(mouseX, mouseY, partialTicks);
-        this.drawDefaultBackground();
         this.checkForMouseDrag(mouseX, mouseY);
         GlStateManager.color(1, 1, 1, 1);
-        mc.getTextureManager().bindTexture(IAssetProvider.getAsset(assetProvider, IAssetProvider.AssetType.BACKGROUND).getResourceLocation());
-        drawTexturedModalRect(x, y, 0, 0, width, height);
+        if (drawBackground) {
+            this.drawDefaultBackground();
+            mc.getTextureManager().bindTexture(IAssetProvider.getAsset(assetProvider, IAssetProvider.AssetType.BACKGROUND).getResourceLocation());
+            drawTexturedModalRect(x, y, 0, 0, width, height);
+        }
         addonList.forEach(iGuiAddon -> iGuiAddon.drawGuiContainerBackgroundLayer(this, assetProvider, x, y, mouseX, mouseY, partialTicks));
 
         addonList.forEach(iGuiAddon -> iGuiAddon.drawGuiContainerForegroundLayer(this, assetProvider, x, y, mouseX, mouseY));
@@ -64,10 +68,13 @@ public abstract class GuiAddonScreen extends GuiScreen {
 
     private void checkForMouseDrag(int mouseX, int mouseY) {
         if (Mouse.isButtonDown(0)) {
-            this.isMouseDragging = true;
-            for (IGuiAddon iGuiAddon : this.addonList) {
-                if (iGuiAddon instanceof ICanMouseDrag && iGuiAddon.isInside(null, mouseX - x, mouseY - y)) {
-                    ((ICanMouseDrag) iGuiAddon).drag(mouseX - dragX, mouseY - dragY);
+            if (!this.isMouseDragging) {
+                this.isMouseDragging = true;
+            } else {
+                for (IGuiAddon iGuiAddon : this.addonList) {
+                    if (iGuiAddon instanceof ICanMouseDrag && iGuiAddon.isInside(null, mouseX - x, mouseY - y)) {
+                        ((ICanMouseDrag) iGuiAddon).drag(mouseX - dragX, mouseY - dragY);
+                    }
                 }
             }
             this.dragX = mouseX;

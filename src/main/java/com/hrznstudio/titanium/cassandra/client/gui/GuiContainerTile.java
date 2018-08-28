@@ -9,10 +9,12 @@ package com.hrznstudio.titanium.cassandra.client.gui;
 import com.hrznstudio.titanium.base.api.client.IAsset;
 import com.hrznstudio.titanium.base.api.client.IGuiAddon;
 import com.hrznstudio.titanium.base.block.tile.TileBase;
+import com.hrznstudio.titanium.cassandra.client.gui.addon.ICanMouseDrag;
 import com.hrznstudio.titanium.cassandra.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.cassandra.container.ContainerTileBase;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
+import org.lwjgl.input.Mouse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,10 @@ public class GuiContainerTile<T extends TileBase> extends GuiContainer {
     private int x;
     private int y;
     private List<IGuiAddon> addonList;
+
+    private boolean isMouseDragging;
+    private int dragX;
+    private int dragY;
 
     public GuiContainerTile(ContainerTileBase<T> containerTileBase) {
         super(containerTileBase);
@@ -45,6 +51,8 @@ public class GuiContainerTile<T extends TileBase> extends GuiContainer {
         GlStateManager.color(1, 1, 1, 1);
         mc.getTextureManager().bindTexture(IAssetProvider.getAsset(assetProvider, IAssetProvider.AssetType.BACKGROUND).getResourceLocation());
         drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
+
+        this.checkForMouseDrag(mouseX, mouseY);
         addonList.forEach(iGuiAddon -> iGuiAddon.drawGuiContainerBackgroundLayer(this, assetProvider, x, y, mouseX, mouseY, partialTicks));
         containerTileBase.updateSlotPosition();
     }
@@ -59,6 +67,21 @@ public class GuiContainerTile<T extends TileBase> extends GuiContainer {
                 drawHoveringText(iGuiAddon.getTooltipLines(), mouseX - x, mouseY - y);
             }
         }
+    }
+
+    private void checkForMouseDrag(int mouseX, int mouseY) {
+        if (Mouse.isButtonDown(0)) {
+            this.isMouseDragging = true;
+            for (IGuiAddon iGuiAddon : this.addonList) {
+                if (iGuiAddon instanceof ICanMouseDrag /*&& iGuiAddon.isInside(null, mouseX - x, mouseY - y)*/) {
+                    ((ICanMouseDrag) iGuiAddon).drag(mouseX - dragX, mouseY - dragY);
+                }
+            }
+        } else {
+            this.isMouseDragging = false;
+        }
+        this.dragX = mouseX;
+        this.dragY = mouseY;
     }
 
     public IAssetProvider getAssetProvider() {

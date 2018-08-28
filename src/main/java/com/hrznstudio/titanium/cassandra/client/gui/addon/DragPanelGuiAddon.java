@@ -32,18 +32,18 @@ public abstract class DragPanelGuiAddon extends BasicGuiAddon implements ICanMou
 
     @Override
     public int getXSize() {
-        return 0;
+        return panelSizeX;
     }
 
     @Override
     public int getYSize() {
-        return 0;
+        return panelSizeY;
     }
 
     @Override
     public void drag(int x, int y) {
-        this.scrollX = MathHelper.clamp(this.scrollX + x, this.minX, this.maxX);
-        this.scrollY = MathHelper.clamp(this.scrollY + y, this.minY, this.maxY);
+        this.scrollX = MathHelper.clamp(this.scrollX - x, this.minX, this.maxX);
+        this.scrollY = MathHelper.clamp(this.scrollY - y, this.minY, this.maxY);
     }
 
     public int getScrollX() {
@@ -69,4 +69,5 @@ public abstract class DragPanelGuiAddon extends BasicGuiAddon implements ICanMou
     public int getMaxY() {
         return maxY;
     }
+
 }
