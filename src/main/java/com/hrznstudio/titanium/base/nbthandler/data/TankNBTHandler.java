@@ -8,6 +8,7 @@ package com.hrznstudio.titanium.base.nbthandler.data;
 
 import com.hrznstudio.titanium.base.nbthandler.INBTHandler;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.FluidTank;
 
 import javax.annotation.Nonnull;
@@ -27,7 +28,7 @@ public class TankNBTHandler implements INBTHandler<FluidTank> {
 
     @Override
     public FluidTank readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, FluidTank currentValue) {
-        if (compound.hasKey(name)) {
+        if (compound.hasKey(name, Constants.NBT.TAG_COMPOUND)) {
             currentValue.readFromNBT(compound.getCompoundTag(name));
             return currentValue;
         }

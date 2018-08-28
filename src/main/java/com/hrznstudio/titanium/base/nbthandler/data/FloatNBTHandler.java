@@ -8,6 +8,7 @@ package com.hrznstudio.titanium.base.nbthandler.data;
 
 import com.hrznstudio.titanium.base.nbthandler.INBTHandler;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
 
@@ -25,6 +26,6 @@ public class FloatNBTHandler implements INBTHandler<Float> {
 
     @Override
     public Float readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, Float currentValue) {
-        return compound.hasKey(name) ? compound.getFloat(name) : null;
+        return compound.hasKey(name, Constants.NBT.TAG_FLOAT) ? compound.getFloat(name) : null;
     }
 }

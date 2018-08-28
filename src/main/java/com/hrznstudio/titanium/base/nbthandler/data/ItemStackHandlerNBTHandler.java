@@ -9,6 +9,7 @@ package com.hrznstudio.titanium.base.nbthandler.data;
 
 import com.hrznstudio.titanium.base.nbthandler.INBTHandler;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
@@ -27,7 +28,7 @@ public class ItemStackHandlerNBTHandler implements INBTHandler<ItemStackHandler>
 
     @Override
     public ItemStackHandler readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, ItemStackHandler current) {
-        if (compound.hasKey(name)) {
+        if (compound.hasKey(name, Constants.NBT.TAG_COMPOUND)) {
             if (current == null) current = new ItemStackHandler();
             current.deserializeNBT(compound.getCompoundTag(name));
             return current;

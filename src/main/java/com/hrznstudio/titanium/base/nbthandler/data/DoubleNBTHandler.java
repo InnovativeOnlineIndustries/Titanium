@@ -8,6 +8,7 @@ package com.hrznstudio.titanium.base.nbthandler.data;
 
 import com.hrznstudio.titanium.base.nbthandler.INBTHandler;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
 
@@ -26,6 +27,6 @@ public class DoubleNBTHandler implements INBTHandler<Double> {
 
     @Override
     public Double readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, Double currentValue) {
-        return compound.hasKey(name) ? compound.getDouble(name) : null;
+        return compound.hasKey(name, Constants.NBT.TAG_DOUBLE) ? compound.getDouble(name) : null;
     }
 }

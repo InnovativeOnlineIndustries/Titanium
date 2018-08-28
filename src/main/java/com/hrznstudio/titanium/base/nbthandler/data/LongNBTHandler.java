@@ -12,7 +12,7 @@ import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
 
-public class IntegerNBTHandler implements INBTHandler<Integer> {
+public class LongNBTHandler implements INBTHandler<Long> {
 
     /**
      * Checks if the NBTHanlder can handle a class.
@@ -22,7 +22,7 @@ public class IntegerNBTHandler implements INBTHandler<Integer> {
      */
     @Override
     public boolean isClassValid(Class<?> aClass) {
-        return int.class.isAssignableFrom(aClass) || Integer.class.isAssignableFrom(aClass);
+        return long.class.isAssignableFrom(aClass) || Long.class.isAssignableFrom(aClass);
     }
 
     /**
@@ -34,8 +34,8 @@ public class IntegerNBTHandler implements INBTHandler<Integer> {
      * @return true if the Object was successfully stored in the NBT
      */
     @Override
-    public boolean storeToNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, @Nonnull Integer object) {
-        compound.setInteger(name, object);
+    public boolean storeToNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, @Nonnull Long object) {
+        compound.setLong(name, object);
         return true;
     }
 
@@ -47,7 +47,7 @@ public class IntegerNBTHandler implements INBTHandler<Integer> {
      * @return The object if it was successfully stored or null if it wasn't giving the next handlers a chance to store the value.
      */
     @Override
-    public Integer readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, Integer current) {
-        return compound.hasKey(name, Constants.NBT.TAG_INT) ? compound.getInteger(name) : null;
+    public Long readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, Long current) {
+        return compound.hasKey(name, Constants.NBT.TAG_LONG) ? compound.getLong(name) : null;
     }
 }
