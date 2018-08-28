@@ -13,7 +13,7 @@ import javax.annotation.Nonnull;
 public interface INBTHandler<T> {
 
     /**
-     * Checks if the NBTHanlder can handle a class.
+     * Checks if the NBTHandler can handle a class.
      *
      * @param aClass The class that wants to be checked.
      * @return true if the capability can handle the class or false if it can't.
