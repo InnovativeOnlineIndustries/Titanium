@@ -75,7 +75,7 @@ public abstract class BlockBase extends Block implements IModelRegistrar, IItemB
             if (cuboids.size() > 0)
                 return cuboids.get(0).offset(pos);
         }
-        return super.getBoundingBox(state, source, pos);
+        return super.getSelectedBoundingBox(state, source, pos);
     }
 
     @Override
