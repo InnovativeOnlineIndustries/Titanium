@@ -7,8 +7,8 @@
 package com.hrznstudio.titanium.gui;
 
 import com.hrznstudio.titanium.block.tile.TileBase;
-import com.hrznstudio.titanium.util.TileUtil;
 import com.hrznstudio.titanium.container.ContainerTileBase;
+import com.hrznstudio.titanium.util.TileUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;

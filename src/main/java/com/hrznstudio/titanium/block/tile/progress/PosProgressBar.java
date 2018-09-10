@@ -127,6 +127,7 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
 
     /**
      * Gets where the bar is located in the X
+     *
      * @return the x position
      */
     public int getPosX() {
@@ -135,6 +136,7 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
 
     /**
      * Gets where the bar is located in the X
+     *
      * @return the y position
      */
     public int getPosY() {
@@ -143,6 +145,7 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
 
     /**
      * Gets if the progress can be increased
+     *
      * @return A predicate
      */
     public Predicate<TileEntity> getCanIncrease() {
@@ -151,6 +154,7 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
 
     /**
      * Sets a predicate to check if the bar can be increased
+     *
      * @param canIncrease A predicate
      * @return Self
      */
@@ -161,6 +165,7 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
 
     /**
      * Gets the current progress
+     *
      * @return The progress
      */
     public int getProgress() {
@@ -169,6 +174,7 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
 
     /**
      * Sets the progress bar progress
+     *
      * @param progress The progress to set
      */
     public void setProgress(int progress) {
@@ -178,6 +184,7 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
 
     /**
      * Gets the max progress of the bar
+     *
      * @return The bas progress
      */
     public int getMaxProgress() {
@@ -197,6 +204,7 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
 
     /**
      * Gets how often the bar ticks
+     *
      * @return The tick the bar tries to increase
      */
     public int getTickingTime() {
@@ -205,6 +213,7 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
 
     /**
      * Sets how often the bar ticks
+     *
      * @param tickingTime The ticking time
      * @return Self
      */
@@ -215,6 +224,7 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
 
     /**
      * Gets how much the bar increases when it can increase progress
+     *
      * @return The amount it increases
      */
     public int getProgressIncrease() {
@@ -223,6 +233,7 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
 
     /**
      * Sets how much the bar will increase when it can increase
+     *
      * @param progressIncrease The increase amount
      * @return Self
      */
@@ -233,6 +244,7 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
 
     /**
      * Gets the Gui Addons that it will be added to the machine GUI
+     *
      * @return A list of GUI addon factories
      */
     @Override
