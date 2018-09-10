@@ -4,20 +4,17 @@
  *
  * This means no, you cannot steal this code. This is licensed for sole use by Horizon Studio and its subsidiaries, you MUST be granted specific written permission by Horizon Studio to use this code, thinking you have permission IS NOT PERMISSION!
  */
-package com.hrznstudio.titanium._test;
+package com.hrznstudio.titanium.api.client;
 
 import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.block.BlockTileBase;
-import net.minecraft.block.material.Material;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockTest extends BlockTileBase<TileTest> {
+import java.util.List;
 
-    public BlockTest() {
-        super("block_test", Material.ROCK, TileTest.class);
-    }
+public interface IGuiAddonProvider {
 
-    @Override
-    public IFactory<TileTest> getTileEntityFactory() {
-        return TileTest::new;
-    }
+    @SideOnly(Side.CLIENT)
+    List<IFactory<? extends IGuiAddon>> getGuiAddons();
+
 }
