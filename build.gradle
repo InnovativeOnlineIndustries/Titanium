@@ -115,56 +115,7 @@ jar {
     classifier = 'all'
 }
 
-task baseJar(type: Jar) {
-    from(sourceSets.main.output) {
-        include 'com/hrznstudio/titanium/base/**'
-    }
-
-    classifier = 'base'
-}
-
-task cassandraJar(type: Jar) {
-    from(sourceSets.main.output) {
-        include 'com/hrznstudio/titanium/cassandra/**'
-    }
-    classifier = 'cassandra'
-}
-
-task commodoreJar(type: Jar) {
-    from(sourceSets.main.output) {
-        include 'com/hrznstudio/titanium/commodore/**'
-    }
-    classifier = 'commodore'
-}
-
-task corporisJar(type: Jar) {
-    from(sourceSets.main.output) {
-        include 'com/hrznstudio/titanium/corporis/**'
-    }
-    classifier = 'corporis'
-}
-
-task perplexJar(type: Jar) {
-    from(sourceSets.main.output) {
-        include 'com/hrznstudio/titanium/perplex/**'
-    }
-    classifier = 'perplex'
-}
-
-task nucleusJar(type: Jar) {
-    from(sourceSets.main.output) {
-        include 'com/hrznstudio/titanium/nucleus/**'
-    }
-    classifier = 'nucleus'
-}
-
 artifacts {
-    archives baseJar
-    archives cassandraJar
-    archives commodoreJar
-    archives corporisJar
-    archives perplexJar
-    archives nucleusJar
 }
 
 processResources {
