@@ -10,7 +10,7 @@ import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.IItemStackQuery;
 import com.hrznstudio.titanium.block.tile.TilePowered;
 import com.hrznstudio.titanium.block.tile.progress.PosProgressBar;
-import com.hrznstudio.titanium.gui.addon.EnergyBarGuiAddon;
+import com.hrznstudio.titanium.client.gui.addon.EnergyBarGuiAddon;
 import com.hrznstudio.titanium.inventory.PosInvHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;

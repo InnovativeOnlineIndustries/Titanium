@@ -10,7 +10,7 @@ import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
 import com.hrznstudio.titanium.block.tile.TileBase;
-import com.hrznstudio.titanium.gui.addon.ProgressBarGuiAddon;
+import com.hrznstudio.titanium.client.gui.addon.ProgressBarGuiAddon;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.INBTSerializable;

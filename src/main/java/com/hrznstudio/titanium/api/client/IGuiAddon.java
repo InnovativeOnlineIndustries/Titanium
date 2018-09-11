@@ -6,8 +6,8 @@
  */
 package com.hrznstudio.titanium.api.client;
 
-import com.hrznstudio.titanium.gui.GuiContainerTile;
-import com.hrznstudio.titanium.gui.asset.IAssetProvider;
+import com.hrznstudio.titanium.client.gui.GuiContainerTile;
+import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import net.minecraft.client.gui.GuiScreen;
 
 import java.util.Collections;

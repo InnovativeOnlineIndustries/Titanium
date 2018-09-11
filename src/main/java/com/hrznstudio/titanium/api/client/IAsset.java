@@ -6,7 +6,7 @@
  */
 package com.hrznstudio.titanium.api.client;
 
-import com.hrznstudio.titanium.gui.asset.IAssetProvider;
+import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import net.minecraft.util.ResourceLocation;
 
 import java.awt.*;

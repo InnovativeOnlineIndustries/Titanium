@@ -4,14 +4,14 @@
  *
  * This means no, you cannot steal this code. This is licensed for sole use by Horizon Studio and its subsidiaries, you MUST be granted specific written permission by Horizon Studio to use this code, thinking you have permission IS NOT PERMISSION!
  */
-package com.hrznstudio.titanium.gui;
+package com.hrznstudio.titanium.client.gui;
 
 import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.block.tile.TileBase;
 import com.hrznstudio.titanium.container.ContainerTileBase;
-import com.hrznstudio.titanium.gui.addon.ICanMouseDrag;
-import com.hrznstudio.titanium.gui.asset.IAssetProvider;
+import com.hrznstudio.titanium.client.gui.addon.ICanMouseDrag;
+import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.input.Mouse;

@@ -4,21 +4,10 @@
  *
  * This means no, you cannot steal this code. This is licensed for sole use by Horizon Studio and its subsidiaries, you MUST be granted specific written permission by Horizon Studio to use this code, thinking you have permission IS NOT PERMISSION!
  */
-package com.hrznstudio.titanium;
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
+package com.hrznstudio.titanium.client.gui;
 
-//TODO: Make this an interface or something
-public enum Attribute {
-    DURABILITY,
-    MINING_SPEED,
-    CONDUCTIVITY,
-    CRITICAL,
-    SHARPNESS,
-    RADIATION,
-    BLING,
-    KNOCKBACK,
-    KNOCKBACK_RESISTANCE,
-    ATTACK_SPEED,
-    THERMAL_RESISTANCE,
-    PICKUP_RADIUS,
-    IMPLOSION;
-}
+import mcp.MethodsReturnNonnullByDefault;
+
+import javax.annotation.ParametersAreNonnullByDefault;

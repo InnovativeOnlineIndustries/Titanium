@@ -9,7 +9,7 @@ package com.hrznstudio.titanium.inventory;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
-import com.hrznstudio.titanium.gui.addon.SlotsGuiAddon;
+import com.hrznstudio.titanium.client.gui.addon.SlotsGuiAddon;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.items.ItemStackHandler;

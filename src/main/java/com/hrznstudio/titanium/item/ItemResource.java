@@ -4,9 +4,11 @@
  *
  * This means no, you cannot steal this code. This is licensed for sole use by Horizon Studio and its subsidiaries, you MUST be granted specific written permission by Horizon Studio to use this code, thinking you have permission IS NOT PERMISSION!
  */
-package com.hrznstudio.titanium;
+package com.hrznstudio.titanium.item;
 
-import com.hrznstudio.titanium.item.ItemBase;
+import com.hrznstudio.titanium.api.resource.ResourceMaterial;
+import com.hrznstudio.titanium.api.resource.ResourceRegistry;
+import com.hrznstudio.titanium.api.resource.ResourceType;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;

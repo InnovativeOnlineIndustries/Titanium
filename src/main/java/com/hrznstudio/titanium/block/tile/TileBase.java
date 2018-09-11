@@ -12,7 +12,7 @@ import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
 import com.hrznstudio.titanium.block.tile.progress.MultiProgressBarHandler;
 import com.hrznstudio.titanium.block.tile.progress.PosProgressBar;
-import com.hrznstudio.titanium.gui.asset.IAssetProvider;
+import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.inventory.MultiInventoryHandler;
 import com.hrznstudio.titanium.inventory.PosInvHandler;
 import com.hrznstudio.titanium.nbthandler.NBTManager;
