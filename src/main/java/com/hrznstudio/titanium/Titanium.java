@@ -11,6 +11,7 @@ import com.hrznstudio.titanium.api.resource.ResourceMaterial;
 import com.hrznstudio.titanium.api.resource.ResourceRegistry;
 import com.hrznstudio.titanium.api.resource.ResourceType;
 import com.hrznstudio.titanium.block.tile.TileBase;
+import com.hrznstudio.titanium.client.gui.GuiHandler;
 import com.hrznstudio.titanium.compat.TinkersCompat;
 import com.hrznstudio.titanium.item.ItemBase;
 import com.hrznstudio.titanium.item.ItemResource;
@@ -32,6 +33,7 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
@@ -47,8 +49,12 @@ public class Titanium extends TitaniumMod {
     public static final String NAME = "Titanium";
     public static final String VERSION = "1.0.0";
 
+    @Mod.Instance
     public static Titanium INSTANCE;
+    public static List<ItemResource> RESOURCE_ITEMS = new ArrayList<>();
+    public static AdvancedTitaniumTab RESOURCES_TAB;
     private static PulseManager COMPAT_MANAGER = new PulseManager("titanium/compat");
+    private static boolean vanilla;
 
     static {
         COMPAT_MANAGER.registerPulse(new TinkersCompat());
@@ -57,10 +63,6 @@ public class Titanium extends TitaniumMod {
     public static void openGui(TileBase tile, EntityPlayer player) {
         player.openGui(INSTANCE, 0, tile.getWorld(), tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ());
     }
-
-    public static List<ItemResource> RESOURCE_ITEMS = new ArrayList<>();
-    public static AdvancedTitaniumTab RESOURCES_TAB;
-    private static boolean vanilla;
 
     public static void registerVanillaMaterials() {
         if (!vanilla) {
@@ -109,8 +111,8 @@ public class Titanium extends TitaniumMod {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        INSTANCE = this;
         SidedHandler.runOn(Side.CLIENT, () -> TitaniumClient::registerModelLoader);
+        NetworkRegistry.INSTANCE.registerGuiHandler(INSTANCE, new GuiHandler());
     }
 
     @SubscribeEvent

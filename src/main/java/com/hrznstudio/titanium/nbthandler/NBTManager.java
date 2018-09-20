@@ -34,6 +34,7 @@ public class NBTManager {
         handlerList.add(new BooleanNBTHandler());
         handlerList.add(new BlockPosNBTHandler());
         handlerList.add(new StringNBTHandler());
+        handlerList.add(new EnumDyeColorNBTHandler());
         handlerList.add(new ItemStackHandlerNBTHandler());
         handlerList.add(new TankNBTHandler());
         handlerList.add(new NBTSerializableNBTHandler());
@@ -73,7 +74,7 @@ public class NBTManager {
     }
 
     private boolean checkForHandler(Field field) {
-        for (INBTHandler handler : handlerList) {
+        for (INBTHandler<?> handler : handlerList) {
             if (handler.isClassValid(field.getType())) {
                 return true;
             }
@@ -94,7 +95,7 @@ public class NBTManager {
                 Save save = field.getAnnotation(Save.class);
                 try {
                     if (field.get(entity) == null) continue;
-                    compound = handleNBTWrite(compound, save.value().isEmpty() ? field.getName() : save.value(), field.get(entity));
+                    compound = handleNBTWrite(compound, save.value().isEmpty() ? field.getName() : save.value(), field.get(entity), field);
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
@@ -114,7 +115,7 @@ public class NBTManager {
             for (Field field : tileFieldList.get(entity.getClass())) {
                 Save save = field.getAnnotation(Save.class);
                 try {
-                    Object value = handleNBTRead(compound, save.value().isEmpty() ? field.getName() : save.value(), field.get(entity));
+                    Object value = handleNBTRead(compound, save.value().isEmpty() ? field.getName() : save.value(), field.get(entity), field);
                     field.set(entity, value);
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
@@ -131,9 +132,9 @@ public class NBTManager {
      * @param value    The value to store in the NBTTagCompound.
      * @return the modified NBTTagCompound.
      */
-    private NBTTagCompound handleNBTWrite(NBTTagCompound compound, String name, Object value) {
+    private NBTTagCompound handleNBTWrite(NBTTagCompound compound, String name, Object value, Field field) {
         for (INBTHandler handler : handlerList) {
-            if (handler.isClassValid(value.getClass())) {
+            if (handler.isClassValid(value == null ? field.getType() : value.getClass())) {
                 if (handler.storeToNBT(compound, name, value)) return compound;
             }
         }
@@ -148,9 +149,9 @@ public class NBTManager {
      * @param value    The current value.
      * @return
      */
-    private Object handleNBTRead(NBTTagCompound compound, String name, Object value) {
+    private Object handleNBTRead(NBTTagCompound compound, String name, Object value, Field field) {
         for (INBTHandler handler : handlerList) {
-            if (handler.isClassValid(value.getClass())) {
+            if (handler.isClassValid(value == null ? field.getType() : value.getClass())) {
                 if (!compound.hasKey(name)) continue;
                 Object readValue = handler.readFromNBT(compound, name, value);
                 if (readValue != null) {
