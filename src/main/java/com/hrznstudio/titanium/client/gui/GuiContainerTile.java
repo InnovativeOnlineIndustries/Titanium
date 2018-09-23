@@ -6,6 +6,7 @@
  */
 package com.hrznstudio.titanium.client.gui;
 
+import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.block.tile.TileBase;
@@ -35,7 +36,7 @@ public class GuiContainerTile<T extends TileBase> extends GuiContainer {
         super(containerTileBase);
         this.containerTileBase = containerTileBase;
         this.assetProvider = containerTileBase.getTile().getAssetProvider();
-        IAsset background = IAssetProvider.getAsset(assetProvider, IAssetProvider.AssetType.BACKGROUND);
+        IAsset background = IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND);
         this.xSize = background.getArea().width;
         this.ySize = background.getArea().height;
         this.addonList = new ArrayList<>();
@@ -49,7 +50,7 @@ public class GuiContainerTile<T extends TileBase> extends GuiContainer {
         y = (height - ySize) / 2;
         //BG RENDERING
         GlStateManager.color(1, 1, 1, 1);
-        mc.getTextureManager().bindTexture(IAssetProvider.getAsset(assetProvider, IAssetProvider.AssetType.BACKGROUND).getResourceLocation());
+        mc.getTextureManager().bindTexture(IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND).getResourceLocation());
         drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
 
         this.checkForMouseDrag(mouseX, mouseY);

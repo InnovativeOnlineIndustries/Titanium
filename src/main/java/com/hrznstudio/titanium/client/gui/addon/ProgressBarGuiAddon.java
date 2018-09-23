@@ -6,6 +6,7 @@
  */
 package com.hrznstudio.titanium.client.gui.addon;
 
+import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.block.tile.progress.PosProgressBar;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
@@ -34,7 +35,7 @@ public class ProgressBarGuiAddon extends BasicGuiAddon {
 
     @Override
     public void drawGuiContainerBackgroundLayer(GuiScreen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
-        IAsset asset = IAssetProvider.getAsset(provider, IAssetProvider.AssetType.PROGRESS_BAR);
+        IAsset asset = IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR);
         Point offset = asset.getOffset();
         Rectangle area = asset.getArea();
         screen.mc.getTextureManager().bindTexture(asset.getResourceLocation());
@@ -43,7 +44,7 @@ public class ProgressBarGuiAddon extends BasicGuiAddon {
 
     @Override
     public void drawGuiContainerForegroundLayer(GuiScreen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
-        IAsset asset = IAssetProvider.getAsset(provider, IAssetProvider.AssetType.PROGRESS_BAR_FILL);
+        IAsset asset = IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_FILL);
         Point offset = asset.getOffset();
         Rectangle area = asset.getArea();
         screen.mc.getTextureManager().bindTexture(asset.getResourceLocation());

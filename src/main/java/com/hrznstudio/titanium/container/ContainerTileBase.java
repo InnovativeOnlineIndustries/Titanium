@@ -6,7 +6,9 @@
  */
 package com.hrznstudio.titanium.container;
 
+import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.block.tile.TileBase;
+import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.inventory.PosInvHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -14,6 +16,8 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.SlotItemHandler;
+
+import java.awt.*;
 
 public class ContainerTileBase<T extends TileBase> extends Container {
 
@@ -37,17 +41,19 @@ public class ContainerTileBase<T extends TileBase> extends Container {
                 }
             }
         }
+        Point hotbarPos = IAssetProvider.getAsset(tile.getAssetProvider(), AssetTypes.BACKGROUND).getHotbarPosition();
         addPlayerChestInventory();
         for (int k = 0; k < 9; k++) {
-            addSlotToContainer(new Slot(player, k, tile.getAssetProvider().getHotbarPosition().x + k * 18, tile.getAssetProvider().getHotbarPosition().y));
+            addSlotToContainer(new Slot(player, k, hotbarPos.x + k * 18, hotbarPos.y));
         }
     }
 
     public void addPlayerChestInventory() {
+        Point invPos = IAssetProvider.getAsset(tile.getAssetProvider(), AssetTypes.BACKGROUND).getInventoryPosition();
         if (hasPlayerInventory) return;
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {
-                addSlotToContainer(new Slot(player, j + i * 9 + 9, tile.getAssetProvider().getInventoryPosition().x + j * 18, tile.getAssetProvider().getInventoryPosition().y + i * 18));
+                addSlotToContainer(new Slot(player, j + i * 9 + 9, invPos.x + j * 18, invPos.y + i * 18));
             }
         }
         hasPlayerInventory = true;

@@ -6,6 +6,7 @@
  */
 package com.hrznstudio.titanium.client.gui.addon;
 
+import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.inventory.PosInvHandler;
@@ -34,7 +35,7 @@ public class SlotsGuiAddon extends BasicGuiAddon {
 
     @Override
     public void drawGuiContainerBackgroundLayer(GuiScreen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
-        IAsset slot = IAssetProvider.getAsset(provider, IAssetProvider.AssetType.SLOT);
+        IAsset slot = IAssetProvider.getAsset(provider, AssetTypes.SLOT);
         Point offset = slot.getOffset();
         Rectangle area = slot.getArea();
         screen.mc.getTextureManager().bindTexture(slot.getResourceLocation());

@@ -7,8 +7,10 @@
 package com.hrznstudio.titanium.client.gui;
 
 import com.hrznstudio.titanium.api.IFactory;
+import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
+import com.hrznstudio.titanium.api.client.assets.types.IBackgroundAsset;
 import com.hrznstudio.titanium.client.gui.addon.ICanMouseDrag;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import net.minecraft.client.gui.GuiScreen;
@@ -38,7 +40,7 @@ public abstract class GuiAddonScreen extends GuiScreen {
     @Override
     public void initGui() {
         super.initGui();
-        IAsset background = IAssetProvider.getAsset(assetProvider, IAssetProvider.AssetType.BACKGROUND);
+        IBackgroundAsset background = IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND);
         this.x = this.width / 2 - background.getArea().width / 2;
         this.y = this.height / 2 - background.getArea().height / 2;
         this.addonList = this.guiAddons().stream().map(IFactory::create).collect(Collectors.toList());
@@ -51,7 +53,7 @@ public abstract class GuiAddonScreen extends GuiScreen {
         GlStateManager.color(1, 1, 1, 1);
         if (drawBackground) {
             this.drawDefaultBackground();
-            mc.getTextureManager().bindTexture(IAssetProvider.getAsset(assetProvider, IAssetProvider.AssetType.BACKGROUND).getResourceLocation());
+            mc.getTextureManager().bindTexture(IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND).getResourceLocation());
             drawTexturedModalRect(x, y, 0, 0, width, height);
         }
         addonList.forEach(iGuiAddon -> iGuiAddon.drawGuiContainerBackgroundLayer(this, assetProvider, x, y, mouseX, mouseY, partialTicks));

@@ -8,45 +8,36 @@ package com.hrznstudio.titanium.client.gui.asset;
 
 import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.api.client.IAsset;
+import com.hrznstudio.titanium.api.client.IAssetType;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public interface IAssetProvider {
     ResourceLocation DEFAULT_LOCATION = new ResourceLocation(Titanium.MODID, "textures/gui/background.png");
 
     DefaultAssetProvider DEFAULT_PROVIDER = new DefaultAssetProvider();
 
+    List<IAssetType> ASSET_TYPES = new ArrayList<>();
+
     @Nonnull
-    static IAsset getAsset(IAssetProvider provider, AssetType type) {
+    static <T extends IAsset> T getAsset(IAssetProvider provider, IAssetType<T> type) {
         if (provider == DEFAULT_PROVIDER)
             return DEFAULT_PROVIDER.getAsset(type);
-        IAsset asset = provider.getAsset(type);
+        T asset = provider.getAsset(type);
         return asset != null ? asset : DEFAULT_PROVIDER.getAsset(type);
     }
-
-    Point getInventoryPosition();
-
-    Point getHotbarPosition();
 
     /**
      * Provide custom assets to
      *
-     * @param assetType The asset type requested
-     * @return The IAsset requested, if you don't wish to have a custom asset, return null
+     * @param assetType The assets type requested
+     * @return The IAsset requested, if you don't wish to have a custom assets, return null
      */
     @Nullable
-    IAsset getAsset(AssetType assetType);
+    <T extends IAsset> T getAsset(IAssetType<T> assetType);
 
-    enum AssetType {
-        BACKGROUND,
-        SLOT,
-        ENERGY_BAR,
-        ENERGY_FILL,
-        TANK,
-        PROGRESS_BAR,
-        PROGRESS_BAR_FILL;
-    }
 }

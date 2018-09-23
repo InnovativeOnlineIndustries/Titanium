@@ -29,7 +29,7 @@ public enum ResourceType implements IStringSerializable {
     ROD,
     DENSE_ROD("rodDense"),
     GEAR,
-    FLUID;
+    ;
 
     public static final ResourceType[] DEFAULT = new ResourceType[]{INGOT, DUST, NUGGET, CHUNK, CLUMP, CRUSHED, PURIFIED, STONE, PEBBLES, FLAKES, GRINDINGS, SMALLDUST, PLATE, DENSE_PLATE, CASING, REINFORCED_PLATE, ROD, DENSE_ROD, GEAR};
     public static final ResourceType[] VANILLA = new ResourceType[]{DUST, CHUNK, CLUMP, CRUSHED, PURIFIED, STONE, PEBBLES, FLAKES, GRINDINGS, SMALLDUST, PLATE, DENSE_PLATE, CASING, REINFORCED_PLATE, ROD, DENSE_ROD, GEAR};
@@ -55,9 +55,8 @@ public enum ResourceType implements IStringSerializable {
         return hasMaterial;
     }
 
-    public ResourceType setMaterial() {
+    public void setMaterial() {
         this.hasMaterial = true;
-        return this;
     }
 
     @Override
