@@ -63,7 +63,7 @@ public class TransformEntityRenderer extends BaseTransformer {
                                 INVOKESTATIC,
                                 "com/hrznstudio/titanium/core/event/EventDispatcher",
                                 "updateLightmap",
-                                "(IIII)Lcom/hrznstudio/titanium/core/asm/event/UpdateLightmapEvent;",
+                                "(IIII)Lcom/hrznstudio/titanium/core/event/UpdateLightmapEvent;",
                                 false
                         ));
 
@@ -73,7 +73,7 @@ public class TransformEntityRenderer extends BaseTransformer {
                         list.add(new VarInsnNode(ALOAD, 24));
                         list.add(new MethodInsnNode(
                                 INVOKEVIRTUAL,
-                                "com/hrznstudio/titanium/core/asm/event/UpdateLightmapEvent",
+                                "com/hrznstudio/titanium/core/event/UpdateLightmapEvent",
                                 "getRed",
                                 "()I",
                                 false
@@ -84,7 +84,7 @@ public class TransformEntityRenderer extends BaseTransformer {
                         list.add(new VarInsnNode(ALOAD, 24));
                         list.add(new MethodInsnNode(
                                 INVOKEVIRTUAL,
-                                "com/hrznstudio/titanium/core/asm/event/UpdateLightmapEvent",
+                                "com/hrznstudio/titanium/core/event/UpdateLightmapEvent",
                                 "getGreen",
                                 "()I",
                                 false
@@ -95,7 +95,7 @@ public class TransformEntityRenderer extends BaseTransformer {
                         list.add(new VarInsnNode(ALOAD, 24));
                         list.add(new MethodInsnNode(
                                 INVOKEVIRTUAL,
-                                "com/hrznstudio/titanium/core/asm/event/UpdateLightmapEvent",
+                                "com/hrznstudio/titanium/core/event/UpdateLightmapEvent",
                                 "getBlue",
                                 "()I",
                                 false

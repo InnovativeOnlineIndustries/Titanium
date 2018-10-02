@@ -32,7 +32,6 @@ import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -80,6 +79,18 @@ public class Titanium extends TitaniumMod {
                             "type=" + resourceType.getName()
                     )
             ).withTypes(ResourceType.VANILLA));
+            ResourceRegistry.addMaterial("lapis", new ResourceMaterial(
+                    resourceType -> new ModelResourceLocation(
+                            new ResourceLocation(Titanium.MODID, "lapis"),
+                            "type=" + resourceType.getName()
+                    )
+            ).withTypes(ResourceType.VANILLA));
+            ResourceRegistry.addMaterial("obsidian", new ResourceMaterial(
+                    resourceType -> new ModelResourceLocation(
+                            new ResourceLocation(Titanium.MODID, "obsidian"),
+                            "type=" + resourceType.getName()
+                    )
+            ).withTypes(ResourceType.VANILLA).withType(ResourceType.INGOT));
         }
     }
 
@@ -143,10 +154,5 @@ public class Titanium extends TitaniumMod {
             GlStateManager.enableTexture2D();
             GlStateManager.disableBlend();
         }
-    }
-
-    @Mod.EventHandler
-    public void serverStarting(FMLServerStartingEvent event) {
-        event.registerServerCommand(new CommandNickname());
     }
 }
