@@ -16,7 +16,7 @@ public class DoubleNBTHandler implements INBTHandler<Double> {
 
     @Override
     public boolean isClassValid(Class<?> aClass) {
-        return float.class.isAssignableFrom(aClass) || Float.class.isAssignableFrom(aClass);
+        return double.class.isAssignableFrom(aClass) || Double.class.isAssignableFrom(aClass);
     }
 
     @Override
