@@ -16,6 +16,21 @@ import java.awt.*;
 
 public final class DefaultAssetProvider implements IAssetProvider {
     private final IAsset SLOT = () -> new Rectangle(1, 185, 18, 18);
+    private final IAsset ENERGY_BAR = () -> new Rectangle(211, 1, 11, 56);
+    private final IAsset ENERGY_FILL = new IAsset() {
+        @Override
+        public Rectangle getArea() {
+            return new Rectangle(223, 1, 5, 50);
+        }
+
+        @Override
+        public Point getOffset() {
+            return new Point(3, 3);
+        }
+    };
+    private final IAsset TANK = () -> new Rectangle(177, 1, 18, 46);
+    private final Point HOTBAR_POS = new Point(8, 160);
+    private final Point INV_POS = new Point(8, 102);
     private final IBackgroundAsset BACKGROUND = new IBackgroundAsset() {
         @Override
         public Point getInventoryPosition() {
@@ -32,21 +47,6 @@ public final class DefaultAssetProvider implements IAssetProvider {
             return new Rectangle(0, 0, 176, 184);
         }
     };
-    private final IAsset ENERGY_BAR = () -> new Rectangle(211, 1, 11, 56);
-    private final IAsset ENERGY_FILL = new IAsset() {
-        @Override
-        public Rectangle getArea() {
-            return new Rectangle(223, 1, 5, 50);
-        }
-
-        @Override
-        public Point getOffset() {
-            return new Point(3, 3);
-        }
-    };
-    private final IAsset TANK = () -> new Rectangle(177, 1, 18, 46);
-    private final Point HOTBAR_POS = new Point(8, 160);
-    private final Point INV_POS = new Point(8, 102);
     private final IAsset PROGRESS_BAR = () -> new Rectangle(177, 61, 22, 15);
     private final IAsset PROGRESS_BAR_FILL = () -> new Rectangle(177, 77, 22, 16);
 

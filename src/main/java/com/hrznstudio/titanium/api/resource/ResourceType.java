@@ -11,42 +11,39 @@ import com.hrznstudio.titanium.block.BlockResource;
 import com.hrznstudio.titanium.item.ItemResource;
 import net.minecraft.util.IStringSerializable;
 
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 //TODO: Make this an interface or something
 public enum ResourceType implements IStringSerializable {
-    INGOT((IItemFactory) material -> new ItemResource(ResourceType.INGOT, material)),
-    DUST((IItemFactory) material -> new ItemResource(ResourceType.DUST, material)),
-    NUGGET((IItemFactory) material -> new ItemResource(ResourceType.NUGGET, material)),
-    CHUNK((IItemFactory) material -> new ItemResource(ResourceType.CHUNK, material)),
-    CLUMP((IItemFactory) material -> new ItemResource(ResourceType.CLUMP, material)),
-    CRUSHED((IItemFactory) material -> new ItemResource(ResourceType.CRUSHED, material)),
-    PURIFIED((IItemFactory) material -> new ItemResource(ResourceType.PURIFIED, material)),
-    STONE((IItemFactory) material -> new ItemResource(ResourceType.STONE, material)),
-    PEBBLES((IItemFactory) material -> new ItemResource(ResourceType.PEBBLES, material)),
-    FLAKES((IItemFactory) material -> new ItemResource(ResourceType.FLAKES, material)),
-    GRINDINGS((IItemFactory) material -> new ItemResource(ResourceType.GRINDINGS, material)),
-    SMALLDUST((IItemFactory) material -> new ItemResource(ResourceType.SMALLDUST, material)),
-    PLATE((IItemFactory) material -> new ItemResource(ResourceType.PLATE, material)),
-    DENSE_PLATE((IItemFactory) material -> new ItemResource(ResourceType.DENSE_PLATE, material), "plateDense"),
-    CASING((IItemFactory) material -> new ItemResource(ResourceType.CASING, material)),
-    REINFORCED_PLATE((IItemFactory) material -> new ItemResource(ResourceType.REINFORCED_PLATE, material), "plateReinforced"),
-    ROD((IItemFactory) material -> new ItemResource(ResourceType.ROD, material)), //TODO: Rod Textures
-    DENSE_ROD((IItemFactory) material -> new ItemResource(ResourceType.DENSE_ROD, material), "rodDense"),
-    GEAR((IItemFactory) material -> new ItemResource(ResourceType.GEAR, material)),
+    INGOT(ItemResource::new),
+    DUST(ItemResource::new),
+    NUGGET(ItemResource::new),
+    CHUNK(ItemResource::new),
+    CLUMP(ItemResource::new),
+    CRUSHED(ItemResource::new),
+    PURIFIED(ItemResource::new),
+    STONE(ItemResource::new),
+    PEBBLES(ItemResource::new),
+    FLAKES(ItemResource::new),
+    GRINDINGS(ItemResource::new),
+    SMALLDUST(ItemResource::new),
+    PLATE(ItemResource::new),
+    DENSE_PLATE(ItemResource::new, "plateDense"),
+    CASING(ItemResource::new),
+    REINFORCED_PLATE(ItemResource::new, "plateReinforced"),
+    ROD(ItemResource::new), //TODO: Rod Textures
+    DENSE_ROD(ItemResource::new, "rodDense"),
+    GEAR(ItemResource::new),
     ORE(BlockOre::new);
 
     public static final ResourceType[] DEFAULT = new ResourceType[]{ORE, INGOT, DUST, NUGGET, CHUNK, CLUMP, CRUSHED, PURIFIED, STONE, PEBBLES, FLAKES, GRINDINGS, SMALLDUST, PLATE, DENSE_PLATE, CASING, REINFORCED_PLATE, GEAR};
     public static final ResourceType[] VANILLA = new ResourceType[]{DUST, CHUNK, CLUMP, CRUSHED, PURIFIED, STONE, PEBBLES, FLAKES, GRINDINGS, SMALLDUST, PLATE, DENSE_PLATE, CASING, REINFORCED_PLATE, GEAR};
     public static final ResourceType[] ORE_ONLY = new ResourceType[]{ORE, DUST, CHUNK, CLUMP, CRUSHED, PURIFIED, STONE, PEBBLES, FLAKES, GRINDINGS, SMALLDUST};
-
-    private String oreDict;
-
-    private boolean hasMaterial;
-    private Function<ResourceMaterial, ItemResource> itemFunction;
-    private Function<ResourceMaterial, BlockResource> blockFunction;
-
     boolean hasItem;
+    private String oreDict;
+    private boolean hasMaterial;
+    private BiFunction<ResourceType, ResourceMaterial, ItemResource> itemFunction;
+    private BiFunction<ResourceType, ResourceMaterial, BlockResource> blockFunction;
 
     ResourceType(IItemFactory itemFunction) {
         this.itemFunction = itemFunction;
@@ -81,19 +78,19 @@ public enum ResourceType implements IStringSerializable {
         return name().toLowerCase();
     }
 
-    public Function<ResourceMaterial, ItemResource> getItemFunction() {
+    public BiFunction<ResourceType, ResourceMaterial, ItemResource> getItemFunction() {
         return itemFunction;
     }
 
-    public Function<ResourceMaterial, BlockResource> getBlockFunction() {
+    public BiFunction<ResourceType, ResourceMaterial, BlockResource> getBlockFunction() {
         return blockFunction;
     }
 
-    public interface IItemFactory extends Function<ResourceMaterial, ItemResource> {
+    public interface IItemFactory extends BiFunction<ResourceType, ResourceMaterial, ItemResource> {
 
     }
 
-    public interface IBlockFactory extends Function<ResourceMaterial, BlockResource> {
+    public interface IBlockFactory extends BiFunction<ResourceType, ResourceMaterial, BlockResource> {
 
     }
 }

@@ -133,7 +133,7 @@ public class Titanium extends TitaniumMod {
     @SubscribeEvent
     public void registerBlocks(RegistryEvent.Register<Block> event) {
         for (ResourceType type : ResourceType.values()) {
-            if(type.getBlockFunction()==null)
+            if (type.getBlockFunction() == null)
                 continue;
             ResourceRegistry.getMaterials().forEach(material -> {
                 if (material.hasType(type)) {

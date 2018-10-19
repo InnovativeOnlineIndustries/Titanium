@@ -21,15 +21,15 @@ import java.util.Random;
 public class BlockOre extends BlockResource {
     private static Item grindingsItem;
 
+    public BlockOre(ResourceType type, ResourceMaterial resourceMaterial) {
+        super(type, resourceMaterial, Material.ROCK);
+    }
+
     public static Item getGrindingsItem() {
         if (grindingsItem == null) {
             grindingsItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(Titanium.MODID, "grindings"));
         }
         return grindingsItem == null ? Items.AIR : grindingsItem;
-    }
-
-    public BlockOre(ResourceMaterial resourceMaterial) {
-        super(resourceMaterial, ResourceType.ORE, Material.ROCK);
     }
 
     @Override

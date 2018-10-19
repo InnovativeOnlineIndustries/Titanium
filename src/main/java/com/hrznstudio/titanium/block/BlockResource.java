@@ -21,10 +21,10 @@ public abstract class BlockResource extends BlockBase {
     private ResourceType type;
 
 
-    public BlockResource(ResourceMaterial resourceMaterial, ResourceType type, Material material) {
-        super(resourceMaterial.materialName+"_"+type.getName(), material);
+    public BlockResource(ResourceType type, ResourceMaterial resourceMaterial, Material material) {
+        super(resourceMaterial.materialName + "_" + type.getName(), material);
         this.resourceMaterial = resourceMaterial;
-        this.type=type;
+        this.type = type;
     }
 
     public void registerModels() {
