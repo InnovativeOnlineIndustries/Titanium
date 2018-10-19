@@ -52,6 +52,9 @@ public class AdvancedTitaniumTab extends TitaniumTab {
         this.icons.addAll(icons);
     }
 
+    public void addIconStack(ItemStack icon) {
+        this.icons.add(icon);
+    }
     public void addIconStacks(ItemStack... icons) {
         Collections.addAll(this.icons, icons);
     }

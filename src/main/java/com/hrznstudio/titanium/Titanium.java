@@ -10,8 +10,10 @@ import com.hrznstudio.titanium.api.raytrace.DistanceRayTraceResult;
 import com.hrznstudio.titanium.api.resource.ResourceMaterial;
 import com.hrznstudio.titanium.api.resource.ResourceRegistry;
 import com.hrznstudio.titanium.api.resource.ResourceType;
+import com.hrznstudio.titanium.block.BlockResource;
 import com.hrznstudio.titanium.block.tile.TileBase;
 import com.hrznstudio.titanium.client.gui.GuiHandler;
+import com.hrznstudio.titanium.client.gui.MCMPGuiHandler;
 import com.hrznstudio.titanium.compat.TinkersCompat;
 import com.hrznstudio.titanium.item.ItemBase;
 import com.hrznstudio.titanium.item.ItemResource;
@@ -19,17 +21,20 @@ import com.hrznstudio.titanium.pulsar.control.PulseManager;
 import com.hrznstudio.titanium.tab.AdvancedTitaniumTab;
 import com.hrznstudio.titanium.util.SidedHandler;
 import com.hrznstudio.titanium.util.TitaniumMod;
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -52,6 +57,7 @@ public class Titanium extends TitaniumMod {
     @Mod.Instance
     public static Titanium INSTANCE;
     public static List<ItemResource> RESOURCE_ITEMS = new ArrayList<>();
+    public static List<BlockResource> RESOURCE_BLOCKS = new ArrayList<>();
     public static AdvancedTitaniumTab RESOURCES_TAB;
     private static PulseManager COMPAT_MANAGER = new PulseManager("titanium/compat");
     private static boolean vanilla;
@@ -61,7 +67,7 @@ public class Titanium extends TitaniumMod {
     }
 
     public static void openGui(TileBase tile, EntityPlayer player) {
-        player.openGui(INSTANCE, 0, tile.getWorld(), tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ());
+        player.openGui(INSTANCE, -1, tile.getWorld(), tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ());
     }
 
     public static void registerVanillaMaterials() {
@@ -91,18 +97,25 @@ public class Titanium extends TitaniumMod {
                             "type=" + resourceType.getName()
                     )
             ).withTypes(ResourceType.VANILLA).withType(ResourceType.INGOT));
+            ResourceRegistry.addMaterial("diamond", new ResourceMaterial(
+                    resourceType -> new ModelResourceLocation(
+                            new ResourceLocation(Titanium.MODID, "diamond"),
+                            "type=" + resourceType.getName()
+                    )
+            ).withTypes(ResourceType.VANILLA).withType(ResourceType.INGOT));
         }
     }
 
     @SubscribeEvent
     public void registerItems(RegistryEvent.Register<Item> event) {
         for (ResourceType type : ResourceType.values()) {
-            if (type.hasMaterial()) {
-                RESOURCE_ITEMS.add(new ItemResource(type));
+            if (type.hasItem() && type.getItemFunction() != null) {
+                RESOURCE_ITEMS.add(type.getItemFunction().apply(type));
             }
         }
         if (!RESOURCE_ITEMS.isEmpty()) {
-            RESOURCES_TAB = new AdvancedTitaniumTab("titanium.resources", true);
+            if (RESOURCES_TAB == null)
+                RESOURCES_TAB = new AdvancedTitaniumTab("titanium.resources", true);
             RESOURCE_ITEMS.forEach(item -> {
                 event.getRegistry().register(item.setCreativeTab(RESOURCES_TAB));
                 ResourceRegistry.getMaterials().forEach(material -> {
@@ -111,6 +124,29 @@ public class Titanium extends TitaniumMod {
                         OreDictionary.registerOre(item.getType().getOreDict() + StringUtils.capitalize(material.materialName), item.getStack(material, 1));
                     }
                 });
+            });
+        }
+        if (!RESOURCE_BLOCKS.isEmpty()) {
+            RESOURCE_BLOCKS.forEach(block -> {
+                event.getRegistry().register(block.getItemBlockFactory().create());
+                OreDictionary.registerOre(block.getType().getOreDict() + StringUtils.capitalize(block.getResourceMaterial().materialName), block);
+            });
+        }
+    }
+
+    @SubscribeEvent
+    public void registerBlocks(RegistryEvent.Register<Block> event) {
+        for (ResourceType type : ResourceType.values()) {
+            ResourceRegistry.getMaterials().forEach(material -> {
+                if (material.hasType(type)) {
+                    if (RESOURCES_TAB == null)
+                        RESOURCES_TAB = new AdvancedTitaniumTab("titanium.resources", true);
+                    BlockResource resource = type.getBlockFunction().apply(material);
+                    resource.setCreativeTab(RESOURCES_TAB);
+                    RESOURCES_TAB.addIconStack(new ItemStack(resource));
+                    event.getRegistry().register(resource);
+                    RESOURCE_BLOCKS.add(resource);
+                }
             });
         }
     }
@@ -124,7 +160,10 @@ public class Titanium extends TitaniumMod {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         SidedHandler.runOn(Side.CLIENT, () -> TitaniumClient::registerModelLoader);
-        NetworkRegistry.INSTANCE.registerGuiHandler(INSTANCE, new GuiHandler());
+        if (Loader.isModLoaded("mcmultipart"))
+            NetworkRegistry.INSTANCE.registerGuiHandler(INSTANCE, new MCMPGuiHandler());
+        else
+            NetworkRegistry.INSTANCE.registerGuiHandler(INSTANCE, new GuiHandler());
     }
 
     @SubscribeEvent

@@ -6,53 +6,70 @@
  */
 package com.hrznstudio.titanium.api.resource;
 
+import com.hrznstudio.titanium.block.BlockOre;
+import com.hrznstudio.titanium.block.BlockResource;
+import com.hrznstudio.titanium.item.ItemResource;
 import net.minecraft.util.IStringSerializable;
+
+import java.util.function.Function;
 
 //TODO: Make this an interface or something
 public enum ResourceType implements IStringSerializable {
-    INGOT,
-    DUST,
-    NUGGET,
-    CHUNK,
-    CLUMP,
-    CRUSHED,
-    PURIFIED,
-    STONE,
-    PEBBLES,
-    FLAKES,
-    GRINDINGS,
-    SMALLDUST,
-    PLATE,
-    DENSE_PLATE("plateDense"),
-    CASING,
-    REINFORCED_PLATE("plateReinforced"),
-    ROD,
-    DENSE_ROD("rodDense"),
-    GEAR,
-    ;
+    INGOT(ItemResource::new),
+    DUST(ItemResource::new),
+    NUGGET(ItemResource::new),
+    CHUNK(ItemResource::new),
+    CLUMP(ItemResource::new),
+    CRUSHED(ItemResource::new),
+    PURIFIED(ItemResource::new),
+    STONE(ItemResource::new),
+    PEBBLES(ItemResource::new),
+    FLAKES(ItemResource::new),
+    GRINDINGS(ItemResource::new),
+    SMALLDUST(ItemResource::new),
+    PLATE(ItemResource::new),
+    DENSE_PLATE(ItemResource::new, "plateDense"),
+    CASING(ItemResource::new),
+    REINFORCED_PLATE(ItemResource::new, "plateReinforced"),
+    ROD(ItemResource::new), //TODO: Rod Textures
+    DENSE_ROD(ItemResource::new, "rodDense"),
+    GEAR(ItemResource::new),
+    ORE(BlockOre::new);
 
-    public static final ResourceType[] DEFAULT = new ResourceType[]{INGOT, DUST, NUGGET, CHUNK, CLUMP, CRUSHED, PURIFIED, STONE, PEBBLES, FLAKES, GRINDINGS, SMALLDUST, PLATE, DENSE_PLATE, CASING, REINFORCED_PLATE, ROD, DENSE_ROD, GEAR};
-    public static final ResourceType[] VANILLA = new ResourceType[]{DUST, CHUNK, CLUMP, CRUSHED, PURIFIED, STONE, PEBBLES, FLAKES, GRINDINGS, SMALLDUST, PLATE, DENSE_PLATE, CASING, REINFORCED_PLATE, ROD, DENSE_ROD, GEAR};
-    public static final ResourceType[] ORE = new ResourceType[]{DUST, CHUNK, CLUMP, CRUSHED, PURIFIED, STONE, PEBBLES, FLAKES, GRINDINGS, SMALLDUST};
+    public static final ResourceType[] DEFAULT = new ResourceType[]{ORE, INGOT, DUST, NUGGET, CHUNK, CLUMP, CRUSHED, PURIFIED, STONE, PEBBLES, FLAKES, GRINDINGS, SMALLDUST, PLATE, DENSE_PLATE, CASING, REINFORCED_PLATE, GEAR};
+    public static final ResourceType[] VANILLA = new ResourceType[]{DUST, CHUNK, CLUMP, CRUSHED, PURIFIED, STONE, PEBBLES, FLAKES, GRINDINGS, SMALLDUST, PLATE, DENSE_PLATE, CASING, REINFORCED_PLATE, GEAR};
+    public static final ResourceType[] ORE_ONLY = new ResourceType[]{ORE, DUST, CHUNK, CLUMP, CRUSHED, PURIFIED, STONE, PEBBLES, FLAKES, GRINDINGS, SMALLDUST};
 
     private String oreDict;
 
     private boolean hasMaterial;
+    private Function<ResourceType, ItemResource> itemFunction;
+    private Function<ResourceMaterial, BlockResource> blockFunction;
 
-    ResourceType(String oreDict) {
-        this.oreDict = oreDict;
+    boolean hasItem;
+
+    ResourceType(IItemFactory itemFunction) {
+        this.itemFunction = itemFunction;
     }
 
-    ResourceType() {
-        this.oreDict = getName();
+    ResourceType(IBlockFactory blockFunction) {
+        this.blockFunction = blockFunction;
+    }
+
+    ResourceType(IBlockFactory blockFunction, String oreDict) {
+        this.blockFunction = blockFunction;
+    }
+
+    ResourceType(IItemFactory blockFunction, String oreDict) {
+        this.itemFunction = blockFunction;
     }
 
     public String getOreDict() {
         return oreDict;
     }
 
-    public boolean hasMaterial() {
-        return hasMaterial;
+    public boolean hasItem() {
+        return hasItem && hasMaterial;
     }
 
     public void setMaterial() {
@@ -62,5 +79,21 @@ public enum ResourceType implements IStringSerializable {
     @Override
     public String getName() {
         return name().toLowerCase();
+    }
+
+    public Function<ResourceType, ItemResource> getItemFunction() {
+        return itemFunction;
+    }
+
+    public Function<ResourceMaterial, BlockResource> getBlockFunction() {
+        return blockFunction;
+    }
+
+    public interface IItemFactory extends Function<ResourceType, ItemResource> {
+
+    }
+
+    public interface IBlockFactory extends Function<ResourceMaterial, BlockResource> {
+
     }
 }

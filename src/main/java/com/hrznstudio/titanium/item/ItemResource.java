@@ -23,6 +23,7 @@ public class ItemResource extends ItemBase {
 
     public ItemResource(ResourceType type) {
         super(type.getName());
+        setHasSubtypes(true);
         this.type = type;
     }
 

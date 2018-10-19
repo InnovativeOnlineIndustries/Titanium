@@ -6,13 +6,39 @@
  */
 package com.hrznstudio.titanium.block;
 
+import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.api.resource.ResourceMaterial;
+import com.hrznstudio.titanium.api.resource.ResourceType;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
-public class BlockOre extends BlockBase {
-    private ResourceMaterial material;
-    public BlockOre(ResourceMaterial material) {
-        super("ore_" + material.materialName, Material.ROCK);
-        this.material=material;
+import java.util.Random;
+
+public class BlockOre extends BlockResource {
+    private static Item grindingsItem;
+
+    public static Item getGrindingsItem() {
+        if (grindingsItem == null) {
+            grindingsItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(Titanium.MODID, "grindings"));
+        }
+        return grindingsItem == null ? Items.AIR : grindingsItem;
+    }
+
+    public BlockOre(ResourceMaterial resourceMaterial) {
+        super(resourceMaterial, Material.ROCK);
+    }
+
+    @Override
+    public Item getItemDropped(IBlockState state, Random rand, int fortune) {
+        return getGrindingsItem();
+    }
+
+    @Override
+    public ResourceType getType() {
+        return ResourceType.ORE;
     }
 }

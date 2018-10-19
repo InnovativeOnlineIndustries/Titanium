@@ -51,6 +51,22 @@ minecraft {
     serverJvmArgs = ["-Dfml.coreMods.load=$core_plugin"]
 }
 
+repositories {
+    maven { url "https://modmaven.k-4u.nl" }
+    maven { url "http://maven.k-4u.nl" }
+    maven { url "http://maven.tterrag.com" }
+    maven { url "http://tehnut.info/maven" }
+    maven { url "http://modmaven.k-4u.nl" }
+    maven { url "http://dvs1.progwml6.com/files/maven" }
+}
+
+dependencies {
+    deobfCompile "MCMultiPart2:MCMultiPart:2.5.3"
+    provided "team.chisel.ctm:CTM:MC1.12.2-0.3.2.18"
+    deobfProvided "mezz.jei:jei_1.12.2:4.8.5.138:api"
+    runtime "mezz.jei:jei_1.12.2:4.8.5.138"
+    deobfCompile group: 'mcp.mobius.waila', name: 'Hwyla', version: '1.8.23-B38_1.12'
+}
 changelog {
     title = "${archivesBaseName} - Changelog"
 

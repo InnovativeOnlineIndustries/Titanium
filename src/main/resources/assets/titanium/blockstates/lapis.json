@@ -1,0 +1,97 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "builtin/generated",
+    "textures": {
+      "layer0": "titanium:items/lapis/ingot"
+    },
+    "transform": "forge:default-item"
+  },
+  "variants": {
+    "normal": [
+      {}
+    ],
+    "inventory": [
+      {}
+    ],
+    "type": {
+
+      "ingot": {
+        "textures": {
+          "layer0": "titanium:items/lapis/ingot"
+        }
+      },
+      "nugget": {
+        "textures": {
+          "layer0": "titanium:items/lapis/nugget"
+        }
+      },
+      "plate": {
+        "textures": {
+          "layer0": "titanium:items/lapis/plate"
+        }
+      },
+      "dust": {
+        "textures": {
+          "layer0": "titanium:items/lapis/dust"
+        }
+      },
+      "reinforced_plate": {
+        "textures": {
+          "layer0": "titanium:items/lapis/reinforced_plate"
+        }
+      },
+      "casing": {
+        "textures": {
+          "layer0": "titanium:items/lapis/casing"
+        }
+      },
+      "chunk": {
+        "textures": {
+          "layer0": "titanium:items/lapis/chunk"
+        }
+      },
+      "clump": {
+        "textures": {
+          "layer0": "titanium:items/lapis/scrap"
+        }
+      },
+      "purified": {
+        "textures": {
+          "layer0": "titanium:items/lapis/slurry"
+        }
+      },
+      "dense_plate": {
+        "textures": {
+          "layer0": "titanium:items/lapis/dense_plate"
+        }
+      },
+      "flakes": {
+        "textures": {
+          "layer0": "titanium:items/lapis/flakes"
+        }
+      },
+      "grindings": {
+        "textures": {
+          "layer0": "titanium:items/lapis/grindings"
+        }
+      },
+      "stone": {
+        "textures": {
+          "layer0": "titanium:items/lapis/shard"
+        }
+      },
+      "gear": {
+        "textures": {
+          "layer0": "titanium:items/lapis/gear"
+        }
+      },
+      "pebbles": {
+        "textures": {
+          "layer0": "titanium:items/lapis/clumps"
+        }
+      }
+
+    }
+  }
+}

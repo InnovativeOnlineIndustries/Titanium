@@ -1,0 +1,97 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "builtin/generated",
+    "textures": {
+      "layer0": "titanium:items/obsidian/ingot"
+    },
+    "transform": "forge:default-item"
+  },
+  "variants": {
+    "normal": [
+      {}
+    ],
+    "inventory": [
+      {}
+    ],
+    "type": {
+
+      "ingot": {
+        "textures": {
+          "layer0": "titanium:items/obsidian/ingot"
+        }
+      },
+      "nugget": {
+        "textures": {
+          "layer0": "titanium:items/obsidian/nugget"
+        }
+      },
+      "plate": {
+        "textures": {
+          "layer0": "titanium:items/obsidian/plate"
+        }
+      },
+      "dust": {
+        "textures": {
+          "layer0": "titanium:items/obsidian/dust"
+        }
+      },
+      "reinforced_plate": {
+        "textures": {
+          "layer0": "titanium:items/obsidian/reinforced_plate"
+        }
+      },
+      "casing": {
+        "textures": {
+          "layer0": "titanium:items/obsidian/casing"
+        }
+      },
+      "chunk": {
+        "textures": {
+          "layer0": "titanium:items/obsidian/chunk"
+        }
+      },
+      "clump": {
+        "textures": {
+          "layer0": "titanium:items/obsidian/scrap"
+        }
+      },
+      "purified": {
+        "textures": {
+          "layer0": "titanium:items/obsidian/slurry"
+        }
+      },
+      "dense_plate": {
+        "textures": {
+          "layer0": "titanium:items/obsidian/dense_plate"
+        }
+      },
+      "flakes": {
+        "textures": {
+          "layer0": "titanium:items/obsidian/flakes"
+        }
+      },
+      "grindings": {
+        "textures": {
+          "layer0": "titanium:items/obsidian/grindings"
+        }
+      },
+      "stone": {
+        "textures": {
+          "layer0": "titanium:items/obsidian/shard"
+        }
+      },
+      "gear": {
+        "textures": {
+          "layer0": "titanium:items/obsidian/gear"
+        }
+      },
+      "pebbles": {
+        "textures": {
+          "layer0": "titanium:items/obsidian/clumps"
+        }
+      }
+
+    }
+  }
+}
