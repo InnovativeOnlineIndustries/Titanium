@@ -29,7 +29,7 @@ public class BlockOre extends BlockResource {
     }
 
     public BlockOre(ResourceMaterial resourceMaterial) {
-        super(resourceMaterial, Material.ROCK);
+        super(resourceMaterial, ResourceType.ORE, Material.ROCK);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class BlockOre extends BlockResource {
     }
 
     @Override
-    public ResourceType getType() {
-        return ResourceType.ORE;
+    public int quantityDropped(IBlockState state, int fortune, Random random) {
+        return random.nextInt(2) + 2;
     }
 }

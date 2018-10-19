@@ -7,12 +7,9 @@
 package com.hrznstudio.titanium.item;
 
 import com.hrznstudio.titanium.api.resource.ResourceMaterial;
-import com.hrznstudio.titanium.api.resource.ResourceRegistry;
 import com.hrznstudio.titanium.api.resource.ResourceType;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.client.model.ModelLoader;
 
 import javax.annotation.Nonnull;
@@ -20,11 +17,12 @@ import java.util.function.Function;
 
 public class ItemResource extends ItemBase {
     private ResourceType type;
+    private ResourceMaterial material;
 
-    public ItemResource(ResourceType type) {
-        super(type.getName());
-        setHasSubtypes(true);
+    public ItemResource(ResourceType type, ResourceMaterial material) {
+        super(material.materialName + "_" + type.getName());
         this.type = type;
+        this.material = material;
     }
 
     public ResourceType getType() {
@@ -32,40 +30,22 @@ public class ItemResource extends ItemBase {
     }
 
     public void registerModels() {
-        ResourceRegistry.getMaterials().forEach(material -> {
-            if (material.hasType(this.type)) {
-                ModelResourceLocation location = null;
-                for (Function<ResourceType, ModelResourceLocation> function : material.getModelFunctions()) {
-                    location = function.apply(type);
-                    if (location != null)
-                        break;
-                }
-                if (location != null) ModelLoader.setCustomModelResourceLocation(this, material.meta, location);
-            }
-        });
-    }
-
-    @Override
-    public int getMetadata(int damage) {
-        return damage;
+        ModelResourceLocation location = null;
+        for (Function<ResourceType, ModelResourceLocation> function : material.getModelFunctions()) {
+            location = function.apply(type);
+            if (location != null)
+                break;
+        }
+        if (location != null) ModelLoader.setCustomModelResourceLocation(this, 0, location);
     }
 
     @Override
     @Nonnull
     public String getItemStackDisplayName(ItemStack stack) {
-        return String.format(super.getItemStackDisplayName(stack), ResourceRegistry.getMaterial(stack.getMetadata()).filter(material -> material.hasType(this.type)).map(ResourceMaterial::getLocalizedName).orElse("Error!"));
+        return String.format(super.getItemStackDisplayName(stack), material.getLocalizedName());
     }
 
-    public ItemStack getStack(ResourceMaterial material, int amount) {
-        return new ItemStack(this, amount, material.meta);
-    }
-
-    @Override
-    public void listSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
-        ResourceRegistry.getMaterials().forEach(material -> {
-            if (!material.hasType(this.type))
-                return;
-            items.add(new ItemStack(this, 1, material.meta));
-        });
+    public ItemStack getStack(int amount) {
+        return new ItemStack(this, amount);
     }
 }

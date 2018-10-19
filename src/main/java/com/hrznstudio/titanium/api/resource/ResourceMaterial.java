@@ -19,7 +19,6 @@ import java.util.function.Function;
 
 public class ResourceMaterial {
     public String materialName;
-    public int meta;
 
     private Map<Attribute, Float> attributeMap = new HashMap<>();
     private List<ResourceType> types = new ArrayList<>();

@@ -59,6 +59,7 @@ public class Titanium extends TitaniumMod {
     public static List<ItemResource> RESOURCE_ITEMS = new ArrayList<>();
     public static List<BlockResource> RESOURCE_BLOCKS = new ArrayList<>();
     public static AdvancedTitaniumTab RESOURCES_TAB;
+
     private static PulseManager COMPAT_MANAGER = new PulseManager("titanium/compat");
     private static boolean vanilla;
 
@@ -109,21 +110,16 @@ public class Titanium extends TitaniumMod {
     @SubscribeEvent
     public void registerItems(RegistryEvent.Register<Item> event) {
         for (ResourceType type : ResourceType.values()) {
-            if (type.hasItem() && type.getItemFunction() != null) {
-                RESOURCE_ITEMS.add(type.getItemFunction().apply(type));
-            }
-        }
-        if (!RESOURCE_ITEMS.isEmpty()) {
-            if (RESOURCES_TAB == null)
-                RESOURCES_TAB = new AdvancedTitaniumTab("titanium.resources", true);
-            RESOURCE_ITEMS.forEach(item -> {
-                event.getRegistry().register(item.setCreativeTab(RESOURCES_TAB));
-                ResourceRegistry.getMaterials().forEach(material -> {
-                    if (material.hasType(item.getType())) {
-                        RESOURCES_TAB.addIconStacks(item.getStack(material, 1));
-                        OreDictionary.registerOre(item.getType().getOreDict() + StringUtils.capitalize(material.materialName), item.getStack(material, 1));
-                    }
-                });
+            if (type.getItemFunction() == null)
+                continue;
+            ResourceRegistry.getMaterials().forEach(material -> {
+                if (material.hasType(type)) {
+                    ItemResource item = type.getItemFunction().apply(material);
+                    event.getRegistry().register(item.setCreativeTab(RESOURCES_TAB));
+                    RESOURCES_TAB.addIconStacks(item.getStack(1));
+                    RESOURCE_ITEMS.add(item);
+                    OreDictionary.registerOre(item.getType().getOreDict() + StringUtils.capitalize(material.materialName), item.getStack(1));
+                }
             });
         }
         if (!RESOURCE_BLOCKS.isEmpty()) {
@@ -137,6 +133,8 @@ public class Titanium extends TitaniumMod {
     @SubscribeEvent
     public void registerBlocks(RegistryEvent.Register<Block> event) {
         for (ResourceType type : ResourceType.values()) {
+            if(type.getBlockFunction()==null)
+                continue;
             ResourceRegistry.getMaterials().forEach(material -> {
                 if (material.hasType(type)) {
                     if (RESOURCES_TAB == null)
