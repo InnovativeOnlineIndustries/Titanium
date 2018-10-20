@@ -40,6 +40,11 @@ public class ItemResource extends ItemBase {
     }
 
     @Override
+    public String getUnlocalizedName() {
+        return String.format("item.titanium.%s.name", getType().getName());
+    }
+
+    @Override
     @Nonnull
     public String getItemStackDisplayName(ItemStack stack) {
         return String.format(super.getItemStackDisplayName(stack), material.getLocalizedName());

@@ -34,12 +34,9 @@ import java.util.Objects;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ItemBase extends Item implements IModelRegistrar {
-    public static List<ItemBase> ITEMS = new ArrayList<>();
-
     public ItemBase(String name) {
         setRegistryName(name);
         setUnlocalizedName(Objects.requireNonNull(getRegistryName()).toString().replace(':', '.'));
-        ITEMS.add(this);
     }
 
     @Override

@@ -14,6 +14,7 @@ import com.hrznstudio.titanium.block.BlockResource;
 import com.hrznstudio.titanium.block.tile.TileBase;
 import com.hrznstudio.titanium.client.gui.GuiHandler;
 import com.hrznstudio.titanium.client.gui.MCMPGuiHandler;
+import com.hrznstudio.titanium.compat.JEICompat;
 import com.hrznstudio.titanium.compat.TinkersCompat;
 import com.hrznstudio.titanium.item.ItemBase;
 import com.hrznstudio.titanium.item.ItemResource;
@@ -45,8 +46,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Mod(modid = Titanium.MODID, name = Titanium.NAME, version = Titanium.VERSION)
 public class Titanium extends TitaniumMod {
@@ -60,11 +60,20 @@ public class Titanium extends TitaniumMod {
     public static List<BlockResource> RESOURCE_BLOCKS = new ArrayList<>();
     public static AdvancedTitaniumTab RESOURCES_TAB;
 
-    private static PulseManager COMPAT_MANAGER = new PulseManager("titanium/compat");
+    public static Map<ResourceMaterial,Map<ResourceType,Item>> RESOURCE_MAP = new HashMap<>();
+
+    public static PulseManager COMPAT_MANAGER = new PulseManager("titanium/compat");
     private static boolean vanilla;
 
     static {
         COMPAT_MANAGER.registerPulse(new TinkersCompat());
+        COMPAT_MANAGER.registerPulse(new JEICompat());
+    }
+
+    public static Optional<Item> getResourceItem(ResourceMaterial material, ResourceType type) {
+        if(!RESOURCE_MAP.containsKey(material))
+            return Optional.empty();
+        return Optional.ofNullable(RESOURCE_MAP.get(material).get(type));
     }
 
     public static void openGui(TileBase tile, EntityPlayer player) {
@@ -114,18 +123,22 @@ public class Titanium extends TitaniumMod {
                 continue;
             ResourceRegistry.getMaterials().forEach(material -> {
                 if (material.hasType(type)) {
-                    ItemResource item = type.getItemFunction().apply(material);
+                    ItemResource item = type.getItemFunction().apply(type, material);
                     event.getRegistry().register(item.setCreativeTab(RESOURCES_TAB));
                     RESOURCES_TAB.addIconStacks(item.getStack(1));
                     RESOURCE_ITEMS.add(item);
+                    RESOURCE_MAP.computeIfAbsent(material, mat -> new HashMap<>()).put(type, item);
+
                     OreDictionary.registerOre(item.getType().getOreDict() + StringUtils.capitalize(material.materialName), item.getStack(1));
                 }
             });
         }
         if (!RESOURCE_BLOCKS.isEmpty()) {
             RESOURCE_BLOCKS.forEach(block -> {
-                event.getRegistry().register(block.getItemBlockFactory().create());
-                OreDictionary.registerOre(block.getType().getOreDict() + StringUtils.capitalize(block.getResourceMaterial().materialName), block);
+                Item item = block.getItemBlockFactory().create();
+                event.getRegistry().register(item);
+                RESOURCE_MAP.computeIfAbsent(block.getResourceMaterial(), mat -> new HashMap<>()).put(block.getType(), item);
+                OreDictionary.registerOre(block.getType().getOreDict() + StringUtils.capitalize(block.getResourceMaterial().materialName), item);
             });
         }
     }
@@ -139,7 +152,7 @@ public class Titanium extends TitaniumMod {
                 if (material.hasType(type)) {
                     if (RESOURCES_TAB == null)
                         RESOURCES_TAB = new AdvancedTitaniumTab("titanium.resources", true);
-                    BlockResource resource = type.getBlockFunction().apply(material);
+                    BlockResource resource = type.getBlockFunction().apply(type,material);
                     resource.setCreativeTab(RESOURCES_TAB);
                     RESOURCES_TAB.addIconStack(new ItemStack(resource));
                     event.getRegistry().register(resource);
@@ -162,12 +175,6 @@ public class Titanium extends TitaniumMod {
             NetworkRegistry.INSTANCE.registerGuiHandler(INSTANCE, new MCMPGuiHandler());
         else
             NetworkRegistry.INSTANCE.registerGuiHandler(INSTANCE, new GuiHandler());
-    }
-
-    @SubscribeEvent
-    @SideOnly(Side.CLIENT)
-    public void modelRegistry(ModelRegistryEvent event) {
-        ItemBase.ITEMS.forEach(ItemBase::registerModels);
     }
 
     @SubscribeEvent

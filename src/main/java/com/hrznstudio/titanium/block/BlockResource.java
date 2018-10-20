@@ -6,14 +6,20 @@
  */
 package com.hrznstudio.titanium.block;
 
+import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.api.resource.ResourceMaterial;
 import com.hrznstudio.titanium.api.resource.ResourceType;
 import com.hrznstudio.titanium.util.ClientUtil;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
+import java.util.Optional;
 import java.util.function.Function;
 
 public abstract class BlockResource extends BlockBase {
@@ -23,6 +29,8 @@ public abstract class BlockResource extends BlockBase {
 
     public BlockResource(ResourceType type, ResourceMaterial resourceMaterial, Material material) {
         super(resourceMaterial.materialName + "_" + type.getName(), material);
+        setHardness(3.0F);
+        setResistance(5.0F);
         this.resourceMaterial = resourceMaterial;
         this.type = type;
     }

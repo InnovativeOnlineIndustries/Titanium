@@ -9,27 +9,32 @@ package com.hrznstudio.titanium.block;
 import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.api.resource.ResourceMaterial;
 import com.hrznstudio.titanium.api.resource.ResourceType;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 import java.util.Random;
 
 public class BlockOre extends BlockResource {
-    private static Item grindingsItem;
+    private Item grindingsItem;
+    private boolean isGrindings;
 
     public BlockOre(ResourceType type, ResourceMaterial resourceMaterial) {
         super(type, resourceMaterial, Material.ROCK);
+        setSoundType(SoundType.STONE);
     }
 
-    public static Item getGrindingsItem() {
+    public Item getGrindingsItem() {
         if (grindingsItem == null) {
-            grindingsItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(Titanium.MODID, "grindings"));
+            isGrindings = true;
+            grindingsItem = Titanium.getResourceItem(getResourceMaterial(), ResourceType.GRINDINGS).orElse(null);
+            if (grindingsItem == null) {
+                isGrindings = false;
+                grindingsItem = Item.getItemFromBlock(this);
+            }
         }
-        return grindingsItem == null ? Items.AIR : grindingsItem;
+        return grindingsItem;
     }
 
     @Override
@@ -39,6 +44,6 @@ public class BlockOre extends BlockResource {
 
     @Override
     public int quantityDropped(IBlockState state, int fortune, Random random) {
-        return random.nextInt(2) + 2;
+        return !isGrindings ? 1 : random.nextInt(2) + 2;
     }
 }
