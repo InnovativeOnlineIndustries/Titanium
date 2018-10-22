@@ -11,8 +11,8 @@ pipeline {
         stage('Build') {
             steps {
                 sh "rm -rf build/libs/"
-                sh 'gradlew build'
                 sh "chmod +x gradlew"
+                sh './gradlew build'
             }
         }
         stage('Archive') {
@@ -22,7 +22,7 @@ pipeline {
               }
             }
             steps {
-                archiveArtifacts allowEmptyArchive: true, artifacts: 'build/libs/*.jar', onlyIfSuccessful: true
+                archiveArtifacts allowEmptyArchive: true, artifacts: 'build/libs/*', onlyIfSuccessful: true
             }
         }
         stage('Deploy Maven') {
@@ -32,7 +32,7 @@ pipeline {
               }
             }
             steps {
-                sh 'gradlew publish'
+                //sh 'gradlew publish'
             }
         }
         stage('Deploy CurseForge') {
@@ -42,7 +42,7 @@ pipeline {
               }
             }
             steps {
-                sh 'gradlew curseTools'
+                //sh 'gradlew curseTools'
             }
         }
     }
