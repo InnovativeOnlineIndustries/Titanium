@@ -31,12 +31,18 @@ pipeline {
                 currentBuild.result == null || currentBuild.result == 'SUCCESS'
               }
             }
+            steps {
+                echo "Maven deployment not ready"
+            }
         }
         stage('Deploy CurseForge') {
             when {
               expression {
                 currentBuild.result == null || currentBuild.result == 'SUCCESS'
               }
+            }
+            steps {
+                echo "CurseForge deployment not ready"
             }
         }
     }
