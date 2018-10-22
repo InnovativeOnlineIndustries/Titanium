@@ -31,18 +31,12 @@ pipeline {
                 currentBuild.result == null || currentBuild.result == 'SUCCESS'
               }
             }
-            steps {
-                //sh 'gradlew publish'
-            }
         }
         stage('Deploy CurseForge') {
             when {
               expression {
                 currentBuild.result == null || currentBuild.result == 'SUCCESS'
               }
-            }
-            steps {
-                //sh 'gradlew curseTools'
             }
         }
     }
