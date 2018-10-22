@@ -12,7 +12,7 @@ pipeline {
             steps {
                 sh "rm -rf build/libs/"
                 sh "chmod +x gradlew"
-                sh './gradlew build'
+                sh './gradlew build --no-daemon'
             }
         }
         stage('Archive') {
