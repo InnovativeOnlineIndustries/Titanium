@@ -22,7 +22,7 @@ pipeline {
               }
             }
             steps {
-                archive 'build/libs/*'
+                archiveArtifacts allowEmptyArchive: true, artifacts: 'build/libs/*.jar', onlyIfSuccessful: true
             }
         }
         stage('Deploy Maven') {
