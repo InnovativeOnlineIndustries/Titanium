@@ -19,18 +19,23 @@ pipeline {
         }
         stage('Archive') {
             when {
-              expression {
-                currentBuild.result == null || currentBuild.result == 'SUCCESS'
+              allOf {
+                  expression {
+                    currentBuild.result == null || currentBuild.result == 'SUCCESS'
+                  }
               }
             }
             steps {
-                archiveArtifacts allowEmptyArchive: true, artifacts: 'build/libs/*', onlyIfSuccessful: true
+                archiveArtifacts artifacts: 'build/libs/*'
             }
         }
         stage('Deploy Maven') {
             when {
-              expression {
-                currentBuild.result == null || currentBuild.result == 'SUCCESS'
+              allOf {
+                  branch 'release'
+                  expression {
+                    currentBuild.result == null || currentBuild.result == 'SUCCESS'
+                  }
               }
             }
             steps {
@@ -39,8 +44,11 @@ pipeline {
         }
         stage('Deploy CurseForge') {
             when {
-              expression {
-                currentBuild.result == null || currentBuild.result == 'SUCCESS'
+              allOf {
+                  branch 'release'
+                  expression {
+                    currentBuild.result == null || currentBuild.result == 'SUCCESS'
+                  }
               }
             }
             steps {
