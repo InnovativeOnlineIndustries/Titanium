@@ -47,12 +47,6 @@ public class Titanium extends TitaniumMod {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    @Override
-    @Nonnull
-    public String getModId() {
-        return MODID;
-    }
-
     @EventReceiver
     public void preInit(FMLPreInitializationEvent event) {
         COMPAT_MANAGER = new PulseManager("titanium/compat");
