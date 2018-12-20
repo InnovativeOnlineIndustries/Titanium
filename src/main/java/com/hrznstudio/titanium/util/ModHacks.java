@@ -6,20 +6,8 @@
  */
 package com.hrznstudio.titanium.util;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ListMultimap;
-import net.minecraftforge.fml.common.FMLModContainer;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLEvent;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-
 public class ModHacks {
+    /*
     public static class ModEventHandlerHack {
         private static final Field FIELD = getField();
 
@@ -75,5 +63,5 @@ public class ModHacks {
                 throw new RuntimeException(e);
             }
         }
-    }
+    }*/
 }

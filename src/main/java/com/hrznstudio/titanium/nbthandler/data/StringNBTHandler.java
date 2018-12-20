@@ -26,6 +26,6 @@ public class StringNBTHandler implements INBTHandler<String> {
 
     @Override
     public String readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, String current) {
-        return compound.hasKey(name, Constants.NBT.TAG_STRING) ? compound.getString(name) : null;
+        return compound.hasKey(name) ? compound.getString(name) : null;
     }
 }

@@ -19,33 +19,33 @@ public class EnergyStorageItemStack implements IEnergyStorage {
 
     public EnergyStorageItemStack(ItemStack stack, int capacity, int in, int out) {
         this.stack = stack;
-        boolean hasTags = stack.hasTagCompound();
-        if (!hasTags || !stack.getTagCompound().hasKey("energy")) {
+        boolean hasTags = stack.hasTag();
+        if (!hasTags || !stack.getTag().hasKey("energy")) {
             if (!hasTags) {
-                stack.setTagCompound(new NBTTagCompound());
+                stack.setTag(new NBTTagCompound());
             }
-            NBTTagCompound tag = stack.getTagCompound();
+            NBTTagCompound tag = stack.getTag();
             NBTTagCompound energyTag = new NBTTagCompound();
-            energyTag.setInteger(ENERGY, 0);
-            energyTag.setInteger(MAX, capacity);
-            energyTag.setInteger(INPUT, in);
-            energyTag.setInteger(OUTPUT, out);
+            energyTag.setInt(ENERGY, 0);
+            energyTag.setInt(MAX, capacity);
+            energyTag.setInt(INPUT, in);
+            energyTag.setInt(OUTPUT, out);
             tag.setTag("energy", energyTag);
         } else {
             NBTTagCompound energyTag = getStackEnergyTag();
-            energyTag.setInteger(MAX, capacity);
-            energyTag.setInteger(INPUT, in);
-            energyTag.setInteger(OUTPUT, out);
+            energyTag.setInt(MAX, capacity);
+            energyTag.setInt(INPUT, in);
+            energyTag.setInt(OUTPUT, out);
         }
     }
 
     public void setInternal(int energy) {
         NBTTagCompound energyTag = getStackEnergyTag();
-        energyTag.setInteger(ENERGY, Math.min(energyTag.getInteger(ENERGY) + energy, energyTag.getInteger(MAX)));
+        energyTag.setInt(ENERGY, Math.min(energyTag.getInt(ENERGY) + energy, energyTag.getInt(MAX)));
     }
 
     private NBTTagCompound getStackEnergyTag() {
-        return stack.getSubCompound("energy");
+        return stack.getChildTag("energy");
     }
 
     @Override
@@ -56,7 +56,7 @@ public class EnergyStorageItemStack implements IEnergyStorage {
 
         if (!simulate) {
             if (energyReceived != 0) {
-                getStackEnergyTag().setInteger("energy", getEnergyStored() + energyReceived);
+                getStackEnergyTag().setInt("energy", getEnergyStored() + energyReceived);
             }
         }
         return energyReceived;
@@ -70,28 +70,28 @@ public class EnergyStorageItemStack implements IEnergyStorage {
 
         if (!simulate) {
             if (stack != null && energyExtracted != 0) {
-                getStackEnergyTag().setInteger("energy", getEnergyStored() - energyExtracted);
+                getStackEnergyTag().setInt("energy", getEnergyStored() - energyExtracted);
             }
         }
         return energyExtracted;
     }
 
     public int getMaxExtract() {
-        return getStackEnergyTag().getInteger(OUTPUT);
+        return getStackEnergyTag().getInt(OUTPUT);
     }
 
     public int getMaxReceive() {
-        return getStackEnergyTag().getInteger(INPUT);
+        return getStackEnergyTag().getInt(INPUT);
     }
 
     @Override
     public int getEnergyStored() {
-        return getStackEnergyTag().getInteger(ENERGY);
+        return getStackEnergyTag().getInt(ENERGY);
     }
 
     @Override
     public int getMaxEnergyStored() {
-        return getStackEnergyTag().getInteger(MAX);
+        return getStackEnergyTag().getInt(MAX);
     }
 
     @Override

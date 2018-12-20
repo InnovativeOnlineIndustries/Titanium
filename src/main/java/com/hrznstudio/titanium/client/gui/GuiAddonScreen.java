@@ -12,9 +12,10 @@ import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.assets.types.IBackgroundAsset;
 import com.hrznstudio.titanium.client.gui.addon.ICanMouseDrag;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
-import org.lwjgl.input.Mouse;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,10 +47,10 @@ public abstract class GuiAddonScreen extends GuiScreen {
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        super.drawScreen(mouseX, mouseY, partialTicks);
+    public void render(int mouseX, int mouseY, float partialTicks) {
+        super.render(mouseX, mouseY, partialTicks);
         this.checkForMouseDrag(mouseX, mouseY);
-        GlStateManager.color(1, 1, 1, 1);
+        GlStateManager.color4f(1, 1, 1, 1);
         if (drawBackground) {
             this.drawDefaultBackground();
             mc.getTextureManager().bindTexture(IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND).getResourceLocation());
@@ -68,7 +69,7 @@ public abstract class GuiAddonScreen extends GuiScreen {
     public abstract List<IFactory<IGuiAddon>> guiAddons();
 
     private void checkForMouseDrag(int mouseX, int mouseY) {
-        if (Mouse.isButtonDown(0)) {
+        if (GLFW.glfwGetMouseButton(Minecraft.getInstance().mainWindow.getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS) {
             if (!this.isMouseDragging) {
                 this.isMouseDragging = true;
             } else {

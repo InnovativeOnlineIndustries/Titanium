@@ -7,16 +7,23 @@ buildscript {
             url "https://plugins.gradle.org/m2/"
         }
     }
+    configurations {
+        classpath.resolutionStrategy {
+            cacheDynamicVersionsFor 10, 'seconds'
+            cacheChangingModulesFor 0, 'seconds'
+        }
+    }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
         classpath 'com.selesse:gradle-git-changelog:0.2.+'
     }
 }
 plugins {
     id "com.github.hierynomus.license" version "0.14.0"
 }
-apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'com.selesse.git.changelog'
+apply plugin: 'eclipse'
 
 license {
     header rootProject.file('HEADER')
@@ -43,29 +50,35 @@ compileJava {
 
 def core_plugin = "com.hrznstudio.titanium.core.TitaniumLoader"
 minecraft {
-    version = "1.12.2-14.23.4.2714"
-    runDir = "run"
+    mappings channel: 'snapshot', version: '20180921-1.13'
+    runConfig {
+        name= "Minecraft Client"
+        main= "net.minecraftforge.userdev.UserdevLauncher"
+        ideaModuleName = "${project.name}_main"
+        workingDirectory = project.file("run").canonicalPath
+        environment "target", "fmldevclient"
+        environment "assetDirectory", downloadAssets.output.absolutePath
+        //clientJvmArgs = ["-Dfml.coreMods.load=$core_plugin"] TODO
+        //serverJvmArgs = ["-Dfml.coreMods.load=$core_plugin"] TODO
+    }
 
-    mappings = "snapshot_20171003"
-    clientJvmArgs = ["-Dfml.coreMods.load=$core_plugin"]
-    serverJvmArgs = ["-Dfml.coreMods.load=$core_plugin"]
-}
-
-repositories {
-    maven { url "https://modmaven.k-4u.nl" }
-    maven { url "http://maven.k-4u.nl" }
-    maven { url "http://maven.tterrag.com" }
-    maven { url "http://tehnut.info/maven" }
-    maven { url "http://modmaven.k-4u.nl" }
-    maven { url "http://dvs1.progwml6.com/files/maven" }
+    runConfig {
+        name= "Minecraft Server"
+        main= "net.minecraftforge.userdev.UserdevLauncher"
+        ideaModuleName = "${project.name}_main"
+        workingDirectory = project.file("run").canonicalPath
+        environment "target", "fmldevserver"
+        environment "assetDirectory", downloadAssets.output.absolutePath
+    }
 }
 
 dependencies {
-    deobfCompile "MCMultiPart2:MCMultiPart:2.5.3"
-    provided "team.chisel.ctm:CTM:MC1.12.2-0.3.2.18"
-    deobfProvided "mezz.jei:jei_1.12.2:4.8.5.138:api"
-    runtime "mezz.jei:jei_1.12.2:4.8.5.138"
-    deobfCompile group: 'mcp.mobius.waila', name: 'Hwyla', version: '1.8.23-B38_1.12'
+    minecraft 'net.minecraftforge.test:forge:1.13-24.0.37-1.13-pre'
+    //deobfCompile "MCMultiPart2:MCMultiPart:2.5.3"
+    //provided "team.chisel.ctm:CTM:MC1.12.2-0.3.2.18"
+    //deobfProvided "mezz.jei:jei_1.12.2:4.8.5.138:api"
+    //runtime "mezz.jei:jei_1.12.2:4.8.5.138"
+    //deobfCompile group: 'mcp.mobius.waila', name: 'Hwyla', version: '1.8.23-B38_1.12'
 }
 changelog {
     title = "${archivesBaseName} - Changelog"
@@ -92,16 +105,13 @@ changelog {
         input
     }
 }
+/*
 task apiJar(type: Jar, dependsOn: 'classes') {
     classifier = 'api'
     from(sourceSets.main.output) {
         include 'com/hrznstudio/titanium/api/**'
     }
     group = 'build'
-}
-
-reobf {
-    coreJar {mappingType = 'SEARGE'}
 }
 
 task coreJar(type: Jar) {
@@ -114,13 +124,14 @@ task coreJar(type: Jar) {
     }
     classifier 'core'
     group = 'build'
-}
+}*/
 
 def libPrefix = 'META-INF/libraries'
 
+/*
 jar {
     manifest {
-        //attributes 'ContainedDeps': libPrefix+'/'+coreJar.archivePath.name
+        attributes 'ContainedDeps': "$libPrefix/$version-*-core.jar"
         attributes 'Maven-Artifact': group+':'+archivesBaseName+':'+version
     }
     exclude 'com/hrznstudio/titanium/core/**'
@@ -129,55 +140,23 @@ jar {
         into libPrefix
     }
     classifier = 'all'
-}
-
-artifacts {
-}
+}*/
 
 processResources {
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
+    // this will ensure that this task is redone when the versions change.
+    inputs.property 'version', project.version
+    inputs.property 'mcversion', '1.13'
 
+    // replace stuff in mcmod.info, nothing else
     from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-        expand 'version':project.version, 'mcversion':project.minecraft.version
-    }
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
-    }
-}
+        include 'META_INF/mods.toml'
 
-task("uploadJars") {
-    description = "uploads JARs"
-    if (System.getenv("local_maven") != null) {
-        apply plugin: 'maven'
-        uploadArchives {
-            repositories {
-                mavenDeployer {
-                    repository(url: "file://" + System.getenv("local_maven"))
-                    pom {
-                        groupId = project.group
-                        version = project.version
-                        artifactId = project.archivesBaseName
-                        project {
-                            name project.archivesBaseName
-                            packaging 'jar'
-                            description project.archivesBaseName
-                            issueManagement {
-                                system 'github'
-                                url 'https://github.com/HrznStudio/Titanium/issues'
-                            }
-                            developers {
-                                developer {
-                                    id 'TheCodedOne'
-                                    name 'TheCodedOne'
-                                    roles { role 'developer' }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        // replace version and mcversion
+        expand 'version':project.version, 'mcversion': '1.13'
+    }
+
+    // copy everything else except the mcmod.info
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'META_INF/mods.toml'
     }
 }

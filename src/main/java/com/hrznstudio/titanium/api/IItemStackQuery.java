@@ -61,7 +61,7 @@ public interface IItemStackQuery extends Predicate<ItemStack> {
     interface IItemStackNBTQuery extends IItemStackQuery {
         @Override
         default boolean matches(ItemStack itemStack) {
-            return matches(itemStack.getTagCompound());
+            return itemStack.hasTag()&&matches(itemStack.getTag());
         }
 
         boolean matches(NBTTagCompound compound);
@@ -127,31 +127,7 @@ public interface IItemStackQuery extends Predicate<ItemStack> {
 
         @Override
         public boolean matches(ItemStack itemStack) {
-            return this.ingredient.apply(itemStack);
-        }
-    }
-
-    class ItemMetaQuery extends ItemQuery {
-
-        protected int meta;
-
-        public ItemMetaQuery(Item item, int meta) {
-            super(item);
-            this.meta = meta;
-        }
-
-        @Override
-        public ItemStack[] getMatchingStacks() {
-            return new ItemStack[]{new ItemStack(item, 1, meta)};
-        }
-
-        public int getMeta() {
-            return this.meta;
-        }
-
-        @Override
-        public boolean matches(ItemStack itemStack) {
-            return super.matches(itemStack) && itemStack.getMetadata() == this.meta;
+            return this.ingredient.test(itemStack);
         }
     }
 }

@@ -48,6 +48,6 @@ public class ShortNBTHandler implements INBTHandler<Short> {
      */
     @Override
     public Short readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, Short current) {
-        return compound.hasKey(name, Constants.NBT.TAG_SHORT) ? compound.getShort(name) : null;
+        return compound.hasKey(name) ? compound.getShort(name) : null;
     }
 }

@@ -13,9 +13,10 @@ import com.hrznstudio.titanium.block.tile.TileBase;
 import com.hrznstudio.titanium.client.gui.addon.ICanMouseDrag;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.container.ContainerTileBase;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
-import org.lwjgl.input.Mouse;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +50,7 @@ public class GuiContainerTile<T extends TileBase> extends GuiContainer {
         x = (width - xSize) / 2;
         y = (height - ySize) / 2;
         //BG RENDERING
-        GlStateManager.color(1, 1, 1, 1);
+        GlStateManager.color4f(1, 1, 1, 1);
         mc.getTextureManager().bindTexture(IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND).getResourceLocation());
         drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
 
@@ -71,7 +72,7 @@ public class GuiContainerTile<T extends TileBase> extends GuiContainer {
     }
 
     private void checkForMouseDrag(int mouseX, int mouseY) {
-        if (Mouse.isButtonDown(0)) {
+        if (GLFW.glfwGetMouseButton(Minecraft.getInstance().mainWindow.getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS) {
             this.isMouseDragging = true;
             for (IGuiAddon iGuiAddon : this.addonList) {
                 if (iGuiAddon instanceof ICanMouseDrag /*&& iGuiAddon.isInside(null, mouseX - x, mouseY - y)*/) {

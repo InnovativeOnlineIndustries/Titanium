@@ -7,12 +7,13 @@
 package com.hrznstudio.titanium.util;
 
 import com.google.common.collect.Sets;
-import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.item.EnumDyeColor;
+import net.minecraft.state.EnumProperty;
 
 import java.util.Collection;
 
-public class PropertyColor extends PropertyEnum<EnumDyeColor> {
+@Deprecated
+public class PropertyColor extends EnumProperty<EnumDyeColor> {
     protected PropertyColor(String name, Class<EnumDyeColor> valueClass, Collection<EnumDyeColor> allowedValues) {
         super(name, valueClass, allowedValues);
     }

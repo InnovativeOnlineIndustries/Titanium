@@ -6,7 +6,7 @@
  */
 package com.hrznstudio.titanium.util;
 
-import net.minecraft.block.properties.IProperty;
+import net.minecraft.state.IProperty;
 
 import java.util.Map;
 

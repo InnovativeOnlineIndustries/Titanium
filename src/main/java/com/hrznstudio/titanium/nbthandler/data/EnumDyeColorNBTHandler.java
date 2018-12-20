@@ -9,7 +9,6 @@ package com.hrznstudio.titanium.nbthandler.data;
 import com.hrznstudio.titanium.nbthandler.INBTHandler;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
 
@@ -22,12 +21,12 @@ public class EnumDyeColorNBTHandler implements INBTHandler<EnumDyeColor> {
 
     @Override
     public boolean storeToNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, @Nonnull EnumDyeColor object) {
-        compound.setInteger(name, object.getMetadata());
+        compound.setInt(name, object.getId());
         return true;
     }
 
     @Override
     public EnumDyeColor readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, EnumDyeColor current) {
-        return compound.hasKey(name, Constants.NBT.TAG_INT) ? EnumDyeColor.byMetadata(compound.getInteger(name)) : current;
+        return compound.hasKey(name) ? EnumDyeColor.byId(compound.getInt(name)) : current;
     }
 }

@@ -7,62 +7,38 @@
 package com.hrznstudio.titanium.item;
 
 import com.hrznstudio.titanium.api.internal.IModelRegistrar;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IStringSerializable;
-import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.StringUtils;
-import org.lwjgl.input.Keyboard;
+import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class ItemBase extends Item implements IModelRegistrar {
-    public ItemBase(String name) {
-        setRegistryName(name);
-        setUnlocalizedName(Objects.requireNonNull(getRegistryName()).toString().replace(':', '.'));
-    }
 
-    @Override
-    public int getMetadata(int damage) {
-        return getHasSubtypes() ? damage : 0;
+    public ItemBase(String name,Builder properties) {
+        super(properties);
+        setRegistryName(name);
     }
 
     @Override
     public void registerModels() {
-        ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(getRegistryName(), "inventory"));
+        //ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(getRegistryName(), "inventory"));
     }
 
     @Override
-    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
-        if (isInCreativeTab(tab)) {
-            listSubItems(tab, items);
-        }
-    }
-
-    public void listSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
-        items.add(new ItemStack(this));
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public final void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
         if (hasDetails(null)) {
             addDetails(null, stack, tooltip, flagIn.isAdvanced());
@@ -72,27 +48,24 @@ public class ItemBase extends Item implements IModelRegistrar {
                 if (key.isDown()) {
                     addDetails(key, stack, tooltip, flagIn.isAdvanced());
                 } else {
-                    tooltip.add("Hold " + TextFormatting.YELLOW + key.getName() + TextFormatting.GRAY + " for more information");
+                    tooltip.add(new TextComponentString("Hold " + TextFormatting.YELLOW + key.getName() + TextFormatting.GRAY + " for more information"));
                 }
             }
         }
     }
 
-    @SideOnly(Side.CLIENT)
-    public void addDetails(@Nullable Key key, ItemStack stack, List<String> tooltip, boolean advanced) {
+    public void addDetails(@Nullable Key key, ItemStack stack, List<ITextComponent> tooltip, boolean advanced) {
 
     }
 
-    @SideOnly(Side.CLIENT)
     public boolean hasDetails(@Nullable Key key) {
         return false;
     }
 
-    @SideOnly(Side.CLIENT)
     public enum Key implements IStringSerializable {
-        SHIFT(Keyboard.KEY_RSHIFT, Keyboard.KEY_LSHIFT),
-        CTRL(new int[]{Keyboard.KEY_RCONTROL, Keyboard.KEY_LCONTROL}, "CMD", new int[]{Keyboard.KEY_LMETA, Keyboard.KEY_RMETA}),
-        ALT(Keyboard.KEY_LMENU, Keyboard.KEY_RMENU);
+        SHIFT(GLFW.GLFW_KEY_RIGHT_SHIFT, GLFW.GLFW_KEY_LEFT_SHIFT),
+        CTRL(GLFW.GLFW_KEY_RIGHT_CONTROL, GLFW.GLFW_KEY_LEFT_CONTROL),
+        ALT(GLFW.GLFW_KEY_RIGHT_ALT, GLFW.GLFW_KEY_LEFT_ALT);
 
         final String name;
         int[] keys;
@@ -114,7 +87,7 @@ public class ItemBase extends Item implements IModelRegistrar {
 
         public boolean isDown() {
             for (int key : keys)
-                if (Keyboard.isKeyDown(key))
+                if (GLFW.glfwGetKey(Minecraft.getInstance().mainWindow.getHandle(), key) == GLFW.GLFW_PRESS)
                     return true;
             return false;
         }

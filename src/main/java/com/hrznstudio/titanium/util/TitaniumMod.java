@@ -14,14 +14,12 @@ import com.hrznstudio.titanium.api.internal.IModelRegistrar;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,19 +35,18 @@ public abstract class TitaniumMod {
 
     public abstract String getModId();
 
-    @Mod.EventHandler
     public final void initTitanium(FMLInitializationEvent event) {
-        SidedHandler.runOn(Side.CLIENT, () -> () -> {
+        SidedHandler.runOn(Dist.CLIENT, () -> () -> {
             ITEMS.stream()
                     .filter(IColorProviderItem.class::isInstance)
                     .map(i -> (Item & IColorProviderItem) i)
-                    .forEach(i -> Minecraft.getMinecraft().getItemColors().registerItemColorHandler(i.getColor(), i));
+                    .forEach(i -> Minecraft.getInstance().getItemColors().register(i.getColor(), i));
             BLOCKS.stream()
                     .filter(IColorProvider.class::isInstance)
                     .map(b -> (Block & IColorProvider) b)
                     .forEach(b -> {
-                        Minecraft.getMinecraft().getItemColors().registerItemColorHandler(b.getItemColor(), Item.getItemFromBlock(b));
-                        Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler(b.getColor(), b);
+                        Minecraft.getInstance().getItemColors().register(b.getItemColor(), Item.getItemFromBlock(b));
+                        Minecraft.getInstance().getBlockColors().register(b.getColor(), b);
                     });
         });
     }
@@ -65,7 +62,6 @@ public abstract class TitaniumMod {
     }
 
     @SubscribeEvent
-    @SideOnly(Side.CLIENT)
     public final void modelRegistryEventTitanium(ModelRegistryEvent event) {
         if (!BLOCKS.isEmpty())
             BLOCKS.stream()

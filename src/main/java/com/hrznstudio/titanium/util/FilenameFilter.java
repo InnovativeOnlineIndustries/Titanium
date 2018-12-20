@@ -16,7 +16,6 @@ public enum FilenameFilter implements java.io.FilenameFilter {
     CFG("cfg"),
     CONF("conf"),
     ZENSCRIPT("zs"),
-    TITANIUM("ts"),
     ZIP("zip"),
     TXT("txt"),
     PNG("png"),
@@ -28,7 +27,12 @@ public enum FilenameFilter implements java.io.FilenameFilter {
     LOG("log"),
     DAT("dat"),
     OBJ("obj"),
-    CLASS("class");
+    CLASS("class"),
+    //Roadworks
+    ROADWORKS_SCRIPT("rs"),
+    ROADWORKS_GUI("rgui"),
+    ROADWORKS_STYLING("rstyle"),
+    ROADWORKS_PLUGIN("plugin");
 
     private String[] extensions;
 

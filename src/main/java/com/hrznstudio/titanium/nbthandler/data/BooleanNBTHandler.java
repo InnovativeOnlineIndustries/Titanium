@@ -27,6 +27,6 @@ public class BooleanNBTHandler implements INBTHandler<Boolean> {
 
     @Override
     public Boolean readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, Boolean currentValue) {
-        return compound.hasKey(name, Constants.NBT.TAG_BYTE) ? compound.getBoolean(name) : null;
+        return compound.hasKey(name) ? compound.getBoolean(name) : null;
     }
 }

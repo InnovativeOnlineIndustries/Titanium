@@ -7,14 +7,11 @@
 package com.hrznstudio.titanium.api.client;
 
 import com.hrznstudio.titanium.api.IFactory;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
 public interface IGuiAddonProvider {
 
-    @SideOnly(Side.CLIENT)
     List<IFactory<? extends IGuiAddon>> getGuiAddons();
 
 }

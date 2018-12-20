@@ -10,32 +10,33 @@ import com.hrznstudio.titanium.energy.EnergyStorageItemStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Optional;
 
 public class ItemEnergy extends ItemBase {
     private final int capacity;
     private final int input;
     private final int output;
 
-    public ItemEnergy(String name, int capacity, int input, int output) {
-        super(name);
+    public ItemEnergy(String name, int capacity, int input, int output, Builder properties) {
+        super(name, properties.maxStackSize(1));
         this.capacity = capacity;
         this.input = input;
         this.output = output;
-        setMaxStackSize(1);
     }
 
-    public ItemEnergy(String name, int capacity, int throughput) {
-        this(name, capacity, throughput, throughput);
+    public ItemEnergy(String name, Builder properties, int capacity, int throughput) {
+        this(name, capacity, throughput, throughput, properties);
     }
 
     public int getCapacity() {
@@ -56,10 +57,10 @@ public class ItemEnergy extends ItemBase {
     }
 
     @Override
-    public void addDetails(@Nullable Key key, ItemStack stack, List<String> tooltip, boolean advanced) {
+    public void addDetails(@Nullable Key key, ItemStack stack, List<ITextComponent> tooltip, boolean advanced) {
         super.addDetails(key, stack, tooltip, advanced);
         if (key == Key.SHIFT) {
-            getEnergyStorage(stack).ifPresent(storage -> tooltip.add(TextFormatting.YELLOW + "Energy: " + TextFormatting.RED + storage.getEnergyStored() + TextFormatting.YELLOW + "/" + TextFormatting.RED + storage.getMaxEnergyStored() + TextFormatting.RESET));
+            getEnergyStorage(stack).ifPresent(storage -> tooltip.add(new TextComponentString(TextFormatting.YELLOW + "Energy: " + TextFormatting.RED + storage.getEnergyStored() + TextFormatting.YELLOW + "/" + TextFormatting.RED + storage.getMaxEnergyStored() + TextFormatting.RESET)));
         }
     }
 
@@ -78,8 +79,8 @@ public class ItemEnergy extends ItemBase {
         return 0x00E93232;
     }
 
-    public Optional<IEnergyStorage> getEnergyStorage(ItemStack stack) {
-        return Optional.ofNullable(stack.getCapability(CapabilityEnergy.ENERGY, null));
+    public OptionalCapabilityInstance<IEnergyStorage> getEnergyStorage(ItemStack stack) {
+        return stack.getCapability(CapabilityEnergy.ENERGY, null);
     }
 
     @Nullable
@@ -89,21 +90,16 @@ public class ItemEnergy extends ItemBase {
     }
 
     public static class CapabilityProvider implements ICapabilityProvider {
-        private EnergyStorageItemStack energy;
+        private OptionalCapabilityInstance<IEnergyStorage> energyCap;
 
         public CapabilityProvider(EnergyStorageItemStack energy) {
-            this.energy = energy;
+            this.energyCap = OptionalCapabilityInstance.of(() -> energy);
         }
 
+        @Nonnull
         @Override
-        public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-            return capability == CapabilityEnergy.ENERGY;
-        }
-
-        @Nullable
-        @Override
-        public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-            return capability == CapabilityEnergy.ENERGY ? CapabilityEnergy.ENERGY.cast(energy) : null;
+        public <T> OptionalCapabilityInstance<T> getCapability(@Nonnull Capability<T> cap, @Nullable EnumFacing side) {
+            return OptionalCapabilityInstance.orEmpty(cap, CapabilityEnergy.ENERGY, energyCap);
         }
     }
 }

@@ -12,11 +12,8 @@ import com.hrznstudio.titanium.api.resource.ResourceRegistry;
 import com.hrznstudio.titanium.api.resource.ResourceType;
 import com.hrznstudio.titanium.block.BlockResource;
 import com.hrznstudio.titanium.block.tile.TileBase;
-import com.hrznstudio.titanium.client.gui.GuiHandler;
-import com.hrznstudio.titanium.client.gui.MCMPGuiHandler;
 import com.hrznstudio.titanium.compat.JEICompat;
 import com.hrznstudio.titanium.compat.TinkersCompat;
-import com.hrznstudio.titanium.item.ItemBase;
 import com.hrznstudio.titanium.item.ItemResource;
 import com.hrznstudio.titanium.pulsar.control.PulseManager;
 import com.hrznstudio.titanium.tab.AdvancedTitaniumTab;
@@ -28,39 +25,28 @@ import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
-import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.oredict.OreDictionary;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
 import java.util.*;
 
-@Mod(modid = Titanium.MODID, name = Titanium.NAME, version = Titanium.VERSION)
+@Mod(Titanium.MODID)
 public class Titanium extends TitaniumMod {
     public static final String MODID = "titanium";
-    public static final String NAME = "Titanium";
-    public static final String VERSION = "1.0.0";
 
-    @Mod.Instance
-    public static Titanium INSTANCE;
     public static List<ItemResource> RESOURCE_ITEMS = new ArrayList<>();
     public static List<BlockResource> RESOURCE_BLOCKS = new ArrayList<>();
     public static AdvancedTitaniumTab RESOURCES_TAB;
 
-    public static Map<ResourceMaterial,Map<ResourceType,Item>> RESOURCE_MAP = new HashMap<>();
+    public static Map<ResourceMaterial, Map<ResourceType, Item>> RESOURCE_MAP = new HashMap<>();
 
     public static PulseManager COMPAT_MANAGER = new PulseManager("titanium/compat");
     private static boolean vanilla;
@@ -71,13 +57,13 @@ public class Titanium extends TitaniumMod {
     }
 
     public static Optional<Item> getResourceItem(ResourceMaterial material, ResourceType type) {
-        if(!RESOURCE_MAP.containsKey(material))
+        if (!RESOURCE_MAP.containsKey(material))
             return Optional.empty();
         return Optional.ofNullable(RESOURCE_MAP.get(material).get(type));
     }
 
     public static void openGui(TileBase tile, EntityPlayer player) {
-        player.openGui(INSTANCE, -1, tile.getWorld(), tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ());
+        //player.openGui(INSTANCE, -1, tile.getWorld(), tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ());
     }
 
     public static void registerVanillaMaterials() {
@@ -118,13 +104,14 @@ public class Titanium extends TitaniumMod {
 
     @SubscribeEvent
     public void registerItems(RegistryEvent.Register<Item> event) {
+        /*
         for (ResourceType type : ResourceType.values()) {
             if (type.getItemFunction() == null)
                 continue;
             ResourceRegistry.getMaterials().forEach(material -> {
                 if (material.hasType(type)) {
                     ItemResource item = type.getItemFunction().apply(type, material);
-                    event.getRegistry().register(item.setCreativeTab(RESOURCES_TAB));
+                    event.getRegistry().register(item);
                     RESOURCES_TAB.addIconStacks(item.getStack(1));
                     RESOURCE_ITEMS.add(item);
                     RESOURCE_MAP.computeIfAbsent(material, mat -> new HashMap<>()).put(type, item);
@@ -140,11 +127,12 @@ public class Titanium extends TitaniumMod {
                 RESOURCE_MAP.computeIfAbsent(block.getResourceMaterial(), mat -> new HashMap<>()).put(block.getType(), item);
                 OreDictionary.registerOre(block.getType().getOreDict() + StringUtils.capitalize(block.getResourceMaterial().materialName), item);
             });
-        }
+        }*/
     }
 
     @SubscribeEvent
     public void registerBlocks(RegistryEvent.Register<Block> event) {
+        /*
         for (ResourceType type : ResourceType.values()) {
             if (type.getBlockFunction() == null)
                 continue;
@@ -159,7 +147,7 @@ public class Titanium extends TitaniumMod {
                     RESOURCE_BLOCKS.add(resource);
                 }
             });
-        }
+        }*/
     }
 
     @Override
@@ -168,25 +156,24 @@ public class Titanium extends TitaniumMod {
         return MODID;
     }
 
-    @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        SidedHandler.runOn(Side.CLIENT, () -> TitaniumClient::registerModelLoader);
+        SidedHandler.runOn(Dist.CLIENT, () -> TitaniumClient::registerModelLoader);
+        /*
         if (Loader.isModLoaded("mcmultipart"))
             NetworkRegistry.INSTANCE.registerGuiHandler(INSTANCE, new MCMPGuiHandler());
         else
-            NetworkRegistry.INSTANCE.registerGuiHandler(INSTANCE, new GuiHandler());
+            NetworkRegistry.INSTANCE.registerGuiHandler(INSTANCE, new GuiHandler());*/
     }
 
     @SubscribeEvent
-    @SideOnly(Side.CLIENT)
     public void drawBlockHighlight(DrawBlockHighlightEvent event) {
         BlockPos pos = event.getTarget().getBlockPos();
         RayTraceResult hit = event.getTarget();
-        if (hit.typeOfHit == RayTraceResult.Type.BLOCK && hit instanceof DistanceRayTraceResult) {
+        if (hit.type == RayTraceResult.Type.BLOCK && hit instanceof DistanceRayTraceResult) {
             event.setCanceled(true);
             GlStateManager.enableBlend();
-            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-            GlStateManager.glLineWidth(2.0F);
+            GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+            GlStateManager.lineWidth(2.0F);
             GlStateManager.disableTexture2D();
             GlStateManager.depthMask(false);
             EntityPlayer player = event.getPlayer();

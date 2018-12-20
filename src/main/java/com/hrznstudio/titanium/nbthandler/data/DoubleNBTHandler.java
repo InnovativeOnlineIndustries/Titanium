@@ -27,6 +27,6 @@ public class DoubleNBTHandler implements INBTHandler<Double> {
 
     @Override
     public Double readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, Double currentValue) {
-        return compound.hasKey(name, Constants.NBT.TAG_DOUBLE) ? compound.getDouble(name) : null;
+        return compound.hasKey(name) ? compound.getDouble(name) : null;
     }
 }

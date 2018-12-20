@@ -6,13 +6,12 @@
  */
 package com.hrznstudio.titanium.tab;
 
-import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 
-import javax.annotation.Nonnull;
 import java.util.function.Supplier;
 
-public class TitaniumTab extends CreativeTabs {
+public class TitaniumTab extends ItemGroup {
     protected Supplier<ItemStack> stackSupplier;
 
     public TitaniumTab(String label, Supplier<ItemStack> stackSupplier) {
@@ -21,8 +20,7 @@ public class TitaniumTab extends CreativeTabs {
     }
 
     @Override
-    @Nonnull
-    public ItemStack getTabIconItem() {
+    public ItemStack createIcon() {
         return stackSupplier.get();
     }
 }

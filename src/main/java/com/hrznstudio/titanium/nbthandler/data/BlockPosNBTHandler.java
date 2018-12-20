@@ -29,6 +29,6 @@ public class BlockPosNBTHandler implements INBTHandler<BlockPos> {
 
     @Override
     public BlockPos readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, BlockPos current) {
-        return compound.hasKey(name, Constants.NBT.TAG_LONG) ? BlockPos.fromLong(compound.getLong(name)) : null;
+        return compound.hasKey(name) ? BlockPos.fromLong(compound.getLong(name)) : null;
     }
 }

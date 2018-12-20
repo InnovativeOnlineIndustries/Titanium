@@ -65,10 +65,4 @@ public class AdvancedTitaniumTab extends TitaniumTab {
         updateIcon();
         return currentIcon;
     }
-
-    @Override
-    @Nonnull
-    public ItemStack getIconItemStack() {
-        return getTabIconItem();
-    }
 }

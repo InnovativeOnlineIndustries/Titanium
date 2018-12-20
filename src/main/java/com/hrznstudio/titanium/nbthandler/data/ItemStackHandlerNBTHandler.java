@@ -28,9 +28,9 @@ public class ItemStackHandlerNBTHandler implements INBTHandler<ItemStackHandler>
 
     @Override
     public ItemStackHandler readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, ItemStackHandler current) {
-        if (compound.hasKey(name, Constants.NBT.TAG_COMPOUND)) {
+        if (compound.hasKey(name)) {
             if (current == null) current = new ItemStackHandler();
-            current.deserializeNBT(compound.getCompoundTag(name));
+            current.deserializeNBT(compound.getCompound(name));
             return current;
         }
         return null;
