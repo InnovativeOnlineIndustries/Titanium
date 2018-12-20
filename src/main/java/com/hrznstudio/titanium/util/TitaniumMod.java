@@ -7,36 +7,60 @@
 package com.hrznstudio.titanium.util;
 
 import com.google.common.collect.ImmutableList;
-//import com.hrznstudio.titanium.api.internal.IColorProvider;
-//import com.hrznstudio.titanium.api.internal.IColorProviderItem;
 import com.hrznstudio.titanium.api.internal.IItemBlockFactory;
 import com.hrznstudio.titanium.api.internal.IModelRegistrar;
 import com.hrznstudio.titanium.block.BlockTileBase;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public abstract class TitaniumMod {
     private final List<Item> ITEMS = new ArrayList<>();
     private final List<Block> BLOCKS = new ArrayList<>();
 
     public TitaniumMod() {
-//        ModHacks.ModEventHandlerHack.doHack(this);
+        for (Method method : getClass().getMethods()) {
+            if (method.isAnnotationPresent(EventReceiver.class)) {
+                EventReceiver eventReceiver = method.getAnnotation(EventReceiver.class);
+                EventPriority priority = eventReceiver.priority();
+                FMLModLoadingContext.get().getModEventBus().addListener(priority, new Consumer<Event>() {
+                    @Override
+                    public void accept(Event event) {
+                        try {
+                            method.invoke(this, event);
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        } catch (InvocationTargetException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
+        }
         MinecraftForge.EVENT_BUS.register(this);
     }
 
     public abstract String getModId();
 
+    @EventReceiver
     public final void initTitanium(FMLInitializationEvent event) {
 //        SidedHandler.runOn(Dist.CLIENT, () -> () -> { TODO
 //            ITEMS.stream()
@@ -109,5 +133,11 @@ public abstract class TitaniumMod {
     public void addBlocks(Block... blocks) {
         for (Block block : blocks)
             addBlock(block);
+    }
+
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface EventReceiver {
+        EventPriority priority() default EventPriority.NORMAL;
     }
 }
