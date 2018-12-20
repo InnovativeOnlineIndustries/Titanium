@@ -43,14 +43,7 @@ public abstract class BlockTileBase<T extends TileBase> extends BlockBase implem
     }
 
     public void registerTile(){
-        DataFixesManager.getDataFixer().getSchema(DataFixUtils.makeKey(1519)).registerSimple(Maps.newHashMap(), this.getRegistryName().toString());
-        Type<?> type = null;
-        try {
-            type = DataFixesManager.getDataFixer().getSchema(DataFixUtils.makeKey(1519)).getChoiceType(TypeReferences.BLOCK_ENTITY, this.getRegistryName().toString());
-        } catch (IllegalArgumentException illegalstateexception) {
-            LOGGER.info("It broke here");
-        }
-        tileEntityType = TileEntityType.Builder.create(() -> getTileEntityFactory().create()).build(type);
+        tileEntityType = TileEntityType.Builder.create(() -> getTileEntityFactory().create()).build(null);
         tileEntityType.setRegistryName(this.getRegistryName());
         ForgeRegistries.TILE_ENTITIES.register(tileEntityType);
     }
