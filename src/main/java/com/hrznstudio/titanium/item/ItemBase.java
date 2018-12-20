@@ -14,7 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
+//import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.glfw.GLFW;
@@ -48,7 +48,7 @@ public class ItemBase extends Item implements IModelRegistrar {
                 if (key.isDown()) {
                     addDetails(key, stack, tooltip, flagIn.isAdvanced());
                 } else {
-                    tooltip.add(new TextComponentString("Hold " + TextFormatting.YELLOW + key.getName() + TextFormatting.GRAY + " for more information"));
+                    //tooltip.add(new TextComponentString("Hold " + TextFormatting.YELLOW + key.getName() + TextFormatting.GRAY + " for more information")); TODO
                 }
             }
         }

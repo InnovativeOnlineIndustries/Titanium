@@ -9,7 +9,6 @@ package com.hrznstudio.titanium.pulsar.config;
 import com.hrznstudio.titanium.pulsar.pulse.PulseMeta;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
-import net.minecraftforge.fml.common.Loader;
 
 import java.io.File;
 import java.util.Locale;
@@ -21,7 +20,7 @@ public class ForgeConfiguration implements IConfiguration {
     private Configuration config;
 
     public ForgeConfiguration(String confName, String description) {
-        this.confPath = Loader.instance().getConfigDir().toString() + File.separator + confName + ".cfg";
+        this.confPath = /*Loader.instance().getConfigDir().toString()*/ "config" + File.separator + confName + ".cfg";
         this.description = description.toLowerCase(Locale.ENGLISH);
     }
 

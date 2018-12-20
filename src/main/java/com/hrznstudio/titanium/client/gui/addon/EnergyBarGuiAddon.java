@@ -10,7 +10,6 @@ import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import java.awt.*;
@@ -51,7 +50,7 @@ public class EnergyBarGuiAddon extends BasicGuiAddon {
 
     @Override
     public List<String> getTooltipLines() {
-        return Arrays.asList(TextFormatting.AQUA + "Power:", new DecimalFormat().format(handler.getEnergyStored()) + TextFormatting.GOLD + "/" + TextFormatting.WHITE + new DecimalFormat().format(handler.getMaxEnergyStored()));
+        return Arrays.asList(/*TextFormatting.AQUA + "Power:", new DecimalFormat().format(handler.getEnergyStored()) + TextFormatting.GOLD + "/" + TextFormatting.WHITE + new DecimalFormat().format(handler.getMaxEnergyStored()) TODO*/);
     }
 
     @Override

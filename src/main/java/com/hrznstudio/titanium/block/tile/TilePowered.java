@@ -9,6 +9,7 @@ package com.hrznstudio.titanium.block.tile;
 import com.google.common.collect.Sets;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.IFactory;
+import com.hrznstudio.titanium.block.BlockTileBase;
 import com.hrznstudio.titanium.energy.NBTEnergyHandler;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
@@ -27,8 +28,8 @@ public class TilePowered extends TileBase {
     private NBTEnergyHandler energyHandler;
     private OptionalCapabilityInstance<IEnergyStorage> energyCap;
 
-    public TilePowered(TileEntityType<?> tileEntityType) {
-        super(tileEntityType);
+    public TilePowered(BlockTileBase blockTileBase) {
+        super(blockTileBase);
         this.energyHandler = getEnergyHandlerFactory().create();
         this.energyCap = OptionalCapabilityInstance.of(() -> this.energyHandler);
     }

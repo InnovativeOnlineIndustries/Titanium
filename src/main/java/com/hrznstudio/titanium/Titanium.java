@@ -6,6 +6,7 @@
  */
 package com.hrznstudio.titanium;
 
+import com.hrznstudio.titanium._test.BlockTest;
 import com.hrznstudio.titanium.api.raytrace.DistanceRayTraceResult;
 import com.hrznstudio.titanium.block.tile.TileBase;
 import com.hrznstudio.titanium.pulsar.control.PulseManager;
@@ -15,6 +16,7 @@ import com.hrznstudio.titanium.util.TitaniumMod;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.SharedConstants;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.api.distmarker.Dist;
@@ -34,13 +36,14 @@ public class Titanium extends TitaniumMod {
 
     public static AdvancedTitaniumTab RESOURCES_TAB;
 
-    public static PulseManager COMPAT_MANAGER = new PulseManager("titanium/compat");
+    public static PulseManager COMPAT_MANAGER = null;
     private static boolean vanilla;
 
     public static void openGui(TileBase tile, EntityPlayer player) {
         //player.openGui(INSTANCE, -1, tile.getWorld(), tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ());
     }
     public Titanium() {
+        super();
         if(FMLModLoadingContext.get().getActiveContainer()!=null) {
             IEventBus bus = FMLModLoadingContext.get().getModEventBus();
             if (bus != null) {
@@ -58,6 +61,8 @@ public class Titanium extends TitaniumMod {
     }
 
     public void preInit(FMLPreInitializationEvent event) {
+        COMPAT_MANAGER = new PulseManager("titanium/compat");
+        addBlock(BlockTest.TEST = new BlockTest());
         SidedHandler.runOn(Dist.CLIENT, () -> TitaniumClient::registerModelLoader);
         /*
         if (Loader.isModLoaded("mcmultipart"))

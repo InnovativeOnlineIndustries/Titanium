@@ -5,11 +5,9 @@
  * This means no, you cannot steal this code. This is licensed for sole use by Horizon Studio and its subsidiaries, you MUST be granted specific written permission by Horizon Studio to use this code, thinking you have permission IS NOT PERMISSION!
  */
 @ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
-@API(owner = "titanium", provides = "Titanium|API", apiVersion = "1.0.0")
+//@API(owner = "titanium", provides = "Titanium|API", apiVersion = "1.0.0")
 package com.hrznstudio.titanium.api;
 
-import mcp.MethodsReturnNonnullByDefault;
-import net.minecraftforge.fml.common.API;
+//import net.minecraftforge.fml.common.API; TODO
 
 import javax.annotation.ParametersAreNonnullByDefault;

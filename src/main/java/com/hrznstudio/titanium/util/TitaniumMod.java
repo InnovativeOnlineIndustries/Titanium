@@ -7,10 +7,11 @@
 package com.hrznstudio.titanium.util;
 
 import com.google.common.collect.ImmutableList;
-import com.hrznstudio.titanium.api.internal.IColorProvider;
-import com.hrznstudio.titanium.api.internal.IColorProviderItem;
+//import com.hrznstudio.titanium.api.internal.IColorProvider;
+//import com.hrznstudio.titanium.api.internal.IColorProviderItem;
 import com.hrznstudio.titanium.api.internal.IItemBlockFactory;
 import com.hrznstudio.titanium.api.internal.IModelRegistrar;
+import com.hrznstudio.titanium.block.BlockTileBase;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
@@ -20,6 +21,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,26 +31,26 @@ public abstract class TitaniumMod {
     private final List<Block> BLOCKS = new ArrayList<>();
 
     public TitaniumMod() {
-        ModHacks.ModEventHandlerHack.doHack(this);
+//        ModHacks.ModEventHandlerHack.doHack(this);
         MinecraftForge.EVENT_BUS.register(this);
     }
 
     public abstract String getModId();
 
     public final void initTitanium(FMLInitializationEvent event) {
-        SidedHandler.runOn(Dist.CLIENT, () -> () -> {
-            ITEMS.stream()
-                    .filter(IColorProviderItem.class::isInstance)
-                    .map(i -> (Item & IColorProviderItem) i)
-                    .forEach(i -> Minecraft.getInstance().getItemColors().register(i.getColor(), i));
-            BLOCKS.stream()
-                    .filter(IColorProvider.class::isInstance)
-                    .map(b -> (Block & IColorProvider) b)
-                    .forEach(b -> {
-                        Minecraft.getInstance().getItemColors().register(b.getItemColor(), Item.getItemFromBlock(b));
-                        Minecraft.getInstance().getBlockColors().register(b.getColor(), b);
-                    });
-        });
+//        SidedHandler.runOn(Dist.CLIENT, () -> () -> { TODO
+//            ITEMS.stream()
+//                    .filter(IColorProviderItem.class::isInstance)
+//                    .map(i -> (Item & IColorProviderItem) i)
+//                    .forEach(i -> Minecraft.getInstance().getItemColors().register(i.getColor(), i));
+//            BLOCKS.stream()
+//                    .filter(IColorProvider.class::isInstance)
+//                    .map(b -> (Block & IColorProvider) b)
+//                    .forEach(b -> {
+//                        Minecraft.getInstance().getItemColors().register(b.getItemColor(), Item.getItemFromBlock(b));
+//                        Minecraft.getInstance().getBlockColors().register(b.getColor(), b);
+//                    });
+//        });
     }
 
     @SubscribeEvent
@@ -85,6 +87,7 @@ public abstract class TitaniumMod {
 
     public void addItem(Item item) {
         ITEMS.add(item);
+        ForgeRegistries.ITEMS.register(item); //TODO unhack
     }
 
     public void addItems(Item... items) {
@@ -94,6 +97,10 @@ public abstract class TitaniumMod {
 
     public void addBlock(Block block) {
         BLOCKS.add(block);
+        ForgeRegistries.BLOCKS.register(block); //TODO unhack
+        if (block instanceof BlockTileBase){
+            //((BlockTileBase) block).registerTile();
+        }
         if (block instanceof IItemBlockFactory) {
             addItem(((IItemBlockFactory) block).getItemBlockFactory().create());
         }

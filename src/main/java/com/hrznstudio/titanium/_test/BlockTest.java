@@ -12,8 +12,10 @@ import net.minecraft.block.material.Material;
 
 public class BlockTest extends BlockTileBase<TileTest> {
 
+    public static BlockTest TEST;
+
     public BlockTest() {
-        super("block_test", Material.ROCK, TileTest.class);
+        super("block_test", Builder.create(Material.ROCK), TileTest.class);
     }
 
     @Override

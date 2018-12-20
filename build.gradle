@@ -2,7 +2,7 @@ buildscript {
     repositories {
         jcenter()
         mavenCentral()
-        maven { url = "http://files.minecraftforge.net/maven" }
+        maven { url = "https://files.minecraftforge.net/maven" }
         maven {
             url "https://plugins.gradle.org/m2/"
         }
@@ -15,14 +15,14 @@ buildscript {
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
-        classpath 'com.selesse:gradle-git-changelog:0.2.+'
+        //classpath 'com.selesse:gradle-git-changelog:0.2.+'
     }
 }
 plugins {
     id "com.github.hierynomus.license" version "0.14.0"
 }
 apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'com.selesse.git.changelog'
+//apply plugin: 'com.selesse.git.changelog'
 apply plugin: 'eclipse'
 
 license {
@@ -80,31 +80,31 @@ dependencies {
     //runtime "mezz.jei:jei_1.12.2:4.8.5.138"
     //deobfCompile group: 'mcp.mobius.waila', name: 'Hwyla', version: '1.8.23-B38_1.12'
 }
-changelog {
-    title = "${archivesBaseName} - Changelog"
-
-    outputDirectory = file("$projectDir")
-
-    since = 'beginning'
-
-    commitFormat = '%s (%an)'
-
-    markdown {
-        commitFormat = '* %s (%an)'
-    }
-
-    includeLines = {
-        !it.contains("Merge")
-    }
-
-    processLines = {
-        String input = it as String
-        if (input.contains('[ci skip] ')) {
-            input = input.minus('[ci skip] ')
-        }
-        input
-    }
-}
+//changelog {
+//    title = "${archivesBaseName} - Changelog"
+//
+//    outputDirectory = file("$projectDir")
+//
+//    since = 'beginning'
+//
+//    commitFormat = '%s (%an)'
+//
+//    markdown {
+//        commitFormat = '* %s (%an)'
+//    }
+//
+//    includeLines = {
+//        !it.contains("Merge")
+//    }
+//
+//    processLines = {
+//        String input = it as String
+//        if (input.contains('[ci skip] ')) {
+//            input = input.minus('[ci skip] ')
+//        }
+//        input
+//    }
+//}
 /*
 task apiJar(type: Jar, dependsOn: 'classes') {
     classifier = 'api'

@@ -13,7 +13,6 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.hrznstudio.titanium.pulsar.config.IConfiguration;
 import com.hrznstudio.titanium.pulsar.pulse.PulseMeta;
-import net.minecraftforge.fml.common.Loader;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -46,7 +45,7 @@ public class JSONConfiguration implements IConfiguration {
      * @param logger   The logger to send debug info to.
      */
     public JSONConfiguration(String confName, Logger logger) {
-        this.confPath = Loader.instance().getConfigDir().toString() + File.separator + confName + ".json";
+        this.confPath = /*Loader.instance().getConfigDir().toString() TODO*/ "config"+ File.separator + confName + ".json";
         this.logger = logger;
     }
 

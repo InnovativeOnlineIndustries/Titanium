@@ -10,6 +10,7 @@ import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
+import com.hrznstudio.titanium.block.BlockTileBase;
 import com.hrznstudio.titanium.block.tile.progress.MultiProgressBarHandler;
 import com.hrznstudio.titanium.block.tile.progress.PosProgressBar;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
@@ -46,8 +47,8 @@ public class TileBase extends TileEntity implements IGuiAddonProvider, ITickable
 
     private List<IFactory<? extends IGuiAddon>> guiAddons;
 
-    public TileBase(TileEntityType<?> tileEntityType) {
-        super(tileEntityType);
+    public TileBase(BlockTileBase base) {
+        super(base.getTileEntityType());
         this.guiAddons = new ArrayList<>();
     }
 
