@@ -114,7 +114,7 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
      * Ticks the bar so it can increase if possible, managed by {@link MultiProgressBarHandler#update()}
      */
     public void tickBar() {
-        if (tileBase != null && tileBase.getWorld().getTotalWorldTime() % tickingTime == 0) {
+        if (tileBase != null && tileBase.getWorld().getGameTime() % tickingTime == 0) {
             this.progress += progressIncrease;
             tileBase.markForUpdate();
             this.onTickWork.run();
@@ -255,14 +255,14 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
     @Override
     public NBTTagCompound serializeNBT() {
         NBTTagCompound compound = new NBTTagCompound();
-        compound.setInteger("Tick", progress);
-        compound.setInteger("MaxProgress", maxProgress);
+        compound.setInt("Tick", progress);
+        compound.setInt("MaxProgress", maxProgress);
         return compound;
     }
 
     @Override
     public void deserializeNBT(NBTTagCompound nbt) {
-        progress = nbt.getInteger("Tick");
-        maxProgress = nbt.getInteger("MaxProgress");
+        progress = nbt.getInt("Tick");
+        maxProgress = nbt.getInt("MaxProgress");
     }
 }

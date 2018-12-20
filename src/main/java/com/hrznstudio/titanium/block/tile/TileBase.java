@@ -23,12 +23,15 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.NonNullSupplier;
+import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nonnull;
@@ -43,7 +46,8 @@ public class TileBase extends TileEntity implements IGuiAddonProvider, ITickable
 
     private List<IFactory<? extends IGuiAddon>> guiAddons;
 
-    public TileBase() {
+    public TileBase(TileEntityType<?> tileEntityType) {
+        super(tileEntityType);
         this.guiAddons = new ArrayList<>();
     }
 
@@ -72,17 +76,23 @@ public class TileBase extends TileEntity implements IGuiAddonProvider, ITickable
         multiProgressBarHandler.addBar(posProgressBar.setTile(this));
     }
 
+    @Nonnull
     @Override
-    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
-        return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && multiInventoryHandler != null && multiInventoryHandler.getCapabilityForSide(facing).getSlots() > 0 || super.hasCapability(capability, facing);
-    }
-
-    @Nullable
-    @Override
-    public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
+    public <T> OptionalCapabilityInstance<T> getCapability(@Nonnull Capability<T> cap, @Nullable EnumFacing side) {
+        /*
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
             return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(multiInventoryHandler.getCapabilityForSide(facing));
-        return super.getCapability(capability, facing);
+        return super.getCapability(capability, facing);*/
+        if(cap==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return OptionalCapabilityInstance.of(new NonNullSupplier<T>() {
+                @Nonnull
+                @Override
+                public T get() {
+                    return (T) multiInventoryHandler.getCapabilityForSide(side);
+                }
+            });
+        }
+        return OptionalCapabilityInstance.empty();
     }
 
     public MultiInventoryHandler getMultiInventoryHandler() {
@@ -110,14 +120,14 @@ public class TileBase extends TileEntity implements IGuiAddonProvider, ITickable
      */
 
     @Override
-    public void readFromNBT(NBTTagCompound compound) {
+    public void read(NBTTagCompound compound) {
         NBTManager.getInstance().readTileEntity(this, compound);
-        super.readFromNBT(compound);
+        super.read(compound);
     }
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-        return NBTManager.getInstance().writeTileEntity(this, super.writeToNBT(compound));
+    public NBTTagCompound write(NBTTagCompound compound) {
+        return NBTManager.getInstance().writeTileEntity(this, super.write(compound));
     }
 
     public void markForUpdate() {
@@ -127,23 +137,18 @@ public class TileBase extends TileEntity implements IGuiAddonProvider, ITickable
 
     @Override
     public NBTTagCompound getUpdateTag() {
-        return writeToNBT(new NBTTagCompound());
-    }
-
-    @Override
-    public boolean shouldRefresh(World world, BlockPos pos, @Nonnull IBlockState oldState, @Nonnull IBlockState newSate) {
-        return oldState.getBlock() != newSate.getBlock();
+        return write(new NBTTagCompound());
     }
 
     @Override
     public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
-        readFromNBT(pkt.getNbtCompound());
+        read(pkt.getNbtCompound());
     }
 
     @Override
     public SPacketUpdateTileEntity getUpdatePacket() {
         NBTTagCompound tag = new NBTTagCompound();
-        writeToNBT(tag);
+        write(tag);
         return new SPacketUpdateTileEntity(getPos(), 1, tag);
     }
 
@@ -152,7 +157,7 @@ public class TileBase extends TileEntity implements IGuiAddonProvider, ITickable
     }
 
     @Override
-    public void update() {
+    public void tick() {
         if (!world.isRemote) {
             if (multiProgressBarHandler != null) multiProgressBarHandler.update();
         }

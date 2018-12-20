@@ -8,7 +8,7 @@ package com.hrznstudio.titanium.pulsar.debug;
 
 import com.google.common.eventbus.Subscribe;
 import com.hrznstudio.titanium.pulsar.pulse.Pulse;
-import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.javafmlmod.FMLModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 @Pulse(id = "EventSpy", description = "we iz in ur buses, monitorin ur eventz", forced = true)
 public class EventSpy {
 
-    private final Logger log = LogManager.getLogger("EventSpy/" + Loader.instance().activeModContainer().getModId());
+    private final Logger log = LogManager.getLogger("EventSpy/" + FMLModLoadingContext.get().getActiveContainer().getModId());
 
     @Subscribe
     public void receive(Object evt) {

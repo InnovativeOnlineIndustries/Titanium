@@ -6,13 +6,13 @@
  */
 package com.hrznstudio.titanium.client;
 
-import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.client.resources.IResourceManager;
+import net.minecraft.client.renderer.block.model.IUnbakedModel;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ICustomModelLoader;
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.eventbus.api.Event;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -20,9 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 @ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class TitaniumModelLoader implements ICustomModelLoader {
-    private final Map<ResourceLocation, IModel> MODEL_MAP = new HashMap<>();
+    private final Map<ResourceLocation, IUnbakedModel> MODEL_MAP = new HashMap<>();
 
     @Override
     public boolean accepts(ResourceLocation modelLocation) {
@@ -31,7 +30,7 @@ public class TitaniumModelLoader implements ICustomModelLoader {
 
     @Override
     @Nonnull
-    public IModel loadModel(ResourceLocation modelLocation) {
+    public IUnbakedModel loadModel(ResourceLocation modelLocation) {
         return MODEL_MAP.get(modelLocation);
     }
 
@@ -48,15 +47,15 @@ public class TitaniumModelLoader implements ICustomModelLoader {
             this.loader = loader;
         }
 
-        public void register(ResourceLocation resourceLocation, IModel model) {
+        public void register(ResourceLocation resourceLocation, IUnbakedModel model) {
             loader.MODEL_MAP.put(resourceLocation, model);
         }
 
-        public void register(String location, IModel model) {
+        public void register(String location, IUnbakedModel model) {
             register(new ResourceLocation(location), model);
         }
 
-        public void register(String domain, String location, IModel model) {
+        public void register(String domain, String location, IUnbakedModel model) {
             register(new ResourceLocation(domain, location), model);
         }
     }

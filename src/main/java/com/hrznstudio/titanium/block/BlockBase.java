@@ -11,19 +11,15 @@ import com.hrznstudio.titanium.api.internal.IItemBlockFactory;
 import com.hrznstudio.titanium.api.internal.IModelRegistrar;
 import com.hrznstudio.titanium.api.raytrace.DistanceRayTraceResult;
 import com.hrznstudio.titanium.api.raytrace.IndexedAxisAlignedBB;
-import com.hrznstudio.titanium.util.ClientUtil;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.Entity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
+import net.minecraft.world.IWorldReader;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -32,10 +28,10 @@ import java.util.List;
 import java.util.Objects;
 
 public abstract class BlockBase extends Block implements IModelRegistrar, IItemBlockFactory {
-    public BlockBase(String name, Material materialIn) {
-        super(materialIn);
+
+    public BlockBase(String name, Builder properties) {
+        super(properties);
         setRegistryName(name);
-        setUnlocalizedName(Objects.requireNonNull(getRegistryName()).toString().replace(':', '.'));
     }
 
     @Nullable
@@ -55,61 +51,22 @@ public abstract class BlockBase extends Block implements IModelRegistrar, IItemB
 
     @Override
     public IFactory<ItemBlock> getItemBlockFactory() {
-        return () -> (ItemBlock) new ItemBlock(this).setRegistryName(Objects.requireNonNull(getRegistryName()));
-    }
-
-    @Override
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
-        if (hasCustomBoxes(state, source, pos)) {
-            List<IndexedAxisAlignedBB> cuboids = getBoundingBoxes(state, source, pos);
-            if (cuboids.size() > 0)
-                return cuboids.get(0);
-        }
-        return super.getBoundingBox(state, source, pos);
-    }
-
-    @Override
-    public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World source, BlockPos pos) {
-        if (hasCustomBoxes(state, source, pos)) {
-            List<IndexedAxisAlignedBB> cuboids = getBoundingBoxes(state, source, pos);
-            if (cuboids.size() > 0)
-                return cuboids.get(0).offset(pos);
-        }
-        return super.getSelectedBoundingBox(state, source, pos);
+        return () -> (ItemBlock) new ItemBlock(this, new Item.Builder()).setRegistryName(Objects.requireNonNull(getRegistryName()));
     }
 
     @Override
     public void registerModels() {
-        ClientUtil.registerToMapper(this);
+        //ClientUtil.registerToMapper(this);
     }
 
-    public List<IndexedAxisAlignedBB> getBoundingBoxes(IBlockState state, IBlockAccess source, BlockPos pos) {
+    public List<IndexedAxisAlignedBB> getBoundingBoxes(IBlockState state, IWorldReader source, BlockPos pos) {
         return Collections.emptyList();
     }
 
-    public boolean hasCustomBoxes(IBlockState state, IBlockAccess source, BlockPos pos) {
-        return false;
+    public boolean hasCustomBoxes(IBlockState state, IWorldReader source, BlockPos pos) {
+        return false; //TODO: Reimplement custom boxes
     }
 
-    @Override
-    public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean isActualState) {
-        if (!hasCustomBoxes(state, worldIn, pos)) {
-            super.addCollisionBoxToList(state, worldIn, pos, entityBox, collidingBoxes, entityIn, isActualState);
-            return;
-        }
-        for (IndexedAxisAlignedBB box : getBoundingBoxes(state, worldIn, pos)) {
-            if (box.isCollidable())
-                addCollisionBoxToList(pos, entityBox, collidingBoxes, box);
-        }
-    }
-
-    @Nullable
-    @Override
-    public RayTraceResult collisionRayTrace(IBlockState blockState, World worldIn, BlockPos pos, Vec3d start, Vec3d end) {
-        if (!hasCustomBoxes(blockState, worldIn, pos))
-            return super.collisionRayTrace(blockState, worldIn, pos, start, end);
-        return rayTraceBoxesClosest(start, end, pos, getBoundingBoxes(blockState, worldIn, pos));
-    }
 
     @Nullable
     protected RayTraceResult rayTraceBoxesClosest(Vec3d start, Vec3d end, BlockPos pos, List<IndexedAxisAlignedBB> boxes) {

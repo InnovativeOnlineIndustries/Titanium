@@ -10,11 +10,14 @@ import com.google.common.collect.Sets;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.energy.NBTEnergyHandler;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Set;
 
@@ -22,9 +25,12 @@ public class TilePowered extends TileBase {
 
     @Save
     private NBTEnergyHandler energyHandler;
+    private OptionalCapabilityInstance<IEnergyStorage> energyCap;
 
-    public TilePowered() {
+    public TilePowered(TileEntityType<?> tileEntityType) {
+        super(tileEntityType);
         this.energyHandler = getEnergyHandlerFactory().create();
+        this.energyCap = OptionalCapabilityInstance.of(() -> this.energyHandler);
     }
 
     protected IFactory<NBTEnergyHandler> getEnergyHandlerFactory() {
@@ -36,17 +42,14 @@ public class TilePowered extends TileBase {
     }
 
     public Set<EnumFacing> getValidEnergyFaces() {
-        return Sets.newHashSet(EnumFacing.VALUES);
+        return Sets.newHashSet(EnumFacing.values());
     }
 
+    @Nonnull
     @Override
-    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
-        return capability == CapabilityEnergy.ENERGY ? facing == null || getValidEnergyFaces().contains(facing) : super.hasCapability(capability, facing);
-    }
-
-    @Nullable
-    @Override
-    public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
-        return capability == CapabilityEnergy.ENERGY && (facing == null || getValidEnergyFaces().contains(facing)) ? CapabilityEnergy.ENERGY.cast(energyHandler) : super.getCapability(capability, facing);
+    public <T> OptionalCapabilityInstance<T> getCapability(@Nonnull Capability<T> cap, @Nullable EnumFacing side) {
+        if (cap == CapabilityEnergy.ENERGY)
+            return energyCap.cast();
+        return super.getCapability(cap, side);
     }
 }

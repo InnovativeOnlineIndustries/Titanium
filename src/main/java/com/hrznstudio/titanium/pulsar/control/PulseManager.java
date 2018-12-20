@@ -6,7 +6,6 @@
  */
 package com.hrznstudio.titanium.pulsar.control;
 
-import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.hrznstudio.titanium.pulsar.config.ForgeConfiguration;
 import com.hrznstudio.titanium.pulsar.config.IConfiguration;
@@ -19,16 +18,13 @@ import com.hrznstudio.titanium.pulsar.pulse.Pulse;
 import com.hrznstudio.titanium.pulsar.pulse.PulseMeta;
 import joptsimple.internal.Strings;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.FMLModContainer;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.CrashReportExtender;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.javafmlmod.FMLModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -89,13 +85,13 @@ public class PulseManager {
      * Shared initialiser code between all the constructors.
      */
     private void init() {
-        String modId = Loader.instance().activeModContainer().getModId();
-        String modName = Loader.instance().activeModContainer().getName();
+        String modId = FMLModLoadingContext.get().getActiveContainer().getModId();
+        String modName = FMLModLoadingContext.get().getActiveContainer().getModInfo().getDisplayName();
         this.id = modId;
         this.name = Strings.isNullOrEmpty(modName) ? modId : modName;
         log = LogManager.getLogger(modName + "|Pulsar");
         flightpath.setExceptionHandler(new BusExceptionHandler(modId));
-        FMLCommonHandler.instance().registerCrashCallable(new CrashHandler(modId, this));
+        CrashReportExtender.registerCrashCallable(new CrashHandler(modId, this));
         // Attach us to the mods FML bus
         attachToContainerEventBus(this);
     }
@@ -146,12 +142,13 @@ public class PulseManager {
         if (!deps.equals("")) {
             String[] parsedDeps = deps.split(";");
             for (String s : parsedDeps) {
-                if (!Loader.isModLoaded(s)) {
+                //TODO:
+                /*if (!FMLModLoadingContext.get().isModLoaded(s)) {
                     log.info("Skipping Pulse " + id + "; missing dependency: " + s);
                     missingDeps = true;
                     enabled = false;
                     break;
-                }
+                }*/
             }
         }
 
@@ -173,6 +170,7 @@ public class PulseManager {
      * @param obj Object to register.
      */
     private void attachToContainerEventBus(Object obj) {
+        /*
         ModContainer cnt = Loader.instance().activeModContainer();
         log.debug("Attaching [" + obj + "] to event bus for container [" + cnt + "]");
         try {
@@ -191,7 +189,8 @@ public class PulseManager {
             throw new RuntimeException("Pulsar >> Security Manager blocked access to eventBus on mod container. Cannot continue.");
         } catch (ClassCastException cce) {
             throw new RuntimeException("Pulsar >> Something in the mod container had the wrong type? " + cce.getMessage());
-        }
+        }*/
+        //TODO Rewrite this to new event bus
     }
 
     /**
