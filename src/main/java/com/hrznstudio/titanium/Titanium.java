@@ -44,7 +44,6 @@ public class Titanium extends TitaniumMod {
     }
 
     public Titanium() {
-        FMLModLoadingContext.get().getModEventBus().addListener(this::preInit);
         MinecraftForge.EVENT_BUS.register(this);
     }
 
