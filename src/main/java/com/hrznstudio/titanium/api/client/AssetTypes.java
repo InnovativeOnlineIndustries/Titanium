@@ -10,11 +10,11 @@ import com.hrznstudio.titanium.api.client.assets.types.IBackgroundAsset;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 
 public class AssetTypes {
-    public static final IAssetType<IBackgroundAsset> BACKGROUND = new GenericAssetType<>(() -> IAssetProvider.DEFAULT_PROVIDER.getAsset(AssetTypes.BACKGROUND), IBackgroundAsset.class);
-    public static final IAssetType<IAsset> SLOT = new GenericAssetType<>(() -> IAssetProvider.DEFAULT_PROVIDER.getAsset(AssetTypes.SLOT), IAsset.class);
-    public static final IAssetType<IAsset> ENERGY_BAR = new GenericAssetType<>(() -> IAssetProvider.DEFAULT_PROVIDER.getAsset(AssetTypes.ENERGY_BAR), IAsset.class);
-    public static final IAssetType<IAsset> ENERGY_BACKGROUND = new GenericAssetType<>(() -> IAssetProvider.DEFAULT_PROVIDER.getAsset(AssetTypes.ENERGY_BACKGROUND), IAsset.class);
-    public static final IAssetType<IAsset> TANK = new GenericAssetType<>(() -> IAssetProvider.DEFAULT_PROVIDER.getAsset(AssetTypes.TANK), IAsset.class);
-    public static final IAssetType<IAsset> PROGRESS_BAR = new GenericAssetType<>(() -> IAssetProvider.DEFAULT_PROVIDER.getAsset(AssetTypes.PROGRESS_BAR), IAsset.class);
-    public static final IAssetType<IAsset> PROGRESS_FILL = new GenericAssetType<>(() -> IAssetProvider.DEFAULT_PROVIDER.getAsset(AssetTypes.PROGRESS_FILL), IAsset.class);
+    public static final IAssetType<IBackgroundAsset> BACKGROUND = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IBackgroundAsset.class);
+    public static final IAssetType<IAsset> SLOT = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
+    public static final IAssetType<IAsset> ENERGY_BAR = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
+    public static final IAssetType<IAsset> ENERGY_BACKGROUND = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
+    public static final IAssetType<IAsset> TANK = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
+    public static final IAssetType<IAsset> PROGRESS_BAR = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
+    public static final IAssetType<IAsset> PROGRESS_FILL = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
 }

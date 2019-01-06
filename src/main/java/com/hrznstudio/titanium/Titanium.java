@@ -22,11 +22,11 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.javafmlmod.FMLModLoadingContext;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 
@@ -42,24 +42,12 @@ public class Titanium extends TitaniumMod {
     public static void openGui(TileBase tile, EntityPlayer player) {
         //player.openGui(INSTANCE, -1, tile.getWorld(), tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ());
     }
-    public Titanium() {
-        super();
-        if(FMLModLoadingContext.get().getActiveContainer()!=null) {
-            IEventBus bus = FMLModLoadingContext.get().getModEventBus();
-            if (bus != null) {
-                bus.addListener(this::preInit);
-            }
-        }
 
+    public Titanium() {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    @Override
-    @Nonnull
-    public String getModId() {
-        return MODID;
-    }
-
+    @EventReceiver
     public void preInit(FMLPreInitializationEvent event) {
         COMPAT_MANAGER = new PulseManager("titanium/compat");
         addBlock(BlockTest.TEST = new BlockTest());
