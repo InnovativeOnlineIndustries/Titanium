@@ -80,6 +80,7 @@ public class TileBase extends TileEntity implements IGuiAddonProvider, ITickable
     @Nonnull
     @Override
     public <T> OptionalCapabilityInstance<T> getCapability(@Nonnull Capability<T> cap, @Nullable EnumFacing side) {
+        System.out.println(cap);
         /*
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
             return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(multiInventoryHandler.getCapabilityForSide(facing));

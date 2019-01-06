@@ -56,8 +56,15 @@ minecraft {
         main= "net.minecraftforge.userdev.UserdevLauncher"
         ideaModuleName = "${project.name}_main"
         workingDirectory = project.file("run").canonicalPath
-        environment "target", "fmldevclient"
+        environment "target", "fmluserdevclient"
         environment "assetDirectory", downloadAssets.output.absolutePath
+        environment "target", "fmluserdevclient"
+        environment "assetDirectory", downloadAssets.output.absolutePath
+        environment "FORGE_VERSION", "24.0.55-1.13-pre"
+        environment "MCP_VERSION", "20180921-1.13"
+        environment "MC_VERSION", "1.13"
+        environment "FORGE_GROUP", "net.minecraftforge.test"
+        environment "MOD_CLASSES", sourceSets.main.output.resourcesDir.canonicalPath + File.pathSeparator + sourceSets.main.output.classesDirs.collect{p -> p.canonicalPath}.join(File.pathSeparator)
         //clientJvmArgs = ["-Dfml.coreMods.load=$core_plugin"] TODO
         //serverJvmArgs = ["-Dfml.coreMods.load=$core_plugin"] TODO
     }
@@ -73,7 +80,8 @@ minecraft {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge.test:forge:1.13-24.0.37-1.13-pre'
+    minecraft 'net.minecraftforge.test:userdev:1.13-24.0.55-1.13-pre'
+    compile 'net.minecraftforge.test:forge:1.13-24.0.55-1.13-pre:launcher'
     //deobfCompile "MCMultiPart2:MCMultiPart:2.5.3"
     //provided "team.chisel.ctm:CTM:MC1.12.2-0.3.2.18"
     //deobfProvided "mezz.jei:jei_1.12.2:4.8.5.138:api"
