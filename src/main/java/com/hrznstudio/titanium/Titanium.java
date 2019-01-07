@@ -9,13 +9,18 @@ package com.hrznstudio.titanium;
 import com.hrznstudio.titanium._test.BlockTest;
 import com.hrznstudio.titanium.api.raytrace.DistanceRayTraceResult;
 import com.hrznstudio.titanium.block.tile.TileBase;
+import com.hrznstudio.titanium.client.gui.GuiContainerTile;
+import com.hrznstudio.titanium.container.ContainerTileBase;
 import com.hrznstudio.titanium.pulsar.control.PulseManager;
 import com.hrznstudio.titanium.tab.AdvancedTitaniumTab;
 import com.hrznstudio.titanium.util.SidedHandler;
 import com.hrznstudio.titanium.util.TitaniumMod;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.SharedConstants;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -40,6 +45,13 @@ public class Titanium extends TitaniumMod {
     private static boolean vanilla;
 
     public static void openGui(TileBase tile, EntityPlayer player) {
+
+        if (player instanceof EntityPlayerMP){
+            //((EntityPlayerMP) player).sendContainerToPlayer(new ContainerTileBase(tile, player.inventory));
+        }else if (player instanceof EntityPlayerSP){
+            Minecraft.getInstance().displayGuiScreen(new GuiContainerTile<>(new ContainerTileBase<>(tile, player.inventory)));
+        }
+
         //player.openGui(INSTANCE, -1, tile.getWorld(), tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ());
     }
 

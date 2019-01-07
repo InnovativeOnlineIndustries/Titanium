@@ -47,8 +47,18 @@ public final class DefaultAssetProvider implements IAssetProvider {
             return new Rectangle(0, 0, 176, 184);
         }
     };
-    private final IAsset PROGRESS_BAR = () -> new Rectangle(177, 61, 22, 15);
-    private final IAsset PROGRESS_BAR_FILL = () -> new Rectangle(177, 77, 22, 16);
+    private final IAsset PROGRESS_BAR = () -> new Rectangle(211, 1, 11, 56);
+    private final IAsset PROGRESS_BAR_FILL = new IAsset() {
+        @Override
+        public Rectangle getArea() {
+            return new Rectangle(223, 1, 5, 50);
+        }
+
+        @Override
+        public Point getOffset() {
+            return new Point(3, 3);
+        }
+    };
 
     DefaultAssetProvider() {
     }
@@ -58,7 +68,18 @@ public final class DefaultAssetProvider implements IAssetProvider {
     public <T extends IAsset> T getAsset(IAssetType<T> assetType) {
         if (assetType == AssetTypes.BACKGROUND)
             return assetType.castOrDefault(BACKGROUND);
-
+        if (assetType == AssetTypes.ENERGY_BACKGROUND)
+            return assetType.castOrDefault(ENERGY_FILL);
+        if (assetType == AssetTypes.ENERGY_BAR)
+            return assetType.castOrDefault(ENERGY_BAR);
+        if (assetType == AssetTypes.PROGRESS_BAR)
+            return assetType.castOrDefault(PROGRESS_BAR);
+        if (assetType == AssetTypes.PROGRESS_FILL)
+            return assetType.castOrDefault(PROGRESS_BAR_FILL);
+        if (assetType == AssetTypes.SLOT)
+            return assetType.castOrDefault(SLOT);
+        if (assetType == AssetTypes.TANK)
+            return assetType.castOrDefault(TANK);
         throw new RuntimeException("An error has occurred, default provider encountered an unknown assets type");
     }
 }

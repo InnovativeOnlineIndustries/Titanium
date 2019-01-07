@@ -41,9 +41,7 @@ public class TileTest extends TilePowered implements ITickable {
 
     @Override
     public boolean onActivated(EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        if (!world.isRemote) {
-            openGui(playerIn);
-        }
+        openGui(playerIn);
         return true;
     }
 
