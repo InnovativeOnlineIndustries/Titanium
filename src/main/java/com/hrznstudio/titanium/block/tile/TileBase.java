@@ -18,18 +18,16 @@ import com.hrznstudio.titanium.inventory.MultiInventoryHandler;
 import com.hrznstudio.titanium.inventory.PosInvHandler;
 import com.hrznstudio.titanium.nbthandler.NBTManager;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.NonNullSupplier;
 import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
@@ -61,7 +59,8 @@ public class TileBase extends TileEntity implements IGuiAddonProvider, ITickable
     }
 
     public void openGui(EntityPlayer player) {
-        Titanium.openGui(this, player);
+        if (player instanceof EntityPlayerMP)
+            Titanium.openGui(this, (EntityPlayerMP) player);
     }
 
     /*

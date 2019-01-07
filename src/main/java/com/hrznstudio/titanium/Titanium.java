@@ -9,19 +9,20 @@ package com.hrznstudio.titanium;
 import com.hrznstudio.titanium._test.BlockTest;
 import com.hrznstudio.titanium.api.raytrace.DistanceRayTraceResult;
 import com.hrznstudio.titanium.block.tile.TileBase;
-import com.hrznstudio.titanium.client.gui.GuiContainerTile;
-import com.hrznstudio.titanium.container.ContainerTileBase;
+import com.hrznstudio.titanium.client.gui.GuiHandler;
+import com.hrznstudio.titanium.network.OpenGUI;
+import com.hrznstudio.titanium.network.Packet;
 import com.hrznstudio.titanium.pulsar.control.PulseManager;
 import com.hrznstudio.titanium.tab.AdvancedTitaniumTab;
 import com.hrznstudio.titanium.util.SidedHandler;
 import com.hrznstudio.titanium.util.TitaniumMod;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.SharedConstants;
+import net.minecraft.inventory.Container;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.api.distmarker.Dist;
@@ -30,10 +31,15 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.javafmlmod.FMLModLoadingContext;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.fml.common.network.IGuiHandler;
+import net.minecraftforge.fml.network.NetworkDirection;
+import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
 
-import javax.annotation.Nonnull;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 @Mod(Titanium.MODID)
 public class Titanium extends TitaniumMod {
@@ -44,15 +50,18 @@ public class Titanium extends TitaniumMod {
     public static PulseManager COMPAT_MANAGER = null;
     private static boolean vanilla;
 
-    public static void openGui(TileBase tile, EntityPlayer player) {
+    private static SimpleChannel NETWORK;
 
-        if (player instanceof EntityPlayerMP){
-            //((EntityPlayerMP) player).sendContainerToPlayer(new ContainerTileBase(tile, player.inventory));
-        }else if (player instanceof EntityPlayerSP){
-            Minecraft.getInstance().displayGuiScreen(new GuiContainerTile<>(new ContainerTileBase<>(tile, player.inventory)));
+    public static IGuiHandler guiHandler = new GuiHandler();
+
+    public static void openGui(TileBase tile, EntityPlayerMP player) {
+        player.getNextWindowId();
+        player.openContainer = (Container) guiHandler.getServerGuiElement(0, player, player.world, tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ());
+        if(player.openContainer!=null) {
+            player.openContainer.windowId = player.currentWindowId;
+            player.openContainer.addListener(player);
+            NETWORK.sendTo(new OpenGUI(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ()), player.connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
         }
-
-        //player.openGui(INSTANCE, -1, tile.getWorld(), tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ());
     }
 
     public Titanium() {
@@ -61,6 +70,16 @@ public class Titanium extends TitaniumMod {
 
     @EventReceiver
     public void preInit(FMLPreInitializationEvent event) {
+        NETWORK = NetworkRegistry.ChannelBuilder.named(new ResourceLocation(MODID, "network"))
+                .networkProtocolVersion(() -> "1.0")
+                .clientAcceptedVersions("1.0"::equals)
+                .serverAcceptedVersions("1.0"::equals)
+                .simpleChannel();
+        NETWORK.messageBuilder(OpenGUI.class, 0)
+                .decoder(decode(OpenGUI.class))
+                .encoder(encode())
+                .consumer(OpenGUI::handleMessage)
+                .add();
         COMPAT_MANAGER = new PulseManager("titanium/compat");
         addBlock(BlockTest.TEST = new BlockTest());
         SidedHandler.runOn(Dist.CLIENT, () -> TitaniumClient::registerModelLoader);
@@ -69,6 +88,28 @@ public class Titanium extends TitaniumMod {
             NetworkRegistry.INSTANCE.registerGuiHandler(INSTANCE, new MCMPGuiHandler());
         else
             NetworkRegistry.INSTANCE.registerGuiHandler(INSTANCE, new GuiHandler());*/
+    }
+
+    public static <P extends Packet> BiConsumer<P, PacketBuffer> encode() {
+        return Packet::encode;
+    }
+
+    public static <P extends Packet> Function<PacketBuffer, P> decode(Class<P> packetClass) {
+        return buffer -> {
+            try {
+                Constructor constructor = packetClass.getDeclaredConstructor(PacketBuffer.class);
+                return packetClass.cast(constructor.newInstance(buffer));
+            } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                try {
+                    Constructor constructor = packetClass.getDeclaredConstructor();
+                    P p = packetClass.cast(constructor.newInstance());
+                    p.decode(buffer);
+                    return p;
+                } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e1) {
+                    throw new RuntimeException(e1);
+                }
+            }
+        };
     }
 
     @SubscribeEvent
