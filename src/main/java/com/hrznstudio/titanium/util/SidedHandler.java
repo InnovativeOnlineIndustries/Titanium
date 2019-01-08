@@ -7,6 +7,7 @@
 package com.hrznstudio.titanium.util;
 
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import java.util.function.Supplier;
 
@@ -15,7 +16,7 @@ public final class SidedHandler {
     }
 
     public static Dist getSide() {
-        return Dist.CLIENT; //TODO: for now hardcode as FMLEnvironment seems to be missing
+        return FMLEnvironment.dist;
     }
 
     public static void runOn(Dist side, Supplier<Runnable> toRun) {

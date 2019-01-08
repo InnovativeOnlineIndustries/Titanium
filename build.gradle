@@ -114,6 +114,7 @@ minecraft {
 
 dependencies {
     minecraft "${FORGE_GROUP}:forge:${MC_VERSION}-${FORGE_VERSION}"
+    compile files('libs/forge-1.13-24.0.59-1.13-pre-launcher.jar')
 }
 
 task genIntellijRuns2 {
