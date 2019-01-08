@@ -23,7 +23,7 @@ plugins {
     id 'maven'
     id 'maven-publish'
     id 'java'
-    id "com.hrznstudio.cursegradle" version "1.1.0"
+    //id "com.hrznstudio.cursegradle" version "1.1.0"
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'com.selesse.git.changelog'
@@ -108,9 +108,18 @@ minecraft {
     }
 }
 
+repositories {
+    jcenter()
+    mavenCentral()
+    maven { url = "https://files.minecraftforge.net/maven" }
+    maven {
+        url "https://plugins.gradle.org/m2/"
+    }
+}
+
 dependencies {
-    minecraft 'net.minecraftforge.test:userdev:1.13-24.0.57-1.13-pre'
-    compile 'net.minecraftforge.test:forge:1.13-24.0.57-1.13-pre:launcher'
+    minecraft 'net.minecraftforge.test:forge:1.13-24.0.59-1.13-pre:userdev'
+    compile 'net.minecraftforge.test:forge:1.13-24.0.59-1.13-pre:launcher'
 }
 
 /*
@@ -198,20 +207,5 @@ uploadArchives {
                 }
             }
         }
-    }
-}
-
-curseforge {
-    if(System.getenv('HRZN_CURSE_KEY'))
-        apiKey = System.getenv('HRZN_CURSE_KEY')
-    else
-        apiKey = "NONE"
-    project {
-        apiUrl="https://minecraft.curseforge.com"
-        id = '287342'
-        changelog = file('CHANGELOG.md')
-        releaseType = 'release'
-        mainArtifact jar
-        addGameVersion '1.13.2'
     }
 }
