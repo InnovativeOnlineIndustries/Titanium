@@ -68,7 +68,7 @@ license {
 
 def BUILD_NUMBER = System.getenv("BUILD_NUMBER") ?: "0"
 version = "0.1.0.$BUILD_NUMBER"
-group = "com.hrznstudio"
+group = "com.hrznstudio.titanium"
 archivesBaseName = "Titanium"
 
 sourceCompatibility = targetCompatibility = '1.8'
@@ -83,35 +83,11 @@ def FORGE_VERSION = "24.0.59-1.13-pre"
 def core_plugin = "com.hrznstudio.titanium.core.TitaniumLoader"
 minecraft {
     mappings channel: 'snapshot', version: MCP_VERSION
-    runConfig {
-        name= "MDK Client"
-        main= "net.minecraftforge.userdev.UserdevLauncher"
-        ideaModuleName = "${project.name}_main"
-        workingDirectory = project.file("run").canonicalPath
-        environment "target", "fmluserdevclient"
-        environment "assetDirectory", downloadAssets.output.absolutePath
-        environment "FORGE_GROUP", FORGE_GROUP
-        environment "FORGE_VERSION", FORGE_VERSION
-        environment "MCP_VERSION", MCP_VERSION
-        environment "MC_VERSION", MC_VERSION
-        environment "MOD_CLASSES", "${sourceSets.main.output.resourcesDir}${File.pathSeparator}${sourceSets.main.output.classesDirs.join(File.pathSeparator)}"
-    }
-
-    runConfig {
-        name= "MDK Server"
-        main= "net.minecraftforge.userdev.UserdevLauncher"
-        ideaModuleName = "${project.name}_main"
-        workingDirectory = project.file("run").canonicalPath
-        environment "target", "fmluserdevserver"
-        environment "assetDirectory", downloadAssets.output.absolutePath
-        environment "FORGE_VERSION", FORGE_VERSION
-        environment "MCP_VERSION", MCP_VERSION
-        environment "MC_VERSION", MC_VERSION
-        environment "FORGE_GROUP", FORGE_GROUP
-        environment "MOD_CLASSES", "${sourceSets.main.output.resourcesDir}${File.pathSeparator}${sourceSets.main.output.classesDirs.join(File.pathSeparator)}"
-    }
 }
 
+repositories {
+    maven { url 'http://maven.gameanalytics.com/release' }
+}
 dependencies {
     minecraft "${FORGE_GROUP}:forge:${MC_VERSION}-${FORGE_VERSION}"
     compile files('libs/forge-1.13-24.0.59-1.13-pre-launcher.jar')
@@ -218,9 +194,9 @@ uploadArchives {
             repository(url: "file://$buildDir/repo")
 
             pom {
-                groupId = group
-                version = version
-                artifactId = archivesBaseName
+                groupId = project.group
+                version = project.version
+                artifactId = project.archivesBaseName
                 project {
                     name "Titanium"
                     packaging 'jar'
