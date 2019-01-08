@@ -2,8 +2,8 @@
 pipeline {
   agent any
   environment {
-      CHORE_RELEASE = sh script: "git log -1 | grep 'chore(release):'", returnStatus: true
-      CHORE_SNAPSHOT = sh script: "git log -1 | grep 'chore(snapshot):'", returnStatus: true
+      CHORE_RELEASE = sh script: "git log -1 | grep 'chore(#release):'", returnStatus: true
+      CHORE_SNAPSHOT = sh script: "git log -1 | grep 'chore(#snapshot):'", returnStatus: true
   }
   stages {
     stage('Checkout') {
@@ -38,7 +38,7 @@ pipeline {
           when {
             allOf {
               expression {
-                "${CHORE_SNAPSHOT}" == "0" && || currentBuild.result == 'SUCCESS'
+                "${CHORE_SNAPSHOT}" == "0" && currentBuild.result == 'SUCCESS'
               }
             }
           }
@@ -50,7 +50,7 @@ pipeline {
           when {
             allOf {
               expression {
-                "${CHORE_SNAPSHOT}" == "0" && || currentBuild.result == 'SUCCESS'
+                "${CHORE_SNAPSHOT}" == "0" && currentBuild.result == 'SUCCESS'
               }
             }
           }
@@ -66,7 +66,7 @@ pipeline {
           when {
             allOf {
               expression {
-                "${CHORE_RELEASE}" == "0" && || currentBuild.result == 'SUCCESS'
+                "${CHORE_RELEASE}" == "0" && currentBuild.result == 'SUCCESS'
               }
             }
           }
