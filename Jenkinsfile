@@ -35,9 +35,9 @@ pipeline {
           when {
             allOf {
               expression {
-                "${CHORE_SNAPSHOT}" == "0" && currentBuild.result == 'SUCCESS'
+                currentBuild.result == 'SUCCESS'
               }
-
+              branch 'release'
             }
 
           }
@@ -49,11 +49,9 @@ pipeline {
           when {
             allOf {
               expression {
-                "${CHORE_SNAPSHOT}" == "0" && currentBuild.result == 'SUCCESS'
+                currentBuild.result == 'SUCCESS'
               }
-
             }
-
           }
           steps {
             sh 'aws s3 cp build/repo/ s3://hrznstudio.com/maven/snapshot/ --recursive --acl public-read'
@@ -67,11 +65,10 @@ pipeline {
           when {
             allOf {
               expression {
-                "${CHORE_RELEASE}" == "0" && currentBuild.result == 'SUCCESS'
+                currentBuild.result == 'SUCCESS'
               }
-
+              branch 'release'
             }
-
           }
           steps {
             sh './gradlew curseforge'
