@@ -15,7 +15,7 @@ buildscript {
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
-        classpath 'com.selesse:gradle-git-changelog:0.2.+'
+        //classpath 'com.selesse:gradle-git-changelog:0.2.+'
     }
 }
 plugins {
@@ -23,10 +23,9 @@ plugins {
     id 'maven'
     id 'maven-publish'
     id 'java'
-    //id "com.hrznstudio.cursegradle" version "1.1.0"
 }
 apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'com.selesse.git.changelog'
+//apply plugin: 'com.selesse.git.changelog'
 apply plugin: 'eclipse'
 
 license {
@@ -41,7 +40,7 @@ license {
         java='SLASHSTAR_STYLE'
     }
 }
-changelog {
+/*changelog {
     title = "${archivesBaseName} - Changelog"
 
     outputDirectory = file("$projectDir")
@@ -65,7 +64,7 @@ changelog {
         }
         input
     }
-}
+}*/
 
 def BUILD_NUMBER = System.getenv("BUILD_NUMBER") ?: "0"
 version = "0.1.0.$BUILD_NUMBER"
@@ -76,52 +75,86 @@ sourceCompatibility = targetCompatibility = '1.8'
 compileJava {
     sourceCompatibility = targetCompatibility = '1.8'
 }
+def MC_VERSION = "1.13"
+def MCP_VERSION = "20180921-1.13"
+def FORGE_GROUP = "net.minecraftforge.test"
+def FORGE_VERSION = "24.0.59-1.13-pre"
 
 def core_plugin = "com.hrznstudio.titanium.core.TitaniumLoader"
 minecraft {
-    mappings channel: 'snapshot', version: '20180921-1.13'
+    mappings channel: 'snapshot', version: MCP_VERSION
     runConfig {
-        name= "Minecraft Client"
+        name= "MDK Client"
         main= "net.minecraftforge.userdev.UserdevLauncher"
         ideaModuleName = "${project.name}_main"
         workingDirectory = project.file("run").canonicalPath
         environment "target", "fmluserdevclient"
         environment "assetDirectory", downloadAssets.output.absolutePath
-        environment "target", "fmluserdevclient"
-        environment "assetDirectory", downloadAssets.output.absolutePath
-        environment "FORGE_VERSION", "24.0.57-1.13-pre"
-        environment "MCP_VERSION", "20180921-1.13"
-        environment "MC_VERSION", "1.13"
-        environment "FORGE_GROUP", "net.minecraftforge.test"
-        environment "MOD_CLASSES", sourceSets.main.output.resourcesDir.canonicalPath + File.pathSeparator + sourceSets.main.output.classesDirs.collect{p -> p.canonicalPath}.join(File.pathSeparator)
-        //clientJvmArgs = ["-Dfml.coreMods.load=$core_plugin"] TODO
-        //serverJvmArgs = ["-Dfml.coreMods.load=$core_plugin"] TODO
+        environment "FORGE_GROUP", FORGE_GROUP
+        environment "FORGE_VERSION", FORGE_VERSION
+        environment "MCP_VERSION", MCP_VERSION
+        environment "MC_VERSION", MC_VERSION
+        environment "MOD_CLASSES", "${sourceSets.main.output.resourcesDir}${File.pathSeparator}${sourceSets.main.output.classesDirs.join(File.pathSeparator)}"
     }
 
     runConfig {
-        name= "Minecraft Server"
+        name= "MDK Server"
         main= "net.minecraftforge.userdev.UserdevLauncher"
         ideaModuleName = "${project.name}_main"
         workingDirectory = project.file("run").canonicalPath
-        environment "target", "fmldevserver"
+        environment "target", "fmluserdevserver"
         environment "assetDirectory", downloadAssets.output.absolutePath
-    }
-}
-
-repositories {
-    jcenter()
-    mavenCentral()
-    maven { url = "https://files.minecraftforge.net/maven" }
-    maven {
-        url "https://plugins.gradle.org/m2/"
+        environment "FORGE_VERSION", FORGE_VERSION
+        environment "MCP_VERSION", MCP_VERSION
+        environment "MC_VERSION", MC_VERSION
+        environment "FORGE_GROUP", FORGE_GROUP
+        environment "MOD_CLASSES", "${sourceSets.main.output.resourcesDir}${File.pathSeparator}${sourceSets.main.output.classesDirs.join(File.pathSeparator)}"
     }
 }
 
 dependencies {
-    minecraft 'net.minecraftforge.test:forge:1.13-24.0.59-1.13-pre:userdev'
-    compile 'net.minecraftforge.test:forge:1.13-24.0.59-1.13-pre:launcher'
+    minecraft "${FORGE_GROUP}:forge:${MC_VERSION}-${FORGE_VERSION}"
 }
 
+task genIntellijRuns2 {
+    dependsOn extractNatives, downloadAssets
+    doLast {
+        def runConfigurationsDir = new File(project.projectDir.canonicalFile, ".idea/runConfigurations")
+        if (!runConfigurationsDir.exists())
+            runConfigurationsDir.mkdirs()
+
+        tasks.withType(JavaExec).each { task ->
+            def taskName = task.name.replaceAll("^run", "")
+            def mainClass = task.main
+            def props = task.systemProperties.collect { k, v -> "-D$k=$v" }.join(' ')
+            def args = task.args.join(" ")
+
+            def writer = new FileWriter(new File(runConfigurationsDir, "${taskName}.xml"))
+            def xml = new groovy.xml.MarkupBuilder(writer)
+
+            xml.component(name: "ProjectRunConfigurationManager") {
+                configuration(default: 'false', name: taskName, type: "Application", factoryName: "Application", singleton: "true") {
+                    option(name: 'MAIN_CLASS_NAME', value: mainClass)
+                    option(name: 'VM_PARAMETERS', value: props)
+                    option(name: 'PROGRAM_PARAMETERS', value: args)
+                    option(name: 'WORKING_DIRECTORY', value: 'file://$PROJECT_DIR$/run')
+                    module(name: project.name + '_main')
+                    envs() {
+                        task.environment.forEach { k, v ->
+                            env(name: k, value: v)
+                        }
+                    }
+                    method(v: 2) {
+                        option(name:"Make", enabled:true)
+                        task.dependsOn.forEach { t ->
+                            option(name:"Gradle.BeforeRunTask", enabled:true, tasks:t.name, externalProjectPath:'$PROJECT_DIR$')
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 /*
 task apiJar(type: Jar, dependsOn: 'classes') {
     classifier = 'api'
