@@ -15,14 +15,18 @@ buildscript {
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
-        //classpath 'com.selesse:gradle-git-changelog:0.2.+'
+        classpath 'com.selesse:gradle-git-changelog:0.2.+'
     }
 }
 plugins {
     id "com.github.hierynomus.license" version "0.14.0"
+    id 'maven'
+    id 'maven-publish'
+    id 'java'
+    id "com.hrznstudio.cursegradle" version "1.1.0"
 }
 apply plugin: 'net.minecraftforge.gradle'
-//apply plugin: 'com.selesse.git.changelog'
+apply plugin: 'com.selesse.git.changelog'
 apply plugin: 'eclipse'
 
 license {
@@ -35,6 +39,31 @@ license {
     ignoreFailures = true
     mapping {
         java='SLASHSTAR_STYLE'
+    }
+}
+changelog {
+    title = "${archivesBaseName} - Changelog"
+
+    outputDirectory = file("$projectDir")
+
+    since = "beginning"
+
+    commitFormat = '%s (%an)'
+
+    markdown {
+        commitFormat = '* %s (%an)'
+    }
+
+    includeLines = {
+        !it.contains("Merge")
+    }
+
+    processLines = {
+        String input = it as String
+        if (input.contains('[ci skip] ')) {
+            input = input.minus('[ci skip] ')
+        }
+        input
     }
 }
 
@@ -82,37 +111,8 @@ minecraft {
 dependencies {
     minecraft 'net.minecraftforge.test:userdev:1.13-24.0.57-1.13-pre'
     compile 'net.minecraftforge.test:forge:1.13-24.0.57-1.13-pre:launcher'
-    //deobfCompile "MCMultiPart2:MCMultiPart:2.5.3"
-    //provided "team.chisel.ctm:CTM:MC1.12.2-0.3.2.18"
-    //deobfProvided "mezz.jei:jei_1.12.2:4.8.5.138:api"
-    //runtime "mezz.jei:jei_1.12.2:4.8.5.138"
-    //deobfCompile group: 'mcp.mobius.waila', name: 'Hwyla', version: '1.8.23-B38_1.12'
 }
-//changelog {
-//    title = "${archivesBaseName} - Changelog"
-//
-//    outputDirectory = file("$projectDir")
-//
-//    since = 'beginning'
-//
-//    commitFormat = '%s (%an)'
-//
-//    markdown {
-//        commitFormat = '* %s (%an)'
-//    }
-//
-//    includeLines = {
-//        !it.contains("Merge")
-//    }
-//
-//    processLines = {
-//        String input = it as String
-//        if (input.contains('[ci skip] ')) {
-//            input = input.minus('[ci skip] ')
-//        }
-//        input
-//    }
-//}
+
 /*
 task apiJar(type: Jar, dependsOn: 'classes') {
     classifier = 'api'
@@ -166,5 +166,52 @@ processResources {
     // copy everything else except the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude 'META_INF/mods.toml'
+    }
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "file://$buildDir/repo")
+
+            pom {
+                groupId = group
+                version = version
+                artifactId = archivesBaseName
+                project {
+                    name "Titanium"
+                    packaging 'jar'
+                    description 'Forge Library for Horizon'
+                    url 'https://hrzn.studio'
+                    developers {
+                        developer {
+                            id 'coded'
+                            name 'Coded'
+                            roles {role 'developer'}
+                        }
+                        developer {
+                            id 'buuz'
+                            name 'Buuz135'
+                            roles {role 'developer'}
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+curseforge {
+    if(System.getenv('HRZN_CURSE_KEY'))
+        apiKey = System.getenv('HRZN_CURSE_KEY')
+    else
+        apiKey = "NONE"
+    project {
+        apiUrl="https://minecraft.curseforge.com"
+        id = '287342'
+        changelog = file('CHANGELOG.md')
+        releaseType = 'release'
+        mainArtifact jar
+        addGameVersion '1.13.2'
     }
 }
