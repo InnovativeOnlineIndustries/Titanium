@@ -39,20 +39,12 @@ pipeline {
               }
               branch 'release'
             }
-
           }
           steps {
             sh 'aws s3 cp build/repo/ s3://hrznstudio.com/maven/release/ --recursive --acl public-read'
           }
         }
         stage('Deploy To Snapshot Maven') {
-          when {
-            allOf {
-              expression {
-                currentBuild.result == 'SUCCESS'
-              }
-            }
-          }
           steps {
             sh 'aws s3 cp build/repo/ s3://hrznstudio.com/maven/snapshot/ --recursive --acl public-read'
           }
