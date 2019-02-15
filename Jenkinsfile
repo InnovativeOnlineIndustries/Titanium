@@ -30,15 +30,6 @@ pipeline {
       }
     }
     stage('Deploy To Maven') {
-      when {
-        allOf {
-          expression {
-            currentBuild.result == 'SUCCESS'
-          }
-
-        }
-
-      }
       steps {
         sh 'aws s3 cp build/repo/ s3://hrznstudio.com/maven/ --recursive --acl public-read'
       }
