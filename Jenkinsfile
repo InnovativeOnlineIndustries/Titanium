@@ -35,27 +35,12 @@ pipeline {
           expression {
             currentBuild.result == 'SUCCESS'
           }
+
         }
+
       }
       steps {
         sh 'aws s3 cp build/repo/ s3://hrznstudio.com/maven/ --recursive --acl public-read'
-      }
-    }
-    stage('Deploy Release') {
-      parallel {
-        stage('Deploy To CurseForge') {
-          when {
-            allOf {
-              expression {
-                currentBuild.result == 'SUCCESS'
-              }
-              branch 'release'
-            }
-          }
-          steps {
-            sh './gradlew curseforge'
-          }
-        }
       }
     }
   }
