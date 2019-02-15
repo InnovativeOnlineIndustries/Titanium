@@ -11,11 +11,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-//import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
@@ -23,19 +21,21 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
+//import net.minecraft.util.text.TextFormatting;
+
 public class ItemEnergy extends ItemBase {
     private final int capacity;
     private final int input;
     private final int output;
 
-    public ItemEnergy(String name, int capacity, int input, int output, Builder properties) {
+    public ItemEnergy(String name, int capacity, int input, int output, Properties properties) {
         super(name, properties.maxStackSize(1));
         this.capacity = capacity;
         this.input = input;
         this.output = output;
     }
 
-    public ItemEnergy(String name, Builder properties, int capacity, int throughput) {
+    public ItemEnergy(String name, Properties properties, int capacity, int throughput) {
         this(name, capacity, throughput, throughput, properties);
     }
 
@@ -79,7 +79,7 @@ public class ItemEnergy extends ItemBase {
         return 0x00E93232;
     }
 
-    public OptionalCapabilityInstance<IEnergyStorage> getEnergyStorage(ItemStack stack) {
+    public LazyOptional<IEnergyStorage> getEnergyStorage(ItemStack stack) {
         return stack.getCapability(CapabilityEnergy.ENERGY, null);
     }
 
@@ -90,16 +90,19 @@ public class ItemEnergy extends ItemBase {
     }
 
     public static class CapabilityProvider implements ICapabilityProvider {
-        private OptionalCapabilityInstance<IEnergyStorage> energyCap;
+        private LazyOptional<IEnergyStorage> energyCap;
 
         public CapabilityProvider(EnergyStorageItemStack energy) {
-            this.energyCap = OptionalCapabilityInstance.of(() -> energy);
+            this.energyCap = LazyOptional.of(() -> energy);
         }
 
         @Nonnull
         @Override
-        public <T> OptionalCapabilityInstance<T> getCapability(@Nonnull Capability<T> cap, @Nullable EnumFacing side) {
-            return OptionalCapabilityInstance.orEmpty(cap, CapabilityEnergy.ENERGY, energyCap);
+        public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable EnumFacing side) {
+            if(cap==CapabilityEnergy.ENERGY) {
+                return energyCap.cast();
+            }
+            return LazyOptional.empty();
         }
     }
 }

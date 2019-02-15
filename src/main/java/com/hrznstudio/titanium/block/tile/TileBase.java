@@ -29,8 +29,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.NonNullSupplier;
-import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.common.util.NonNullSupplier;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nonnull;
@@ -78,14 +78,9 @@ public class TileBase extends TileEntity implements IGuiAddonProvider, ITickable
 
     @Nonnull
     @Override
-    public <T> OptionalCapabilityInstance<T> getCapability(@Nonnull Capability<T> cap, @Nullable EnumFacing side) {
-        System.out.println(cap);
-        /*
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(multiInventoryHandler.getCapabilityForSide(facing));
-        return super.getCapability(capability, facing);*/
-        if(cap==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return OptionalCapabilityInstance.of(new NonNullSupplier<T>() {
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable EnumFacing side) {
+        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return LazyOptional.of(new NonNullSupplier<T>() {
                 @Nonnull
                 @Override
                 public T get() {
@@ -93,7 +88,7 @@ public class TileBase extends TileEntity implements IGuiAddonProvider, ITickable
                 }
             });
         }
-        return OptionalCapabilityInstance.empty();
+        return LazyOptional.empty();
     }
 
     public MultiInventoryHandler getMultiInventoryHandler() {

@@ -7,10 +7,13 @@
 package com.hrznstudio.titanium.util;
 
 import com.google.common.collect.ImmutableList;
+import com.hrznstudio.titanium.api.internal.IColorProvider;
 import com.hrznstudio.titanium.api.internal.IItemBlockFactory;
+import com.hrznstudio.titanium.api.internal.IItemColorProvider;
 import com.hrznstudio.titanium.api.internal.IModelRegistrar;
 import com.hrznstudio.titanium.block.BlockTileBase;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -18,9 +21,9 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.javafmlmod.FMLModLoadingContext;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -40,18 +43,16 @@ public abstract class TitaniumMod {
         getMethods().forEach(method -> {
             EventReceiver eventReceiver = method.getAnnotation(EventReceiver.class);
             EventPriority priority = eventReceiver.priority();
-            FMLModLoadingContext.get().getModEventBus().addListener(priority, event -> {
+            FMLJavaModLoadingContext.get().getModEventBus().addListener(priority, event -> {
                 try {
                     if (event.getClass().isAssignableFrom(method.getParameterTypes()[0]))
                         method.invoke(TitaniumMod.this, event);
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                } catch (InvocationTargetException e) {
+                } catch (IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
                 }
             });
         });
-        modid = FMLModLoadingContext.get().getActiveContainer().getModId();
+        modid = ModLoadingContext.get().getActiveContainer().getModId();
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -68,20 +69,18 @@ public abstract class TitaniumMod {
     }
 
     @EventReceiver
-    public final void initTitanium(FMLInitializationEvent event) {
-//        SidedHandler.runOn(Dist.CLIENT, () -> () -> { TODO
-//            ITEMS.stream()
-//                    .filter(IColorProviderItem.class::isInstance)
-//                    .map(i -> (Item & IColorProviderItem) i)
-//                    .forEach(i -> Minecraft.getInstance().getItemColors().register(i.getColor(), i));
-//            BLOCKS.stream()
-//                    .filter(IColorProvider.class::isInstance)
-//                    .map(b -> (Block & IColorProvider) b)
-//                    .forEach(b -> {
-//                        Minecraft.getInstance().getItemColors().register(b.getItemColor(), Item.getItemFromBlock(b));
-//                        Minecraft.getInstance().getBlockColors().register(b.getColor(), b);
-//                    });
-//        });
+    public final void clientSetupTitanium(FMLClientSetupEvent event) {
+        ITEMS.stream()
+                .filter(IItemColorProvider.class::isInstance)
+                .map(i -> (Item & IItemColorProvider) i)
+                .forEach(i -> Minecraft.getInstance().getItemColors().register(((IItemColorProvider) i)::getColor, i));
+        BLOCKS.stream()
+                .filter(IColorProvider.class::isInstance)
+                .map(b -> (Block & IColorProvider) b)
+                .forEach(b -> {
+                    Minecraft.getInstance().getItemColors().register(((IColorProvider) b)::getColor, b.asItem());
+                    Minecraft.getInstance().getBlockColors().register(((IColorProvider) b)::getColor, b);
+                });
     }
 
     @SubscribeEvent
@@ -118,7 +117,6 @@ public abstract class TitaniumMod {
 
     public void addItem(Item item) {
         ITEMS.add(item);
-        ForgeRegistries.ITEMS.register(item); //TODO unhack
     }
 
     public void addItems(Item... items) {
@@ -128,9 +126,8 @@ public abstract class TitaniumMod {
 
     public void addBlock(Block block) {
         BLOCKS.add(block);
-        ForgeRegistries.BLOCKS.register(block); //TODO unhack
-        if (block instanceof BlockTileBase){
-            //((BlockTileBase) block).registerTile();
+        if (block instanceof BlockTileBase) {
+            ((BlockTileBase) block).registerTile();
         }
         if (block instanceof IItemBlockFactory) {
             addItem(((IItemBlockFactory) block).getItemBlockFactory().create());

@@ -6,11 +6,10 @@
  */
 package com.hrznstudio.titanium.client;
 
-import net.minecraft.client.renderer.block.model.IUnbakedModel;
+import net.minecraft.client.renderer.model.IUnbakedModel;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ICustomModelLoader;
-import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.Event;
 

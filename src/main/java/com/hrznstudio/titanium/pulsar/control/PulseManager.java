@@ -19,8 +19,8 @@ import com.hrznstudio.titanium.pulsar.pulse.PulseMeta;
 import joptsimple.internal.Strings;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.CrashReportExtender;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.javafmlmod.FMLModLoadingContext;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -85,8 +85,8 @@ public class PulseManager {
      * Shared initialiser code between all the constructors.
      */
     private void init() {
-        String modId = FMLModLoadingContext.get().getActiveContainer().getModId();
-        String modName = FMLModLoadingContext.get().getActiveContainer().getModInfo().getDisplayName();
+        String modId = ModLoadingContext.get().getActiveContainer().getModId();
+        String modName = ModLoadingContext.get().getActiveContainer().getModInfo().getDisplayName();
         this.id = modId;
         this.name = Strings.isNullOrEmpty(modName) ? modId : modName;
         log = LogManager.getLogger(modName + "|Pulsar");
@@ -202,7 +202,7 @@ public class PulseManager {
      */
     @Subscribe
     public void propagateEvent(Object evt) {
-        if (evt instanceof FMLPreInitializationEvent) preInit((FMLPreInitializationEvent) evt);
+        if (evt instanceof FMLCommonSetupEvent) setup((FMLCommonSetupEvent) evt);
         // We use individual buses due to the EventBus class using a Set rather than a List, thus losing the ordering.
         // This trick is shamelessly borrowed from FML.
         flightpath.post(evt);
@@ -214,7 +214,7 @@ public class PulseManager {
         return conf.isModuleEnabled(meta);
     }
 
-    private void preInit(FMLPreInitializationEvent evt) {
+    private void setup(FMLCommonSetupEvent evt) {
         if (!blockNewRegistrations) conf.flush(); // First preInit call, so flush config
         blockNewRegistrations = true;
     }

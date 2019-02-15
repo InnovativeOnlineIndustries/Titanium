@@ -29,7 +29,7 @@ import java.util.Objects;
 
 public abstract class BlockBase extends Block implements IModelRegistrar, IItemBlockFactory {
 
-    public BlockBase(String name, Builder properties) {
+    public BlockBase(String name, Properties properties) {
         super(properties);
         setRegistryName(name);
     }
@@ -51,7 +51,7 @@ public abstract class BlockBase extends Block implements IModelRegistrar, IItemB
 
     @Override
     public IFactory<ItemBlock> getItemBlockFactory() {
-        return () -> (ItemBlock) new ItemBlock(this, new Item.Builder()).setRegistryName(Objects.requireNonNull(getRegistryName()));
+        return () -> (ItemBlock) new ItemBlock(this, new Item.Properties()).setRegistryName(Objects.requireNonNull(getRegistryName()));
     }
 
     @Override

@@ -7,20 +7,20 @@
 package com.hrznstudio.titanium._test;
 
 import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.block.BlockTileBase;
+import com.hrznstudio.titanium.block.BlockMachine;
 import net.minecraft.block.material.Material;
-import net.minecraft.item.Item;
 
-public class BlockTest extends BlockTileBase<TileTest> {
+public class BlockTwentyFourTest extends BlockMachine<TileTwentyFourTest> {
 
-    public static BlockTest TEST;
+    public static BlockTwentyFourTest TEST;
 
-    public BlockTest() {
-        super("block_test", Properties.create(Material.ROCK), TileTest.class);
+    public BlockTwentyFourTest() {
+        super("block_twenty_four_test", Properties.create(Material.ROCK), TileTwentyFourTest.class);
+        setRotationType(RotationType.TWENTY_FOUR_WAY);
     }
 
     @Override
-    public IFactory<TileTest> getTileEntityFactory() {
-        return TileTest::new;
+    public IFactory<TileTwentyFourTest> getTileEntityFactory() {
+        return TileTwentyFourTest::new;
     }
 }

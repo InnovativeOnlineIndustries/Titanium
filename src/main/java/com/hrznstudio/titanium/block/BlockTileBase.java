@@ -6,12 +6,9 @@
  */
 package com.hrznstudio.titanium.block;
 
-import com.google.common.collect.Maps;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.block.tile.TileBase;
 import com.hrznstudio.titanium.util.TileUtil;
-import com.mojang.datafixers.DataFixUtils;
-import com.mojang.datafixers.types.Type;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.IBlockState;
@@ -20,14 +17,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.SharedConstants;
-import net.minecraft.util.datafix.DataFixesManager;
-import net.minecraft.util.datafix.TypeReferences;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -36,16 +29,15 @@ public abstract class BlockTileBase<T extends TileBase> extends BlockBase implem
     private final Class<T> tileClass;
     private TileEntityType tileEntityType;
 
-    public BlockTileBase(String name, Builder properties, Class<T> tileClass) {
+    public BlockTileBase(String name, Properties properties, Class<T> tileClass) {
         super(name, properties);
         this.tileClass = tileClass;
         registerTile();
     }
 
     public void registerTile(){
-        tileEntityType = TileEntityType.Builder.create(() -> getTileEntityFactory().create()).build(null);
+        tileEntityType = TileEntityType.register(getRegistryName().toString(),TileEntityType.Builder.create(() -> getTileEntityFactory().create()));
         tileEntityType.setRegistryName(this.getRegistryName());
-        ForgeRegistries.TILE_ENTITIES.register(tileEntityType);
     }
 
     public abstract IFactory<T> getTileEntityFactory();

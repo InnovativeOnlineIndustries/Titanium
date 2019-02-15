@@ -11,10 +11,9 @@ import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.block.BlockTileBase;
 import com.hrznstudio.titanium.energy.NBTEnergyHandler;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
@@ -26,12 +25,12 @@ public class TilePowered extends TileBase {
 
     @Save
     private NBTEnergyHandler energyHandler;
-    private OptionalCapabilityInstance<IEnergyStorage> energyCap;
+    private LazyOptional<IEnergyStorage> energyCap;
 
     public TilePowered(BlockTileBase blockTileBase) {
         super(blockTileBase);
         this.energyHandler = getEnergyHandlerFactory().create();
-        this.energyCap = OptionalCapabilityInstance.of(() -> this.energyHandler);
+        this.energyCap = LazyOptional.of(() -> this.energyHandler);
     }
 
     protected IFactory<NBTEnergyHandler> getEnergyHandlerFactory() {
@@ -48,7 +47,7 @@ public class TilePowered extends TileBase {
 
     @Nonnull
     @Override
-    public <T> OptionalCapabilityInstance<T> getCapability(@Nonnull Capability<T> cap, @Nullable EnumFacing side) {
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable EnumFacing side) {
         if (cap == CapabilityEnergy.ENERGY)
             return energyCap.cast();
         return super.getCapability(cap, side);

@@ -1,221 +1,56 @@
 buildscript {
     repositories {
+        maven { url = 'https://files.minecraftforge.net/maven' }
         jcenter()
         mavenCentral()
-        maven { url = "https://files.minecraftforge.net/maven" }
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-    }
-    configurations {
-        classpath.resolutionStrategy {
-            cacheDynamicVersionsFor 10, 'seconds'
-            cacheChangingModulesFor 0, 'seconds'
-        }
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
-        //classpath 'com.selesse:gradle-git-changelog:0.2.+'
     }
-}
-plugins {
-    id "com.github.hierynomus.license" version "0.14.0"
-    id 'maven'
-    id 'maven-publish'
-    id 'java'
 }
 apply plugin: 'net.minecraftforge.gradle'
-//apply plugin: 'com.selesse.git.changelog'
 apply plugin: 'eclipse'
 
-license {
-    header rootProject.file('HEADER')
-    include "**/*.java"
-    ext.year = Calendar.getInstance().get(Calendar.YEAR)
-    ext.name = 'Horizon Studio'
-    ext.email = 'contact@hrznstudio.com'
-    ext.mod = 'Titanium'
-    ignoreFailures = true
-    mapping {
-        java='SLASHSTAR_STYLE'
-    }
-}
-/*changelog {
-    title = "${archivesBaseName} - Changelog"
+version = '1.0'
+group = 'com.yourname.modid'
+archivesBaseName = 'modid'
 
-    outputDirectory = file("$projectDir")
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
-    since = "beginning"
-
-    commitFormat = '%s (%an)'
-
-    markdown {
-        commitFormat = '* %s (%an)'
-    }
-
-    includeLines = {
-        !it.contains("Merge")
-    }
-
-    processLines = {
-        String input = it as String
-        if (input.contains('[ci skip] ')) {
-            input = input.minus('[ci skip] ')
-        }
-        input
-    }
-}*/
-
-def BUILD_NUMBER = System.getenv("BUILD_NUMBER") ?: "0"
-version = "0.1.0.$BUILD_NUMBER"
-group = "com.hrznstudio.titanium"
-archivesBaseName = "Titanium"
-
-sourceCompatibility = targetCompatibility = '1.8'
-compileJava {
-    sourceCompatibility = targetCompatibility = '1.8'
-}
-def MC_VERSION = "1.13"
-def MCP_VERSION = "20180921-1.13"
-def FORGE_GROUP = "net.minecraftforge.test"
-def FORGE_VERSION = "24.0.59-1.13-pre"
-
-def core_plugin = "com.hrznstudio.titanium.core.TitaniumLoader"
 minecraft {
-    mappings channel: 'snapshot', version: MCP_VERSION
-}
-
-repositories {
-    maven { url 'http://maven.gameanalytics.com/release' }
-}
-dependencies {
-    minecraft "${FORGE_GROUP}:forge:${MC_VERSION}-${FORGE_VERSION}"
-    compile files('libs/forge-1.13-24.0.59-1.13-pre-launcher.jar')
-}
-
-task genIntellijRuns2 {
-    dependsOn extractNatives, downloadAssets
-    doLast {
-        def runConfigurationsDir = new File(project.projectDir.canonicalFile, ".idea/runConfigurations")
-        if (!runConfigurationsDir.exists())
-            runConfigurationsDir.mkdirs()
-
-        tasks.withType(JavaExec).each { task ->
-            def taskName = task.name.replaceAll("^run", "")
-            def mainClass = task.main
-            def props = task.systemProperties.collect { k, v -> "-D$k=$v" }.join(' ')
-            def args = task.args.join(" ")
-
-            def writer = new FileWriter(new File(runConfigurationsDir, "${taskName}.xml"))
-            def xml = new groovy.xml.MarkupBuilder(writer)
-
-            xml.component(name: "ProjectRunConfigurationManager") {
-                configuration(default: 'false', name: taskName, type: "Application", factoryName: "Application", singleton: "true") {
-                    option(name: 'MAIN_CLASS_NAME', value: mainClass)
-                    option(name: 'VM_PARAMETERS', value: props)
-                    option(name: 'PROGRAM_PARAMETERS', value: args)
-                    option(name: 'WORKING_DIRECTORY', value: 'file://$PROJECT_DIR$/run')
-                    module(name: project.name + '_main')
-                    envs() {
-                        task.environment.forEach { k, v ->
-                            env(name: k, value: v)
-                        }
-                    }
-                    method(v: 2) {
-                        option(name:"Make", enabled:true)
-                        task.dependsOn.forEach { t ->
-                            option(name:"Gradle.BeforeRunTask", enabled:true, tasks:t.name, externalProjectPath:'$PROJECT_DIR$')
-                        }
-                    }
-                }
-            }
+    mappings channel: 'snapshot', version: '20180921-1.13'
+    runs {
+        client = {
+            // recommended logging data for a userdev environment
+            properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
+            // recommended logging level for the console
+            properties 'forge.logging.console.level': 'debug'
+            workingDirectory project.file('run').canonicalPath
+            source sourceSets.main
+        }
+        server = {
+            // recommended logging data for a userdev environment
+            properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
+            // recommended logging level for the console
+            properties 'forge.logging.console.level': 'debug'
+            workingDirectory project.file('run').canonicalPath
+            source sourceSets.main
         }
     }
 }
-/*
-task apiJar(type: Jar, dependsOn: 'classes') {
-    classifier = 'api'
-    from(sourceSets.main.output) {
-        include 'com/hrznstudio/titanium/api/**'
-    }
-    group = 'build'
+
+dependencies {
+    minecraft 'net.minecraftforge:forge:1.13.2-25.0.10'
 }
 
-task coreJar(type: Jar) {
-    from(sourceSets.main.output) {
-        include 'com/hrznstudio/titanium/core/**'
-    }
-    manifest {
-        attributes "FMLCorePlugin": "$core_plugin"
-        attributes 'Maven-Artifact': group+':'+archivesBaseName+':'+version+':core'
-    }
-    classifier 'core'
-    group = 'build'
-}*/
-
-def libPrefix = 'META-INF/libraries'
-
-/*
 jar {
     manifest {
-        attributes 'ContainedDeps': "$libPrefix/$version-*-core.jar"
-        attributes 'Maven-Artifact': group+':'+archivesBaseName+':'+version
-    }
-    exclude 'com/hrznstudio/titanium/core/**'
-    from(coreJar.archivePath.absolutePath) {
-        include "$version-*-core.jar"
-        into libPrefix
-    }
-    classifier = 'all'
-}*/
-
-processResources {
-    // this will ensure that this task is redone when the versions change.
-    inputs.property 'version', project.version
-    inputs.property 'mcversion', '1.13'
-
-    // replace stuff in mcmod.info, nothing else
-    from(sourceSets.main.resources.srcDirs) {
-        include 'META_INF/mods.toml'
-
-        // replace version and mcversion
-        expand 'version':project.version, 'mcversion': '1.13'
-    }
-
-    // copy everything else except the mcmod.info
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'META_INF/mods.toml'
-    }
-}
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: "file://$buildDir/repo")
-
-            pom {
-                groupId = project.group
-                version = project.version
-                artifactId = project.archivesBaseName
-                project {
-                    name "Titanium"
-                    packaging 'jar'
-                    description 'Forge Library for Horizon'
-                    url 'https://hrzn.studio'
-                    developers {
-                        developer {
-                            id 'coded'
-                            name 'Coded'
-                            roles {role 'developer'}
-                        }
-                        developer {
-                            id 'buuz'
-                            name 'Buuz135'
-                            roles {role 'developer'}
-                        }
-                    }
-                }
-            }
-        }
+        attributes(["Specification-Title": "examplemod",
+                    "Specification-Vendor": "examplemodsareus",
+                    "Specification-Version": "24.0", // We are version 1 of the modlauncher specification
+                    "Implementation-Title": project.name,
+                    "Implementation-Version": "${version}",
+                    "Implementation-Vendor" :"examplemodsareus",
+                    "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")],)
     }
 }
