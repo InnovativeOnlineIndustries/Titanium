@@ -11,8 +11,8 @@ import net.minecraft.util.EnumFacing;
 import javax.annotation.Nullable;
 
 public abstract class BlockRotation<T extends TileBase> extends BlockTileBase<T> {
-    public static final DirectionProperty FACING = DirectionProperty.create("facing");
-    public static final DirectionProperty SUB_FACING = DirectionProperty.create("facing", EnumFacing.Plane.HORIZONTAL);
+    public static final DirectionProperty FACING = DirectionProperty.create("facing", EnumFacing.values());
+    public static final DirectionProperty SUB_FACING = DirectionProperty.create("subfacing", EnumFacing.Plane.HORIZONTAL);
     private RotationType rotationType = RotationType.NONE;
 
     public BlockRotation(String name, Properties properties, Class<T> tileClass) {

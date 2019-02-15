@@ -15,12 +15,12 @@ import com.hrznstudio.titanium.block.BlockTileBase;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.eventbus.api.GenericEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -31,6 +31,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,30 +42,53 @@ public abstract class TitaniumMod {
     private final List<Block> BLOCKS = new ArrayList<>();
 
     public TitaniumMod() {
-        getMethods().forEach(method -> {
+        List<Method> methods = getMethods();
+        methods.forEach(method -> {
             EventReceiver eventReceiver = method.getAnnotation(EventReceiver.class);
             EventPriority priority = eventReceiver.priority();
             FMLJavaModLoadingContext.get().getModEventBus().addListener(priority, event -> {
                 try {
-                    if (event.getClass().isAssignableFrom(method.getParameterTypes()[0]))
-                        method.invoke(TitaniumMod.this, event);
+                    Class<?> param = method.getParameterTypes()[0];
+                    if (event.getClass().isAssignableFrom(param)) {
+                        if(GenericEvent.class.isAssignableFrom(param)) {
+                            if (event instanceof GenericEvent) {
+                                Type[] arr = method.getGenericParameterTypes();
+                                Type type;
+                                ParameterizedType parameterizedType = (ParameterizedType) arr[0];
+                                Type actual = parameterizedType.getActualTypeArguments()[0];
+                                if (actual instanceof ParameterizedType) {
+                                    type = ((ParameterizedType) actual).getRawType();
+                                } else {
+                                    type = actual;
+                                }
+                                if (type == ((GenericEvent) event).getGenericType()) {
+                                    method.invoke(this, event);
+                                }
+                            }
+                        } else {
+                            method.invoke(this, event);
+                        }
+                    }
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
                 }
             });
         });
         modid = ModLoadingContext.get().getActiveContainer().getModId();
-        MinecraftForge.EVENT_BUS.register(this);
     }
 
     public List<Method> getMethods() {
         ImmutableList.Builder<Method> builder = new ImmutableList.Builder<>();
-        for (Method method : this.getClass().getDeclaredMethods()) {
-            if (method.isAnnotationPresent(EventReceiver.class)) {
-                if (method.getParameterTypes().length == 1 && Event.class.isAssignableFrom(method.getParameterTypes()[0])) {
-                    builder.add(method);
+        Class clazz = getClass();
+        while (clazz != null) {
+            for (Method method : this.getClass().getMethods()) {
+                if (method.isAnnotationPresent(EventReceiver.class)) {
+                    if (method.getParameterTypes().length == 1 && Event.class.isAssignableFrom(method.getParameterTypes()[0])) {
+                        builder.add(method);
+                    }
                 }
             }
+            clazz = null;
         }
         return builder.build();
     }
@@ -83,17 +108,24 @@ public abstract class TitaniumMod {
                 });
     }
 
-    @SubscribeEvent
+    @EventReceiver
     public final void registerBlocksTitanium(RegistryEvent.Register<Block> event) {
         BLOCKS.forEach(event.getRegistry()::register);
     }
 
-    @SubscribeEvent
+    @EventReceiver
+    public final void registerTilesTitanium(RegistryEvent.Register<TileEntityType<?>> event) {
+        BLOCKS.stream().filter(BlockTileBase.class::isInstance).map(BlockTileBase.class::cast).forEach(block -> {
+            block.registerTile(event.getRegistry());
+        });
+    }
+
+    @EventReceiver
     public final void registerItemsTitanium(RegistryEvent.Register<Item> event) {
         ITEMS.forEach(event.getRegistry()::register);
     }
 
-    @SubscribeEvent
+    @EventReceiver
     public final void modelRegistryEventTitanium(ModelRegistryEvent event) {
         if (!BLOCKS.isEmpty())
             BLOCKS.stream()
@@ -126,9 +158,6 @@ public abstract class TitaniumMod {
 
     public void addBlock(Block block) {
         BLOCKS.add(block);
-        if (block instanceof BlockTileBase) {
-            ((BlockTileBase) block).registerTile();
-        }
         if (block instanceof IItemBlockFactory) {
             addItem(((IItemBlockFactory) block).getItemBlockFactory().create());
         }

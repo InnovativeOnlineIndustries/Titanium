@@ -14,12 +14,15 @@ import com.hrznstudio.titanium.block.BlockTileBase;
 import com.hrznstudio.titanium.block.tile.progress.MultiProgressBarHandler;
 import com.hrznstudio.titanium.block.tile.progress.PosProgressBar;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
+import com.hrznstudio.titanium.container.ContainerTileBase;
 import com.hrznstudio.titanium.inventory.MultiInventoryHandler;
 import com.hrznstudio.titanium.inventory.PosInvHandler;
 import com.hrznstudio.titanium.nbthandler.NBTManager;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
@@ -28,6 +31,9 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.IInteractionObject;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.NonNullSupplier;
@@ -38,7 +44,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileBase extends TileEntity implements IGuiAddonProvider, ITickable {
+public class TileBase extends TileEntity implements IGuiAddonProvider, ITickable, IInteractionObject {
 
     private MultiInventoryHandler multiInventoryHandler;
     private MultiProgressBarHandler multiProgressBarHandler;
@@ -63,9 +69,35 @@ public class TileBase extends TileEntity implements IGuiAddonProvider, ITickable
             Titanium.openGui(this, (EntityPlayerMP) player);
     }
 
+    @Override
+    public Container createContainer(InventoryPlayer inventoryPlayer, EntityPlayer entityPlayer) {
+        return new ContainerTileBase<>(this, inventoryPlayer);
+    }
+
+    @Override
+    public String getGuiID() {
+        return "titanium:tilegui";
+    }
+
+    @Override
+    public ITextComponent getName() {
+        return new TextComponentString("what. pls");
+    }
+
+    @Override
+    public boolean hasCustomName() {
+        return false;
+    }
+
+    @Nullable
+    @Override
+    public ITextComponent getCustomName() {
+        return null;
+    }
+
     /*
-        Capability Handling
-     */
+            Capability Handling
+         */
     public void addInventory(PosInvHandler handler) {
         if (multiInventoryHandler == null) multiInventoryHandler = new MultiInventoryHandler();
         multiInventoryHandler.addInventory(handler.setTile(this));

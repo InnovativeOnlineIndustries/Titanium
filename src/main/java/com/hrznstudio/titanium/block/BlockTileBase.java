@@ -21,9 +21,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+import net.minecraftforge.registries.IForgeRegistry;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public abstract class BlockTileBase<T extends TileBase> extends BlockBase implements ITileEntityProvider {
     private final Class<T> tileClass;
@@ -32,12 +34,12 @@ public abstract class BlockTileBase<T extends TileBase> extends BlockBase implem
     public BlockTileBase(String name, Properties properties, Class<T> tileClass) {
         super(name, properties);
         this.tileClass = tileClass;
-        registerTile();
     }
 
-    public void registerTile(){
-        tileEntityType = TileEntityType.register(getRegistryName().toString(),TileEntityType.Builder.create(() -> getTileEntityFactory().create()));
+    public void registerTile(IForgeRegistry<TileEntityType<?>> registry) {
+        tileEntityType=TileEntityType.register(getRegistryName().toString(), TileEntityType.Builder.create(getTileEntityFactory()::create));
         tileEntityType.setRegistryName(this.getRegistryName());
+        registry.register(tileEntityType);
     }
 
     public abstract IFactory<T> getTileEntityFactory();
