@@ -8,14 +8,31 @@ buildscript {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
     }
 }
+plugins {
+    id 'maven'
+    id 'maven-publish'
+    id 'net.minecrell.licenser' version '0.4.1'
+}
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 
-version = '1.0'
-group = 'com.yourname.modid'
-archivesBaseName = 'modid'
+
+def BUILD_NUMBER = System.getenv("BUILD_NUMBER") ?: "0"
+version = "2.0.0.${BUILD_NUMBER}"
+group = 'com.hrznstudio'
+archivesBaseName = 'Titanium'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+
+license {
+    header = project.file('HEADER')
+    ext {
+        year = Calendar.getInstance().get(Calendar.YEAR)
+        name = 'Horizon Studio'
+        email = 'contact@hrznstudio.com'
+        mod = 'Titanium'
+    }
+}
 
 minecraft {
     mappings channel: 'snapshot', version: '20180921-1.13'
@@ -45,12 +62,44 @@ dependencies {
 
 jar {
     manifest {
-        attributes(["Specification-Title": "examplemod",
-                    "Specification-Vendor": "examplemodsareus",
+        attributes(["Specification-Title": "Titanium",
+                    "Specification-Vendor": "Horizon Studio",
                     "Specification-Version": "24.0", // We are version 1 of the modlauncher specification
                     "Implementation-Title": project.name,
                     "Implementation-Version": "${version}",
-                    "Implementation-Vendor" :"examplemodsareus",
+                    "Implementation-Vendor" :"Horizon Studio",
                     "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")],)
+    }
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "file://$buildDir/repo")
+
+            pom {
+                groupId = project.group
+                version = project.version
+                artifactId = project.archivesBaseName
+                project {
+                    name "Titanium"
+                    packaging 'jar'
+                    description 'Library mod for Horizon Studio'
+                    url 'https://hrzn.studio/'
+                    developers {
+                        developer {
+                            id 'coded'
+                            name 'Coded'
+                            roles {role 'developer'}
+                        }
+                        developer {
+                            id 'buuz135'
+                            name 'Buuz135'
+                            roles {role 'developer'}
+                        }
+                    }
+                }
+            }
+        }
     }
 }
