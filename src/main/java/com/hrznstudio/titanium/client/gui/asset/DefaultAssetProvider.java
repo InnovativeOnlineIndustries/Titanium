@@ -12,7 +12,7 @@ import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.api.client.IAssetType;
 import com.hrznstudio.titanium.api.client.assets.types.IBackgroundAsset;
 
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.awt.*;
 
 public final class DefaultAssetProvider implements IAssetProvider {
@@ -64,7 +64,7 @@ public final class DefaultAssetProvider implements IAssetProvider {
     DefaultAssetProvider() {
     }
 
-    @Nonnull
+    @Nullable
     @Override
     public <T extends IAsset> T getAsset(IAssetType<T> assetType) {
         if (assetType == AssetTypes.BACKGROUND)
@@ -81,6 +81,6 @@ public final class DefaultAssetProvider implements IAssetProvider {
             return assetType.castOrDefault(SLOT);
         if (assetType == AssetTypes.TANK)
             return assetType.castOrDefault(TANK);
-        throw new RuntimeException("An error has occurred, default provider encountered an unknown assets type");
+        return null;
     }
 }

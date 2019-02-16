@@ -14,22 +14,18 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
 
 public interface IAssetProvider {
     ResourceLocation DEFAULT_LOCATION = new ResourceLocation(Titanium.MODID, "textures/gui/background.png");
 
     DefaultAssetProvider DEFAULT_PROVIDER = new DefaultAssetProvider();
 
-    List<IAssetType> ASSET_TYPES = new ArrayList<>();
-
     @Nonnull
     static <T extends IAsset> T getAsset(IAssetProvider provider, IAssetType<T> type) {
-        if (provider == DEFAULT_PROVIDER)
-            return DEFAULT_PROVIDER.getAsset(type);
         T asset = provider.getAsset(type);
-        return asset != null ? asset : DEFAULT_PROVIDER.getAsset(type);
+        if (asset == null && provider != DEFAULT_PROVIDER)
+            asset = DEFAULT_PROVIDER.getAsset(type);
+        return asset != null ? asset : type.getDefaultAsset();
     }
 
     /**
