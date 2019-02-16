@@ -54,6 +54,10 @@ public interface IItemStackQuery extends Predicate<ItemStack> {
         return toSlotFilter(slot -> slot >= min && slot <= max);
     }
 
+    default BiPredicate<ItemStack, Integer> toSlotFilter() {
+        return toSlotFilter(slot -> true);
+    }
+
     interface IItemStackQueryRecipe extends IItemStackQuery {
         ItemStack[] getMatchingStacks();
     }

@@ -33,11 +33,11 @@ public class TileTwentyFourTest extends TileMachine implements ITickable {
     public TileTwentyFourTest() {
         super(BlockTwentyFourTest.TEST);
 
-        this.addInventory(first = new PosInvHandler("test", -120, 20, 1).setTile(this).setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
-        this.addInventory(second = new PosInvHandler("test2", 80, 30, 1).setTile(this).setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
+        this.addInventory(first = new PosInvHandler("test", -120, 20, 1).setTile(this).setInputFilter(IItemStackQuery.ANYTHING.toSlotFilter()));
+        this.addInventory(second = new PosInvHandler("test2", 80, 30, 1).setTile(this).setInputFilter(IItemStackQuery.ANYTHING.toSlotFilter()));
         this.addGuiAddonFactory(() -> new EnergyBarGuiAddon(4, 10, getEnergyStorage()));
         this.addProgressBar(bar = new PosProgressBar(20, 20, 500).setCanIncrease(tileEntity -> true).setOnFinishWork(() -> System.out.println("WOWOOW")));
-        this.addInventory(third = new PosInvHandler("test3", 180, 30, 1).setTile(this).setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
+        this.addInventory(third = new PosInvHandler("test3", 180, 30, 1).setTile(this).setInputFilter(IItemStackQuery.ANYTHING.toSlotFilter()));
     }
 
     @Override

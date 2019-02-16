@@ -23,7 +23,6 @@ public class TileTest extends TilePowered implements ITickable {
 
     @Save
     private PosProgressBar bar;
-
     @Save
     private PosInvHandler first;
     @Save
