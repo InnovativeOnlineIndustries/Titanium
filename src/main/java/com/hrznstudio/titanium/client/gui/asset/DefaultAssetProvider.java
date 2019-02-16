@@ -17,11 +17,11 @@ import java.awt.*;
 
 public final class DefaultAssetProvider implements IAssetProvider {
     private final IAsset SLOT = () -> new Rectangle(1, 185, 18, 18);
-    private final IAsset ENERGY_BAR = () -> new Rectangle(211, 1, 11, 56);
+    private final IAsset ENERGY_BAR = () -> new Rectangle(177, 94, 18, 46);
     private final IAsset ENERGY_FILL = new IAsset() {
         @Override
         public Rectangle getArea() {
-            return new Rectangle(223, 1, 5, 50);
+            return new Rectangle(196, 97, 12, 40);
         }
 
         @Override
@@ -70,9 +70,9 @@ public final class DefaultAssetProvider implements IAssetProvider {
         if (assetType == AssetTypes.BACKGROUND)
             return assetType.castOrDefault(BACKGROUND);
         if (assetType == AssetTypes.ENERGY_BACKGROUND)
-            return assetType.castOrDefault(ENERGY_FILL);
-        if (assetType == AssetTypes.ENERGY_BAR)
             return assetType.castOrDefault(ENERGY_BAR);
+        if (assetType == AssetTypes.ENERGY_BAR)
+            return assetType.castOrDefault(ENERGY_FILL);
         if (assetType == AssetTypes.PROGRESS_BAR)
             return assetType.castOrDefault(PROGRESS_BAR);
         if (assetType == AssetTypes.PROGRESS_FILL)
