@@ -16,5 +16,6 @@ import javax.annotation.Nullable;
 
 public interface IColorProvider {
     int getColor(ItemStack var1, int var2);
+
     int getColor(IBlockState var1, @Nullable IWorldReaderBase var2, @Nullable BlockPos var3, int var4);
 }

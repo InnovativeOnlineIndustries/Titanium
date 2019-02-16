@@ -10,7 +10,6 @@ package com.hrznstudio.titanium._test;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.block.BlockTileBase;
 import net.minecraft.block.material.Material;
-import net.minecraft.item.Item;
 
 public class BlockTest extends BlockTileBase<TileTest> {
 

@@ -26,7 +26,6 @@ import net.minecraftforge.registries.IForgeRegistry;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 public abstract class BlockTileBase<T extends TileBase> extends BlockBase implements ITileEntityProvider {
     private final Class<T> tileClass;
@@ -38,7 +37,7 @@ public abstract class BlockTileBase<T extends TileBase> extends BlockBase implem
     }
 
     public void registerTile(IForgeRegistry<TileEntityType<?>> registry) {
-        tileEntityType=TileEntityType.register(getRegistryName().toString(), TileEntityType.Builder.create(getTileEntityFactory()::create));
+        tileEntityType = TileEntityType.register(getRegistryName().toString(), TileEntityType.Builder.create(getTileEntityFactory()::create));
         tileEntityType.setRegistryName(this.getRegistryName());
         registry.register(tileEntityType);
     }

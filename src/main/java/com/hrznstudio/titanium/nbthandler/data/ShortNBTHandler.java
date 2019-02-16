@@ -9,7 +9,6 @@ package com.hrznstudio.titanium.nbthandler.data;
 
 import com.hrznstudio.titanium.nbthandler.INBTHandler;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
 

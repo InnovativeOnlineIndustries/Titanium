@@ -51,7 +51,7 @@ public abstract class TitaniumMod {
                 try {
                     Class<?> param = method.getParameterTypes()[0];
                     if (event.getClass().isAssignableFrom(param)) {
-                        if(GenericEvent.class.isAssignableFrom(param)) {
+                        if (GenericEvent.class.isAssignableFrom(param)) {
                             if (event instanceof GenericEvent) {
                                 Type[] arr = method.getGenericParameterTypes();
                                 Type type;

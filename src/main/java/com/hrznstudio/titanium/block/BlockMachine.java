@@ -15,6 +15,7 @@ import net.minecraft.world.World;
 
 public abstract class BlockMachine<T extends TileMachine> extends BlockRotation<T> {
     private InventoryType inventoryType = InventoryType.DROP;
+
     public BlockMachine(String name, Properties properties, Class<T> tileClass) {
         super(name, properties, tileClass);
     }

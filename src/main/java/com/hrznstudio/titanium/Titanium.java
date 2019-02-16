@@ -12,12 +12,8 @@ import com.hrznstudio.titanium._test.BlockTwentyFourTest;
 import com.hrznstudio.titanium.api.raytrace.DistanceRayTraceResult;
 import com.hrznstudio.titanium.block.tile.TileBase;
 import com.hrznstudio.titanium.client.gui.GuiContainerTile;
-import com.hrznstudio.titanium.client.gui.GuiHandler;
 import com.hrznstudio.titanium.container.ContainerTileBase;
-import com.hrznstudio.titanium.network.Packet;
-import com.hrznstudio.titanium.pulsar.control.PulseManager;
 import com.hrznstudio.titanium.tab.AdvancedTitaniumTab;
-import com.hrznstudio.titanium.util.SidedHandler;
 import com.hrznstudio.titanium.util.TileUtil;
 import com.hrznstudio.titanium.util.TitaniumMod;
 import io.netty.buffer.Unpooled;
@@ -29,22 +25,13 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.network.NetworkHooks;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
 
 @Mod(Titanium.MODID)
 public class Titanium extends TitaniumMod {
@@ -52,12 +39,10 @@ public class Titanium extends TitaniumMod {
 
     public static AdvancedTitaniumTab RESOURCES_TAB;
 
-    public static PulseManager COMPAT_MANAGER = null;
-    private static boolean vanilla;
-
-    private static SimpleChannel NETWORK;
-
-    public static IGuiHandler guiHandler = new GuiHandler();
+    public Titanium() {
+        addBlock(BlockTest.TEST = new BlockTest());
+        addBlock(BlockTwentyFourTest.TEST = new BlockTwentyFourTest());
+    }
 
     public static void openGui(TileBase tile, EntityPlayerMP player) {
         PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
@@ -67,19 +52,9 @@ public class Titanium extends TitaniumMod {
         NetworkHooks.openGui(player, tile, buf);
     }
 
-    public Titanium() {
-        COMPAT_MANAGER = new PulseManager("titanium/compat");
-        addBlock(BlockTest.TEST = new BlockTest());
-        addBlock(BlockTwentyFourTest.TEST = new BlockTwentyFourTest());
-    }
-
-    @EventReceiver
-    public void setup(FMLCommonSetupEvent setup) {
-        SidedHandler.runOn(Dist.CLIENT, () -> TitaniumClient::registerModelLoader);
-    }
-
     @EventReceiver
     public void clientSetup(FMLClientSetupEvent event) {
+        TitaniumClient.registerModelLoader();
         ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.GUIFACTORY, () -> data -> {
             int x = data.getAdditionalData().readInt();
             int y = data.getAdditionalData().readInt();
@@ -95,28 +70,6 @@ public class Titanium extends TitaniumMod {
                     )
             )).orElse(null);
         });
-    }
-
-    public static <P extends Packet> BiConsumer<P, PacketBuffer> encode() {
-        return Packet::encode;
-    }
-
-    public static <P extends Packet> Function<PacketBuffer, P> decode(Class<P> packetClass) {
-        return buffer -> {
-            try {
-                Constructor constructor = packetClass.getDeclaredConstructor(PacketBuffer.class);
-                return packetClass.cast(constructor.newInstance(buffer));
-            } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                try {
-                    Constructor constructor = packetClass.getDeclaredConstructor();
-                    P p = packetClass.cast(constructor.newInstance());
-                    p.decode(buffer);
-                    return p;
-                } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e1) {
-                    throw new RuntimeException(e1);
-                }
-            }
-        };
     }
 
     @SubscribeEvent

@@ -100,7 +100,7 @@ public class ItemEnergy extends ItemBase {
         @Nonnull
         @Override
         public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable EnumFacing side) {
-            if(cap==CapabilityEnergy.ENERGY) {
+            if (cap == CapabilityEnergy.ENERGY) {
                 return energyCap.cast();
             }
             return LazyOptional.empty();

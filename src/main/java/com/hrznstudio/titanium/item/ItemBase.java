@@ -30,7 +30,7 @@ import java.util.List;
 @ParametersAreNonnullByDefault
 public class ItemBase extends Item implements IModelRegistrar {
 
-    public ItemBase(String name,Properties properties) {
+    public ItemBase(String name, Properties properties) {
         super(properties);
         setRegistryName(name);
     }

@@ -14,7 +14,6 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import java.awt.*;
-import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
 
