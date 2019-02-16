@@ -59,8 +59,10 @@ public class NBTManager {
      * @param entity The TileEntity class
      */
     public void scanTileClassForAnnotations(Class<? extends TileEntity> entity) {
+        System.out.println(entity);
         List<Field> fields = new ArrayList<>();
         for (Field field : getAllDeclaredFields(entity)) {
+            System.out.println(field.getName());
             if (field.isAnnotationPresent(Save.class) && checkForHandler(field)) {
                 field.setAccessible(true);
                 fields.add(field);

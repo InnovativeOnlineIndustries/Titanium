@@ -116,12 +116,11 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
      */
     public void tickBar() {
         if (tileBase != null && tileBase.getWorld().getGameTime() % tickingTime == 0) {
-            this.progress += progressIncrease;
-            tileBase.markForUpdate();
+            setProgress(this.progress + progressIncrease);
             this.onTickWork.run();
         }
         if (progress > maxProgress) {
-            this.progress = 0;
+            setProgress(0);
             this.onFinishWork.run();
         }
     }
