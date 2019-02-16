@@ -7,8 +7,20 @@
 
 package com.hrznstudio.titanium.api;
 
+import com.hrznstudio.titanium.api.augment.IAugment;
+import com.hrznstudio.titanium.api.augment.IAugmentType;
+import com.hrznstudio.titanium.block.tile.TileMachine;
+
+import java.util.List;
+
 public interface IMachine {
     boolean isActive();
 
     boolean isPaused();
+
+    boolean canAcceptAugment(IAugment machine);
+
+    List<IAugment> getInstalledAugments();
+
+    List<IAugment> getInstalledAugments(IAugmentType filter);
 }

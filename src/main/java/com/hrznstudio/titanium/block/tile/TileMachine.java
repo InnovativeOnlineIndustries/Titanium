@@ -7,10 +7,15 @@
 
 package com.hrznstudio.titanium.block.tile;
 
+import com.hrznstudio.titanium.api.IMachine;
+import com.hrznstudio.titanium.api.augment.IAugment;
+import com.hrznstudio.titanium.api.augment.IAugmentType;
 import com.hrznstudio.titanium.block.BlockMachine;
 import net.minecraft.util.ITickable;
 
-public class TileMachine extends TilePowered implements ITickable {
+import java.util.List;
+
+public class TileMachine extends TilePowered implements ITickable, IMachine {
     public TileMachine(BlockMachine<?> blockMachine) {
         super(blockMachine);
     }
@@ -18,5 +23,30 @@ public class TileMachine extends TilePowered implements ITickable {
     @Override
     public void tick() {
         super.tick();
+    }
+
+    @Override
+    public boolean isActive() {
+        return false;
+    }
+
+    @Override
+    public boolean isPaused() {
+        return false;
+    }
+
+    @Override
+    public boolean canAcceptAugment(IAugment machine) {
+        return false;
+    }
+
+    @Override
+    public List<IAugment> getInstalledAugments() {
+        return null;
+    }
+
+    @Override
+    public List<IAugment> getInstalledAugments(IAugmentType filter) {
+        return null;
     }
 }
