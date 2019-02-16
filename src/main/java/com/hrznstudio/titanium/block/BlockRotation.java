@@ -37,7 +37,7 @@ public abstract class BlockRotation<T extends TileBase> extends BlockTileBase<T>
     @Nullable
     @Override
     public IBlockState getStateForPlacement(BlockItemUseContext p_196258_1_) {
-        return super.getStateForPlacement(p_196258_1_);
+        return getRotationType().getHandler().getStateForPlacement(this, p_196258_1_);
     }
 
     @Override
