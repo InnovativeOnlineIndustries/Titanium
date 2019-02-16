@@ -35,7 +35,7 @@ public class TileTest extends TilePowered implements ITickable {
         this.addInventory(first = new PosInvHandler("test", -120, 20, 1).setTile(this).setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
         this.addInventory(second = new PosInvHandler("test2", 80, 30, 1).setTile(this).setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
         this.addGuiAddonFactory(() -> new EnergyBarGuiAddon(4, 10, getEnergyStorage()));
-        this.addProgressBar(bar = new PosProgressBar(40, 20, 500).setCanIncrease(tileEntity -> true).setOnFinishWork(() -> System.out.println("WOWOOW")));
+        this.addProgressBar(bar = new PosProgressBar(40, 20, 500).setCanIncrease(tileEntity -> true).setOnFinishWork(() -> System.out.println("WOWOOW")).setBarDirection(PosProgressBar.BarDirection.VERTICAL_UP));
         this.addInventory(third = new PosInvHandler("test3", 180, 30, 1).setTile(this).setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
     }
 

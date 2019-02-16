@@ -46,12 +46,10 @@ public class ProgressBarGuiAddon extends BasicGuiAddon {
     @Override
     public void drawGuiContainerForegroundLayer(GuiScreen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
         IAsset asset = IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_FILL);
-        Point offset = asset.getOffset();
-        Rectangle area = asset.getArea();
-        screen.mc.getTextureManager().bindTexture(asset.getResourceLocation());
-        int progress = progressBar.getProgress();
-        int maxProgress = progressBar.getMaxProgress();
-        int progressOffset = progress * area.width / maxProgress;
-        screen.drawTexturedModalRect(getPosX() + offset.x, getPosY() + offset.y, area.x, area.y, progressOffset, area.height);
+        progressBar.getBarDirection().render(screen, asset, this);
+    }
+
+    public PosProgressBar getProgressBar() {
+        return progressBar;
     }
 }

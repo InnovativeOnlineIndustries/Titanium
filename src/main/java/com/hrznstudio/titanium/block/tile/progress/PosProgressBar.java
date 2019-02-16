@@ -8,14 +8,17 @@
 package com.hrznstudio.titanium.block.tile.progress;
 
 import com.hrznstudio.titanium.api.IFactory;
+import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
 import com.hrznstudio.titanium.block.tile.TileBase;
 import com.hrznstudio.titanium.client.gui.addon.ProgressBarGuiAddon;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.INBTSerializable;
 
+import java.awt.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
@@ -33,6 +36,7 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
     private Runnable onFinishWork;
     private Runnable onTickWork;
     private TileBase tileBase;
+    private BarDirection barDirection;
 
     public PosProgressBar(int posX, int posY, int maxProgress) {
         this.posX = posX;
@@ -47,6 +51,7 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
         };
         this.onTickWork = () -> {
         };
+        this.barDirection = BarDirection.HORIZONTAL_RIGHT;
     }
 
     /**
@@ -242,6 +247,20 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
         return this;
     }
 
+    public BarDirection getBarDirection() {
+        return barDirection;
+    }
+
+    /**
+     * Sets the direction render for the bar in the gui
+     * @param direction The bar direction
+     * @return Self
+     */
+    public PosProgressBar setBarDirection(BarDirection direction) {
+        this.barDirection = direction;
+        return this;
+    }
+
     /**
      * Gets the Gui Addons that it will be added to the machine GUI
      *
@@ -264,5 +283,35 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
     public void deserializeNBT(NBTTagCompound nbt) {
         progress = nbt.getInt("Tick");
         maxProgress = nbt.getInt("MaxProgress");
+    }
+
+    public enum BarDirection {
+        VERTICAL_UP {
+            @Override
+            public void render(GuiScreen screen, IAsset asset, ProgressBarGuiAddon addon) {
+                Point offset = asset.getOffset();
+                Rectangle area = asset.getArea();
+                screen.mc.getTextureManager().bindTexture(asset.getResourceLocation());
+                int progress = addon.getProgressBar().getProgress();
+                int maxProgress = addon.getProgressBar().getMaxProgress();
+                int progressOffset = progress * area.width / maxProgress;
+                screen.drawTexturedModalRect(addon.getPosX() + offset.x, addon.getPosY() + offset.y + area.height - progressOffset, area.x, area.y + (area.height - progressOffset), area.width, progressOffset);
+            }
+        },
+        HORIZONTAL_RIGHT {
+            @Override
+            public void render(GuiScreen screen, IAsset asset, ProgressBarGuiAddon addon) {
+                Point offset = asset.getOffset();
+                Rectangle area = asset.getArea();
+                screen.mc.getTextureManager().bindTexture(asset.getResourceLocation());
+                int progress = addon.getProgressBar().getProgress();
+                int maxProgress = addon.getProgressBar().getMaxProgress();
+                int progressOffset = progress * area.width / maxProgress;
+                screen.drawTexturedModalRect(addon.getPosX() + offset.x, addon.getPosY() + offset.y, area.x, area.y, progressOffset, area.height);
+            }
+        };
+
+        public abstract void render(GuiScreen screen, IAsset asset, ProgressBarGuiAddon addon);
+
     }
 }
