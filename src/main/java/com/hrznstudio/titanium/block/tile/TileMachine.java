@@ -36,7 +36,7 @@ public class TileMachine extends TilePowered implements ITickable, IMachine {
     }
 
     @Override
-    public boolean canAcceptAugment(IAugment machine) {
+    public boolean canAcceptAugment(IAugment augment) {
         return false;
     }
 
