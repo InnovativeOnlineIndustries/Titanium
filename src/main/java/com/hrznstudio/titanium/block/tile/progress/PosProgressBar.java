@@ -14,6 +14,7 @@ import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
 import com.hrznstudio.titanium.block.tile.TileBase;
 import com.hrznstudio.titanium.client.gui.addon.ProgressBarGuiAddon;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -37,6 +38,7 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
     private Runnable onTickWork;
     private TileBase tileBase;
     private BarDirection barDirection;
+    private EnumDyeColor color;
 
     public PosProgressBar(int posX, int posY, int maxProgress) {
         this.posX = posX;
@@ -52,6 +54,7 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
         this.onTickWork = () -> {
         };
         this.barDirection = BarDirection.HORIZONTAL_RIGHT;
+        this.color = EnumDyeColor.WHITE;
     }
 
     /**
@@ -247,6 +250,11 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
         return this;
     }
 
+    /**
+     * Gets the bar direction
+     *
+     * @return The bar direction
+     */
     public BarDirection getBarDirection() {
         return barDirection;
     }
@@ -258,6 +266,26 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
      */
     public PosProgressBar setBarDirection(BarDirection direction) {
         this.barDirection = direction;
+        return this;
+    }
+
+    /**
+     * Gets the color of the bar
+     *
+     * @return the color
+     */
+    public EnumDyeColor getColor() {
+        return color;
+    }
+
+    /**
+     * Set the color of the progress bar
+     *
+     * @param color the color
+     * @return Self
+     */
+    public PosProgressBar setColor(EnumDyeColor color) {
+        this.color = color;
         return this;
     }
 
@@ -294,7 +322,7 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
                 screen.mc.getTextureManager().bindTexture(asset.getResourceLocation());
                 int progress = addon.getProgressBar().getProgress();
                 int maxProgress = addon.getProgressBar().getMaxProgress();
-                int progressOffset = progress * area.width / maxProgress;
+                int progressOffset = progress * area.height / maxProgress;
                 screen.drawTexturedModalRect(addon.getPosX() + offset.x, addon.getPosY() + offset.y + area.height - progressOffset, area.x, area.y + (area.height - progressOffset), area.width, progressOffset);
             }
         },

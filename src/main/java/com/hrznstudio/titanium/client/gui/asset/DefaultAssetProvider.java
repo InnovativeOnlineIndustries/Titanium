@@ -48,7 +48,17 @@ public final class DefaultAssetProvider implements IAssetProvider {
             return new Rectangle(0, 0, 176, 184);
         }
     };
-    private final IAsset PROGRESS_BAR = () -> new Rectangle(211, 1, 11, 56);
+    private final IAsset PROGRESS_BAR_BACKGROUND = new IAsset() {
+        @Override
+        public Rectangle getArea() {
+            return new Rectangle(229, 1, 5, 50);
+        }
+
+        @Override
+        public Point getOffset() {
+            return new Point(3, 3);
+        }
+    };
     private final IAsset PROGRESS_BAR_FILL = new IAsset() {
         @Override
         public Rectangle getArea() {
@@ -60,6 +70,7 @@ public final class DefaultAssetProvider implements IAssetProvider {
             return new Point(3, 3);
         }
     };
+    private final IAsset PROGRESS_BAR_BORDER = () -> new Rectangle(211, 1, 11, 56);
 
     DefaultAssetProvider() {
     }
@@ -73,14 +84,16 @@ public final class DefaultAssetProvider implements IAssetProvider {
             return assetType.castOrDefault(ENERGY_BAR);
         if (assetType == AssetTypes.ENERGY_BAR)
             return assetType.castOrDefault(ENERGY_FILL);
+        if (assetType == AssetTypes.PROGRESS_BAR_BACKGROUND)
+            return assetType.castOrDefault(PROGRESS_BAR_BACKGROUND);
         if (assetType == AssetTypes.PROGRESS_BAR)
-            return assetType.castOrDefault(PROGRESS_BAR);
-        if (assetType == AssetTypes.PROGRESS_FILL)
             return assetType.castOrDefault(PROGRESS_BAR_FILL);
         if (assetType == AssetTypes.SLOT)
             return assetType.castOrDefault(SLOT);
         if (assetType == AssetTypes.TANK)
             return assetType.castOrDefault(TANK);
+        if (assetType == AssetTypes.PROGRESS_BAR_BORDER)
+            return assetType.castOrDefault(PROGRESS_BAR_BORDER);
         return null;
     }
 }
