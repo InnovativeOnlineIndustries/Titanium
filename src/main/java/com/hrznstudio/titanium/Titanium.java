@@ -7,6 +7,7 @@
 
 package com.hrznstudio.titanium;
 
+import com.hrznstudio.titanium._test.BlockSmashingTable;
 import com.hrznstudio.titanium._test.BlockTest;
 import com.hrznstudio.titanium._test.BlockTwentyFourTest;
 import com.hrznstudio.titanium.api.raytrace.DistanceRayTraceResult;
@@ -31,7 +32,6 @@ import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 @Mod(Titanium.MODID)

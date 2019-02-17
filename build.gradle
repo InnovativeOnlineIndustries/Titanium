@@ -35,7 +35,7 @@ license {
 }
 
 minecraft {
-    mappings channel: 'snapshot', version: '20190217-1.13.1'
+    mappings channel: 'snapshot', version: '20180921-1.13'
     runs {
         client = {
             // recommended logging data for a userdev environment
