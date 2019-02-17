@@ -22,13 +22,13 @@ public class TankNBTHandler implements INBTHandler<FluidTank> {
 
     @Override
     public boolean storeToNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, @Nonnull FluidTank object) {
-        compound.put(name, object.writeToNBT(new NBTTagCompound()));
+        compound.setTag(name, object.writeToNBT(new NBTTagCompound()));
         return true;
     }
 
     @Override
     public FluidTank readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, FluidTank currentValue) {
-        if (compound.contains(name)) {
+        if (compound.hasKey(name)) {
             currentValue.readFromNBT(compound.getCompound(name));
             return currentValue;
         }

@@ -23,12 +23,12 @@ public class BlockPosNBTHandler implements INBTHandler<BlockPos> {
 
     @Override
     public boolean storeToNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, @Nonnull BlockPos object) {
-        compound.putLong(name, object.toLong());
+        compound.setLong(name, object.toLong());
         return false;
     }
 
     @Override
     public BlockPos readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, BlockPos current) {
-        return compound.contains(name) ? BlockPos.fromLong(compound.getLong(name)) : null;
+        return compound.hasKey(name) ? BlockPos.fromLong(compound.getLong(name)) : null;
     }
 }

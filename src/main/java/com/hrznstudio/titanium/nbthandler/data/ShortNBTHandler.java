@@ -35,7 +35,7 @@ public class ShortNBTHandler implements INBTHandler<Short> {
      */
     @Override
     public boolean storeToNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, @Nonnull Short object) {
-        compound.putShort(name, object);
+        compound.setShort(name, object);
         return true;
     }
 
@@ -48,6 +48,6 @@ public class ShortNBTHandler implements INBTHandler<Short> {
      */
     @Override
     public Short readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, Short current) {
-        return compound.contains(name) ? compound.getShort(name) : null;
+        return compound.hasKey(name) ? compound.getShort(name) : null;
     }
 }

@@ -7,7 +7,6 @@
 
 package com.hrznstudio.titanium;
 
-import com.hrznstudio.titanium._test.BlockSmashingTable;
 import com.hrznstudio.titanium._test.BlockTest;
 import com.hrznstudio.titanium._test.BlockTwentyFourTest;
 import com.hrznstudio.titanium.api.raytrace.DistanceRayTraceResult;
@@ -24,7 +23,6 @@ import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
@@ -54,13 +52,6 @@ public class Titanium extends TitaniumMod {
         buf.writeInt(tile.getPos().getY());
         buf.writeInt(tile.getPos().getZ());
         NetworkHooks.openGui(player, tile, buf);
-    }
-
-    @EventReceiver
-    public void commonSetup(FMLCommonSetupEvent event) {
-        RESOURCES_TAB = new AdvancedTitaniumTab("test", true);
-        RESOURCES_TAB.addIconStack(ItemTags.LOGS);
-        RESOURCES_TAB.addIconStack(ItemTags.PLANKS);
     }
 
     @EventReceiver

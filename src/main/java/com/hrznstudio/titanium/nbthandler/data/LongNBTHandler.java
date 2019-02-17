@@ -35,7 +35,7 @@ public class LongNBTHandler implements INBTHandler<Long> {
      */
     @Override
     public boolean storeToNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, @Nonnull Long object) {
-        compound.putLong(name, object);
+        compound.setLong(name, object);
         return true;
     }
 
@@ -48,6 +48,6 @@ public class LongNBTHandler implements INBTHandler<Long> {
      */
     @Override
     public Long readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, Long current) {
-        return compound.contains(name) ? compound.getLong(name) : null;
+        return compound.hasKey(name) ? compound.getLong(name) : null;
     }
 }

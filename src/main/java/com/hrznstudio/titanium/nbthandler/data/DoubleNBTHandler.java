@@ -21,12 +21,12 @@ public class DoubleNBTHandler implements INBTHandler<Double> {
 
     @Override
     public boolean storeToNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, @Nonnull Double object) {
-        compound.putDouble(name, object);
+        compound.setDouble(name, object);
         return true;
     }
 
     @Override
     public Double readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, Double currentValue) {
-        return compound.contains(name) ? compound.getDouble(name) : null;
+        return compound.hasKey(name) ? compound.getDouble(name) : null;
     }
 }

@@ -302,8 +302,8 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
     @Override
     public NBTTagCompound serializeNBT() {
         NBTTagCompound compound = new NBTTagCompound();
-        compound.putInt("Tick", progress);
-        compound.putInt("MaxProgress", maxProgress);
+        compound.setInt("Tick", progress);
+        compound.setInt("MaxProgress", maxProgress);
         return compound;
     }
 

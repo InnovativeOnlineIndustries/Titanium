@@ -155,7 +155,7 @@ public class NBTManager {
     private Object handleNBTRead(NBTTagCompound compound, String name, Object value, Field field) {
         for (INBTHandler handler : handlerList) {
             if (handler.isClassValid(value == null ? field.getType() : value.getClass())) {
-                if (!compound.contains(name)) continue;
+                if (!compound.hasKey(name)) continue;
                 Object readValue = handler.readFromNBT(compound, name, value);
                 if (readValue != null) {
                     return readValue;

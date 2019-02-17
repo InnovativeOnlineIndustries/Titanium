@@ -22,12 +22,12 @@ public class EnumDyeColorNBTHandler implements INBTHandler<EnumDyeColor> {
 
     @Override
     public boolean storeToNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, @Nonnull EnumDyeColor object) {
-        compound.putInt(name, object.getId());
+        compound.setInt(name, object.getId());
         return true;
     }
 
     @Override
     public EnumDyeColor readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, EnumDyeColor current) {
-        return compound.contains(name) ? EnumDyeColor.byId(compound.getInt(name)) : current;
+        return compound.hasKey(name) ? EnumDyeColor.byId(compound.getInt(name)) : current;
     }
 }

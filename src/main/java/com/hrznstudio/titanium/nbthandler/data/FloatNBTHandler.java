@@ -20,12 +20,12 @@ public class FloatNBTHandler implements INBTHandler<Float> {
 
     @Override
     public boolean storeToNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, @Nonnull Float object) {
-        compound.putFloat(name, object);
+        compound.setFloat(name, object);
         return true;
     }
 
     @Override
     public Float readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, Float currentValue) {
-        return compound.contains(name) ? compound.getFloat(name) : null;
+        return compound.hasKey(name) ? compound.getFloat(name) : null;
     }
 }
