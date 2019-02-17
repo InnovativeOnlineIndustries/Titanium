@@ -8,12 +8,16 @@
 package com.hrznstudio.titanium.tab;
 
 import com.google.common.base.Stopwatch;
+import com.hrznstudio.titanium.util.TagUtil;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tags.Tag;
 
 import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class AdvancedTitaniumTab extends TitaniumTab {
     private static final ItemStack defaultIconStack = new ItemStack(Blocks.BARRIER);
@@ -59,6 +63,10 @@ public class AdvancedTitaniumTab extends TitaniumTab {
 
     public void addIconStacks(ItemStack... icons) {
         Collections.addAll(this.icons, icons);
+    }
+
+    public void addIconStack(Tag<Item> tag) {
+        this.icons.addAll(TagUtil.getAllEntries(tag).stream().map(ItemStack::new).collect(Collectors.toList()));
     }
 
     @Nonnull

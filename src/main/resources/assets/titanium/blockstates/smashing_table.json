@@ -1,0 +1,12 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "titanium:smashing_table",
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "": [
+      {}
+    ]
+  }
+}

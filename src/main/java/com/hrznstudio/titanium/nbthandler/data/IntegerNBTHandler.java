@@ -35,7 +35,7 @@ public class IntegerNBTHandler implements INBTHandler<Integer> {
      */
     @Override
     public boolean storeToNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, @Nonnull Integer object) {
-        compound.setInt(name, object);
+        compound.putInt(name, object);
         return true;
     }
 
@@ -48,6 +48,6 @@ public class IntegerNBTHandler implements INBTHandler<Integer> {
      */
     @Override
     public Integer readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, Integer current) {
-        return compound.hasKey(name) ? compound.getInt(name) : null;
+        return compound.contains(name) ? compound.getInt(name) : null;
     }
 }

@@ -18,6 +18,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -43,6 +44,7 @@ public abstract class TitaniumMod {
     private final List<Block> BLOCKS = new ArrayList<>();
 
     public TitaniumMod() {
+        MinecraftForge.EVENT_BUS.register(this);
         List<Method> methods = getMethods();
         methods.forEach(method -> {
             EventReceiver eventReceiver = method.getAnnotation(EventReceiver.class);
