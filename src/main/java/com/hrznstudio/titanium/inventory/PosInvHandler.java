@@ -65,8 +65,9 @@ public class PosInvHandler extends ItemStackHandler implements IGuiAddonProvider
         return this;
     }
 
-    public void setOnSlotChanged(BiConsumer<ItemStack, Integer> onSlotChanged) {
+    public PosInvHandler setOnSlotChanged(BiConsumer<ItemStack, Integer> onSlotChanged) {
         this.onSlotChanged = onSlotChanged;
+        return this;
     }
 
     @Nonnull
