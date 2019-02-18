@@ -18,6 +18,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 
 public class PosInvHandler extends ItemStackHandler implements IGuiAddonProvider {
@@ -30,6 +31,7 @@ public class PosInvHandler extends ItemStackHandler implements IGuiAddonProvider
     private TileEntity tileEntity;
     private BiPredicate<ItemStack, Integer> insertPredicate;
     private BiPredicate<ItemStack, Integer> extractPredicate;
+    private BiConsumer<ItemStack, Integer> onSlotChanged;
 
     public PosInvHandler(String name, int xPos, int yPos, int size) {
         this.name = name;
@@ -39,6 +41,7 @@ public class PosInvHandler extends ItemStackHandler implements IGuiAddonProvider
         this.setRange(size, 1);
         this.insertPredicate = (stack, integer) -> true;
         this.extractPredicate = (stack, integer) -> true;
+        this.onSlotChanged = (stack, integer) -> {};
     }
 
     public PosInvHandler setRange(int x, int y) {
@@ -62,6 +65,10 @@ public class PosInvHandler extends ItemStackHandler implements IGuiAddonProvider
         return this;
     }
 
+    public void setOnSlotChanged(BiConsumer<ItemStack, Integer> onSlotChanged) {
+        this.onSlotChanged = onSlotChanged;
+    }
+
     @Nonnull
     @Override
     public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
@@ -78,6 +85,7 @@ public class PosInvHandler extends ItemStackHandler implements IGuiAddonProvider
     @Override
     protected void onContentsChanged(int slot) {
         if (this.tileEntity != null) tileEntity.markDirty();
+        onSlotChanged.accept(getStackInSlot(slot), slot);
     }
 
 
@@ -119,6 +127,10 @@ public class PosInvHandler extends ItemStackHandler implements IGuiAddonProvider
 
     public BiPredicate<ItemStack, Integer> getExtractPredicate() {
         return extractPredicate;
+    }
+
+    public BiConsumer<ItemStack, Integer> getOnSlotChanged() {
+        return onSlotChanged;
     }
 
     @Override
