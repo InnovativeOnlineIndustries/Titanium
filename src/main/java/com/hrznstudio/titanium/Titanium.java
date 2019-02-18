@@ -34,6 +34,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.network.NetworkHooks;
 
+import java.util.function.Consumer;
+
 @Mod(Titanium.MODID)
 public class Titanium extends TitaniumMod {
     public static final String MODID = "titanium";
@@ -47,11 +49,11 @@ public class Titanium extends TitaniumMod {
     }
 
     public static void openGui(TileBase tile, EntityPlayerMP player) {
-        PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
-        buf.writeInt(tile.getPos().getX());
-        buf.writeInt(tile.getPos().getY());
-        buf.writeInt(tile.getPos().getZ());
-        NetworkHooks.openGui(player, tile, buf);
+        NetworkHooks.openGui(player, tile, buf -> {
+            buf.writeInt(tile.getPos().getX());
+            buf.writeInt(tile.getPos().getY());
+            buf.writeInt(tile.getPos().getZ());
+        });
     }
 
     @EventReceiver
