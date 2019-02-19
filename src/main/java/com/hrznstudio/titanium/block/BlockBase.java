@@ -11,7 +11,6 @@ import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.internal.IItemBlockFactory;
 import com.hrznstudio.titanium.api.internal.IModelRegistrar;
 import com.hrznstudio.titanium.api.raytrace.DistanceRayTraceResult;
-import com.hrznstudio.titanium.api.raytrace.IndexedAxisAlignedBB;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
@@ -20,7 +19,11 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.util.math.shapes.IBooleanFunction;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -36,18 +39,40 @@ public abstract class BlockBase extends Block implements IModelRegistrar, IItemB
     }
 
     @Nullable
-    protected static DistanceRayTraceResult rayTraceBox(BlockPos pos, Vec3d start, Vec3d end, IndexedAxisAlignedBB box) {
-        Vec3d startRay = start.subtract(new Vec3d(pos));
-        Vec3d endRay = end.subtract(new Vec3d(pos));
-        RayTraceResult bbResult = box.calculateIntercept(startRay, endRay);
-
+    protected static DistanceRayTraceResult rayTraceBox(BlockPos pos, Vec3d start, Vec3d end, VoxelShape shape) {
+        RayTraceResult bbResult = shape.func_212433_a(start, end, pos);
         if (bbResult != null) {
-            Vec3d hitVec = bbResult.hitVec.add(new Vec3d(pos));
+            Vec3d hitVec = bbResult.hitVec;
             EnumFacing sideHit = bbResult.sideHit;
-            double dist = start.squareDistanceTo(hitVec);
-            return new DistanceRayTraceResult(hitVec, sideHit, pos, box, dist);
+            double dist = start.distanceTo(hitVec);
+            return new DistanceRayTraceResult(hitVec, sideHit, pos, shape, dist);
         }
         return null;
+    }
+
+    @Nullable
+    @Override
+    public RayTraceResult getRayTraceResult(IBlockState state, World world, BlockPos pos, Vec3d start, Vec3d end, RayTraceResult original) {
+        if (hasCustomBoxes(state, world, pos)) {
+            return rayTraceBoxesClosest(start, end, pos, getBoundingBoxes(state, world, pos));
+        }
+        return super.getRayTraceResult(state, world, pos, start, end, original);
+    }
+
+    @Override
+    public VoxelShape getCollisionShape(IBlockState state, IBlockReader worldIn, BlockPos pos) {
+        if (hasCustomBoxes(state, worldIn, pos)) {
+            VoxelShape shape = null;
+            for (VoxelShape shape1 : getBoundingBoxes(state, worldIn, pos)) {
+                if (shape == null) {
+                    shape = shape1;
+                } else {
+                    shape = VoxelShapes.combineAndSimplify(shape, shape1, IBooleanFunction.OR);
+                }
+            }
+            return shape;
+        }
+        return super.getCollisionShape(state, worldIn, pos);
     }
 
     @Override
@@ -60,19 +85,19 @@ public abstract class BlockBase extends Block implements IModelRegistrar, IItemB
         //ClientUtil.registerToMapper(this);
     }
 
-    public List<IndexedAxisAlignedBB> getBoundingBoxes(IBlockState state, IWorldReader source, BlockPos pos) {
+    public List<VoxelShape> getBoundingBoxes(IBlockState state, IBlockReader source, BlockPos pos) {
         return Collections.emptyList();
     }
 
-    public boolean hasCustomBoxes(IBlockState state, IWorldReader source, BlockPos pos) {
-        return false; //TODO: Reimplement custom boxes
+    public boolean hasCustomBoxes(IBlockState state, IBlockReader source, BlockPos pos) {
+        return false;
     }
 
 
     @Nullable
-    protected RayTraceResult rayTraceBoxesClosest(Vec3d start, Vec3d end, BlockPos pos, List<IndexedAxisAlignedBB> boxes) {
+    protected RayTraceResult rayTraceBoxesClosest(Vec3d start, Vec3d end, BlockPos pos, List<VoxelShape> boxes) {
         List<DistanceRayTraceResult> results = new ArrayList<>();
-        for (IndexedAxisAlignedBB box : boxes) {
+        for (VoxelShape box : boxes) {
             DistanceRayTraceResult hit = rayTraceBox(pos, start, end, box);
             if (hit != null)
                 results.add(hit);

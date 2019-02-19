@@ -94,6 +94,11 @@ public class TileBase extends TileEntity implements IGuiAddonProvider, ITickable
     }
 
     @Override
+    public ITextComponent getDisplayName() {
+        return getName();
+    }
+
+    @Override
     public boolean hasCustomName() {
         return false;
     }

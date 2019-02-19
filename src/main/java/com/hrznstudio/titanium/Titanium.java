@@ -7,6 +7,7 @@
 
 package com.hrznstudio.titanium;
 
+import com.hrznstudio.titanium._test.BlockSmashingTable;
 import com.hrznstudio.titanium._test.BlockTest;
 import com.hrznstudio.titanium._test.BlockTwentyFourTest;
 import com.hrznstudio.titanium.api.raytrace.DistanceRayTraceResult;
@@ -33,6 +34,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.network.NetworkHooks;
 
+import java.util.function.Consumer;
+
 @Mod(Titanium.MODID)
 public class Titanium extends TitaniumMod {
     public static final String MODID = "titanium";
@@ -41,15 +44,16 @@ public class Titanium extends TitaniumMod {
 
     public Titanium() {
         addBlock(BlockTest.TEST = new BlockTest());
+        addBlock(new BlockSmashingTable());
         addBlock(BlockTwentyFourTest.TEST = new BlockTwentyFourTest());
     }
 
     public static void openGui(TileBase tile, EntityPlayerMP player) {
-        PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
-        buf.writeInt(tile.getPos().getX());
-        buf.writeInt(tile.getPos().getY());
-        buf.writeInt(tile.getPos().getZ());
-        NetworkHooks.openGui(player, tile, buf);
+        NetworkHooks.openGui(player, tile, buf -> {
+            buf.writeInt(tile.getPos().getX());
+            buf.writeInt(tile.getPos().getY());
+            buf.writeInt(tile.getPos().getZ());
+        });
     }
 
     @EventReceiver
@@ -87,7 +91,7 @@ public class Titanium extends TitaniumMod {
             double x = player.lastTickPosX + (player.posX - player.lastTickPosX) * event.getPartialTicks();
             double y = player.lastTickPosY + (player.posY - player.lastTickPosY) * event.getPartialTicks();
             double z = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * event.getPartialTicks();
-            WorldRenderer.drawSelectionBoundingBox(((DistanceRayTraceResult) hit).getHitBox().offset(-x, -y, -z).offset(pos).grow(0.002), 0.0F, 0.0F, 0.0F, 0.4F);
+            WorldRenderer.drawShape(((DistanceRayTraceResult) hit).getHitBox().withOffset(pos.getX(),pos.getY(),pos.getZ()), -x, -y, -z,0.0F, 0.0F, 0.0F, 0.4F);
             GlStateManager.depthMask(true);
             GlStateManager.enableTexture2D();
             GlStateManager.disableBlend();

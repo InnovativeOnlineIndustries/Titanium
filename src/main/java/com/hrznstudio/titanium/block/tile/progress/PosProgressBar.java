@@ -36,6 +36,7 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
     private int tickingTime;
     private Runnable onFinishWork;
     private Runnable onTickWork;
+    private Runnable onStart;
     private TileBase tileBase;
     private BarDirection barDirection;
     private EnumDyeColor color;
@@ -53,7 +54,9 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
         };
         this.onTickWork = () -> {
         };
-        this.barDirection = BarDirection.HORIZONTAL_RIGHT;
+        this.onStart = () -> {
+        };
+        this.barDirection = BarDirection.VERTICAL_UP;
         this.color = EnumDyeColor.WHITE;
     }
 
@@ -76,6 +79,16 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
      */
     public PosProgressBar setOnTickWork(Runnable runnable) {
         this.onTickWork = runnable;
+        return this;
+    }
+    /**
+     * Sets a runnable to be executed every time the bar starts from 0
+     *
+     * @param runnable The runnable
+     * @return Self
+     */
+    public PosProgressBar setOnStart(Runnable runnable) {
+        this.onStart = runnable;
         return this;
     }
 
@@ -311,6 +324,10 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
     public void deserializeNBT(NBTTagCompound nbt) {
         progress = nbt.getInt("Tick");
         maxProgress = nbt.getInt("MaxProgress");
+    }
+
+    public void onStart() {
+        onStart.run();
     }
 
     public enum BarDirection {
