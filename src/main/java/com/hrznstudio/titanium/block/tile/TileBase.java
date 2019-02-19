@@ -16,6 +16,8 @@ import com.hrznstudio.titanium.block.tile.progress.MultiProgressBarHandler;
 import com.hrznstudio.titanium.block.tile.progress.PosProgressBar;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.container.ContainerTileBase;
+import com.hrznstudio.titanium.fluid.MultiTankHandler;
+import com.hrznstudio.titanium.fluid.PosFluidTank;
 import com.hrznstudio.titanium.inventory.MultiInventoryHandler;
 import com.hrznstudio.titanium.inventory.PosInvHandler;
 import com.hrznstudio.titanium.nbthandler.NBTManager;
@@ -38,6 +40,8 @@ import net.minecraft.world.IInteractionObject;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.NonNullSupplier;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nonnull;
@@ -49,6 +53,7 @@ public class TileBase extends TileEntity implements IGuiAddonProvider, ITickable
 
     private MultiInventoryHandler multiInventoryHandler;
     private MultiProgressBarHandler multiProgressBarHandler;
+    private MultiTankHandler multiTankHandler;
 
     private List<IFactory<? extends IGuiAddon>> guiAddons;
 
@@ -58,6 +63,9 @@ public class TileBase extends TileEntity implements IGuiAddonProvider, ITickable
     }
 
     public boolean onActivated(EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        if (multiTankHandler != null){
+            return FluidUtil.interactWithFluidHandler(playerIn, hand, multiTankHandler.getCapabilityForSide(null));
+        }
         return false;
     }
 
@@ -109,15 +117,29 @@ public class TileBase extends TileEntity implements IGuiAddonProvider, ITickable
         multiProgressBarHandler.addBar(posProgressBar.setTile(this));
     }
 
+    public void addTank(PosFluidTank tank) {
+        if (multiTankHandler == null) multiTankHandler = new MultiTankHandler();
+        multiTankHandler.addTank(tank);
+    }
+
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable EnumFacing side) {
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && multiInventoryHandler != null) {
             return LazyOptional.of(new NonNullSupplier<T>() {
                 @Nonnull
                 @Override
                 public T get() {
                     return (T) multiInventoryHandler.getCapabilityForSide(side);
+                }
+            });
+        }
+        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && multiTankHandler != null){
+            return LazyOptional.of(new NonNullSupplier<T>() {
+                @Nonnull
+                @Override
+                public T get() {
+                    return (T) multiTankHandler.getCapabilityForSide(side);
                 }
             });
         }
@@ -141,6 +163,7 @@ public class TileBase extends TileEntity implements IGuiAddonProvider, ITickable
         List<IFactory<? extends IGuiAddon>> addons = new ArrayList<>(guiAddons);
         if (multiInventoryHandler != null) addons.addAll(multiInventoryHandler.getGuiAddons());
         if (multiProgressBarHandler != null) addons.addAll(multiProgressBarHandler.getGuiAddons());
+        if (multiTankHandler != null) addons.addAll(multiTankHandler.getGuiAddons());
         return addons;
     }
 

@@ -48,6 +48,7 @@ public class ProgressBarGuiAddon extends BasicGuiAddon {
         area = asset.getArea();
         screen.mc.getTextureManager().bindTexture(asset.getResourceLocation());
         screen.drawTexturedModalRect(guiX + getPosX() + offset.x, guiY + getPosY() + offset.y, area.x, area.y, area.width, area.height);
+        GlStateManager.color4f(1,1,1,1);
     }
 
     @Override
@@ -55,6 +56,7 @@ public class ProgressBarGuiAddon extends BasicGuiAddon {
         GlStateManager.color4f(progressBar.getColor().getColorComponentValues()[0], progressBar.getColor().getColorComponentValues()[1], progressBar.getColor().getColorComponentValues()[2], 1);
         IAsset asset = IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR);
         progressBar.getBarDirection().render(screen, asset, this);
+        GlStateManager.color4f(1,1,1,1);
     }
 
     public PosProgressBar getProgressBar() {

@@ -12,12 +12,16 @@ import com.hrznstudio.titanium.api.IItemStackQuery;
 import com.hrznstudio.titanium.block.tile.TilePowered;
 import com.hrznstudio.titanium.block.tile.progress.PosProgressBar;
 import com.hrznstudio.titanium.client.gui.addon.EnergyBarGuiAddon;
+import com.hrznstudio.titanium.fluid.PosFluidTank;
 import com.hrznstudio.titanium.inventory.PosInvHandler;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Fluids;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 
 public class TileTest extends TilePowered implements ITickable {
 
@@ -28,7 +32,7 @@ public class TileTest extends TilePowered implements ITickable {
     @Save
     private PosInvHandler second;
     @Save
-    private PosInvHandler third;
+    private PosFluidTank third;
 
     public TileTest() {
         super(BlockTest.TEST);
@@ -36,13 +40,16 @@ public class TileTest extends TilePowered implements ITickable {
         this.addInventory(second = new PosInvHandler("test2", 80, 30, 1).setTile(this).setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
         this.addGuiAddonFactory(() -> new EnergyBarGuiAddon(4, 10, getEnergyStorage()));
         this.addProgressBar(bar = new PosProgressBar(40, 20, 500).setCanIncrease(tileEntity -> true).setOnFinishWork(() -> System.out.println("WOWOOW")).setBarDirection(PosProgressBar.BarDirection.VERTICAL_UP).setColor(EnumDyeColor.LIME));
-        this.addInventory(third = new PosInvHandler("test3", 180, 30, 1).setTile(this).setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
+        this.addTank(third = new PosFluidTank(8000, 130, 30, "testTank"));
     }
 
     @Override
     public boolean onActivated(EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        openGui(playerIn);
-        return true;
+        if (!super.onActivated(playerIn, hand, facing, hitX, hitY, hitZ)){
+            openGui(playerIn);
+            return true;
+        }
+        return false;
     }
 
     @Override

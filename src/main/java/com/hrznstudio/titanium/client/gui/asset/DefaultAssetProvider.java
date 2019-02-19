@@ -11,6 +11,8 @@ import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.api.client.IAssetType;
 import com.hrznstudio.titanium.api.client.assets.types.IBackgroundAsset;
+import com.hrznstudio.titanium.api.client.assets.types.ITankAsset;
+import net.minecraft.util.EnumFacing;
 
 import javax.annotation.Nullable;
 import java.awt.*;
@@ -29,7 +31,17 @@ public final class DefaultAssetProvider implements IAssetProvider {
             return new Point(3, 3);
         }
     };
-    private final IAsset TANK = () -> new Rectangle(177, 1, 18, 46);
+    private final ITankAsset TANK = new ITankAsset() {
+        @Override
+        public int getFluidRenderPadding(EnumFacing facing) {
+            return 3;
+        }
+
+        @Override
+        public Rectangle getArea() {
+            return new Rectangle(177, 1, 18, 46);
+        }
+    };
     private final Point HOTBAR_POS = new Point(8, 160);
     private final Point INV_POS = new Point(8, 102);
     private final IBackgroundAsset BACKGROUND = new IBackgroundAsset() {

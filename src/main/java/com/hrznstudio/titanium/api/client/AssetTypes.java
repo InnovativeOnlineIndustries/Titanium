@@ -8,15 +8,16 @@
 package com.hrznstudio.titanium.api.client;
 
 import com.hrznstudio.titanium.api.client.assets.types.IBackgroundAsset;
+import com.hrznstudio.titanium.api.client.assets.types.ITankAsset;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 
 public class AssetTypes {
     public static final IAssetType<IAsset> PROGRESS_BAR_BORDER = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
     public static final IAssetType<IAsset> PROGRESS_BAR = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
     public static final IAssetType<IAsset> PROGRESS_BAR_BACKGROUND = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
-    public static final IAssetType<IAsset> TANK = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
     public static final IAssetType<IAsset> ENERGY_BACKGROUND = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
     public static final IAssetType<IAsset> ENERGY_BAR = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
     public static final IAssetType<IAsset> SLOT = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
     public static final IAssetType<IBackgroundAsset> BACKGROUND = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IBackgroundAsset.class);
+    public static final IAssetType<ITankAsset> TANK = new GenericAssetType<ITankAsset>(IAssetProvider.DEFAULT_PROVIDER::getAsset, ITankAsset.class);
 }
