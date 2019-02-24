@@ -59,6 +59,10 @@ public class MultiTankHandler implements IGuiAddonProvider {
         return new MultiTankCapabilityHandler(tanks);
     }
 
+    public List<PosFluidTank> getTanks() {
+        return tanks;
+    }
+
     public static class MultiTankCapabilityHandler implements IFluidHandler {
 
         private final List<PosFluidTank> tanks;

@@ -7,7 +7,6 @@
 
 package com.hrznstudio.titanium.api.client;
 
-import com.hrznstudio.titanium.client.gui.GuiContainerTile;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import net.minecraft.client.gui.GuiScreen;
 
@@ -24,6 +23,6 @@ public interface IGuiAddon {
         return Collections.emptyList();
     }
 
-    boolean isInside(GuiContainerTile container, int mouseX, int mouseY);
+    boolean isInside(GuiScreen screen, int mouseX, int mouseY);
 
 }

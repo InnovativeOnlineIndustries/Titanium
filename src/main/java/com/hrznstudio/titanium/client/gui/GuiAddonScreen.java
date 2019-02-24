@@ -21,7 +21,7 @@ import org.lwjgl.glfw.GLFW;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class GuiAddonScreen extends GuiScreen {
+public abstract class GuiAddonScreen extends GuiScreen implements IGuiAddonConsumer {
 
     private IAssetProvider assetProvider;
     private int x;
@@ -85,5 +85,10 @@ public abstract class GuiAddonScreen extends GuiScreen {
         } else {
             this.isMouseDragging = false;
         }
+    }
+
+    @Override
+    public List<IGuiAddon> getAddons() {
+        return addonList;
     }
 }

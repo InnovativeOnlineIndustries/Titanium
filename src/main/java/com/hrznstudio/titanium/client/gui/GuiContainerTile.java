@@ -22,7 +22,7 @@ import org.lwjgl.glfw.GLFW;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GuiContainerTile<T extends TileBase> extends GuiContainer {
+public class GuiContainerTile<T extends TileBase> extends GuiContainer implements IGuiAddonConsumer {
 
     private final ContainerTileBase<T> containerTileBase;
     private IAssetProvider assetProvider;
@@ -105,5 +105,10 @@ public class GuiContainerTile<T extends TileBase> extends GuiContainer {
 
     public int getY() {
         return y;
+    }
+
+    @Override
+    public List<IGuiAddon> getAddons() {
+        return addonList;
     }
 }

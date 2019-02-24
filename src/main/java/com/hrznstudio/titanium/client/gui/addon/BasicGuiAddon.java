@@ -8,7 +8,7 @@
 package com.hrznstudio.titanium.client.gui.addon;
 
 import com.hrznstudio.titanium.api.client.IGuiAddon;
-import com.hrznstudio.titanium.client.gui.GuiContainerTile;
+import net.minecraft.client.gui.GuiScreen;
 
 public abstract class BasicGuiAddon implements IGuiAddon {
 
@@ -21,7 +21,7 @@ public abstract class BasicGuiAddon implements IGuiAddon {
     }
 
     @Override
-    public boolean isInside(GuiContainerTile container, int mouseX, int mouseY) {
+    public boolean isInside(GuiScreen container, int mouseX, int mouseY) {
         return mouseX > this.getPosX() && mouseX < this.getPosX() + getXSize() && mouseY > this.getPosY() && mouseY < this.getPosY() + getYSize();
     }
 

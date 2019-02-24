@@ -7,6 +7,7 @@
 
 package com.hrznstudio.titanium.block.tile.sideness;
 
+import com.hrznstudio.titanium.client.gui.addon.StateButtonInfo;
 import net.minecraft.util.EnumFacing;
 
 import java.awt.*;
@@ -19,6 +20,8 @@ public interface IFacingHandler {
     int getColor();
 
     Rectangle getRectangle();
+
+    String getName();
 
     enum FaceMode {
         NONE(false, 0), ENABLED(true, 1), PUSH(true, 2), PULL(true, 3);
@@ -35,9 +38,9 @@ public interface IFacingHandler {
             return allowsConnection;
         }
 
-//        public StateButtonInfo getInfo() {
-//            return new StateButtonInfo(this.getIndex(), GuiTile.BG_TEXTURE, 196, 1 + 15 * this.getIndex(), new String[]{this.name()});
-//        }
+        public StateButtonInfo getInfo() {
+            return new StateButtonInfo(this.getIndex(), null, new String[]{this.name()});//TODO
+        }
 
         public int getIndex() {
             return index;

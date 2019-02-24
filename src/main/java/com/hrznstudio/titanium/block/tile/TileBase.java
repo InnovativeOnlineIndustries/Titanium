@@ -11,6 +11,7 @@ import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
+import com.hrznstudio.titanium.block.BlockRotation;
 import com.hrznstudio.titanium.block.BlockTileBase;
 import com.hrznstudio.titanium.block.tile.fluid.MultiTankHandler;
 import com.hrznstudio.titanium.block.tile.fluid.PosFluidTank;
@@ -18,6 +19,7 @@ import com.hrznstudio.titanium.block.tile.inventory.MultiInventoryHandler;
 import com.hrznstudio.titanium.block.tile.inventory.PosInvHandler;
 import com.hrznstudio.titanium.block.tile.progress.MultiProgressBarHandler;
 import com.hrznstudio.titanium.block.tile.progress.PosProgressBar;
+import com.hrznstudio.titanium.block.tile.sideness.IFacingHandler;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.container.ContainerTileBase;
 import com.hrznstudio.titanium.nbthandler.NBTManager;
@@ -218,5 +220,26 @@ public class TileBase extends TileEntity implements IGuiAddonProvider, ITickable
         if (!world.isRemote) {
             if (multiProgressBarHandler != null) multiProgressBarHandler.update();
         }
+    }
+
+    public EnumFacing getFacingDirection() {
+        return this.world.getBlockState(pos).get(BlockRotation.FACING);
+    }
+
+    public IFacingHandler getHandlerFromName(String string) {
+        for (PosInvHandler handler : multiInventoryHandler.getInventoryHandlers()) {
+            if (handler instanceof IFacingHandler && handler.getName().equalsIgnoreCase(string))
+                return (IFacingHandler) handler;
+        }
+        for (PosFluidTank posFluidTank : multiTankHandler.getTanks()) {
+            if (posFluidTank instanceof IFacingHandler && posFluidTank.getName().equalsIgnoreCase(string))
+                return (IFacingHandler) posFluidTank;
+        }
+        return null;
+    }
+
+    public void updateNeigh() {
+        this.world.notifyNeighborsOfStateChange(this.pos, this.getBlockState().getBlock());
+        this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(pos), this.world.getBlockState(pos), 3);
     }
 }

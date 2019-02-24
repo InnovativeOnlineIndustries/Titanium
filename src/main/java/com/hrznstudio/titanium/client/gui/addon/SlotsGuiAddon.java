@@ -11,6 +11,7 @@ import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.block.tile.inventory.PosInvHandler;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
+import com.hrznstudio.titanium.util.AssetUtil;
 import net.minecraft.client.gui.GuiScreen;
 
 import java.awt.*;
@@ -37,17 +38,11 @@ public class SlotsGuiAddon extends BasicGuiAddon {
     @Override
     public void drawGuiContainerBackgroundLayer(GuiScreen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         IAsset slot = IAssetProvider.getAsset(provider, AssetTypes.SLOT);
-        Point offset = slot.getOffset();
         Rectangle area = slot.getArea();
         screen.mc.getTextureManager().bindTexture(slot.getResourceLocation());
         for (int x = 0; x < handler.getXSize(); x++) {
             for (int y = 0; y < handler.getYSize(); y++) {
-                screen.drawTexturedModalRect(handler.getXPos() + offset.x + area.width * x + guiX - 1,
-                        handler.getYPos() + offset.y + area.height * y + guiY - 1,
-                        area.x,
-                        area.y,
-                        area.width,
-                        area.height);
+                AssetUtil.drawAsset(screen, slot, handler.getXPos() + area.width * x + guiX - 1, handler.getYPos() + area.height * y + guiY - 1);
             }
         }
     }
