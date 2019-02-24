@@ -10,18 +10,15 @@ package com.hrznstudio.titanium._test;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.IItemStackQuery;
 import com.hrznstudio.titanium.block.tile.TilePowered;
+import com.hrznstudio.titanium.block.tile.fluid.PosFluidTank;
+import com.hrznstudio.titanium.block.tile.inventory.PosInvHandler;
 import com.hrznstudio.titanium.block.tile.progress.PosProgressBar;
 import com.hrznstudio.titanium.client.gui.addon.EnergyBarGuiAddon;
-import com.hrznstudio.titanium.fluid.PosFluidTank;
-import com.hrznstudio.titanium.inventory.PosInvHandler;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Fluids;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidStack;
 
 public class TileTest extends TilePowered implements ITickable {
 

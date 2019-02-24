@@ -1,4 +1,4 @@
-package com.hrznstudio.titanium.fluid;
+package com.hrznstudio.titanium.block.tile.fluid;
 
 import com.hrznstudio.titanium.block.tile.TileBase;
 import com.hrznstudio.titanium.container.capability.IFacingHandler;

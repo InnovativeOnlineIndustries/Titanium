@@ -9,8 +9,8 @@ package com.hrznstudio.titanium.client.gui.addon;
 
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
+import com.hrznstudio.titanium.block.tile.inventory.PosInvHandler;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
-import com.hrznstudio.titanium.inventory.PosInvHandler;
 import net.minecraft.client.gui.GuiScreen;
 
 import java.awt.*;
