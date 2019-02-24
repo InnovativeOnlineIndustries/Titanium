@@ -89,7 +89,6 @@ public class PosInvHandler extends ItemStackHandler implements IGuiAddonProvider
         onSlotChanged.accept(getStackInSlot(slot), slot);
     }
 
-
     public String getName() {
         return name;
     }

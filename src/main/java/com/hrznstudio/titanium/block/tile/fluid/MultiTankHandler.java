@@ -10,6 +10,7 @@ package com.hrznstudio.titanium.block.tile.fluid;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
+import com.hrznstudio.titanium.block.tile.sideness.IFacingHandler;
 import com.hrznstudio.titanium.client.gui.addon.TankGuiAddon;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidStack;
@@ -46,9 +47,14 @@ public class MultiTankHandler implements IGuiAddonProvider {
             return new MultiTankCapabilityHandler(tanks);
         List<PosFluidTank> tanks = new ArrayList<>();
         for (PosFluidTank tank : this.tanks) {
-            if (tank.getFacingModes().containsKey(facing) && tank.getFacingModes().get(facing).allowsConnection()) {
+            if (tank instanceof IFacingHandler) {
+                if (((IFacingHandler) tank).getFacingModes().containsKey(facing) && ((IFacingHandler) tank).getFacingModes().get(facing).allowsConnection()) {
+                    tanks.add(tank);
+                }
+            } else {
                 tanks.add(tank);
             }
+
         }
         return new MultiTankCapabilityHandler(tanks);
     }

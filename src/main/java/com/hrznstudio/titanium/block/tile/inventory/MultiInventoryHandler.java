@@ -10,7 +10,7 @@ package com.hrznstudio.titanium.block.tile.inventory;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
-import com.hrznstudio.titanium.container.capability.IFacingHandler;
+import com.hrznstudio.titanium.block.tile.sideness.IFacingHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.items.ItemStackHandler;
@@ -37,7 +37,11 @@ public class MultiInventoryHandler implements IGuiAddonProvider {
     public MultiInvCapabilityHandler getCapabilityForSide(EnumFacing facing) {
         List<PosInvHandler> handlers = new ArrayList<>();
         for (PosInvHandler inventoryHandler : inventoryHandlers) {
-            if (!(inventoryHandler instanceof IFacingHandler) || ((IFacingHandler) inventoryHandler).getFacingModes().containsKey(facing) && ((IFacingHandler) inventoryHandler).getFacingModes().get(facing).allowsConnection()) {
+            if (inventoryHandler instanceof IFacingHandler) {
+                if (((IFacingHandler) inventoryHandler).getFacingModes().containsKey(facing) && ((IFacingHandler) inventoryHandler).getFacingModes().get(facing).allowsConnection()) {
+                    handlers.add(inventoryHandler);
+                }
+            } else {
                 handlers.add(inventoryHandler);
             }
         }

@@ -5,10 +5,9 @@
  * This means no, you cannot steal this code. This is licensed for sole use by Horizon Studio and its subsidiaries, you MUST be granted specific written permission by Horizon Studio to use this code, thinking you have permission IS NOT PERMISSION!
  */
 
-package com.hrznstudio.titanium.container.capability;
+package com.hrznstudio.titanium.block.tile.sideness;
 
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -18,8 +17,6 @@ public interface IFacingHandler {
     HashMap<EnumFacing, FaceMode> getFacingModes();
 
     int getColor();
-
-    String getName();
 
     Rectangle getRectangle();
 
