@@ -10,7 +10,7 @@ package com.hrznstudio.titanium.client.gui;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
-import com.hrznstudio.titanium.block.tile.TileBase;
+import com.hrznstudio.titanium.block.tile.TileActive;
 import com.hrznstudio.titanium.client.gui.addon.ICanMouseDrag;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.container.ContainerTileBase;
@@ -22,7 +22,7 @@ import org.lwjgl.glfw.GLFW;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GuiContainerTile<T extends TileBase> extends GuiContainer implements IGuiAddonConsumer {
+public class GuiContainerTile<T extends TileActive> extends GuiContainer implements IGuiAddonConsumer {
 
     private final ContainerTileBase<T> containerTileBase;
     private IAssetProvider assetProvider;

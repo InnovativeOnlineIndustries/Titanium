@@ -8,10 +8,10 @@
 package com.hrznstudio.titanium._test;
 
 import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.block.BlockMachine;
+import com.hrznstudio.titanium.block.BlockRotation;
 import net.minecraft.block.material.Material;
 
-public class BlockTwentyFourTest extends BlockMachine<TileTwentyFourTest> {
+public class BlockTwentyFourTest extends BlockRotation<TileTwentyFourTest> {
 
     public static BlockTwentyFourTest TEST;
 

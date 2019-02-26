@@ -8,6 +8,7 @@
 package com.hrznstudio.titanium.energy;
 
 import com.hrznstudio.titanium.block.tile.TileBase;
+import com.hrznstudio.titanium.block.tile.TilePowered;
 import net.minecraft.nbt.NBTTagInt;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.energy.EnergyStorage;
@@ -16,22 +17,22 @@ public class NBTEnergyHandler extends EnergyStorage implements INBTSerializable<
 
     private TileBase base;
 
-    public NBTEnergyHandler(TileBase base, int capacity) {
+    public NBTEnergyHandler(TilePowered base, int capacity) {
         super(capacity);
         this.base = base;
     }
 
-    public NBTEnergyHandler(TileBase base, int capacity, int maxTransfer) {
+    public NBTEnergyHandler(TilePowered base, int capacity, int maxTransfer) {
         super(capacity, maxTransfer);
         this.base = base;
     }
 
-    public NBTEnergyHandler(TileBase base, int capacity, int maxReceive, int maxExtract) {
+    public NBTEnergyHandler(TilePowered base, int capacity, int maxReceive, int maxExtract) {
         super(capacity, maxReceive, maxExtract);
         this.base = base;
     }
 
-    public NBTEnergyHandler(TileBase base, int capacity, int maxReceive, int maxExtract, int energy) {
+    public NBTEnergyHandler(TilePowered base, int capacity, int maxReceive, int maxExtract, int energy) {
         super(capacity, maxReceive, maxExtract, energy);
         this.base = base;
     }

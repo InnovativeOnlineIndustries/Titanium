@@ -22,7 +22,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Set;
 
-public class TilePowered extends TileBase {
+public class TilePowered extends TileActive {
 
     @Save
     private NBTEnergyHandler energyHandler;
