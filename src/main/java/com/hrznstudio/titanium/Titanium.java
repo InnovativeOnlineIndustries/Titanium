@@ -12,7 +12,9 @@ import com.hrznstudio.titanium._test.BlockTwentyFourTest;
 import com.hrznstudio.titanium.api.raytrace.DistanceRayTraceResult;
 import com.hrznstudio.titanium.block.tile.TileActive;
 import com.hrznstudio.titanium.client.gui.GuiContainerTile;
+import com.hrznstudio.titanium.client.gui.addon.BasicButtonAddon;
 import com.hrznstudio.titanium.container.ContainerTileBase;
+import com.hrznstudio.titanium.network.NetworkHandler;
 import com.hrznstudio.titanium.tab.AdvancedTitaniumTab;
 import com.hrznstudio.titanium.util.TileUtil;
 import com.hrznstudio.titanium.util.TitaniumMod;
@@ -40,6 +42,8 @@ public class Titanium extends TitaniumMod {
     public Titanium() {
         addBlock(BlockTest.TEST = new BlockTest());
         addBlock(BlockTwentyFourTest.TEST = new BlockTwentyFourTest());
+
+        NetworkHandler.registerMessage(BasicButtonAddon.ButtonClickNetworkMessage.class);
     }
 
     public static void openGui(TileActive tile, EntityPlayerMP player) {

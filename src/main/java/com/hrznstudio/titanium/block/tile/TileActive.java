@@ -13,6 +13,8 @@ import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
 import com.hrznstudio.titanium.block.BlockRotation;
 import com.hrznstudio.titanium.block.BlockTileBase;
+import com.hrznstudio.titanium.block.tile.button.MultiButtonHandler;
+import com.hrznstudio.titanium.block.tile.button.PosButton;
 import com.hrznstudio.titanium.block.tile.fluid.MultiTankHandler;
 import com.hrznstudio.titanium.block.tile.fluid.PosFluidTank;
 import com.hrznstudio.titanium.block.tile.inventory.MultiInventoryHandler;
@@ -51,6 +53,7 @@ public class TileActive extends TileBase implements IGuiAddonProvider, ITickable
     private MultiInventoryHandler multiInventoryHandler;
     private MultiProgressBarHandler multiProgressBarHandler;
     private MultiTankHandler multiTankHandler;
+    private MultiButtonHandler multiButtonHandler;
 
     private List<IFactory<? extends IGuiAddon>> guiAddons;
 
@@ -126,6 +129,11 @@ public class TileActive extends TileBase implements IGuiAddonProvider, ITickable
         multiTankHandler.addTank(tank);
     }
 
+    public void addButton(PosButton button) {
+        if (multiButtonHandler == null) multiButtonHandler = new MultiButtonHandler();
+        multiButtonHandler.addButton(button);
+    }
+
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable EnumFacing side) {
@@ -168,6 +176,7 @@ public class TileActive extends TileBase implements IGuiAddonProvider, ITickable
         if (multiInventoryHandler != null) addons.addAll(multiInventoryHandler.getGuiAddons());
         if (multiProgressBarHandler != null) addons.addAll(multiProgressBarHandler.getGuiAddons());
         if (multiTankHandler != null) addons.addAll(multiTankHandler.getGuiAddons());
+        if (multiButtonHandler != null) addons.addAll(multiButtonHandler.getGuiAddons());
         return addons;
     }
 
@@ -180,6 +189,10 @@ public class TileActive extends TileBase implements IGuiAddonProvider, ITickable
         if (!world.isRemote) {
             if (multiProgressBarHandler != null) multiProgressBarHandler.update();
         }
+    }
+
+    public MultiButtonHandler getMultiButtonHandler() {
+        return multiButtonHandler;
     }
 
     public EnumFacing getFacingDirection() {

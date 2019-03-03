@@ -12,6 +12,7 @@ import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.block.tile.TileActive;
 import com.hrznstudio.titanium.client.gui.addon.ICanMouseDrag;
+import com.hrznstudio.titanium.client.gui.addon.IClickable;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.container.ContainerTileBase;
 import net.minecraft.client.Minecraft;
@@ -85,6 +86,14 @@ public class GuiContainerTile<T extends TileActive> extends GuiContainer impleme
         }
         this.dragX = mouseX;
         this.dragY = mouseY;
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
+        super.mouseClicked(mouseX, mouseY, mouseButton);
+        new ArrayList<>(addonList).stream().filter(iGuiAddon -> iGuiAddon instanceof IClickable && iGuiAddon.isInside(this, mouseX - x, mouseY - y))
+                .forEach(iGuiAddon -> ((IClickable) iGuiAddon).handleClick(this, x, y, mouseX, mouseY, mouseButton));
+        return false;
     }
 
     public IAssetProvider getAssetProvider() {

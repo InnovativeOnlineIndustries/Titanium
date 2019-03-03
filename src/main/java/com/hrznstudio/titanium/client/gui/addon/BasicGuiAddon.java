@@ -21,7 +21,7 @@ public abstract class BasicGuiAddon implements IGuiAddon {
     }
 
     @Override
-    public boolean isInside(GuiScreen container, int mouseX, int mouseY) {
+    public boolean isInside(GuiScreen container, double mouseX, double mouseY) {
         return mouseX > this.getPosX() && mouseX < this.getPosX() + getXSize() && mouseY > this.getPosY() && mouseY < this.getPosY() + getYSize();
     }
 

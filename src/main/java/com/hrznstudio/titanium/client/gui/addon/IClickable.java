@@ -11,6 +11,6 @@ import net.minecraft.client.gui.GuiScreen;
 
 public interface IClickable {
 
-    void handleClick(GuiScreen tile, int guiX, int guiY, int mouseX, int mouseY, int button);
+    void handleClick(GuiScreen tile, int guiX, int guiY, double mouseX, double mouseY, int button);
 
 }

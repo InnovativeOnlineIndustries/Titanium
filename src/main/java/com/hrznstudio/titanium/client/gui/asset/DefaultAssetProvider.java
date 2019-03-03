@@ -84,6 +84,12 @@ public final class DefaultAssetProvider implements IAssetProvider {
     };
     private final IAsset PROGRESS_BAR_BORDER = () -> new Rectangle(211, 1, 11, 56);
 
+    private final IAsset BUTTON_SIDENESS_DISABLED = () -> new Rectangle(196, 1, 14, 14);
+    private final IAsset BUTTON_SIDENESS_ENABLED = () -> new Rectangle(196, 16, 14, 14);
+    private final IAsset BUTTON_SIDENESS_PULL = () -> new Rectangle(196, 31, 14, 14);
+    private final IAsset BUTTON_SIDENESS_PUSH = () -> new Rectangle(196, 46, 14, 14);
+
+
     DefaultAssetProvider() {
     }
 
@@ -106,6 +112,14 @@ public final class DefaultAssetProvider implements IAssetProvider {
             return assetType.castOrDefault(TANK);
         if (assetType == AssetTypes.PROGRESS_BAR_BORDER)
             return assetType.castOrDefault(PROGRESS_BAR_BORDER);
+        if (assetType == AssetTypes.BUTTON_SIDENESS_DISABLED)
+            return assetType.castOrDefault(BUTTON_SIDENESS_DISABLED);
+        if (assetType == AssetTypes.BUTTON_SIDENESS_ENABLED)
+            return assetType.castOrDefault(BUTTON_SIDENESS_ENABLED);
+        if (assetType == AssetTypes.BUTTON_SIDENESS_PULL)
+            return assetType.castOrDefault(BUTTON_SIDENESS_PULL);
+        if (assetType == AssetTypes.BUTTON_SIDENESS_PUSH)
+            return assetType.castOrDefault(BUTTON_SIDENESS_PUSH);
         return null;
     }
 }

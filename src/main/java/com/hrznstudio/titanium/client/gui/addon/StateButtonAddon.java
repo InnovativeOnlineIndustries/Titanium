@@ -32,7 +32,7 @@ public abstract class StateButtonAddon extends BasicButtonAddon {
         StateButtonInfo buttonInfo = getStateInfo();
         if (buttonInfo != null) {
             GlStateManager.color4f(1, 1, 1, 1);
-            AssetUtil.drawAsset(screen, buttonInfo.getAsset(), this.getPosX(), this.getPosY());
+            AssetUtil.drawAsset(screen, provider.getAsset(buttonInfo.getAsset()), this.getPosX() + guiX, this.getPosY() + guiY);
         }
     }
 
@@ -51,11 +51,6 @@ public abstract class StateButtonAddon extends BasicButtonAddon {
             return Arrays.asList(buttonInfo.getTooltip());
         }
         return null;
-    }
-
-    @Override
-    public void handleClick(GuiScreen tile, int guiX, int guiY, int mouseX, int mouseY, int button) {
-
     }
 
     public StateButtonInfo getStateInfo() {

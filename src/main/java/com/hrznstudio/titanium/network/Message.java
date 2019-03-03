@@ -119,6 +119,7 @@ public abstract class Message implements Serializable {
         try {
             Class<?> clazz = getClass();
             for (Field f : clazz.getDeclaredFields()) {
+                if (!f.isAccessible()) f.setAccessible(true);
                 Class<?> type = f.getType();
                 if (acceptField(f, type))
                     readField(f, type, buf);
@@ -142,6 +143,7 @@ public abstract class Message implements Serializable {
         try {
             Class<?> clazz = getClass();
             for (Field f : clazz.getDeclaredFields()) {
+                if (!f.isAccessible()) f.setAccessible(true);
                 Class<?> type = f.getType();
                 if (acceptField(f, type))
                     writeField(f, type, buf);

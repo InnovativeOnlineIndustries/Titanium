@@ -15,11 +15,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ButtonHandler implements IGuiAddonProvider {
+public class MultiButtonHandler implements IGuiAddonProvider {
 
     private List<PosButton> basicButtonAddons;
 
-    public ButtonHandler() {
+    public MultiButtonHandler() {
         basicButtonAddons = new ArrayList<>();
     }
 
@@ -33,16 +33,12 @@ public class ButtonHandler implements IGuiAddonProvider {
 
     @Override
     public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
-        return new ArrayList<>();
+        List<IFactory<? extends IGuiAddon>> addons = new ArrayList<>();
+        for (PosButton basicButtonAddon : basicButtonAddons) {
+            List<IFactory<? extends IGuiAddon>> addon = basicButtonAddon.getGuiAddons();
+            if (addon != null) addons.addAll(addon);
+        }
+        return addons;
     }
 
-//    @Override
-//    public List<? extends IGuiAddon> getGuiAddons() {
-//        List<IGuiAddon> addons = new ArrayList<>();
-//        for (PosButton basicButtonAddon : basicButtonAddons) { TODO
-//            List<? extends IGuiAddon> addon = basicButtonAddon.getGuiAddons();
-//            if (addon != null) addons.addAll(addon);
-//        }
-//        return addons;
-//    }
 }
