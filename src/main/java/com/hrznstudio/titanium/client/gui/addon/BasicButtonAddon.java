@@ -9,7 +9,7 @@ package com.hrznstudio.titanium.client.gui.addon;
 
 import com.hrznstudio.titanium.block.tile.TileActive;
 import com.hrznstudio.titanium.block.tile.button.PosButton;
-import com.hrznstudio.titanium.client.gui.GuiContainerTile;
+import com.hrznstudio.titanium.client.gui.ITileContainer;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.network.Message;
 import com.hrznstudio.titanium.network.NetworkHandler;
@@ -52,8 +52,8 @@ public class BasicButtonAddon extends BasicGuiAddon implements IClickable {
     @Override
     public void handleClick(GuiScreen tile, int guiX, int guiY, double mouseX, double mouseY, int button) {
         Minecraft.getInstance().getSoundHandler().play(new SimpleSound(SoundEvents.UI_BUTTON_CLICK, SoundCategory.PLAYERS, 1f, 1f, Minecraft.getInstance().player.getPosition()));
-        if (tile instanceof GuiContainerTile)
-            NetworkHandler.NETWORK.sendToServer(new ButtonClickNetworkMessage(((GuiContainerTile) tile).getContainer().getTile().getPos(), this.button.getId(), new NBTTagCompound()));
+        if (tile instanceof ITileContainer)
+            NetworkHandler.NETWORK.sendToServer(new ButtonClickNetworkMessage(((ITileContainer) tile).getTile().getPos(), this.button.getId(), new NBTTagCompound()));
     }
 
     @Override

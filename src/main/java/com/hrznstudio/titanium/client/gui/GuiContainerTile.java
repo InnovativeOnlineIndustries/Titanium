@@ -23,7 +23,7 @@ import org.lwjgl.glfw.GLFW;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GuiContainerTile<T extends TileActive> extends GuiContainer implements IGuiAddonConsumer {
+public class GuiContainerTile<T extends TileActive> extends GuiContainer implements IGuiAddonConsumer, ITileContainer {
 
     private final ContainerTileBase<T> containerTileBase;
     private IAssetProvider assetProvider;
