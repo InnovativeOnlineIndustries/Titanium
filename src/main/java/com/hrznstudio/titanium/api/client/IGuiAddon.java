@@ -23,6 +23,6 @@ public interface IGuiAddon {
         return Collections.emptyList();
     }
 
-    boolean isInside(GuiScreen screen, int mouseX, int mouseY);
+    boolean isInside(GuiScreen screen, double mouseX, double mouseY);
 
 }

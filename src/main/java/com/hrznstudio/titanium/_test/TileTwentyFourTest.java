@@ -9,7 +9,7 @@ package com.hrznstudio.titanium._test;
 
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.IItemStackQuery;
-import com.hrznstudio.titanium.block.tile.TileMachine;
+import com.hrznstudio.titanium.block.tile.TilePowered;
 import com.hrznstudio.titanium.block.tile.inventory.PosInvHandler;
 import com.hrznstudio.titanium.block.tile.progress.PosProgressBar;
 import com.hrznstudio.titanium.client.gui.addon.EnergyBarGuiAddon;
@@ -18,7 +18,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
 
-public class TileTwentyFourTest extends TileMachine implements ITickable {
+public class TileTwentyFourTest extends TilePowered implements ITickable {
 
     @Save
     private PosProgressBar bar;

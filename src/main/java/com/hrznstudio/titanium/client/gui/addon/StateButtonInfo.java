@@ -7,21 +7,24 @@
 
 package com.hrznstudio.titanium.client.gui.addon;
 
-import com.hrznstudio.titanium.api.client.IAsset;
+import com.hrznstudio.titanium.api.client.IAssetType;
 import net.minecraft.util.text.TextComponentTranslation;
 
 public class StateButtonInfo {
 
     private final int state;
-    private final IAsset asset;
-    private final String[] tooltip;
+    private final IAssetType asset;
+    private String[] tooltip;
 
-    public StateButtonInfo(int state, IAsset asset, String[] tooltip) {
+    public StateButtonInfo(int state, IAssetType asset, String... tooltip) {
         this.state = state;
         this.asset = asset;
-        this.tooltip = new String[tooltip.length];
-        for (int i = 0; i < tooltip.length; i++) {
-            this.tooltip[i] = new TextComponentTranslation(tooltip[i]).getFormattedText();
+        this.tooltip = new String[0];
+        if (tooltip != null) {
+            this.tooltip = new String[tooltip.length];
+            for (int i = 0; i < tooltip.length; i++) {
+                this.tooltip[i] = new TextComponentTranslation(tooltip[i]).getFormattedText();
+            }
         }
     }
 
@@ -29,7 +32,7 @@ public class StateButtonInfo {
         return state;
     }
 
-    public IAsset getAsset() {
+    public IAssetType getAsset() {
         return asset;
     }
 

@@ -8,7 +8,7 @@
 package com.hrznstudio.titanium.container;
 
 import com.hrznstudio.titanium.api.client.AssetTypes;
-import com.hrznstudio.titanium.block.tile.TileBase;
+import com.hrznstudio.titanium.block.tile.TileActive;
 import com.hrznstudio.titanium.block.tile.inventory.PosInvHandler;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,7 +20,7 @@ import net.minecraftforge.items.SlotItemHandler;
 
 import java.awt.*;
 
-public class ContainerTileBase<T extends TileBase> extends Container {
+public class ContainerTileBase<T extends TileActive> extends Container {
 
     private T tile;
     private InventoryPlayer player;

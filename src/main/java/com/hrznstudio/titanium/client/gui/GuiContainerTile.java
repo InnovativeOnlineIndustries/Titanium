@@ -10,8 +10,9 @@ package com.hrznstudio.titanium.client.gui;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
-import com.hrznstudio.titanium.block.tile.TileBase;
+import com.hrznstudio.titanium.block.tile.TileActive;
 import com.hrznstudio.titanium.client.gui.addon.ICanMouseDrag;
+import com.hrznstudio.titanium.client.gui.addon.IClickable;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.container.ContainerTileBase;
 import net.minecraft.client.Minecraft;
@@ -22,7 +23,7 @@ import org.lwjgl.glfw.GLFW;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GuiContainerTile<T extends TileBase> extends GuiContainer implements IGuiAddonConsumer {
+public class GuiContainerTile<T extends TileActive> extends GuiContainer implements IGuiAddonConsumer, ITileContainer {
 
     private final ContainerTileBase<T> containerTileBase;
     private IAssetProvider assetProvider;
@@ -85,6 +86,14 @@ public class GuiContainerTile<T extends TileBase> extends GuiContainer implement
         }
         this.dragX = mouseX;
         this.dragY = mouseY;
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
+        super.mouseClicked(mouseX, mouseY, mouseButton);
+        new ArrayList<>(addonList).stream().filter(iGuiAddon -> iGuiAddon instanceof IClickable && iGuiAddon.isInside(this, mouseX - x, mouseY - y))
+                .forEach(iGuiAddon -> ((IClickable) iGuiAddon).handleClick(this, x, y, mouseX, mouseY, mouseButton));
+        return false;
     }
 
     public IAssetProvider getAssetProvider() {

@@ -103,7 +103,7 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
     }
 
     @Override
-    public void handleClick(GuiScreen screen, int guiX, int guiY, int mouseX, int mouseY, int button) {
+    public void handleClick(GuiScreen screen, int guiX, int guiY, double mouseX, double mouseY, int button) {
         if (screen instanceof GuiContainerTile) {
             for (IGuiAddon addon : new ArrayList<>(((IGuiAddonConsumer) screen).getAddons())) {
                 if (addon instanceof FacingHandlerGuiAddon && addon != this) {
@@ -126,7 +126,7 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
                         }
 
                         @Override
-                        public void handleClick(GuiScreen gui, int guiX, int guiY, int mouseX, int mouseY, int mouse) {
+                        public void handleClick(GuiScreen gui, int guiX, int guiY, double mouseX, double mouseY, int mouse) {
                             StateButtonInfo info = getStateInfo();
                             if (info != null && gui instanceof GuiContainerTile) {
                                 NBTTagCompound compound = new NBTTagCompound();

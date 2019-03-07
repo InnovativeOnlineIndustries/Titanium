@@ -5,12 +5,12 @@
  * This means no, you cannot steal this code. This is licensed for sole use by Horizon Studio and its subsidiaries, you MUST be granted specific written permission by Horizon Studio to use this code, thinking you have permission IS NOT PERMISSION!
  */
 
-package com.hrznstudio.titanium.client.gui.addon;
+package com.hrznstudio.titanium.client.gui;
 
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.tileentity.TileEntity;
 
-public interface IClickable {
+public interface ITileContainer<T extends TileEntity> {
 
-    void handleClick(GuiScreen tile, int guiX, int guiY, double mouseX, double mouseY, int button);
+    T getTile();
 
 }
