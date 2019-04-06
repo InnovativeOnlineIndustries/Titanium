@@ -9,10 +9,12 @@ package com.hrznstudio.titanium;
 
 import com.hrznstudio.titanium._test.BlockTest;
 import com.hrznstudio.titanium._test.BlockTwentyFourTest;
+import com.hrznstudio.titanium._test.TitaniumConfig;
 import com.hrznstudio.titanium.api.raytrace.DistanceRayTraceResult;
 import com.hrznstudio.titanium.block.tile.TileActive;
 import com.hrznstudio.titanium.client.gui.GuiContainerTile;
 import com.hrznstudio.titanium.client.gui.addon.BasicButtonAddon;
+import com.hrznstudio.titanium.config.AnnotationConfigManager;
 import com.hrznstudio.titanium.container.ContainerTileBase;
 import com.hrznstudio.titanium.network.NetworkHandler;
 import com.hrznstudio.titanium.tab.AdvancedTitaniumTab;
@@ -30,6 +32,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.network.NetworkHooks;
 
@@ -44,6 +47,7 @@ public class Titanium extends TitaniumMod {
         addBlock(BlockTwentyFourTest.TEST = new BlockTwentyFourTest());
 
         NetworkHandler.registerMessage(BasicButtonAddon.ButtonClickNetworkMessage.class);
+        addConfig(new AnnotationConfigManager.Type(ModConfig.Type.COMMON, TitaniumConfig.class));
     }
 
     public static void openGui(TileActive tile, EntityPlayerMP player) {

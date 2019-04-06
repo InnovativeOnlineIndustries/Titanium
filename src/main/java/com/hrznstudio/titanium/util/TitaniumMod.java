@@ -13,6 +13,7 @@ import com.hrznstudio.titanium.api.internal.IItemBlockFactory;
 import com.hrznstudio.titanium.api.internal.IItemColorProvider;
 import com.hrznstudio.titanium.api.internal.IModelRegistrar;
 import com.hrznstudio.titanium.block.BlockTileBase;
+import com.hrznstudio.titanium.config.AnnotationConfigManager;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
@@ -24,6 +25,7 @@ import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.GenericEvent;
 import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
@@ -42,6 +44,7 @@ public abstract class TitaniumMod {
     private final List<Item> ITEMS = new ArrayList<>();
     private final String modid;
     private final List<Block> BLOCKS = new ArrayList<>();
+    private final AnnotationConfigManager configManager = new AnnotationConfigManager();
 
     public TitaniumMod() {
         MinecraftForge.EVENT_BUS.register(this);
@@ -142,6 +145,16 @@ public abstract class TitaniumMod {
                     .forEach(IModelRegistrar::registerModels);
     }
 
+    @EventReceiver
+    public final void onConfig(ModConfig.Loading event) {
+        configManager.inject();
+    }
+
+    @EventReceiver
+    public final void onConfigReload(ModConfig.ConfigReloading event) {
+        configManager.inject();
+    }
+
     public List<Block> getBlocks() {
         return ImmutableList.copyOf(BLOCKS);
     }
@@ -169,6 +182,10 @@ public abstract class TitaniumMod {
     public void addBlocks(Block... blocks) {
         for (Block block : blocks)
             addBlock(block);
+    }
+
+    public void addConfig(AnnotationConfigManager.Type type) {
+        configManager.add(type);
     }
 
     @Target(ElementType.METHOD)
