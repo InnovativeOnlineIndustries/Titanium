@@ -40,8 +40,22 @@ public class AnnotationConfigManager {
                 if (Modifier.isStatic(field.getModifiers()) && field.isAnnotationPresent(ConfigVal.class)) {
                     if (field.getType().isPrimitive() || field.getType().equals(String.class)) {
                         ConfigVal value = field.getAnnotation(ConfigVal.class);
+                        ForgeConfigSpec.ConfigValue configValue = null;
                         if (!value.comment().isEmpty()) builder.comment(value.comment());
-                        cachedConfigValues.put(field, builder.define(value.value().isEmpty() ? field.getName() : value.value(), field.get(null)));
+
+                        if (field.isAnnotationPresent(ConfigVal.InRangeDouble.class))
+                            configValue = builder.defineInRange(value.value().isEmpty() ? field.getName() : value.value(), (Double) field.get(null),
+                                    field.getAnnotation(ConfigVal.InRangeDouble.class).min(), field.getAnnotation(ConfigVal.InRangeDouble.class).min());
+                        if (field.isAnnotationPresent(ConfigVal.InRangeLong.class))
+                            configValue = builder.defineInRange(value.value().isEmpty() ? field.getName() : value.value(), (Long) field.get(null),
+                                    field.getAnnotation(ConfigVal.InRangeLong.class).min(), field.getAnnotation(ConfigVal.InRangeLong.class).min());
+                        if (field.isAnnotationPresent(ConfigVal.InRangeInt.class))
+                            configValue = builder.defineInRange(value.value().isEmpty() ? field.getName() : value.value(), (Integer) field.get(null),
+                                    field.getAnnotation(ConfigVal.InRangeInt.class).min(), field.getAnnotation(ConfigVal.InRangeInt.class).min());
+
+                        if (configValue == null)
+                            configValue = builder.define(value.value().isEmpty() ? field.getName() : value.value(), field.get(null));
+                        cachedConfigValues.put(field, configValue);
                     } else {
                         scanClass(field.getType(), builder);
                     }
