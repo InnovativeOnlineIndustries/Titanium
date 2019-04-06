@@ -2,6 +2,7 @@ package com.hrznstudio.titanium._test;
 
 import com.hrznstudio.titanium.annotation.config.ConfigVal;
 
+
 public class TitaniumConfig {
 
     @ConfigVal(comment = "A Boolean that is true by default")
@@ -10,4 +11,13 @@ public class TitaniumConfig {
     public static boolean thisIsNotABoolean = false;
     @ConfigVal
     public static int intAngery = 7;
+    @ConfigVal
+    public static Dabber dabber = new Dabber();
+
+    public static class Dabber {
+
+        @ConfigVal
+        public static String dabby = "lil dab";
+
+    }
 }

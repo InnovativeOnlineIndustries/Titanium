@@ -26,24 +26,32 @@ public class AnnotationConfigManager {
         // SCANNING CLASSES
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
         for (Class configClass : type.configClass) {
-            System.out.println("Scanning class for config : " + configClass.getName());
-            builder.push(configClass.getSimpleName());
-            try {
-                for (Field field : configClass.getFields()) {
-                    System.out.println("Found field " + field.getName());
-                    if (Modifier.isStatic(field.getModifiers()) && field.isAnnotationPresent(ConfigVal.class)) {
-                        ConfigVal value = field.getAnnotation(ConfigVal.class);
-                        if (!value.comment().isEmpty()) builder.comment(value.comment());
-                        cachedConfigValues.put(field, builder.define(value.value().isEmpty() ? field.getName() : value.value(), field.get(null)));
-                    }
-                }
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-            builder.pop();
+            scanClass(configClass, builder);
         }
         // REGISTERING CONFIG
         ModLoadingContext.get().registerConfig(type.type, builder.build());
+    }
+
+    private void scanClass(Class configClass, ForgeConfigSpec.Builder builder) {
+        System.out.println("Scanning class for config : " + configClass.getName());
+        builder.push(configClass.getSimpleName());
+        try {
+            for (Field field : configClass.getFields()) {
+                System.out.println("Found field " + field.getName());
+                if (Modifier.isStatic(field.getModifiers()) && field.isAnnotationPresent(ConfigVal.class)) {
+                    if (field.getType().isPrimitive() || field.getType().equals(String.class)) {
+                        ConfigVal value = field.getAnnotation(ConfigVal.class);
+                        if (!value.comment().isEmpty()) builder.comment(value.comment());
+                        cachedConfigValues.put(field, builder.define(value.value().isEmpty() ? field.getName() : value.value(), field.get(null)));
+                    } else {
+                        scanClass(field.getType(), builder);
+                    }
+                }
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        builder.pop();
     }
 
     public void inject() {
