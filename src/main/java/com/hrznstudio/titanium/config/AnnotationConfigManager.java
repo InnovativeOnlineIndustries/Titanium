@@ -29,15 +29,14 @@ public class AnnotationConfigManager {
             scanClass(configClass, builder);
         }
         // REGISTERING CONFIG
-        ModLoadingContext.get().registerConfig(type.type, builder.build());
+        if (type.fileName.isEmpty()) ModLoadingContext.get().registerConfig(type.type, builder.build());
+        else ModLoadingContext.get().registerConfig(type.type, builder.build(), type.fileName);
     }
 
     private void scanClass(Class configClass, ForgeConfigSpec.Builder builder) {
-        System.out.println("Scanning class for config : " + configClass.getName());
         builder.push(configClass.getSimpleName());
         try {
             for (Field field : configClass.getFields()) {
-                System.out.println("Found field " + field.getName());
                 if (Modifier.isStatic(field.getModifiers()) && field.isAnnotationPresent(ConfigVal.class)) {
                     if (field.getType().isPrimitive() || field.getType().equals(String.class)) {
                         ConfigVal value = field.getAnnotation(ConfigVal.class);
@@ -68,10 +67,17 @@ public class AnnotationConfigManager {
     public static class Type {
         private ModConfig.Type type;
         private Class[] configClass;
+        private String fileName;
 
         public Type(ModConfig.Type type, Class... configClass) {
             this.type = type;
             this.configClass = configClass;
+            this.fileName = "";
+        }
+
+        public Type setName(String name) {
+            this.fileName = name;
+            return this;
         }
     }
 }
