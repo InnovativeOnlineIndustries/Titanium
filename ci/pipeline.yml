@@ -1,0 +1,14 @@
+resources:
+- name: titanium
+  type: git
+  source:
+    uri: https://bitbucket.org/hrznstudio/titanium.git
+
+jobs:
+- name: Titanium Build
+  public: true
+  plan:
+  - get: titanium
+    trigger: true
+  - task: build
+    file: titanium/ci/build.yml
