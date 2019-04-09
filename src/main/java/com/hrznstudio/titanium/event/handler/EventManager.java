@@ -51,12 +51,15 @@ public class EventManager {
         }
 
         public FilteredEventManager<T> filter(Predicate<T> filter) {
-            this.filter = filter;
+            this.filter = t -> this.filter.test(t) && filter.test(t);
             return this;
         }
 
-        public FilteredEventManager<T> process(Consumer<T> consumer) {
-            this.process = consumer;
+        public FilteredEventManager<T> process(Consumer<T> process) {
+            this.process = t -> {
+                this.process.accept(t);
+                process.accept(t);
+            };
             return this;
         }
 
