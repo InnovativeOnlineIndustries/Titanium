@@ -9,4 +9,8 @@ inputs:
 - name: titanium
 
 run:
-  path: titanium/ci/build.sh
+  path: gradle
+  args:
+    - "--no-daemon"
+    - "build"
+  dir: titanium
