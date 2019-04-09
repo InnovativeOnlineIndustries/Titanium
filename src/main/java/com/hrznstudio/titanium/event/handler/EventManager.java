@@ -25,6 +25,11 @@ public class EventManager {
         MinecraftForge.EVENT_BUS.addListener(priority, false, clazz, event -> {
             if (event.getClass().isAssignableFrom(clazz)) {
                 if (eventManager.filter.test(event)) {
+                    if (eventManager.cancel) {
+                        if (event.isCancelable()) {
+                            event.setCanceled(true);
+                        }
+                    }
                     eventManager.process.accept(event);
                 }
             }
@@ -36,6 +41,7 @@ public class EventManager {
         private Predicate<T> filter;
         private Consumer<T> process;
         private Class<T> event;
+        private boolean cancel;
 
         public FilteredEventManager(Class<T> clazz) {
             this.event = clazz;
@@ -49,8 +55,14 @@ public class EventManager {
             return this;
         }
 
-        public void process(Consumer<T> consumer) {
+        public FilteredEventManager<T> process(Consumer<T> consumer) {
             this.process = consumer;
+            return this;
+        }
+
+        public FilteredEventManager<T> cancel() {
+            this.cancel = true;
+            return this;
         }
     }
 }

@@ -24,9 +24,11 @@ import com.hrznstudio.titanium.util.TitaniumMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
+import net.minecraft.init.Particles;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
@@ -53,7 +55,10 @@ public class Titanium extends TitaniumMod {
         addConfig(new AnnotationConfigManager.Type(ModConfig.Type.COMMON, TitaniumConfig.class));
         EventManager.subscribe(EntityItemPickupEvent.class)
                 .filter(entityItemPickupEvent -> entityItemPickupEvent.getItem().getItem().getItem().equals(Items.STICK))
-                .process(entityItemPickupEvent -> entityItemPickupEvent.setCanceled(true));
+                .process(entityItemPickupEvent -> {
+                    EntityItem item = entityItemPickupEvent.getItem();
+                    item.getEntityWorld().spawnParticle(Particles.BARRIER, item.posX, item.posY, item.posZ, 0, 0.1, 0);
+                }).cancel();
     }
 
     public static void openGui(TileActive tile, EntityPlayerMP player) {
