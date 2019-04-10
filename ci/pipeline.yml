@@ -4,8 +4,13 @@ resources:
   source:
     uri: https://bitbucket.org/hrznstudio/titanium.git
 
+groups:
+- name: build
+  jobs:
+  - Build
+
 jobs:
-- name: Titanium Build
+- name: Build
   public: true
   plan:
   - get: titanium
