@@ -9,8 +9,7 @@ inputs:
 - name: titanium
 
 run:
-  path: gradlew
+  path: titanium/gradlew
   args:
     - "--no-daemon"
     - "build"
-  dir: titanium
