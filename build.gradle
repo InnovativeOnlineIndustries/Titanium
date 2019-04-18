@@ -9,7 +9,6 @@ buildscript {
     }
 }
 plugins {
-    id 'maven'
     id 'maven-publish'
     id 'net.minecrell.licenser' version '0.4.1'
 }
@@ -92,33 +91,19 @@ artifacts {
     archives deobfJar
 }
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: "file://$buildDir/repo")
 
-            pom {
-                groupId = project.group
-                version = project.version
-                artifactId = project.archivesBaseName
-                project {
-                    name "Titanium"
-                    packaging 'jar'
-                    description 'Library mod for Horizon Studio'
-                    url 'https://hrzn.studio/'
-                    developers {
-                        developer {
-                            id 'coded'
-                            name 'Coded'
-                            roles {role 'developer'}
-                        }
-                        developer {
-                            id 'buuz135'
-                            name 'Buuz135'
-                            roles {role 'developer'}
-                        }
-                    }
-                }
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url "s3://cdn.hrzn.studio/maven"
+            credentials(AwsCredentials) {
+                accessKey System.getenv("aws-access-key-id") ?: "fucked"
+                secretKey System.getenv("aws-secret-access-key") ?: "fucked"
             }
         }
     }

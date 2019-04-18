@@ -15,5 +15,10 @@ jobs:
   plan:
   - get: titanium
     trigger: true
+  - task: configure
+    file: titanium/ci/configure.yml
+    vars:
+      aws-access-key-id: ((concourse.aws-access-key-id))
+      aws-secret-access-key: ((concourse.aws-secret-access-key))
   - task: build
     file: titanium/ci/build.yml
