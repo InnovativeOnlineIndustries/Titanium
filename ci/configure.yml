@@ -7,7 +7,7 @@ image_resource:
     repository: alpine
 
 inputs:
-  - name: config
+  - name: titanium
 
 params:
   AWS_KEY: ((concourse.aws-access-key-id))

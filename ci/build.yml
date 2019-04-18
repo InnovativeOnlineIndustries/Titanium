@@ -13,4 +13,4 @@ run:
   args:
     - "--no-daemon"
     - "build"
-    - "uploadArchives"
+    - "publish"
