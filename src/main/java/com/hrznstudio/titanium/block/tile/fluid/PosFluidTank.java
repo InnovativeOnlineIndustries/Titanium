@@ -33,16 +33,32 @@ public class PosFluidTank extends FluidTank implements IFluidTankProperties {
         this.drainPredicate = fluidStack1 -> true;
     }
 
+    /**
+     * Sets the predicate fill filter
+     *
+     * @param filter The predicate where the fluidstack is the fluid trying to fill the tank
+     * @return itself
+     */
     public PosFluidTank setFillFilter(Predicate<FluidStack> filter) {
         this.fillPredicate = filter;
         return this;
     }
 
+    /**
+     * Sets the predicate drain filter
+     * @param filter The predicate where the fluidstack is the fluid trying to be drained from the tank
+     * @return itself
+     */
     public PosFluidTank setDrainFilter(Predicate<FluidStack> filter) {
         this.drainPredicate = filter;
         return this;
     }
 
+    /**
+     * Sets the tile to be automatically marked dirty when the contents change
+     * @param tile The tile where the tank is
+     * @return itself
+     */
     public PosFluidTank setTile(TileEntity tile) {
         this.tile = tile;
         return this;
