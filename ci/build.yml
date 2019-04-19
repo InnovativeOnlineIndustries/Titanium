@@ -11,6 +11,6 @@ inputs:
 run:
   path: titanium/gradlew
   args:
-    - "--no-daemon"
     - "build"
     - "publish"
+      - "--no-daemon"

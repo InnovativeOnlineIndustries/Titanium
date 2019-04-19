@@ -10,8 +10,8 @@ inputs:
   - name: titanium
 
 params:
-  AWS_KEY: ((concourse.aws-access-key-id))
-  AWS_SECRET: ((concourse.aws-secret-access-key))
+  AWS_KEY: ((aws-access-key-id))
+  AWS_SECRET: ((aws-secret-access-key))
 
 run:
   path: titanium/ci/configure.sh
