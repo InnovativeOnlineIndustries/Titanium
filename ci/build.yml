@@ -8,9 +8,9 @@ image_resource:
 inputs:
 - name: titanium
 
+params:
+  AWS_KEY: ((aws-access-key-id))
+  AWS_SECRET: ((aws-secret-access-key))
+
 run:
-  path: titanium/gradlew
-  args:
-    - "build"
-    - "publish"
-      - "--no-daemon"
+  path: titanium/build.sh

@@ -1,0 +1,2 @@
+printenv
+./gradlew build publish
