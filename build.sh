@@ -1,2 +1,1 @@
-printenv
 ./gradlew build publish
