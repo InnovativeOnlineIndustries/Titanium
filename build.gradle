@@ -101,10 +101,6 @@ publishing {
     repositories {
         maven {
             url "s3://cdn.hrzn.studio/maven"
-            credentials(AwsCredentials) {
-                accessKey System.getenv("aws-access-key-id") ?: "fucked"
-                secretKey System.getenv("aws-secret-access-key") ?: "fucked"
-            }
         }
     }
 }
