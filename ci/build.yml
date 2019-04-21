@@ -9,8 +9,8 @@ inputs:
 - name: titanium
 
 params:
-  aws-access-key-id: "((aws-access-key-id))"
-  aws-secret-access-key: "((aws-secret-access-key))"
+  AWS_ACCESS_KEY_ID: "((aws-access-key-id))"
+  AWS_SECRET_ACCESS_KEY: "((aws-secret-access-key))"
 
 run:
-  path: printenv
+  path: ./titanium/build.sh
