@@ -15,6 +15,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -32,6 +33,8 @@ import java.util.List;
 import java.util.Objects;
 
 public abstract class BlockBase extends Block implements IModelRegistrar, IItemBlockFactory {
+
+    private ItemGroup itemGroup = ItemGroup.SEARCH;
 
     public BlockBase(String name, Properties properties) {
         super(properties);
@@ -77,7 +80,7 @@ public abstract class BlockBase extends Block implements IModelRegistrar, IItemB
 
     @Override
     public IFactory<ItemBlock> getItemBlockFactory() {
-        return () -> (ItemBlock) new ItemBlock(this, new Item.Properties()).setRegistryName(Objects.requireNonNull(getRegistryName()));
+        return () -> (ItemBlock) new ItemBlock(this, new Item.Properties().group(this.itemGroup)).setRegistryName(Objects.requireNonNull(getRegistryName()));
     }
 
     @Override
@@ -111,5 +114,9 @@ public abstract class BlockBase extends Block implements IModelRegistrar, IItemB
             }
         }
         return closestHit;
+    }
+
+    protected void setItemGroup(ItemGroup itemGroup){
+        this.itemGroup = itemGroup;
     }
 }
