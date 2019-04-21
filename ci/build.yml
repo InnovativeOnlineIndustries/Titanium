@@ -9,8 +9,8 @@ inputs:
 - name: titanium
 
 params:
-  aws-access-key-id: ((aws-access-key-id))
-  aws-secret-access-key: ((aws-secret-access-key))
+  aws-access-key-id: "((aws-access-key-id))"
+  aws-secret-access-key: "((aws-secret-access-key))"
 
 run:
   path: printenv
