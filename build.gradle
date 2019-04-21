@@ -101,6 +101,8 @@ publishing {
     repositories {
         maven {
             url "s3://cdn.hrzn.studio/maven"
-        }
+            authentication {
+                awsIm(AwsImAuthentication)
+            }
     }
 }

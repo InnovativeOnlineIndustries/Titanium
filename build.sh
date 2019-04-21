@@ -1,1 +1,2 @@
-./gradlew build publish
+ls ../version
+cat ../version/*
