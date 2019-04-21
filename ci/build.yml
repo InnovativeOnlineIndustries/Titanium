@@ -10,7 +10,7 @@ inputs:
 
 params:
   aws-access-key-id: ((aws-access-key-id))
-  aws-access-key-id: ((aws-secret-access-key))
+  aws-secret-access-key: ((aws-secret-access-key))
 
 run:
   path: printenv
