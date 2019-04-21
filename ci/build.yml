@@ -3,7 +3,7 @@ platform: linux
 
 image_resource:
   type: docker-image
-  source: {repository: java, tag: openjdk-8}
+  source: {repository: adoptopenjdk/openjdk8-openj9, tag: latest}
 
 inputs:
 - name: titanium
