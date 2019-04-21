@@ -33,6 +33,12 @@ public class PosButton implements IGuiAddonProvider {
         this.sizeY = sizeY;
     }
 
+    /**
+     * Sets a predicate that will be runned in the server when the button is clicked in the client
+     *
+     * @param serverPredicate A predicate that has a NBTTagCompound with client information
+     * @return itself
+     */
     public PosButton setPredicate(Consumer<NBTTagCompound> serverPredicate) {
         this.serverPredicate = serverPredicate;
         return this;
