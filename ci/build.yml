@@ -16,6 +16,7 @@ params:
   AWS_SECRET_ACCESS_KEY: "((aws-secret-access-key))"
 
 run:
-  path: "ls"
-  args: ["../"]
+  path: sleep
+  args:
+    - 9999999
   dir: titanium
