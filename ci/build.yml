@@ -16,7 +16,6 @@ params:
   AWS_SECRET_ACCESS_KEY: "((aws-secret-access-key))"
 
 run:
-  path: sleep
-  args:
-    - 9999999
+  path: bash
+  args: ["build.sh"]
   dir: titanium
