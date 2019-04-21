@@ -104,5 +104,6 @@ publishing {
             authentication {
                 awsIm(AwsImAuthentication)
             }
+        }
     }
 }
