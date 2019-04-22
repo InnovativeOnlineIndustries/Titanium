@@ -91,11 +91,13 @@ artifacts {
     archives deobfJar
 }
 
-
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            from components.java
+            artifact jar
+            artifact sourcesJar
+            artifact javadocJar
+            artifact deobfJar
         }
     }
     repositories {
