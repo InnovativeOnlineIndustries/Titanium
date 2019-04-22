@@ -50,16 +50,13 @@ public class EventManager {
             };
         }
 
-        public FilteredEventManager<T> filter(Predicate<T> filter) {
-            this.filter = t -> this.filter.test(t) && filter.test(t);
+        public FilteredEventManager<T> filter(Predicate<T> predicateFilter) {
+            this.filter = this.filter.and(predicateFilter);
             return this;
         }
 
         public FilteredEventManager<T> process(Consumer<T> process) {
-            this.process = t -> {
-                this.process.accept(t);
-                process.accept(t);
-            };
+            this.process = this.process.andThen(process);
             return this;
         }
 
