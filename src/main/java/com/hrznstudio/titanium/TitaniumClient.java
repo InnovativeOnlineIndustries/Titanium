@@ -34,7 +34,7 @@ public class TitaniumClient {
     }
 
     @SubscribeEvent
-    public void onClientTick(TickEvent.ClientTickEvent event) {
+    public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
             ticks++;
             TitaniumClient.particleRenderer.updateParticles();
@@ -42,7 +42,7 @@ public class TitaniumClient {
     }
 
     @SubscribeEvent
-    public void onRenderAfterWorld(RenderWorldLastEvent event) {
+    public static void onRenderAfterWorld(RenderWorldLastEvent event) {
         // Renders all particles in Titanium
         GlStateManager.pushMatrix();
         TitaniumClient.particleRenderer.renderParticles(event.getPartialTicks());
