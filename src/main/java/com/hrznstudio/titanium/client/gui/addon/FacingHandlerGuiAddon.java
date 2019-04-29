@@ -130,11 +130,11 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
                             StateButtonInfo info = getStateInfo();
                             if (info != null && gui instanceof GuiContainerTile) {
                                 NBTTagCompound compound = new NBTTagCompound();
-                                compound.setString("Facing", facing.getName());
+                                compound.putString("Facing", facing.getName());
                                 int faceMode = (getState() + (mouse == 0 ? 1 : -1)) % IFacingHandler.FaceMode.values().length;
                                 if (faceMode < 0) faceMode = IFacingHandler.FaceMode.values().length - 1;
-                                compound.setInt("Next", faceMode);
-                                compound.setString("Name", handler.getName());
+                                compound.putInt("Next", faceMode);
+                                compound.putString("Name", handler.getName());
                                 //Litterboxlib.NETWORK.sendToServer(new TileUpdateFromClientMessage("SIDE_CHANGE", gui.getContainerTile().getTile().getPos(), compound)); TODO
                                 handler.getFacingModes().put(facing, IFacingHandler.FaceMode.values()[faceMode]);
                                 ((GuiContainerTile) gui).getContainer().getTile().updateNeigh();

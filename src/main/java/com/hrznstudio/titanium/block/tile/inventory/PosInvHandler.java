@@ -41,7 +41,8 @@ public class PosInvHandler extends ItemStackHandler implements IGuiAddonProvider
         this.setRange(size, 1);
         this.insertPredicate = (stack, integer) -> true;
         this.extractPredicate = (stack, integer) -> true;
-        this.onSlotChanged = (stack, integer) -> {};
+        this.onSlotChanged = (stack, integer) -> {
+        };
     }
 
     /**
@@ -59,6 +60,7 @@ public class PosInvHandler extends ItemStackHandler implements IGuiAddonProvider
 
     /**
      * Sets the tile where the inventory is to allow markForUpdate automatically
+     *
      * @param tile The tile to mark
      * @return itself
      */
@@ -69,6 +71,7 @@ public class PosInvHandler extends ItemStackHandler implements IGuiAddonProvider
 
     /**
      * Sets the predicate input filter to filter what items go into which slot.
+     *
      * @param predicate A bi predicate where the itemstack is the item trying to be inserted and the slot where is trying to be inserted to
      * @return itself
      */
@@ -79,21 +82,12 @@ public class PosInvHandler extends ItemStackHandler implements IGuiAddonProvider
 
     /**
      * Sets the predicate output filter to filter what can be extracted from which slot.
+     *
      * @param predicate A bi predicate where the itemstack is the item trying to be extracted and the slot where is trying to be extracted
      * @return itself
      */
     public PosInvHandler setOutputFilter(BiPredicate<ItemStack, Integer> predicate) {
         this.extractPredicate = predicate;
-        return this;
-    }
-
-    /**
-     * Sets the predicate slot changed that gets triggered when a slot is changed.
-     * @param onSlotChanged A bi predicate where the itemstack and slot changed
-     * @return itself
-     */
-    public PosInvHandler setOnSlotChanged(BiConsumer<ItemStack, Integer> onSlotChanged) {
-        this.onSlotChanged = onSlotChanged;
         return this;
     }
 
@@ -158,6 +152,17 @@ public class PosInvHandler extends ItemStackHandler implements IGuiAddonProvider
 
     public BiConsumer<ItemStack, Integer> getOnSlotChanged() {
         return onSlotChanged;
+    }
+
+    /**
+     * Sets the predicate slot changed that gets triggered when a slot is changed.
+     *
+     * @param onSlotChanged A bi predicate where the itemstack and slot changed
+     * @return itself
+     */
+    public PosInvHandler setOnSlotChanged(BiConsumer<ItemStack, Integer> onSlotChanged) {
+        this.onSlotChanged = onSlotChanged;
+        return this;
     }
 
     @Override

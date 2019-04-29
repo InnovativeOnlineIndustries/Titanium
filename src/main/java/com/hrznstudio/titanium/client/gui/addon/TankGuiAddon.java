@@ -33,10 +33,10 @@ public class TankGuiAddon extends BasicGuiAddon {
         super(tank.getPosX(), tank.getPosY());
         this.tank = tank;
     }
-    
+
     @Override
     public void drawGuiContainerBackgroundLayer(GuiScreen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
-        ITankAsset asset  = IAssetProvider.getAsset(provider, AssetTypes.TANK);
+        ITankAsset asset = IAssetProvider.getAsset(provider, AssetTypes.TANK);
         Rectangle area = asset.getArea();
         if (tank.getFluid() != null) {
             FluidStack stack = tank.getFluid();

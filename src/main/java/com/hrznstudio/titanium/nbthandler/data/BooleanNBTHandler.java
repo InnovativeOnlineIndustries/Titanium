@@ -21,12 +21,12 @@ public class BooleanNBTHandler implements INBTHandler<Boolean> {
 
     @Override
     public boolean storeToNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, @Nonnull Boolean object) {
-        compound.setBoolean(name, object);
+        compound.putBoolean(name, object);
         return true;
     }
 
     @Override
     public Boolean readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, Boolean currentValue) {
-        return compound.hasKey(name) ? compound.getBoolean(name) : null;
+        return compound.contains(name) ? compound.getBoolean(name) : null;
     }
 }

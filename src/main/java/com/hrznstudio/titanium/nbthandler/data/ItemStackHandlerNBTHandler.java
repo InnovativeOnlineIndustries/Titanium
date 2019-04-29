@@ -22,13 +22,13 @@ public class ItemStackHandlerNBTHandler implements INBTHandler<ItemStackHandler>
 
     @Override
     public boolean storeToNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, @Nonnull ItemStackHandler object) {
-        compound.setTag(name, object.serializeNBT());
+        compound.put(name, object.serializeNBT());
         return true;
     }
 
     @Override
     public ItemStackHandler readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, ItemStackHandler current) {
-        if (compound.hasKey(name)) {
+        if (compound.contains(name)) {
             if (current == null) current = new ItemStackHandler();
             current.deserializeNBT(compound.getCompound(name));
             return current;

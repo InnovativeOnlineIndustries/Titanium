@@ -18,9 +18,9 @@ import com.hrznstudio.titanium.config.AnnotationConfigManager;
 import com.hrznstudio.titanium.container.ContainerTileBase;
 import com.hrznstudio.titanium.event.handler.EventManager;
 import com.hrznstudio.titanium.network.NetworkHandler;
-import com.hrznstudio.titanium.tab.AdvancedTitaniumTab;
 import com.hrznstudio.titanium.util.TileUtil;
 import com.hrznstudio.titanium.util.TitaniumMod;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.WorldRenderer;
@@ -43,12 +43,8 @@ import net.minecraftforge.fml.network.NetworkHooks;
 public class Titanium extends TitaniumMod {
     public static final String MODID = "titanium";
 
-    public static AdvancedTitaniumTab RESOURCES_TAB;
-
     public Titanium() {
-        addBlock(BlockTest.TEST = new BlockTest());
-        addBlock(BlockTwentyFourTest.TEST = new BlockTwentyFourTest());
-
+        registerEntries();
         NetworkHandler.registerMessage(BasicButtonAddon.ButtonClickNetworkMessage.class);
         addConfig(new AnnotationConfigManager.Type(ModConfig.Type.COMMON, TitaniumConfig.class));
         EventManager.subscribe(EntityItemPickupEvent.class).filter(entityItemPickupEvent -> entityItemPickupEvent.getItem().getItem().getItem().equals(Items.STICK)).process(entityItemPickupEvent -> entityItemPickupEvent.getItem().lifespan = 0).cancel();
@@ -60,6 +56,11 @@ public class Titanium extends TitaniumMod {
             buf.writeInt(tile.getPos().getY());
             buf.writeInt(tile.getPos().getZ());
         });
+    }
+
+    public void registerEntries() {
+        addEntry(Block.class, BlockTest.TEST = new BlockTest());
+        addEntry(Block.class, BlockTwentyFourTest.TEST = new BlockTwentyFourTest());
     }
 
     @EventReceiver
@@ -97,7 +98,7 @@ public class Titanium extends TitaniumMod {
             double x = player.lastTickPosX + (player.posX - player.lastTickPosX) * event.getPartialTicks();
             double y = player.lastTickPosY + (player.posY - player.lastTickPosY) * event.getPartialTicks();
             double z = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * event.getPartialTicks();
-            WorldRenderer.drawShape(((DistanceRayTraceResult) hit).getHitBox().withOffset(pos.getX(),pos.getY(),pos.getZ()), -x, -y, -z,0.0F, 0.0F, 0.0F, 0.4F);
+            WorldRenderer.drawShape(((DistanceRayTraceResult) hit).getHitBox().withOffset(pos.getX(), pos.getY(), pos.getZ()), -x, -y, -z, 0.0F, 0.0F, 0.0F, 0.4F);
             GlStateManager.depthMask(true);
             GlStateManager.enableTexture2D();
             GlStateManager.disableBlend();

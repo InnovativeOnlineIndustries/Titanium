@@ -21,28 +21,28 @@ public class EnergyStorageItemStack implements IEnergyStorage {
     public EnergyStorageItemStack(ItemStack stack, int capacity, int in, int out) {
         this.stack = stack;
         boolean hasTags = stack.hasTag();
-        if (!hasTags || !stack.getTag().hasKey("energy")) {
+        if (!hasTags || !stack.getTag().contains("energy")) {
             if (!hasTags) {
                 stack.setTag(new NBTTagCompound());
             }
             NBTTagCompound tag = stack.getTag();
             NBTTagCompound energyTag = new NBTTagCompound();
-            energyTag.setInt(ENERGY, 0);
-            energyTag.setInt(MAX, capacity);
-            energyTag.setInt(INPUT, in);
-            energyTag.setInt(OUTPUT, out);
-            tag.setTag("energy", energyTag);
+            energyTag.putInt(ENERGY, 0);
+            energyTag.putInt(MAX, capacity);
+            energyTag.putInt(INPUT, in);
+            energyTag.putInt(OUTPUT, out);
+            tag.put("energy", energyTag);
         } else {
             NBTTagCompound energyTag = getStackEnergyTag();
-            energyTag.setInt(MAX, capacity);
-            energyTag.setInt(INPUT, in);
-            energyTag.setInt(OUTPUT, out);
+            energyTag.putInt(MAX, capacity);
+            energyTag.putInt(INPUT, in);
+            energyTag.putInt(OUTPUT, out);
         }
     }
 
-    public void setInternal(int energy) {
+    public void putInternal(int energy) {
         NBTTagCompound energyTag = getStackEnergyTag();
-        energyTag.setInt(ENERGY, Math.min(energyTag.getInt(ENERGY) + energy, energyTag.getInt(MAX)));
+        energyTag.putInt(ENERGY, Math.min(energyTag.getInt(ENERGY) + energy, energyTag.getInt(MAX)));
     }
 
     private NBTTagCompound getStackEnergyTag() {
@@ -57,7 +57,7 @@ public class EnergyStorageItemStack implements IEnergyStorage {
 
         if (!simulate) {
             if (energyReceived != 0) {
-                getStackEnergyTag().setInt("energy", getEnergyStored() + energyReceived);
+                getStackEnergyTag().putInt("energy", getEnergyStored() + energyReceived);
             }
         }
         return energyReceived;
@@ -71,7 +71,7 @@ public class EnergyStorageItemStack implements IEnergyStorage {
 
         if (!simulate) {
             if (stack != null && energyExtracted != 0) {
-                getStackEnergyTag().setInt("energy", getEnergyStored() - energyExtracted);
+                getStackEnergyTag().putInt("energy", getEnergyStored() - energyExtracted);
             }
         }
         return energyExtracted;

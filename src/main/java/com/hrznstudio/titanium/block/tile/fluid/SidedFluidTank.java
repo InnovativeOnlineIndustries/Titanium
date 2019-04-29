@@ -23,7 +23,7 @@ public class SidedFluidTank extends PosFluidTank implements IFacingHandler {
 
     public SidedFluidTank(int amount, int posX, int posY, String name) {
         super(amount, posX, posY, name);
-        this.color = EnumDyeColor.WHITE.func_196060_f();
+        this.color = EnumDyeColor.WHITE.getFireworkColor();
         this.facingModes = new HashMap<>();
         for (EnumFacing facing : EnumFacing.values()) {
             this.facingModes.put(facing, FaceMode.ENABLED);
@@ -40,13 +40,13 @@ public class SidedFluidTank extends PosFluidTank implements IFacingHandler {
         return new Color(color).getRGB();
     }
 
-    public SidedFluidTank setColor(EnumDyeColor color) {
-        this.color = color.func_196060_f();
+    public SidedFluidTank setColor(int color) {
+        this.color = color;
         return this;
     }
 
-    public SidedFluidTank setColor(int color) {
-        this.color = color;
+    public SidedFluidTank setColor(EnumDyeColor color) {
+        this.color = color.getFireworkColor();
         return this;
     }
 
@@ -57,7 +57,7 @@ public class SidedFluidTank extends PosFluidTank implements IFacingHandler {
 
     @Override
     public FluidTank readFromNBT(NBTTagCompound nbt) {
-        if (nbt.hasKey("FacingModes")) {
+        if (nbt.contains("FacingModes")) {
             NBTTagCompound compound = nbt.getCompound("FacingModes");
             for (String face : compound.keySet()) {
                 facingModes.put(EnumFacing.byName(face), FaceMode.valueOf(compound.getString(face)));
@@ -71,9 +71,9 @@ public class SidedFluidTank extends PosFluidTank implements IFacingHandler {
         NBTTagCompound nbt = super.writeToNBT(comp);
         NBTTagCompound compound = new NBTTagCompound();
         for (EnumFacing facing : facingModes.keySet()) {
-            compound.setString(facing.getName(), facingModes.get(facing).name());
+            compound.putString(facing.getName(), facingModes.get(facing).name());
         }
-        nbt.setTag("FacingModes", compound);
+        nbt.put("FacingModes", compound);
         return nbt;
     }
 

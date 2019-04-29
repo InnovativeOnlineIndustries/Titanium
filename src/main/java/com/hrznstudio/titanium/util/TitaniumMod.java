@@ -28,6 +28,7 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -37,13 +38,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public abstract class TitaniumMod {
-    private final List<Item> ITEMS = new ArrayList<>();
     private final String modid;
-    private final List<Block> BLOCKS = new ArrayList<>();
+    private final Map<Class<? extends IForgeRegistryEntry>, List<?>> ENTRIES = new HashMap<>();
     private final AnnotationConfigManager configManager = new AnnotationConfigManager();
 
     public TitaniumMod() {
@@ -80,6 +79,14 @@ public abstract class TitaniumMod {
                 }
             });
         });
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(event -> {
+            if (event instanceof RegistryEvent.Register) {
+                getEntries((Class<IForgeRegistryEntry>) ((RegistryEvent) event).getGenericType()).forEach(t -> ((RegistryEvent.Register) event).getRegistry().register((IForgeRegistryEntry) t));
+                if (((RegistryEvent.Register) event).getGenericType() == TileEntityType.class) {
+                    getEntries(Block.class).stream().filter(BlockTileBase.class::isInstance).map(BlockTileBase.class::cast).forEach(block -> block.registerTile(((RegistryEvent.Register) event).getRegistry()));
+                }
+            }
+        });
         modid = ModLoadingContext.get().getActiveContainer().getModId();
     }
 
@@ -99,13 +106,21 @@ public abstract class TitaniumMod {
         return builder.build();
     }
 
+    public <T extends IForgeRegistryEntry<T>> List<T> getEntries(Class<T> tClass) {
+        if (!ENTRIES.containsKey(tClass)) {
+            ENTRIES.put(tClass, new ArrayList<T>());
+        }
+        List<T> list = (List<T>) ENTRIES.get(tClass);
+        return list == null ? Collections.emptyList() : list;
+    }
+
     @EventReceiver
     public final void clientSetupTitanium(FMLClientSetupEvent event) {
-        ITEMS.stream()
+        getEntries(Item.class).stream()
                 .filter(IItemColorProvider.class::isInstance)
                 .map(i -> (Item & IItemColorProvider) i)
                 .forEach(i -> Minecraft.getInstance().getItemColors().register(((IItemColorProvider) i)::getColor, i));
-        BLOCKS.stream()
+        getEntries(Block.class).stream()
                 .filter(IColorProvider.class::isInstance)
                 .map(b -> (Block & IColorProvider) b)
                 .forEach(b -> {
@@ -114,32 +129,18 @@ public abstract class TitaniumMod {
                 });
     }
 
-    @EventReceiver
-    public final void registerBlocksTitanium(RegistryEvent.Register<Block> event) {
-        BLOCKS.forEach(event.getRegistry()::register);
-    }
-
-    @EventReceiver
-    public final void registerTilesTitanium(RegistryEvent.Register<TileEntityType<?>> event) {
-        BLOCKS.stream().filter(BlockTileBase.class::isInstance).map(BlockTileBase.class::cast).forEach(block -> {
-            block.registerTile(event.getRegistry());
-        });
-    }
-
-    @EventReceiver
-    public final void registerItemsTitanium(RegistryEvent.Register<Item> event) {
-        ITEMS.forEach(event.getRegistry()::register);
-    }
 
     @EventReceiver
     public final void modelRegistryEventTitanium(ModelRegistryEvent event) {
-        if (!BLOCKS.isEmpty())
-            BLOCKS.stream()
+        List<Block> blocks = getEntries(Block.class);
+        if (!blocks.isEmpty())
+            blocks.stream()
                     .filter(IModelRegistrar.class::isInstance)
                     .map(IModelRegistrar.class::cast)
                     .forEach(IModelRegistrar::registerModels);
-        if (!ITEMS.isEmpty())
-            ITEMS.stream()
+        List<Item> items = getEntries(Item.class);
+        if (!items.isEmpty())
+            items.stream()
                     .filter(IModelRegistrar.class::isInstance)
                     .map(IModelRegistrar.class::cast)
                     .forEach(IModelRegistrar::registerModels);
@@ -155,33 +156,15 @@ public abstract class TitaniumMod {
         configManager.inject();
     }
 
-    public List<Block> getBlocks() {
-        return ImmutableList.copyOf(BLOCKS);
+    public <T extends IForgeRegistryEntry<T>> void addEntry(Class<T> tClass, T t) {
+        getEntries(tClass).add(t);
+        if (t instanceof IItemBlockFactory)
+            addEntry(Item.class, ((IItemBlockFactory) t).getItemBlockFactory().create());
     }
 
-    public List<Item> getItems() {
-        return ImmutableList.copyOf(ITEMS);
-    }
-
-    public void addItem(Item item) {
-        ITEMS.add(item);
-    }
-
-    public void addItems(Item... items) {
-        for (Item item : items)
-            addItem(item);
-    }
-
-    public void addBlock(Block block) {
-        BLOCKS.add(block);
-        if (block instanceof IItemBlockFactory) {
-            addItem(((IItemBlockFactory) block).getItemBlockFactory().create());
-        }
-    }
-
-    public void addBlocks(Block... blocks) {
-        for (Block block : blocks)
-            addBlock(block);
+    public <T extends IForgeRegistryEntry<T>> void addEntries(Class<T> tClass, T... ts) {
+        for (T t : ts)
+            addEntry(tClass, t);
     }
 
     public void addConfig(AnnotationConfigManager.Type type) {

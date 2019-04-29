@@ -71,7 +71,7 @@ public class TileTest extends TilePowered implements ITickable {
 
     @Override
     public boolean onActivated(EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        if (!super.onActivated(playerIn, hand, facing, hitX, hitY, hitZ)){
+        if (!super.onActivated(playerIn, hand, facing, hitX, hitY, hitZ)) {
             openGui(playerIn);
             return true;
         }

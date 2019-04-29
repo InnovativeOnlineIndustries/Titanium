@@ -81,6 +81,7 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
         this.onTickWork = runnable;
         return this;
     }
+
     /**
      * Sets a runnable to be executed every time the bar starts from 0
      *
@@ -274,6 +275,7 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
 
     /**
      * Sets the direction render for the bar in the gui
+     *
      * @param direction The bar direction
      * @return Self
      */
@@ -315,8 +317,8 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
     @Override
     public NBTTagCompound serializeNBT() {
         NBTTagCompound compound = new NBTTagCompound();
-        compound.setInt("Tick", progress);
-        compound.setInt("MaxProgress", maxProgress);
+        compound.putInt("Tick", progress);
+        compound.putInt("MaxProgress", maxProgress);
         return compound;
     }
 

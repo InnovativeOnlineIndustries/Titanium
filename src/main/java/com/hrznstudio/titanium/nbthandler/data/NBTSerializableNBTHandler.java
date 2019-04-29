@@ -22,14 +22,14 @@ public class NBTSerializableNBTHandler implements INBTHandler<INBTSerializable> 
 
     @Override
     public boolean storeToNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, @Nonnull INBTSerializable object) {
-        compound.setTag(name, object.serializeNBT());
+        compound.put(name, object.serializeNBT());
         return false;
     }
 
     @Override
     public INBTSerializable readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, INBTSerializable currentValue) {
-        if (compound.hasKey(name)) {
-            currentValue.deserializeNBT(compound.getTag(name));
+        if (compound.contains(name)) {
+            currentValue.deserializeNBT(compound.get(name));
             return currentValue;
         }
         return null;

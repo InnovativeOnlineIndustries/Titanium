@@ -22,7 +22,7 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
 
     public SidedInvHandler(String name, int xPos, int yPos, int size) {
         super(name, xPos, yPos, size);
-        this.color = EnumDyeColor.WHITE.func_196060_f();
+        this.color = EnumDyeColor.WHITE.getFireworkColor();
         this.facingModes = new HashMap<>();
         for (EnumFacing value : EnumFacing.values()) {
             this.facingModes.put(value, FaceMode.ENABLED);
@@ -39,13 +39,13 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
         return new Color(color).getRGB();
     }
 
-    public SidedInvHandler setColor(EnumDyeColor color) {
-        this.color = color.func_196060_f();
+    public SidedInvHandler setColor(int color) {
+        this.color = color;
         return this;
     }
 
-    public SidedInvHandler setColor(int color) {
-        this.color = color;
+    public SidedInvHandler setColor(EnumDyeColor color) {
+        this.color = color.getFireworkColor();
         return this;
     }
 
@@ -60,16 +60,16 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
         NBTTagCompound nbt = super.serializeNBT();
         NBTTagCompound compound = new NBTTagCompound();
         for (EnumFacing facing : facingModes.keySet()) {
-            compound.setString(facing.getName(), facingModes.get(facing).name());
+            compound.putString(facing.getName(), facingModes.get(facing).name());
         }
-        nbt.setTag("FacingModes", compound);
+        nbt.put("FacingModes", compound);
         return nbt;
     }
 
     @Override
     public void deserializeNBT(NBTTagCompound nbt) {
         super.deserializeNBT(nbt);
-        if (nbt.hasKey("FacingModes")) {
+        if (nbt.contains("FacingModes")) {
             NBTTagCompound compound = nbt.getCompound("FacingModes");
             for (String face : compound.keySet()) {
                 facingModes.put(EnumFacing.byName(face), FaceMode.valueOf(compound.getString(face)));

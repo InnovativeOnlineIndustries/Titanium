@@ -33,7 +33,6 @@ public class ParticleBase extends Particle implements IParticle {
     }
 
 
-
     @Override
     public void tick() {
         super.tick();

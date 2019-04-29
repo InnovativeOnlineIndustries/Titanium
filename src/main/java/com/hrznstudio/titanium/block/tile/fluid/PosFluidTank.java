@@ -46,6 +46,7 @@ public class PosFluidTank extends FluidTank implements IFluidTankProperties {
 
     /**
      * Sets the predicate drain filter
+     *
      * @param filter The predicate where the fluidstack is the fluid trying to be drained from the tank
      * @return itself
      */
@@ -56,6 +57,7 @@ public class PosFluidTank extends FluidTank implements IFluidTankProperties {
 
     /**
      * Sets the tile to be automatically marked dirty when the contents change
+     *
      * @param tile The tile where the tank is
      * @return itself
      */

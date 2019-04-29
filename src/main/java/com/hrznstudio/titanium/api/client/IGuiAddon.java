@@ -29,17 +29,19 @@ public interface IGuiAddon {
 
     /**
      * Draws the component in the foreground layer
-     * @param screen The current open screen
+     *
+     * @param screen   The current open screen
      * @param provider The current asset provider used in the GUI
-     * @param guiX The gui X in the top left corner
-     * @param guiY The gui Y in the top left corner
-     * @param mouseX The current mouse X
-     * @param mouseY The current mouse Y
+     * @param guiX     The gui X in the top left corner
+     * @param guiY     The gui Y in the top left corner
+     * @param mouseX   The current mouse X
+     * @param mouseY   The current mouse Y
      */
     void drawGuiContainerForegroundLayer(GuiScreen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY);
 
     /**
      * A list of strings that will be drawn as a tooltip when `isInside` returns true
+     *
      * @return A list of strings
      */
     default List<String> getTooltipLines() {
@@ -48,6 +50,7 @@ public interface IGuiAddon {
 
     /**
      * A check to know if the mouse is inside of the component to draw the tooltip lines
+     *
      * @param screen The current open screen
      * @param mouseX The current mouse X
      * @param mouseY The current mouse Y

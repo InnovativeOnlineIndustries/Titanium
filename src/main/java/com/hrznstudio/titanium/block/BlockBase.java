@@ -43,7 +43,7 @@ public abstract class BlockBase extends Block implements IModelRegistrar, IItemB
 
     @Nullable
     protected static DistanceRayTraceResult rayTraceBox(BlockPos pos, Vec3d start, Vec3d end, VoxelShape shape) {
-        RayTraceResult bbResult = shape.func_212433_a(start, end, pos);
+        RayTraceResult bbResult = shape.rayTrace(start, end, pos);
         if (bbResult != null) {
             Vec3d hitVec = bbResult.hitVec;
             EnumFacing sideHit = bbResult.sideHit;
@@ -116,7 +116,7 @@ public abstract class BlockBase extends Block implements IModelRegistrar, IItemB
         return closestHit;
     }
 
-    protected void setItemGroup(ItemGroup itemGroup){
+    protected void setItemGroup(ItemGroup itemGroup) {
         this.itemGroup = itemGroup;
     }
 }

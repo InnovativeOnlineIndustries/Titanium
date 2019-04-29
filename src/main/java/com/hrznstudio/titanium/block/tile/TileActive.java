@@ -64,7 +64,7 @@ public class TileActive extends TileBase implements IGuiAddonProvider, ITickable
 
     @Override
     public boolean onActivated(EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        if (multiTankHandler != null){
+        if (multiTankHandler != null) {
             return FluidUtil.interactWithFluidHandler(playerIn, hand, multiTankHandler.getCapabilityForSide(null));
         }
         return false;
@@ -146,7 +146,7 @@ public class TileActive extends TileBase implements IGuiAddonProvider, ITickable
                 }
             });
         }
-        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && multiTankHandler != null){
+        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && multiTankHandler != null) {
             return LazyOptional.of(new NonNullSupplier<T>() {
                 @Nonnull
                 @Override

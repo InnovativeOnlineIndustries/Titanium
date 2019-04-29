@@ -20,12 +20,12 @@ public class StringNBTHandler implements INBTHandler<String> {
 
     @Override
     public boolean storeToNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, @Nonnull String object) {
-        compound.setString(name, object);
+        compound.putString(name, object);
         return true;
     }
 
     @Override
     public String readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, String current) {
-        return compound.hasKey(name) ? compound.getString(name) : null;
+        return compound.contains(name) ? compound.getString(name) : null;
     }
 }
