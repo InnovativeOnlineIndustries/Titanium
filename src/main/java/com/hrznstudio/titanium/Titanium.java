@@ -58,7 +58,7 @@ public class Titanium extends TitaniumMod {
         });
     }
 
-    public void registerEntries() {
+    private void registerEntries() {
         addEntry(Block.class, BlockTest.TEST = new BlockTest());
         addEntry(Block.class, BlockTwentyFourTest.TEST = new BlockTwentyFourTest());
     }
