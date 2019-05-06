@@ -15,7 +15,6 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 
-
 def BUILD_NUMBER = System.getenv("BUILD_NUMBER") ?: "0.0.0"
 version = "${BUILD_NUMBER}"
 group = 'com.hrznstudio'
@@ -61,15 +60,20 @@ dependencies {
 
 jar {
     manifest {
-        attributes(["Specification-Title": "Titanium",
+        attributes(["Specification-Title": project.name,
                     "Specification-Vendor": "Horizon Studio",
-                    "Specification-Version": "24.0", // We are version 1 of the modlauncher specification
+                    "Specification-Version": "2.0",
                     "Implementation-Title": project.name,
                     "Implementation-Version": "${version}",
                     "Implementation-Vendor" :"Horizon Studio",
-                    "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")],)
+                    "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                    "Maven-Artifact": "${group}:${archivesBaseName}:${version}",
+                    "ModSide": "BOTH",
+        ],)
+
     }
 }
+
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
     from sourceSets.main.allSource
