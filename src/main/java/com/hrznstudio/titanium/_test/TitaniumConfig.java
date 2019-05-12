@@ -7,9 +7,10 @@
 
 package com.hrznstudio.titanium._test;
 
+import com.hrznstudio.titanium.annotation.config.ConfigFile;
 import com.hrznstudio.titanium.annotation.config.ConfigVal;
 
-
+@ConfigFile
 public class TitaniumConfig {
 
     @ConfigVal(comment = "A Boolean that is true by default")

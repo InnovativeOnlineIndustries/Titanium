@@ -8,6 +8,7 @@
 package com.hrznstudio.titanium.util;
 
 import com.google.common.collect.ImmutableList;
+import com.hrznstudio.titanium.annotation.config.ConfigFile;
 import com.hrznstudio.titanium.api.internal.IColorProvider;
 import com.hrznstudio.titanium.api.internal.IItemBlockFactory;
 import com.hrznstudio.titanium.api.internal.IItemColorProvider;
@@ -46,6 +47,7 @@ public abstract class TitaniumMod {
     private final AnnotationConfigManager configManager = new AnnotationConfigManager();
 
     public TitaniumMod() {
+        modid = ModLoadingContext.get().getActiveContainer().getModId();
         MinecraftForge.EVENT_BUS.register(this);
         List<Method> methods = getMethods();
         methods.forEach(method -> {
@@ -87,7 +89,10 @@ public abstract class TitaniumMod {
                 }
             }
         });
-        modid = ModLoadingContext.get().getActiveContainer().getModId();
+        AnnotationUtil.getFilteredAnnotatedClasses(ConfigFile.class, modid).forEach(aClass -> {
+            ConfigFile annotation = (ConfigFile) aClass.getAnnotation(ConfigFile.class);
+            addConfig(new AnnotationConfigManager.Type(annotation.type(), aClass).setName(annotation.value()));
+        });
     }
 
     public List<Method> getMethods() {
@@ -168,6 +173,9 @@ public abstract class TitaniumMod {
     }
 
     public void addConfig(AnnotationConfigManager.Type type) {
+        for (Class configClass : type.getConfigClass()) {
+            if (configManager.isClassManaged(configClass)) return;
+        }
         configManager.add(type);
     }
 

@@ -85,6 +85,15 @@ public class AnnotationConfigManager {
         });
     }
 
+    public boolean isClassManaged(Class clazz) {
+        for (Type configClass : configClasses) {
+            for (Class aClass : configClass.configClass) {
+                if (clazz.equals(aClass)) return true;
+            }
+        }
+        return false;
+    }
+
     public static class Type {
         private ModConfig.Type type;
         private Class[] configClass;
@@ -99,6 +108,10 @@ public class AnnotationConfigManager {
         public Type setName(String name) {
             this.fileName = name;
             return this;
+        }
+
+        public Class[] getConfigClass() {
+            return configClass;
         }
     }
 }
