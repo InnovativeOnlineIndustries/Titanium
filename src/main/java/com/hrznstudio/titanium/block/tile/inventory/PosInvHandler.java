@@ -17,6 +17,7 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
@@ -32,6 +33,8 @@ public class PosInvHandler extends ItemStackHandler implements IGuiAddonProvider
     private BiPredicate<ItemStack, Integer> insertPredicate;
     private BiPredicate<ItemStack, Integer> extractPredicate;
     private BiConsumer<ItemStack, Integer> onSlotChanged;
+    private HashMap<Integer, Integer> slotAmountFilter;
+    private int slotLimit;
 
     public PosInvHandler(String name, int xPos, int yPos, int size) {
         this.name = name;
@@ -43,6 +46,8 @@ public class PosInvHandler extends ItemStackHandler implements IGuiAddonProvider
         this.extractPredicate = (stack, integer) -> true;
         this.onSlotChanged = (stack, integer) -> {
         };
+        this.slotAmountFilter = new HashMap<>();
+        this.slotLimit = 64;
     }
 
     /**
@@ -163,6 +168,34 @@ public class PosInvHandler extends ItemStackHandler implements IGuiAddonProvider
     public PosInvHandler setOnSlotChanged(BiConsumer<ItemStack, Integer> onSlotChanged) {
         this.onSlotChanged = onSlotChanged;
         return this;
+    }
+
+    /**
+     * Sets the limit amount for a specific slot, this limit has priority instead of the slot limit for all the slots
+     *
+     * @param slot  The slot to set the limit to
+     * @param limit The limit for the slot
+     * @return itself
+     */
+    public PosInvHandler setSlotLimit(int slot, int limit) {
+        this.slotAmountFilter.put(slot, limit);
+        return this;
+    }
+
+    /**
+     * Sets the default limit for all the slots
+     *
+     * @param limit The default limit for all the slot that don't have specific limit
+     * @return itself
+     */
+    public PosInvHandler setSlotLimit(int limit) {
+        this.slotLimit = limit;
+        return this;
+    }
+
+    @Override
+    public int getSlotLimit(int slot) {
+        return slotAmountFilter.getOrDefault(slot, this.slotLimit);
     }
 
     @Override
