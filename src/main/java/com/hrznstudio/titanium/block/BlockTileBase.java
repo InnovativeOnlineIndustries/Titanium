@@ -21,7 +21,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.IForgeRegistry;
 
@@ -66,7 +65,7 @@ public abstract class BlockTileBase<T extends TileBase> extends BlockBase implem
         return getTileEntityFactory().create();
     }
 
-    public Optional<T> getTile(IWorldReader access, BlockPos pos) {
+    public Optional<T> getTile(IBlockReader access, BlockPos pos) {
         return TileUtil.getTileEntity(access, pos, tileClass);
     }
 

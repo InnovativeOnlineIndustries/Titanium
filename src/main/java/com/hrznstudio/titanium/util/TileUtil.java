@@ -9,12 +9,12 @@ package com.hrznstudio.titanium.util;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.IBlockReader;
 
 import java.util.Optional;
 
 public class TileUtil {
-    public static <T extends TileEntity> Optional<T> getTileEntity(IWorldReader access, BlockPos pos, Class<T> tileClass) {
+    public static <T extends TileEntity> Optional<T> getTileEntity(IBlockReader access, BlockPos pos, Class<T> tileClass) {
         TileEntity tile = access.getTileEntity(pos);
         if (tileClass.isInstance(tile))
             return Optional.of(tileClass.cast(tile));
