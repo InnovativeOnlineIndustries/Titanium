@@ -12,10 +12,8 @@ import com.hrznstudio.titanium._test.BlockTwentyFourTest;
 import com.hrznstudio.titanium._test.TitaniumConfig;
 import com.hrznstudio.titanium.api.raytrace.DistanceRayTraceResult;
 import com.hrznstudio.titanium.block.tile.TileActive;
-import com.hrznstudio.titanium.client.gui.GuiContainerTile;
 import com.hrznstudio.titanium.client.gui.addon.BasicButtonAddon;
 import com.hrznstudio.titanium.config.AnnotationConfigManager;
-import com.hrznstudio.titanium.container.ContainerTileBase;
 import com.hrznstudio.titanium.event.handler.EventManager;
 import com.hrznstudio.titanium.network.NetworkHandler;
 import com.hrznstudio.titanium.util.TileUtil;
@@ -74,12 +72,8 @@ public class Titanium extends TitaniumMod {
                     Minecraft.getInstance().world,
                     new BlockPos(x, y, z),
                     TileActive.class
-            ).map(tile -> new GuiContainerTile<>(
-                    new ContainerTileBase<>(
-                            tile,
-                            Minecraft.getInstance().player.inventory
-                    )
-            )).orElse(null);
+            ).map(tile -> tile.createGui(tile.createContainer(Minecraft.getInstance().player.inventory, Minecraft.getInstance().player))
+            ).orElse(null);
         });
     }
 

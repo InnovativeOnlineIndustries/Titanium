@@ -22,9 +22,11 @@ import com.hrznstudio.titanium.block.tile.inventory.PosInvHandler;
 import com.hrznstudio.titanium.block.tile.progress.MultiProgressBarHandler;
 import com.hrznstudio.titanium.block.tile.progress.PosProgressBar;
 import com.hrznstudio.titanium.block.tile.sideness.IFacingHandler;
+import com.hrznstudio.titanium.client.gui.GuiContainerTile;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.container.ContainerTileBase;
 import net.minecraft.block.Block;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -83,6 +85,10 @@ public class TileActive extends TileBase implements IGuiAddonProvider, ITickable
     @Override
     public Container createContainer(InventoryPlayer inventoryPlayer, EntityPlayer entityPlayer) {
         return new ContainerTileBase<>(this, inventoryPlayer);
+    }
+
+    public GuiScreen createGui(Container container) {
+        return new GuiContainerTile<>((ContainerTileBase<TileActive>) container);
     }
 
     @Override
