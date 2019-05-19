@@ -1,8 +1,8 @@
 /*
  * This file is part of Titanium
- * Copyright (C) 2019, Horizon Studio <contact@hrznstudio.com>, All rights reserved.
+ * Copyright (C) 2019, Horizon Studio <contact@hrznstudio.com>.
  *
- * This means no, you cannot use this code. This is licensed for sole use by Horizon and it's partners, you MUST be granted specific written permission from Horizon to use this code.
+ * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
 
 package com.hrznstudio.titanium.nbthandler;
