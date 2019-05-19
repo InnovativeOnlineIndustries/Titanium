@@ -18,7 +18,7 @@ authors="TheCodedOne, Buuz135" #optional
 # The modid of the mod
 modId="titanium" #mandatory
 # The version number of the mod - there's a few well known ${} variables useable here or just hardcode it
-version="${version}" #mandatory
+version="${file.jarVersion}" #mandatory
  # A display name for the mod
 displayName="Titanium" #mandatory
 # The description text for the mod (multi line!) (#mandatory)
