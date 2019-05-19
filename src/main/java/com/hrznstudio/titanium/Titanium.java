@@ -27,6 +27,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -62,6 +64,7 @@ public class Titanium extends TitaniumMod {
     }
 
     @EventReceiver
+    @OnlyIn(Dist.CLIENT)
     public void clientSetup(FMLClientSetupEvent event) {
         TitaniumClient.registerModelLoader();
         ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.GUIFACTORY, () -> data -> {
@@ -78,6 +81,7 @@ public class Titanium extends TitaniumMod {
     }
 
     @SubscribeEvent
+    @OnlyIn(Dist.CLIENT)
     public void drawBlockHighlight(DrawBlockHighlightEvent event) {
         BlockPos pos = event.getTarget().getBlockPos();
         RayTraceResult hit = event.getTarget();
