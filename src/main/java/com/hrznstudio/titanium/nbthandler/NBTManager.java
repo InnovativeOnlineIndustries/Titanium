@@ -9,10 +9,12 @@ package com.hrznstudio.titanium.nbthandler;
 
 import com.google.common.collect.Lists;
 import com.hrznstudio.titanium.annotation.Save;
+import com.hrznstudio.titanium.api.INBTHandler;
 import com.hrznstudio.titanium.nbthandler.data.*;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,6 +40,7 @@ public class NBTManager {
         handlerList.add(new EnumDyeColorNBTHandler());
         handlerList.add(new ItemStackHandlerNBTHandler());
         handlerList.add(new TankNBTHandler());
+        handlerList.add(new UUIDNBTHandler());
         handlerList.add(new NBTSerializableNBTHandler());
     }
 
@@ -95,8 +98,9 @@ public class NBTManager {
             for (Field field : tileFieldList.get(entity.getClass())) {
                 Save save = field.getAnnotation(Save.class);
                 try {
-                    if (field.get(entity) == null) continue;
-                    compound = handleNBTWrite(compound, save.value().isEmpty() ? field.getName() : save.value(), field.get(entity), field);
+                    Object obj = field.get(entity);
+                    if (obj == null) continue;
+                    compound = handleNBTWrite(compound, save.value().isEmpty() ? field.getName() : save.value(), obj, field);
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
@@ -150,7 +154,7 @@ public class NBTManager {
      * @param value    The current value.
      * @return
      */
-    private Object handleNBTRead(NBTTagCompound compound, String name, Object value, Field field) {
+    private Object handleNBTRead(NBTTagCompound compound, String name, @Nullable Object value, Field field) {
         for (INBTHandler handler : handlerList) {
             if (handler.isClassValid(value == null ? field.getType() : value.getClass())) {
                 if (!compound.contains(name)) continue;

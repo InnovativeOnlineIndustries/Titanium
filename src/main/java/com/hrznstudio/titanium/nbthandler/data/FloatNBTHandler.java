@@ -7,10 +7,12 @@
 
 package com.hrznstudio.titanium.nbthandler.data;
 
-import com.hrznstudio.titanium.nbthandler.INBTHandler;
+import com.hrznstudio.titanium.api.INBTHandler;
+import com.hrznstudio.titanium.util.Unboxing;
 import net.minecraft.nbt.NBTTagCompound;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class FloatNBTHandler implements INBTHandler<Float> {
     @Override
@@ -25,7 +27,7 @@ public class FloatNBTHandler implements INBTHandler<Float> {
     }
 
     @Override
-    public Float readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, Float currentValue) {
-        return compound.contains(name) ? compound.getFloat(name) : null;
+    public Float readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, @Nullable Float currentValue) {
+        return compound.contains(name) ? compound.getFloat(name) : Unboxing.safelyUnbox(currentValue);
     }
 }

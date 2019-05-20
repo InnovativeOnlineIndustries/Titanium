@@ -5,11 +5,12 @@
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
 
-package com.hrznstudio.titanium.nbthandler;
+package com.hrznstudio.titanium.api;
 
 import net.minecraft.nbt.NBTTagCompound;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public interface INBTHandler<T> {
 
@@ -39,5 +40,5 @@ public interface INBTHandler<T> {
      * @param currentValue The current value of the object
      * @return The object if it was successfully stored or null if it wasn't giving the next handlers a chance to store the value.
      */
-    T readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, T currentValue);
+    T readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, @Nullable T currentValue);
 }

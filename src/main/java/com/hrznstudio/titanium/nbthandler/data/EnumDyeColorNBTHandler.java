@@ -7,13 +7,9 @@
 
 package com.hrznstudio.titanium.nbthandler.data;
 
-import com.hrznstudio.titanium.nbthandler.INBTHandler;
 import net.minecraft.item.EnumDyeColor;
-import net.minecraft.nbt.NBTTagCompound;
 
-import javax.annotation.Nonnull;
-
-public class EnumDyeColorNBTHandler implements INBTHandler<EnumDyeColor> {
+public class EnumDyeColorNBTHandler extends EnumNBTHandler<EnumDyeColor> {
 
     @Override
     public boolean isClassValid(Class<?> aClass) {
@@ -21,13 +17,12 @@ public class EnumDyeColorNBTHandler implements INBTHandler<EnumDyeColor> {
     }
 
     @Override
-    public boolean storeToNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, @Nonnull EnumDyeColor object) {
-        compound.putInt(name, object.getId());
-        return true;
+    protected int getIdFrom(EnumDyeColor obj) {
+        return obj.getId();
     }
 
     @Override
-    public EnumDyeColor readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, EnumDyeColor current) {
-        return compound.contains(name) ? EnumDyeColor.byId(compound.getInt(name)) : current;
+    protected EnumDyeColor getFromId(int id) {
+        return EnumDyeColor.byId(id);
     }
 }

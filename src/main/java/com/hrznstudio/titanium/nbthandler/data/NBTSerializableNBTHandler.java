@@ -7,11 +7,12 @@
 
 package com.hrznstudio.titanium.nbthandler.data;
 
-import com.hrznstudio.titanium.nbthandler.INBTHandler;
+import com.hrznstudio.titanium.api.INBTHandler;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class NBTSerializableNBTHandler implements INBTHandler<INBTSerializable> {
 
@@ -27,11 +28,11 @@ public class NBTSerializableNBTHandler implements INBTHandler<INBTSerializable> 
     }
 
     @Override
-    public INBTSerializable readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, INBTSerializable currentValue) {
-        if (compound.contains(name)) {
+    public INBTSerializable readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, @Nullable INBTSerializable currentValue) {
+        if (compound.contains(name) && currentValue != null) {
             currentValue.deserializeNBT(compound.get(name));
             return currentValue;
         }
-        return null;
+        return currentValue;
     }
 }

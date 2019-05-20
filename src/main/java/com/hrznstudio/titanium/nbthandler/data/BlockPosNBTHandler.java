@@ -8,11 +8,12 @@
 package com.hrznstudio.titanium.nbthandler.data;
 
 
-import com.hrznstudio.titanium.nbthandler.INBTHandler;
+import com.hrznstudio.titanium.api.INBTHandler;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class BlockPosNBTHandler implements INBTHandler<BlockPos> {
 
@@ -28,7 +29,7 @@ public class BlockPosNBTHandler implements INBTHandler<BlockPos> {
     }
 
     @Override
-    public BlockPos readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, BlockPos current) {
-        return compound.contains(name) ? BlockPos.fromLong(compound.getLong(name)) : null;
+    public BlockPos readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, @Nullable BlockPos current) {
+        return compound.contains(name) ? BlockPos.fromLong(compound.getLong(name)) : current;
     }
 }

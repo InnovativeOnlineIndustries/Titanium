@@ -7,11 +7,12 @@
 
 package com.hrznstudio.titanium.nbthandler.data;
 
-import com.hrznstudio.titanium.nbthandler.INBTHandler;
+import com.hrznstudio.titanium.api.INBTHandler;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidTank;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class TankNBTHandler implements INBTHandler<FluidTank> {
 
@@ -27,11 +28,11 @@ public class TankNBTHandler implements INBTHandler<FluidTank> {
     }
 
     @Override
-    public FluidTank readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, FluidTank currentValue) {
+    public FluidTank readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, @Nullable FluidTank currentValue) {
         if (compound.contains(name)) {
             currentValue.readFromNBT(compound.getCompound(name));
             return currentValue;
         }
-        return null;
+        return currentValue;
     }
 }

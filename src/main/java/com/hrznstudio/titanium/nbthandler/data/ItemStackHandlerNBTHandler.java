@@ -8,11 +8,12 @@
 package com.hrznstudio.titanium.nbthandler.data;
 
 
-import com.hrznstudio.titanium.nbthandler.INBTHandler;
+import com.hrznstudio.titanium.api.INBTHandler;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class ItemStackHandlerNBTHandler implements INBTHandler<ItemStackHandler> {
     @Override
@@ -27,12 +28,12 @@ public class ItemStackHandlerNBTHandler implements INBTHandler<ItemStackHandler>
     }
 
     @Override
-    public ItemStackHandler readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, ItemStackHandler current) {
+    public ItemStackHandler readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, @Nullable ItemStackHandler current) {
         if (compound.contains(name)) {
             if (current == null) current = new ItemStackHandler();
             current.deserializeNBT(compound.getCompound(name));
             return current;
         }
-        return null;
+        return current;
     }
 }

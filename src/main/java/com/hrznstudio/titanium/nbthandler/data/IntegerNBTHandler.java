@@ -7,10 +7,12 @@
 
 package com.hrznstudio.titanium.nbthandler.data;
 
-import com.hrznstudio.titanium.nbthandler.INBTHandler;
+import com.hrznstudio.titanium.api.INBTHandler;
+import com.hrznstudio.titanium.util.Unboxing;
 import net.minecraft.nbt.NBTTagCompound;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class IntegerNBTHandler implements INBTHandler<Integer> {
 
@@ -47,7 +49,7 @@ public class IntegerNBTHandler implements INBTHandler<Integer> {
      * @return The object if it was successfully stored or null if it wasn't giving the next handlers a chance to store the value.
      */
     @Override
-    public Integer readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, Integer current) {
-        return compound.contains(name) ? compound.getInt(name) : null;
+    public Integer readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, @Nullable Integer current) {
+        return compound.contains(name) ? compound.getInt(name) : Unboxing.safelyUnbox(current);
     }
 }

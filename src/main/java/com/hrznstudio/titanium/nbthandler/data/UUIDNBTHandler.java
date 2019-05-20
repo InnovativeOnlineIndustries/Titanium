@@ -12,21 +12,22 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.UUID;
 
-public class StringNBTHandler implements INBTHandler<String> {
+public class UUIDNBTHandler implements INBTHandler<UUID> {
     @Override
     public boolean isClassValid(Class<?> aClass) {
-        return String.class.isAssignableFrom(aClass);
+        return UUID.class.isAssignableFrom(aClass);
     }
 
     @Override
-    public boolean storeToNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, @Nonnull String object) {
-        compound.putString(name, object);
+    public boolean storeToNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, @Nonnull UUID object) {
+        compound.putUniqueId(name, object);
         return true;
     }
 
     @Override
-    public String readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, @Nullable String current) {
-        return compound.contains(name) ? compound.getString(name) : current;
+    public UUID readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, @Nullable UUID current) {
+        return compound.contains(name) ? compound.getUniqueId(name) : current;
     }
 }
