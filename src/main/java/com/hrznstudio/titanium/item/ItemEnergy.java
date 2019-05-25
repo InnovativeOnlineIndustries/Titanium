@@ -53,13 +53,13 @@ public class ItemEnergy extends ItemBase {
     }
 
     @Override
-    public boolean hasDetails(@Nullable Key key) {
-        return key == Key.SHIFT || super.hasDetails(key);
+    public boolean hasTooltipDetails(@Nullable Key key) {
+        return key == Key.SHIFT || super.hasTooltipDetails(key);
     }
 
     @Override
-    public void addDetails(@Nullable Key key, ItemStack stack, List<ITextComponent> tooltip, boolean advanced) {
-        super.addDetails(key, stack, tooltip, advanced);
+    public void addTooltipDetails(@Nullable Key key, ItemStack stack, List<ITextComponent> tooltip, boolean advanced) {
+        super.addTooltipDetails(key, stack, tooltip, advanced);
         if (key == Key.SHIFT) {
             //getEnergyStorage(stack).ifPresent(storage -> tooltip.add(new TextComponentString(TextFormatting.YELLOW + "Energy: " + TextFormatting.RED + storage.getEnergyStored() + TextFormatting.YELLOW + "/" + TextFormatting.RED + storage.getMaxEnergyStored() + TextFormatting.RESET))); TODO
         }

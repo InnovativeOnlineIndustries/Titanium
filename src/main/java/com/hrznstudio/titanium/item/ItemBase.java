@@ -41,15 +41,15 @@ public class ItemBase extends Item implements IModelRegistrar {
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public final void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
-        if (hasDetails(null)) {
-            addDetails(null, stack, tooltip, flagIn.isAdvanced());
+        if (hasTooltipDetails(null)) {
+            addTooltipDetails(null, stack, tooltip, flagIn.isAdvanced());
         }
         for (Key key : Key.values()) {
-            if (hasDetails(key)) {
+            if (hasTooltipDetails(key)) {
                 if (key.isDown()) {
-                    addDetails(key, stack, tooltip, flagIn.isAdvanced());
+                    addTooltipDetails(key, stack, tooltip, flagIn.isAdvanced());
                 } else {
                     tooltip.add(new TextComponentString("Hold " + TextFormatting.YELLOW + key.getName() + TextFormatting.GRAY + " for more information"));
                 }
@@ -57,11 +57,11 @@ public class ItemBase extends Item implements IModelRegistrar {
         }
     }
 
-    public void addDetails(@Nullable Key key, ItemStack stack, List<ITextComponent> tooltip, boolean advanced) {
+    public void addTooltipDetails(@Nullable Key key, ItemStack stack, List<ITextComponent> tooltip, boolean advanced) {
 
     }
 
-    public boolean hasDetails(@Nullable Key key) {
+    public boolean hasTooltipDetails(@Nullable Key key) {
         return false;
     }
 
