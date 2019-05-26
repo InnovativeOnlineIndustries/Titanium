@@ -8,9 +8,12 @@
 package com.hrznstudio.titanium.block.tile.fluid;
 
 import com.hrznstudio.titanium.block.tile.sideness.IFacingHandler;
+import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidTank;
 
 import java.awt.*;
@@ -19,19 +22,19 @@ import java.util.HashMap;
 public class SidedFluidTank extends PosFluidTank implements IFacingHandler {
 
     private int color;
-    private HashMap<EnumFacing, FaceMode> facingModes;
+    private HashMap<FacingUtil.Sideness, FaceMode> facingModes;
 
     public SidedFluidTank(int amount, int posX, int posY, String name) {
         super(amount, posX, posY, name);
         this.color = EnumDyeColor.WHITE.getFireworkColor();
         this.facingModes = new HashMap<>();
-        for (EnumFacing facing : EnumFacing.values()) {
+        for (FacingUtil.Sideness facing : FacingUtil.Sideness.values()) {
             this.facingModes.put(facing, FaceMode.ENABLED);
         }
     }
 
     @Override
-    public HashMap<EnumFacing, FaceMode> getFacingModes() {
+    public HashMap<FacingUtil.Sideness, FaceMode> getFacingModes() {
         return facingModes;
     }
 
@@ -56,11 +59,18 @@ public class SidedFluidTank extends PosFluidTank implements IFacingHandler {
     }
 
     @Override
+    public boolean work(World world, BlockPos pos, EnumFacing blockFacing, int workAmount) {
+        //TODO Implement when fluids work because idk if working so I wont bother
+        return false;
+    }
+
+
+    @Override
     public FluidTank readFromNBT(NBTTagCompound nbt) {
         if (nbt.contains("FacingModes")) {
             NBTTagCompound compound = nbt.getCompound("FacingModes");
             for (String face : compound.keySet()) {
-                facingModes.put(EnumFacing.byName(face), FaceMode.valueOf(compound.getString(face)));
+                facingModes.put(FacingUtil.Sideness.valueOf(face), FaceMode.valueOf(compound.getString(face)));
             }
         }
         return super.readFromNBT(nbt);
@@ -70,8 +80,8 @@ public class SidedFluidTank extends PosFluidTank implements IFacingHandler {
     public NBTTagCompound writeToNBT(NBTTagCompound comp) {
         NBTTagCompound nbt = super.writeToNBT(comp);
         NBTTagCompound compound = new NBTTagCompound();
-        for (EnumFacing facing : facingModes.keySet()) {
-            compound.putString(facing.getName(), facingModes.get(facing).name());
+        for (FacingUtil.Sideness facing : facingModes.keySet()) {
+            compound.putString(facing.name(), facingModes.get(facing).name());
         }
         nbt.put("FacingModes", compound);
         return nbt;

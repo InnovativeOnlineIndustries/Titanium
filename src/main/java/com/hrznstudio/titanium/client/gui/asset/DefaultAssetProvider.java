@@ -88,7 +88,7 @@ public final class DefaultAssetProvider implements IAssetProvider {
     private final IAsset BUTTON_SIDENESS_ENABLED = () -> new Rectangle(196, 16, 14, 14);
     private final IAsset BUTTON_SIDENESS_PULL = () -> new Rectangle(196, 31, 14, 14);
     private final IAsset BUTTON_SIDENESS_PUSH = () -> new Rectangle(196, 46, 14, 14);
-
+    private final IAsset BUTTON_SIDENESS_MANAGER = () -> new Rectangle(1, 231, 14, 14);
 
     DefaultAssetProvider() {
     }
@@ -120,6 +120,8 @@ public final class DefaultAssetProvider implements IAssetProvider {
             return assetType.castOrDefault(BUTTON_SIDENESS_PULL);
         if (assetType == AssetTypes.BUTTON_SIDENESS_PUSH)
             return assetType.castOrDefault(BUTTON_SIDENESS_PUSH);
+        if (assetType == AssetTypes.BUTTON_SIDENESS_MANAGER)
+            return assetType.castOrDefault(BUTTON_SIDENESS_MANAGER);
         return null;
     }
 }

@@ -120,4 +120,5 @@ public class GuiContainerTile<T extends TileActive> extends GuiContainer impleme
     public List<IGuiAddon> getAddons() {
         return addonList;
     }
+
 }

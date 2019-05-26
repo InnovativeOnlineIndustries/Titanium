@@ -25,12 +25,14 @@ import com.hrznstudio.titanium.block.tile.sideness.IFacingHandler;
 import com.hrznstudio.titanium.client.gui.GuiContainerTile;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.container.ContainerTileBase;
+import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
@@ -148,7 +150,7 @@ public class TileActive extends TileBase implements IGuiAddonProvider, ITickable
                 @Nonnull
                 @Override
                 public T get() {
-                    return (T) multiInventoryHandler.getCapabilityForSide(side);
+                    return (T) multiInventoryHandler.getCapabilityForSide(FacingUtil.getFacingRelative(TileActive.this.getFacingDirection(), side));
                 }
             });
         }
@@ -157,7 +159,7 @@ public class TileActive extends TileBase implements IGuiAddonProvider, ITickable
                 @Nonnull
                 @Override
                 public T get() {
-                    return (T) multiTankHandler.getCapabilityForSide(side);
+                    return (T) multiTankHandler.getCapabilityForSide(FacingUtil.getFacingRelative(TileActive.this.getFacingDirection(), side));
                 }
             });
         }
@@ -194,7 +196,33 @@ public class TileActive extends TileBase implements IGuiAddonProvider, ITickable
     public void tick() {
         if (!world.isRemote) {
             if (multiProgressBarHandler != null) multiProgressBarHandler.update();
+            if (world.getGameTime() % getFacingHandlerWorkTime() == 0) {
+                if (multiInventoryHandler != null) {
+                    for (PosInvHandler inventoryHandler : multiInventoryHandler.getInventoryHandlers()) {
+                        if (inventoryHandler instanceof IFacingHandler) {
+                            if (((IFacingHandler) inventoryHandler).work(this.world, this.pos, this.getFacingDirection(), getFacingHandlerWorkAmount()))
+                                break;
+                        }
+                    }
+                }
+                if (multiButtonHandler != null) {
+                    for (PosFluidTank tank : multiTankHandler.getTanks()) {
+                        if (tank instanceof IFacingHandler) {
+                            if (((IFacingHandler) tank).work(this.world, this.pos, this.getFacingDirection(), getFacingHandlerWorkAmount()))
+                                break;
+                        }
+                    }
+                }
+            }
         }
+    }
+
+    public int getFacingHandlerWorkTime() {
+        return 10;
+    }
+
+    public int getFacingHandlerWorkAmount() {
+        return 4;
     }
 
     public MultiButtonHandler getMultiButtonHandler() {
@@ -215,5 +243,20 @@ public class TileActive extends TileBase implements IGuiAddonProvider, ITickable
                 return (IFacingHandler) posFluidTank;
         }
         return null;
+    }
+
+    public void handleButtonMessage(int id, NBTTagCompound compound) {
+        if (id == -1) {
+            String name = compound.getString("Name");
+            FacingUtil.Sideness facing = FacingUtil.Sideness.valueOf(compound.getString("Facing"));
+            IFacingHandler.FaceMode faceMode = IFacingHandler.FaceMode.values()[compound.getInt("Next")];
+            IFacingHandler facingHandler = getHandlerFromName(name);
+            if (facingHandler != null) {
+                facingHandler.getFacingModes().put(facing, faceMode);
+                markForUpdate();
+            }
+        } else if (multiButtonHandler != null) {
+            multiButtonHandler.clickButton(id, compound);
+        }
     }
 }

@@ -8,15 +8,16 @@
 package com.hrznstudio.titanium._test;
 
 import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.block.BlockTileBase;
+import com.hrznstudio.titanium.block.BlockRotation;
 import net.minecraft.block.material.Material;
 
-public class BlockTest extends BlockTileBase<TileTest> {
+public class BlockTest extends BlockRotation<TileTest> {
 
     public static BlockTest TEST;
 
     public BlockTest() {
         super("block_test", Properties.create(Material.ROCK), TileTest.class);
+        setRotationType(RotationType.FOUR_WAY);
     }
 
     @Override

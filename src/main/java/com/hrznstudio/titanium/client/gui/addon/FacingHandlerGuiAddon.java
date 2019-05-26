@@ -7,18 +7,22 @@
 
 package com.hrznstudio.titanium.client.gui.addon;
 
+import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.block.tile.button.PosButton;
 import com.hrznstudio.titanium.block.tile.sideness.IFacingHandler;
+import com.hrznstudio.titanium.block.tile.sideness.SidedHandlerManager;
 import com.hrznstudio.titanium.client.gui.GuiContainerTile;
 import com.hrznstudio.titanium.client.gui.IGuiAddonConsumer;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
+import com.hrznstudio.titanium.network.NetworkHandler;
 import com.hrznstudio.titanium.util.AssetUtil;
 import com.hrznstudio.titanium.util.FacingUtil;
+import com.hrznstudio.titanium.util.LangUtil;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.text.TextFormatting;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -29,15 +33,20 @@ import java.util.List;
 public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
 
     private final IFacingHandler handler;
-    private final Rectangle location;
-    private boolean clicked;
+    private final SidedHandlerManager manager;
     private List<StateButtonAddon> buttonAddons;
+    private int xSize;
+    private int ySize;
+    private boolean clicked;
 
-    public FacingHandlerGuiAddon(Rectangle location, IFacingHandler facingHandler) {
-        super(location.x, location.y);
-        this.location = location;
+    public FacingHandlerGuiAddon(SidedHandlerManager manager, IFacingHandler facingHandler) {
+        super(manager.getPosX(), manager.getPosY());
+        this.manager = manager;
         this.handler = facingHandler;
         this.buttonAddons = new ArrayList<>();
+        this.xSize = 0;
+        this.ySize = 0;
+        this.clicked = false;
     }
 
     public static Point getPointFromFacing(FacingUtil.Sideness sideness) {
@@ -64,22 +73,23 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
 
     @Override
     public void drawGuiContainerBackgroundLayer(GuiScreen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+        this.xSize = provider.getAsset(AssetTypes.BUTTON_SIDENESS_MANAGER).getArea().width;
+        this.ySize = provider.getAsset(AssetTypes.BUTTON_SIDENESS_MANAGER).getArea().height;
         GlStateManager.color4f(1, 1, 1, 1);
-        //TODO draw the button highlight overlay
-//        Minecraft.getMinecraft().getTextureManager().bindTexture(BG_TEXTURE);
-//        container.drawTexturedModalRect(container.getGuiLeft() + getPosX(), container.getGuiTop() + getPosY(), 1, 213 + 18, 14, 14);
+        AssetUtil.drawAsset(screen, provider.getAsset(AssetTypes.BUTTON_SIDENESS_MANAGER), guiX + getPosX(), guiY + getPosY());
         int offset = 2;
-        GuiScreen.drawRect(guiX + getPosX() + offset, guiY + getPosY() + offset, getXSize() - offset - 2, getYSize() - offset - 2, handler.getColor());
+        GuiScreen.drawRect(guiX + getPosX() + offset, guiY + getPosY() + offset, guiX + getPosX() + getXSize() - offset, guiY + getPosY() + getYSize() - offset, handler.getColor());
+        GlStateManager.color4f(1, 1, 1, 1);
         if (isClicked()) {
             //TODO draw the overlay for the slots
-//            container.drawTexturedModalRect(container.getGuiLeft() + getPosX(), container.getGuiTop() + getPosY(), 16, 213 + 18, 14, 14);
-//            container.drawTexturedModalRect(container.getGuiLeft() + 7, container.getGuiTop() + 101, 56, 185, 162, 54);
+            screen.drawTexturedModalRect(guiX + getPosX(), guiY + getPosY(), 16, 213 + 18, 14, 14);
+            screen.drawTexturedModalRect(guiX + 7, guiY + 101, 56, 185, 162, 54);
         }
     }
 
     @Override
     public void drawGuiContainerForegroundLayer(GuiScreen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
-        if (isInside(screen, mouseX, mouseY) || isClicked()) {
+        if (isInside(screen, mouseX - guiX, mouseY - guiY) || isClicked()) {
             AssetUtil.drawHorizontalLine(handler.getRectangle().x, handler.getRectangle().x + handler.getRectangle().width, handler.getRectangle().y, handler.getColor());
             AssetUtil.drawHorizontalLine(handler.getRectangle().x, handler.getRectangle().x + handler.getRectangle().width, handler.getRectangle().y + handler.getRectangle().height, handler.getColor());
             AssetUtil.drawVerticalLine(handler.getRectangle().x, handler.getRectangle().y, handler.getRectangle().y + handler.getRectangle().height, handler.getColor());
@@ -89,17 +99,17 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
 
     @Override
     public List<String> getTooltipLines() {
-        return Arrays.asList(handler.getName());
+        return Arrays.asList(LangUtil.get("tooltip.titanium.facing_handler." + handler.getName().toLowerCase()));
     }
 
     @Override
     public int getXSize() {
-        return location.width;
+        return xSize;
     }
 
     @Override
     public int getYSize() {
-        return location.height;
+        return ySize;
     }
 
     @Override
@@ -113,11 +123,9 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
             this.setClicked((GuiContainerTile) screen, !clicked);
             if (clicked) {
                 ((GuiContainerTile) screen).getContainer().removeChestInventory();
-                EnumFacing relative = ((GuiContainerTile) screen).getContainer().getTile().getFacingDirection();
-                for (EnumFacing facing : EnumFacing.values()) {
+                for (FacingUtil.Sideness facing : FacingUtil.Sideness.values()) {
                     if (!handler.getFacingModes().containsKey(facing)) continue;
-                    FacingUtil.Sideness sideness = FacingUtil.getFacingRelative(relative, facing);
-                    Point point = getPointFromFacing(sideness);
+                    Point point = getPointFromFacing(facing);
                     StateButtonAddon addon = new StateButtonAddon(new PosButton(point.x, point.y, 14, 14), IFacingHandler.FaceMode.NONE.getInfo(), IFacingHandler.FaceMode.ENABLED.getInfo(), IFacingHandler.FaceMode.PULL.getInfo(), IFacingHandler.FaceMode.PUSH.getInfo()) {
                         @Override
                         public int getState() {
@@ -130,12 +138,12 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
                             StateButtonInfo info = getStateInfo();
                             if (info != null && gui instanceof GuiContainerTile) {
                                 NBTTagCompound compound = new NBTTagCompound();
-                                compound.putString("Facing", facing.getName());
+                                compound.putString("Facing", facing.name());
                                 int faceMode = (getState() + (mouse == 0 ? 1 : -1)) % IFacingHandler.FaceMode.values().length;
                                 if (faceMode < 0) faceMode = IFacingHandler.FaceMode.values().length - 1;
                                 compound.putInt("Next", faceMode);
                                 compound.putString("Name", handler.getName());
-                                //Litterboxlib.NETWORK.sendToServer(new TileUpdateFromClientMessage("SIDE_CHANGE", gui.getContainerTile().getTile().getPos(), compound)); TODO
+                                NetworkHandler.NETWORK.sendToServer(new ButtonClickNetworkMessage(((GuiContainerTile) gui).getContainer().getTile().getPos(), -1, compound));
                                 handler.getFacingModes().put(facing, IFacingHandler.FaceMode.values()[faceMode]);
                                 ((GuiContainerTile) gui).getContainer().getTile().updateNeigh();
                             }
@@ -143,8 +151,12 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
 
                         @Override
                         public List<String> getTooltipLines() {
-                            List<String> strings = new ArrayList<>(super.getTooltipLines());
-                            strings.add(sideness.toString());
+                            List<String> strings = new ArrayList<>();
+                            IFacingHandler.FaceMode mode = IFacingHandler.FaceMode.values()[getState()];
+                            strings.add(TextFormatting.GOLD + LangUtil.get("tooltip.titanium.facing_handler.direction") +
+                                    TextFormatting.RESET + LangUtil.get("tooltip.titanium.facing_handler." + facing.name().toLowerCase()));
+                            strings.add(TextFormatting.GOLD + LangUtil.get("tooltip.titanium.facing_handler.action") +
+                                    mode.getColor() + LangUtil.get("tooltip.titanium.facing_handler." + getStateInfo().getTooltip()[0]));
                             return strings;
                         }
                     };

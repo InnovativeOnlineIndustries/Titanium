@@ -16,7 +16,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -200,6 +200,8 @@ public class PosInvHandler extends ItemStackHandler implements IGuiAddonProvider
 
     @Override
     public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
-        return Collections.singletonList(() -> new SlotsGuiAddon(this));
+        List<IFactory<? extends IGuiAddon>> addons = new ArrayList<>();
+        addons.add(() -> new SlotsGuiAddon(this));
+        return addons;
     }
 }

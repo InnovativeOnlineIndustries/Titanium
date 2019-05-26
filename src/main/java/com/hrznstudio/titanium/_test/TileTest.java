@@ -15,7 +15,7 @@ import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.block.tile.TilePowered;
 import com.hrznstudio.titanium.block.tile.button.PosButton;
 import com.hrznstudio.titanium.block.tile.fluid.PosFluidTank;
-import com.hrznstudio.titanium.block.tile.inventory.PosInvHandler;
+import com.hrznstudio.titanium.block.tile.inventory.SidedInvHandler;
 import com.hrznstudio.titanium.block.tile.progress.PosProgressBar;
 import com.hrznstudio.titanium.client.gui.addon.EnergyBarGuiAddon;
 import com.hrznstudio.titanium.client.gui.addon.StateButtonAddon;
@@ -34,9 +34,9 @@ public class TileTest extends TilePowered implements ITickable {
     @Save
     private PosProgressBar bar;
     @Save
-    private PosInvHandler first;
+    private SidedInvHandler first;
     @Save
-    private PosInvHandler second;
+    private SidedInvHandler second;
     @Save
     private PosFluidTank third;
 
@@ -46,8 +46,8 @@ public class TileTest extends TilePowered implements ITickable {
 
     public TileTest() {
         super(BlockTest.TEST);
-        this.addInventory(first = new PosInvHandler("test", -120, 20, 1).setTile(this).setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
-        this.addInventory(second = new PosInvHandler("test2", 80, 30, 1).setTile(this).setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
+        this.addInventory(first = (SidedInvHandler) new SidedInvHandler("test", 80, 60, 1, 0).setTile(this).setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
+        this.addInventory(second = (SidedInvHandler) new SidedInvHandler("test2", 80, 30, 1, 1).setTile(this).setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
         this.addGuiAddonFactory(() -> new EnergyBarGuiAddon(4, 10, getEnergyStorage()));
         this.addProgressBar(bar = new PosProgressBar(40, 20, 500).setCanIncrease(tileEntity -> true).setOnFinishWork(() -> System.out.println("WOWOOW")).setBarDirection(PosProgressBar.BarDirection.VERTICAL_UP).setColor(EnumDyeColor.LIME));
         this.addTank(third = new PosFluidTank(8000, 130, 30, "testTank"));
@@ -67,6 +67,8 @@ public class TileTest extends TilePowered implements ITickable {
             if (state >= 4) state = 0;
             markForUpdate();
         }));
+        first.setColor(EnumDyeColor.LIME);
+        second.setColor(EnumDyeColor.CYAN);
     }
 
     @Override

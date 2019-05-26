@@ -12,21 +12,23 @@ import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
 import com.hrznstudio.titanium.block.tile.sideness.IFacingHandler;
 import com.hrznstudio.titanium.client.gui.addon.TankGuiAddon;
-import net.minecraft.util.EnumFacing;
+import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 public class MultiTankHandler implements IGuiAddonProvider {
 
-    private List<PosFluidTank> tanks;
+    private LinkedHashSet<PosFluidTank> tanks;
 
     public MultiTankHandler() {
-        tanks = new ArrayList<>();
+        tanks = new LinkedHashSet<>();
     }
 
     public void addTank(PosFluidTank tank) {
@@ -42,13 +44,13 @@ public class MultiTankHandler implements IGuiAddonProvider {
         return addons;
     }
 
-    public MultiTankCapabilityHandler getCapabilityForSide(EnumFacing facing) {
-        if (facing == null)
-            return new MultiTankCapabilityHandler(tanks);
+    public MultiTankCapabilityHandler getCapabilityForSide(FacingUtil.Sideness sideness) {
+        if (sideness == null)
+            return new MultiTankCapabilityHandler(new ArrayList<>(tanks));
         List<PosFluidTank> tanks = new ArrayList<>();
         for (PosFluidTank tank : this.tanks) {
             if (tank instanceof IFacingHandler) {
-                if (((IFacingHandler) tank).getFacingModes().containsKey(facing) && ((IFacingHandler) tank).getFacingModes().get(facing).allowsConnection()) {
+                if (((IFacingHandler) tank).getFacingModes().containsKey(sideness) && ((IFacingHandler) tank).getFacingModes().get(sideness).allowsConnection()) {
                     tanks.add(tank);
                 }
             } else {
@@ -59,7 +61,7 @@ public class MultiTankHandler implements IGuiAddonProvider {
         return new MultiTankCapabilityHandler(tanks);
     }
 
-    public List<PosFluidTank> getTanks() {
+    public HashSet<PosFluidTank> getTanks() {
         return tanks;
     }
 

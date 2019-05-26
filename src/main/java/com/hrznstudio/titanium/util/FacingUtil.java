@@ -16,9 +16,21 @@ public class FacingUtil {
         if (facing == EnumFacing.DOWN) return Sideness.BOTTOM;
         if (relative == facing) return Sideness.FRONT;
         if (relative == facing.getOpposite()) return Sideness.BACK;
-        if (relative == facing.rotateY()) return Sideness.RIGHT;
-        if (relative == facing.rotateYCCW()) return Sideness.LEFT;
+        if (relative == facing.rotateYCCW()) return Sideness.RIGHT;
+        if (relative == facing.rotateY()) return Sideness.LEFT;
         return Sideness.BOTTOM;
+    }
+
+    public static EnumFacing getFacingFromSide(EnumFacing block, Sideness sideness) {
+        if (block.getAxis().isHorizontal()) {
+            if (sideness == Sideness.TOP) return EnumFacing.UP;
+            if (sideness == Sideness.BOTTOM) return EnumFacing.DOWN;
+            if (sideness == Sideness.FRONT) return block;
+            if (sideness == Sideness.BACK) return block.getOpposite();
+            if (sideness == Sideness.LEFT) return block.rotateYCCW();
+            if (sideness == Sideness.RIGHT) return block.rotateY();
+        }
+        return EnumFacing.NORTH;
     }
 
     public enum Sideness {

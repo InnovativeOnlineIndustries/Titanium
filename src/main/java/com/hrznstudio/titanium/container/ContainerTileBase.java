@@ -43,10 +43,10 @@ public class ContainerTileBase<T extends TileActive> extends Container {
             }
         }
         Point hotbarPos = IAssetProvider.getAsset(tile.getAssetProvider(), AssetTypes.BACKGROUND).getHotbarPosition();
-        addPlayerChestInventory();
         for (int k = 0; k < 9; k++) {
             addSlot(new Slot(player, k, hotbarPos.x + k * 18, hotbarPos.y));
         }
+        addPlayerChestInventory();
     }
 
     public void addPlayerChestInventory() {

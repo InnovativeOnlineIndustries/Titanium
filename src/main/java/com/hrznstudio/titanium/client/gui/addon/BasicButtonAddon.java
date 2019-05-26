@@ -85,8 +85,7 @@ public class BasicButtonAddon extends BasicGuiAddon implements IClickable {
         @Override
         protected void handleMessage(NetworkEvent.Context context) {
             TileUtil.getTileEntity(context.getSender().world, pos, TileActive.class).ifPresent(tileActive -> {
-                if (tileActive.getMultiButtonHandler() != null)
-                    tileActive.getMultiButtonHandler().clickButton(id, data);
+                tileActive.handleButtonMessage(id, data);
             });
         }
     }
