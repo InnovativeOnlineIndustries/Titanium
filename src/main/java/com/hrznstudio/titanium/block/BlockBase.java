@@ -7,9 +7,9 @@
 
 package com.hrznstudio.titanium.block;
 
+import com.hrznstudio.titanium.proton.api.IAlternativeEntries;
+import com.hrznstudio.titanium.proton.api.RegistryManager;
 import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.api.internal.IItemBlockFactory;
-import com.hrznstudio.titanium.api.internal.IModelRegistrar;
 import com.hrznstudio.titanium.api.raytrace.DistanceRayTraceResult;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -32,7 +32,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class BlockBase extends Block implements IModelRegistrar, IItemBlockFactory {
+public abstract class BlockBase extends Block implements IAlternativeEntries {
 
     private ItemGroup itemGroup = ItemGroup.SEARCH;
 
@@ -78,14 +78,13 @@ public abstract class BlockBase extends Block implements IModelRegistrar, IItemB
         return super.getCollisionShape(state, worldIn, pos);
     }
 
-    @Override
     public IFactory<ItemBlock> getItemBlockFactory() {
         return () -> (ItemBlock) new ItemBlock(this, new Item.Properties().group(this.itemGroup)).setRegistryName(Objects.requireNonNull(getRegistryName()));
     }
 
     @Override
-    public void registerModels() {
-        //ClientUtil.registerToMapper(this);
+    public void addAlternatives(RegistryManager registry) {
+        registry.addEntry(Item.class, getItemBlockFactory().create());
     }
 
     public List<VoxelShape> getBoundingBoxes(IBlockState state, IBlockReader source, BlockPos pos) {

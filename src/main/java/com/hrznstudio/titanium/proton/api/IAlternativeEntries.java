@@ -5,8 +5,9 @@
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
 
-package com.hrznstudio.titanium.api.internal;
+package com.hrznstudio.titanium.proton.api;
 
-public interface IModelRegistrar {
-    void registerModels();
+public interface IAlternativeEntries {
+    void addAlternatives(RegistryManager registry);
+
 }

@@ -5,11 +5,10 @@
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
 
-package com.hrznstudio.titanium.api.internal;
+package com.hrznstudio.titanium.proton.api;
 
-import com.hrznstudio.titanium.api.IFactory;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 
-public interface IItemBlockFactory {
-    IFactory<ItemBlock> getItemBlockFactory();
+public interface IItemColorProvider {
+    int getColor(ItemStack var1, int var2);
 }

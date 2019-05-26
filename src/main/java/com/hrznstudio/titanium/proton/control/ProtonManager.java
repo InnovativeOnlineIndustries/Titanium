@@ -5,21 +5,25 @@
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
 
-package com.hrznstudio.titanium.util;
+package com.hrznstudio.titanium.proton.control;
 
+import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.google.common.collect.ImmutableList;
 import com.hrznstudio.titanium.annotation.config.ConfigFile;
-import com.hrznstudio.titanium.api.internal.IColorProvider;
-import com.hrznstudio.titanium.api.internal.IItemBlockFactory;
-import com.hrznstudio.titanium.api.internal.IItemColorProvider;
-import com.hrznstudio.titanium.api.internal.IModelRegistrar;
-import com.hrznstudio.titanium.block.BlockTileBase;
 import com.hrznstudio.titanium.config.AnnotationConfigManager;
+import com.hrznstudio.titanium.proton.EventReceiver;
+import com.hrznstudio.titanium.proton.Proton;
+import com.hrznstudio.titanium.proton.ProtonData;
+import com.hrznstudio.titanium.proton.api.IAlternativeEntries;
+import com.hrznstudio.titanium.proton.api.IColorProvider;
+import com.hrznstudio.titanium.proton.api.IItemColorProvider;
+import com.hrznstudio.titanium.proton.api.RegistryManager;
+import com.hrznstudio.titanium.util.AnnotationUtil;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.Event;
@@ -31,25 +35,52 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.function.Function;
 
-public abstract class TitaniumMod {
+public abstract class ProtonManager implements RegistryManager {
     private final String modid;
-    private final Map<Class<? extends IForgeRegistryEntry>, List<?>> ENTRIES = new HashMap<>();
+    private final Map<Class<? extends IForgeRegistryEntry>, List<?>> entries = new HashMap<>();
     private final AnnotationConfigManager configManager = new AnnotationConfigManager();
+    private final List<Proton> protons = new ArrayList<>();
 
-    public TitaniumMod() {
+    public ProtonManager() {
         modid = ModLoadingContext.get().getActiveContainer().getModId();
         MinecraftForge.EVENT_BUS.register(this);
-        List<Method> methods = getMethods();
+        List<Method> methods = new ArrayList<>(getMethods());
+        AnnotationUtil.getFilteredAnnotatedClasses(ProtonData.class, modid).forEach(aClass -> {
+            addProton(protonManager -> {
+                try {
+                    return (Proton) aClass.getConstructor(ProtonManager.class).newInstance(protonManager);
+                } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        });
+        CommentedFileConfig config = CommentedFileConfig.of("config/" + modid + "/modules.toml");
+        config.load();
+        for (Proton proton : protons) {
+            if (!proton.getData().forced()) {
+                String module = "modules." + proton.getData().value();
+                String desc = proton.getData().description();
+                if (!desc.isEmpty())
+                    config.setComment(module, desc);
+                config.add(module, proton.getData().defaultActive());
+                proton.setActive(config.getOrElse(module, proton.getData().defaultActive()));
+            } else {
+                proton.setActive(true);
+            }
+            if (proton.isActive()) {
+                methods.addAll(proton.getEventMethods());
+                proton.init();
+            }
+        }
+        config.save();
+        config.close();
         methods.forEach(method -> {
             EventReceiver eventReceiver = method.getAnnotation(EventReceiver.class);
             EventPriority priority = eventReceiver.priority();
@@ -84,71 +115,69 @@ public abstract class TitaniumMod {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(event -> {
             if (event instanceof RegistryEvent.Register) {
                 getEntries((Class<IForgeRegistryEntry>) ((RegistryEvent) event).getGenericType()).forEach(t -> ((RegistryEvent.Register) event).getRegistry().register((IForgeRegistryEntry) t));
-                if (((RegistryEvent.Register) event).getGenericType() == TileEntityType.class) {
-                    getEntries(Block.class).stream().filter(BlockTileBase.class::isInstance).map(BlockTileBase.class::cast).forEach(block -> block.registerTile(((RegistryEvent.Register) event).getRegistry()));
-                }
             }
         });
         AnnotationUtil.getFilteredAnnotatedClasses(ConfigFile.class, modid).forEach(aClass -> {
             ConfigFile annotation = (ConfigFile) aClass.getAnnotation(ConfigFile.class);
-            addConfig(new AnnotationConfigManager.Type(annotation.type(), aClass).setName(annotation.value()));
+            addConfig(AnnotationConfigManager.Type.of(annotation.type(), aClass).setName(annotation.value()));
+        });
+        AnnotationUtil.getFilteredAnnotatedClasses(ProtonData.class, modid).forEach(aClass -> {
+            addProton(protonManager -> {
+                try {
+                    return (Proton) aClass.getConstructor(ProtonManager.class).newInstance(protonManager);
+                } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         });
     }
 
-    public List<Method> getMethods() {
+    private List<Method> getMethods() {
         ImmutableList.Builder<Method> builder = new ImmutableList.Builder<>();
         Class clazz = getClass();
         while (clazz != null) {
-            for (Method method : this.getClass().getMethods()) {
+            for (Method method : clazz.getDeclaredMethods()) {
                 if (method.isAnnotationPresent(EventReceiver.class)) {
                     if (method.getParameterTypes().length == 1 && Event.class.isAssignableFrom(method.getParameterTypes()[0])) {
                         builder.add(method);
                     }
                 }
             }
-            clazz = null;
+            clazz = clazz.getSuperclass();
+            if (clazz == Object.class)
+                clazz = null;
         }
         return builder.build();
     }
 
-    public <T extends IForgeRegistryEntry<T>> List<T> getEntries(Class<T> tClass) {
-        if (!ENTRIES.containsKey(tClass)) {
-            ENTRIES.put(tClass, new ArrayList<T>());
+    private void addProton(Function<ProtonManager, Proton> protonFunction) {
+        protons.add(protonFunction.apply(this));
+    }
+
+    public final <T extends IForgeRegistryEntry<T>> List<T> getEntries(Class<T> tClass) {
+        if (!entries.containsKey(tClass)) {
+            entries.put(tClass, new ArrayList<T>());
         }
-        List<T> list = (List<T>) ENTRIES.get(tClass);
+        List<T> list = (List<T>) entries.get(tClass);
         return list == null ? Collections.emptyList() : list;
     }
 
     @EventReceiver
+    @OnlyIn(Dist.CLIENT)
     public final void clientSetupTitanium(FMLClientSetupEvent event) {
         getEntries(Item.class).stream()
                 .filter(IItemColorProvider.class::isInstance)
-                .map(i -> (Item & IItemColorProvider) i)
                 .forEach(i -> Minecraft.getInstance().getItemColors().register(((IItemColorProvider) i)::getColor, i));
         getEntries(Block.class).stream()
                 .filter(IColorProvider.class::isInstance)
-                .map(b -> (Block & IColorProvider) b)
                 .forEach(b -> {
                     Minecraft.getInstance().getItemColors().register(((IColorProvider) b)::getColor, b.asItem());
                     Minecraft.getInstance().getBlockColors().register(((IColorProvider) b)::getColor, b);
                 });
     }
 
-
-    @EventReceiver
-    public final void modelRegistryEventTitanium(ModelRegistryEvent event) {
-        List<Block> blocks = getEntries(Block.class);
-        if (!blocks.isEmpty())
-            blocks.stream()
-                    .filter(IModelRegistrar.class::isInstance)
-                    .map(IModelRegistrar.class::cast)
-                    .forEach(IModelRegistrar::registerModels);
-        List<Item> items = getEntries(Item.class);
-        if (!items.isEmpty())
-            items.stream()
-                    .filter(IModelRegistrar.class::isInstance)
-                    .map(IModelRegistrar.class::cast)
-                    .forEach(IModelRegistrar::registerModels);
+    public final String getModid() {
+        return modid;
     }
 
     @EventReceiver
@@ -161,27 +190,23 @@ public abstract class TitaniumMod {
         configManager.inject();
     }
 
-    public <T extends IForgeRegistryEntry<T>> void addEntry(Class<T> tClass, T t) {
+    @Override
+    public final <T extends IForgeRegistryEntry<T>> void addEntry(Class<T> tClass, T t) {
         getEntries(tClass).add(t);
-        if (t instanceof IItemBlockFactory)
-            addEntry(Item.class, ((IItemBlockFactory) t).getItemBlockFactory().create());
+        if (t instanceof IAlternativeEntries)
+            ((IAlternativeEntries) t).addAlternatives(this);
     }
 
-    public <T extends IForgeRegistryEntry<T>> void addEntries(Class<T> tClass, T... ts) {
+    @Override
+    public final <T extends IForgeRegistryEntry<T>> void addEntries(Class<T> tClass, T... ts) {
         for (T t : ts)
             addEntry(tClass, t);
     }
 
-    public void addConfig(AnnotationConfigManager.Type type) {
+    private void addConfig(AnnotationConfigManager.Type type) {
         for (Class configClass : type.getConfigClass()) {
             if (configManager.isClassManaged(configClass)) return;
         }
         configManager.add(type);
-    }
-
-    @Target(ElementType.METHOD)
-    @Retention(RetentionPolicy.RUNTIME)
-    public @interface EventReceiver {
-        EventPriority priority() default EventPriority.NORMAL;
     }
 }

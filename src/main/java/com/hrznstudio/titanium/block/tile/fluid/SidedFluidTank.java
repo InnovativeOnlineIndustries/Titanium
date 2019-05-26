@@ -43,13 +43,13 @@ public class SidedFluidTank extends PosFluidTank implements IFacingHandler {
         return new Color(color).getRGB();
     }
 
-    public SidedFluidTank setColor(int color) {
-        this.color = color;
+    public SidedFluidTank setColor(EnumDyeColor color) {
+        this.color = color.getFireworkColor();
         return this;
     }
 
-    public SidedFluidTank setColor(EnumDyeColor color) {
-        this.color = color.getFireworkColor();
+    public SidedFluidTank setColor(int color) {
+        this.color = color;
         return this;
     }
 

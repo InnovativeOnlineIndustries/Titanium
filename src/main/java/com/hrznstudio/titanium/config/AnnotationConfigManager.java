@@ -99,10 +99,26 @@ public class AnnotationConfigManager {
         private Class[] configClass;
         private String fileName;
 
-        public Type(ModConfig.Type type, Class... configClass) {
+        private Type(ModConfig.Type type, Class... configClass) {
             this.type = type;
             this.configClass = configClass;
             this.fileName = "";
+        }
+
+        public static Type client(Class... classes) {
+            return new Type(ModConfig.Type.CLIENT, classes);
+        }
+
+        public static Type common(Class... classes) {
+            return new Type(ModConfig.Type.COMMON, classes);
+        }
+
+        public static Type server(Class... classes) {
+            return new Type(ModConfig.Type.SERVER, classes);
+        }
+
+        public static Type of(ModConfig.Type type, Class... classes) {
+            return new Type(type, classes);
         }
 
         public Type setName(String name) {

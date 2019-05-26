@@ -7,6 +7,7 @@
 
 package com.hrznstudio.titanium.block;
 
+import com.hrznstudio.titanium.proton.api.RegistryManager;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.block.tile.TileBase;
 import com.hrznstudio.titanium.nbthandler.NBTManager;
@@ -22,7 +23,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.registries.IForgeRegistry;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -36,10 +36,12 @@ public abstract class BlockTileBase<T extends TileBase> extends BlockBase implem
         this.tileClass = tileClass;
     }
 
-    public void registerTile(IForgeRegistry<TileEntityType<?>> registry) {
+    @Override
+    public void addAlternatives(RegistryManager registry) {
+        super.addAlternatives(registry);
         NBTManager.getInstance().scanTileClassForAnnotations(tileClass);
-        tileEntityType = TileEntityType.Builder.create(getTileEntityFactory()::create).build(null).setRegistryName(getRegistryName());
-        registry.register(tileEntityType);
+        tileEntityType = TileEntityType.register(getRegistryName().toString(), TileEntityType.Builder.create(getTileEntityFactory()::create));
+        registry.addEntry(TileEntityType.class, tileEntityType);
     }
 
     public abstract IFactory<T> getTileEntityFactory();

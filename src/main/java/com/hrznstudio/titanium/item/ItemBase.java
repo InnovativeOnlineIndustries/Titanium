@@ -7,7 +7,6 @@
 
 package com.hrznstudio.titanium.item;
 
-import com.hrznstudio.titanium.api.internal.IModelRegistrar;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
@@ -28,16 +27,11 @@ import java.util.List;
 //import net.minecraft.util.text.TextFormatting;
 
 @ParametersAreNonnullByDefault
-public class ItemBase extends Item implements IModelRegistrar {
+public class ItemBase extends Item {
 
     public ItemBase(String name, Properties properties) {
         super(properties);
         setRegistryName(name);
-    }
-
-    @Override
-    public void registerModels() {
-        //ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(getRegistryName(), "inventory"));
     }
 
     @Override
