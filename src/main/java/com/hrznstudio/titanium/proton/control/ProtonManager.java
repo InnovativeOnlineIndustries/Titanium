@@ -35,6 +35,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -61,7 +63,16 @@ public abstract class ProtonManager implements RegistryManager {
                 }
             });
         });
-        CommentedFileConfig config = CommentedFileConfig.of("config/" + modid + "/modules.toml");
+        File moduleFile = new File("config/" + modid + "/modules.toml");
+        if (!moduleFile.exists()) {
+            try {
+                new File("config/" + modid).mkdir();
+                moduleFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        CommentedFileConfig config = CommentedFileConfig.of(moduleFile);
         config.load();
         for (Proton proton : protons) {
             if (!proton.getData().forced()) {
