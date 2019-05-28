@@ -57,75 +57,8 @@ public abstract class ProtonManager implements RegistryManager {
         modid = ModLoadingContext.get().getActiveContainer().getModId();
         MinecraftForge.EVENT_BUS.register(this);
         List<Method> methods = new ArrayList<>(getMethods());
-        AnnotationUtil.getFilteredAnnotatedClasses(ProtonData.class, modid).forEach(aClass -> {
-            addProton(protonManager -> {
-                try {
-                    return (Proton) aClass.getConstructor(ProtonManager.class).newInstance(protonManager);
-                } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-        });
-        File moduleFile = new File("config/" + modid + "/_modules.toml");
-        if (!moduleFile.exists()) {
-            try {
-                new File("config/" + modid).mkdir();
-                moduleFile.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        CommentedFileConfig config = CommentedFileConfig.of(moduleFile);
-        config.load();
-        for (Proton proton : protons) {
-            if (!proton.getData().forced()) {
-                String module = "modules." + proton.getData().value();
-                String desc = proton.getData().description();
-                if (!desc.isEmpty())
-                    config.setComment(module, desc);
-                config.add(module, proton.getData().defaultActive());
-                proton.setActive(config.getOrElse(module, proton.getData().defaultActive()));
-                File entriesFile = new File("config/" + modid + "/module-" + proton.getData().value() + ".toml");
-                if (!entriesFile.exists()) {
-                    try {
-                        entriesFile.createNewFile();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                proton.addEntries();
-                CommentedFileConfig entriesFiles = CommentedFileConfig.of(entriesFile);
-                entriesFiles.load();
-                proton.getEntries(Item.class).stream().filter(item -> !(item instanceof ItemBlock)).forEach(item -> {
-                    String path = "item." + item.getRegistryName().getPath() + ".enabled";
-                    entriesFiles.add(path, true);
-                    if (!entriesFiles.getOrElse(path, true)) {
-                        proton.addDisabledEntry(item.getRegistryName());
-                    } else if (item instanceof ItemBase) {
-                        ((ItemBase) item).setItemGroup(proton.getItemGroup());
-                    }
-                });
-                proton.getEntries(Block.class).forEach(block -> {
-                    String path = "block." + block.getRegistryName().getPath() + ".enabled";
-                    entriesFiles.add(path, true);
-                    if (!entriesFiles.getOrElse(path, true)) {
-                        proton.addDisabledEntry(block.getRegistryName());
-                    } else if (block instanceof BlockBase) {
-                        ((BlockBase) block).setItemGroup(proton.getItemGroup());
-                    }
-                });
-                entriesFiles.save();
-                entriesFiles.close();
-            } else {
-                proton.setActive(true);
-            }
-            if (proton.isActive()) {
-                methods.addAll(proton.getEventMethods());
-                proton.init();
-            }
-        }
-        config.save();
-        config.close();
+        List<Method> protonMethods = runProtonSystem();
+        methods.addAll(protonMethods);
         methods.forEach(method -> {
             EventReceiver eventReceiver = method.getAnnotation(EventReceiver.class);
             EventPriority priority = eventReceiver.priority();
@@ -197,6 +130,80 @@ public abstract class ProtonManager implements RegistryManager {
 
     private void addProton(Function<ProtonManager, Proton> protonFunction) {
         protons.add(protonFunction.apply(this));
+    }
+
+    public List<Method> runProtonSystem() {
+        List<Method> methods = new ArrayList<>();
+        AnnotationUtil.getFilteredAnnotatedClasses(ProtonData.class, modid).forEach(aClass -> {
+            addProton(protonManager -> {
+                try {
+                    return (Proton) aClass.getConstructor(ProtonManager.class).newInstance(protonManager);
+                } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        });
+        File moduleFile = new File("config/" + modid + "/_modules.toml");
+        if (!moduleFile.exists()) {
+            try {
+                new File("config/" + modid).mkdir();
+                moduleFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        CommentedFileConfig config = CommentedFileConfig.of(moduleFile);
+        config.load();
+        for (Proton proton : protons) {
+            if (!proton.getData().forced()) {
+                String module = "modules." + proton.getData().value();
+                String desc = proton.getData().description();
+                if (!desc.isEmpty())
+                    config.setComment(module, desc);
+                config.add(module, proton.getData().defaultActive());
+                proton.setActive(config.getOrElse(module, proton.getData().defaultActive()));
+                File entriesFile = new File("config/" + modid + "/module-" + proton.getData().value() + ".toml");
+                if (!entriesFile.exists()) {
+                    try {
+                        entriesFile.createNewFile();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                proton.addEntries();
+                CommentedFileConfig entriesFiles = CommentedFileConfig.of(entriesFile);
+                entriesFiles.load();
+                proton.getEntries(Item.class).stream().filter(item -> !(item instanceof ItemBlock)).forEach(item -> {
+                    String path = "item." + item.getRegistryName().getPath() + ".enabled";
+                    entriesFiles.add(path, true);
+                    if (!entriesFiles.getOrElse(path, true)) {
+                        proton.addDisabledEntry(item.getRegistryName());
+                    } else if (item instanceof ItemBase) {
+                        ((ItemBase) item).setItemGroup(proton.getItemGroup());
+                    }
+                });
+                proton.getEntries(Block.class).forEach(block -> {
+                    String path = "block." + block.getRegistryName().getPath() + ".enabled";
+                    entriesFiles.add(path, true);
+                    if (!entriesFiles.getOrElse(path, true)) {
+                        proton.addDisabledEntry(block.getRegistryName());
+                    } else if (block instanceof BlockBase) {
+                        ((BlockBase) block).setItemGroup(proton.getItemGroup());
+                    }
+                });
+                entriesFiles.save();
+                entriesFiles.close();
+            } else {
+                proton.setActive(true);
+            }
+            if (proton.isActive()) {
+                methods.addAll(proton.getEventMethods());
+                proton.init();
+            }
+        }
+        config.save();
+        config.close();
+        return methods;
     }
 
     public final <T extends IForgeRegistryEntry<T>> List<T> getEntries(Class<T> tClass) {
