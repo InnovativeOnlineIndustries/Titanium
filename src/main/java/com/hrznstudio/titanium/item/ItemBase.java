@@ -10,6 +10,7 @@ package com.hrznstudio.titanium.item;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.text.ITextComponent;
@@ -28,6 +29,8 @@ import java.util.List;
 
 @ParametersAreNonnullByDefault
 public class ItemBase extends Item {
+
+    private ItemGroup itemGroup = ItemGroup.SEARCH;
 
     public ItemBase(String name, Properties properties) {
         super(properties);
@@ -57,6 +60,10 @@ public class ItemBase extends Item {
 
     public boolean hasTooltipDetails(@Nullable Key key) {
         return false;
+    }
+
+    public void setItemGroup(ItemGroup itemGroup) {
+        this.itemGroup = itemGroup;
     }
 
     public enum Key implements IStringSerializable {

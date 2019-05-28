@@ -11,6 +11,7 @@ import com.google.common.collect.ImmutableList;
 import com.hrznstudio.titanium.proton.api.IAlternativeEntries;
 import com.hrznstudio.titanium.proton.api.RegistryManager;
 import com.hrznstudio.titanium.proton.control.ProtonManager;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.registries.IForgeRegistryEntry;
@@ -25,11 +26,13 @@ public abstract class Proton implements RegistryManager {
     private boolean active;
     private final Map<Class<? extends IForgeRegistryEntry>, List<?>> entries;
     private List<ResourceLocation> disabledEntries;
+    private ItemGroup itemGroup;
 
     public Proton(ProtonManager manager) {
         this.manager = manager;
         this.disabledEntries = new ArrayList<>();
         this.entries = new HashMap<>();
+        this.itemGroup = ItemGroup.MISC;
     }
 
     public final <T extends IForgeRegistryEntry<T>> List<T> getEntries(Class<T> tClass) {
@@ -89,5 +92,13 @@ public abstract class Proton implements RegistryManager {
 
     public void addDisabledEntry(ResourceLocation location) {
         this.disabledEntries.add(location);
+    }
+
+    public ItemGroup getItemGroup() {
+        return itemGroup;
+    }
+
+    public void setItemGroup(ItemGroup itemGroup) {
+        this.itemGroup = itemGroup;
     }
 }

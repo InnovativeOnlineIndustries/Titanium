@@ -7,10 +7,10 @@
 
 package com.hrznstudio.titanium.block;
 
-import com.hrznstudio.titanium.proton.api.IAlternativeEntries;
-import com.hrznstudio.titanium.proton.api.RegistryManager;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.raytrace.DistanceRayTraceResult;
+import com.hrznstudio.titanium.proton.api.IAlternativeEntries;
+import com.hrznstudio.titanium.proton.api.RegistryManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
@@ -115,7 +115,7 @@ public abstract class BlockBase extends Block implements IAlternativeEntries {
         return closestHit;
     }
 
-    protected void setItemGroup(ItemGroup itemGroup) {
+    public void setItemGroup(ItemGroup itemGroup) {
         this.itemGroup = itemGroup;
     }
 }

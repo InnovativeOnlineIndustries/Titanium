@@ -10,7 +10,9 @@ package com.hrznstudio.titanium.proton.control;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.google.common.collect.ImmutableList;
 import com.hrznstudio.titanium.annotation.config.ConfigFile;
+import com.hrznstudio.titanium.block.BlockBase;
 import com.hrznstudio.titanium.config.AnnotationConfigManager;
+import com.hrznstudio.titanium.item.ItemBase;
 import com.hrznstudio.titanium.proton.EventReceiver;
 import com.hrznstudio.titanium.proton.Proton;
 import com.hrznstudio.titanium.proton.ProtonData;
@@ -99,13 +101,17 @@ public abstract class ProtonManager implements RegistryManager {
                     entriesFiles.add(path, true);
                     if (!entriesFiles.getOrElse(path, true)) {
                         proton.addDisabledEntry(item.getRegistryName());
+                    } else if (item instanceof ItemBase) {
+                        ((ItemBase) item).setItemGroup(proton.getItemGroup());
                     }
                 });
-                proton.getEntries(Block.class).forEach(item -> {
-                    String path = "block." + item.getRegistryName().getPath() + ".enabled";
+                proton.getEntries(Block.class).forEach(block -> {
+                    String path = "block." + block.getRegistryName().getPath() + ".enabled";
                     entriesFiles.add(path, true);
                     if (!entriesFiles.getOrElse(path, true)) {
-                        proton.addDisabledEntry(item.getRegistryName());
+                        proton.addDisabledEntry(block.getRegistryName());
+                    } else if (block instanceof BlockBase) {
+                        ((BlockBase) block).setItemGroup(proton.getItemGroup());
                     }
                 });
                 entriesFiles.save();
