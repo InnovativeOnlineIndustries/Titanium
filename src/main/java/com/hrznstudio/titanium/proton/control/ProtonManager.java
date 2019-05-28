@@ -22,6 +22,7 @@ import com.hrznstudio.titanium.util.AnnotationUtil;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -63,7 +64,7 @@ public abstract class ProtonManager implements RegistryManager {
                 }
             });
         });
-        File moduleFile = new File("config/" + modid + "/modules.toml");
+        File moduleFile = new File("config/" + modid + "/_modules.toml");
         if (!moduleFile.exists()) {
             try {
                 new File("config/" + modid).mkdir();
@@ -82,6 +83,33 @@ public abstract class ProtonManager implements RegistryManager {
                     config.setComment(module, desc);
                 config.add(module, proton.getData().defaultActive());
                 proton.setActive(config.getOrElse(module, proton.getData().defaultActive()));
+                File entriesFile = new File("config/" + modid + "/module-" + proton.getData().value() + ".toml");
+                if (!entriesFile.exists()) {
+                    try {
+                        entriesFile.createNewFile();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                proton.addEntries();
+                CommentedFileConfig entriesFiles = CommentedFileConfig.of(entriesFile);
+                entriesFiles.load();
+                proton.getEntries(Item.class).stream().filter(item -> !(item instanceof ItemBlock)).forEach(item -> {
+                    String path = "item." + item.getRegistryName().getPath() + ".enabled";
+                    entriesFiles.add(path, true);
+                    if (!entriesFiles.getOrElse(path, true)) {
+                        proton.addDisabledEntry(item.getRegistryName());
+                    }
+                });
+                proton.getEntries(Block.class).forEach(item -> {
+                    String path = "block." + item.getRegistryName().getPath() + ".enabled";
+                    entriesFiles.add(path, true);
+                    if (!entriesFiles.getOrElse(path, true)) {
+                        proton.addDisabledEntry(item.getRegistryName());
+                    }
+                });
+                entriesFiles.save();
+                entriesFiles.close();
             } else {
                 proton.setActive(true);
             }
@@ -169,8 +197,9 @@ public abstract class ProtonManager implements RegistryManager {
         if (!entries.containsKey(tClass)) {
             entries.put(tClass, new ArrayList<T>());
         }
-        List<T> list = (List<T>) entries.get(tClass);
-        return list == null ? Collections.emptyList() : list;
+        List<T> list = (List<T>) entries.getOrDefault(tClass, new ArrayList<>());
+        protons.stream().filter(Proton::isActive).forEach(proton -> list.addAll((Collection<? extends T>) proton.getFilteredEntries(tClass)));
+        return list;
     }
 
     @EventReceiver

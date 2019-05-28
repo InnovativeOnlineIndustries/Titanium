@@ -8,29 +8,51 @@
 package com.hrznstudio.titanium.proton;
 
 import com.google.common.collect.ImmutableList;
+import com.hrznstudio.titanium.proton.api.IAlternativeEntries;
+import com.hrznstudio.titanium.proton.api.RegistryManager;
 import com.hrznstudio.titanium.proton.control.ProtonManager;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.lang.reflect.Method;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
-public abstract class Proton {
+public abstract class Proton implements RegistryManager {
     private final ProtonManager manager;
     private final ProtonData data = getClass().getAnnotation(ProtonData.class);
     private boolean active;
+    private final Map<Class<? extends IForgeRegistryEntry>, List<?>> entries;
+    private List<ResourceLocation> disabledEntries;
 
     public Proton(ProtonManager manager) {
         this.manager = manager;
+        this.disabledEntries = new ArrayList<>();
+        this.entries = new HashMap<>();
     }
 
-    protected <T extends IForgeRegistryEntry<T>> void addEntry(Class<T> tClass, T t) {
-        manager.addEntry(tClass, t);
+    public final <T extends IForgeRegistryEntry<T>> List<T> getEntries(Class<T> tClass) {
+        if (!entries.containsKey(tClass)) {
+            entries.put(tClass, new ArrayList<T>());
+        }
+        List<T> list = (List<T>) entries.get(tClass);
+        return list == null ? Collections.emptyList() : list;
     }
 
-    protected <T extends IForgeRegistryEntry<T>> void addEntries(Class<T> tClass, T... ts) {
+    public <T extends IForgeRegistryEntry<T>> void addEntry(Class<T> tClass, T t) {
+        getEntries(tClass).add(t);
+        if (t instanceof IAlternativeEntries)
+            ((IAlternativeEntries) t).addAlternatives(this);
+    }
+
+    public <T extends IForgeRegistryEntry<T>> void addEntries(Class<T> tClass, T... ts) {
         for (T t : ts)
             addEntry(tClass, t);
+    }
+
+    public final <T extends IForgeRegistryEntry<T>> List<?> getFilteredEntries(Class<T> tClass) {
+        return entries.getOrDefault(tClass, new ArrayList<IForgeRegistryEntry<T>>()).stream().filter(o -> !disabledEntries.contains(((IForgeRegistryEntry<T>) (o)).getRegistryName())).collect(Collectors.toList());
     }
 
     public final List<Method> getEventMethods() {
@@ -51,6 +73,8 @@ public abstract class Proton {
 
     public abstract void init();
 
+    public abstract void addEntries();
+
     public ProtonData getData() {
         return data;
     }
@@ -61,5 +85,9 @@ public abstract class Proton {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public void addDisabledEntry(ResourceLocation location) {
+        this.disabledEntries.add(location);
     }
 }
