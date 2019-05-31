@@ -5,7 +5,7 @@
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
 
-package com.hrznstudio.titanium.proton.api;
+package com.hrznstudio.titanium.module.api;
 
 public interface IAlternativeEntries {
     void addAlternatives(RegistryManager registry);

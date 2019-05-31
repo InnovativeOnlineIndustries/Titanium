@@ -7,9 +7,9 @@
 
 package com.hrznstudio.titanium.block;
 
-import com.hrznstudio.titanium.proton.api.RegistryManager;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.block.tile.TileBase;
+import com.hrznstudio.titanium.module.api.RegistryManager;
 import com.hrznstudio.titanium.nbthandler.NBTManager;
 import com.hrznstudio.titanium.util.TileUtil;
 import net.minecraft.block.Block;
@@ -41,7 +41,7 @@ public abstract class BlockTileBase<T extends TileBase> extends BlockBase implem
         super.addAlternatives(registry);
         NBTManager.getInstance().scanTileClassForAnnotations(tileClass);
         tileEntityType = TileEntityType.register(getRegistryName().toString(), TileEntityType.Builder.create(getTileEntityFactory()::create));
-        registry.addEntry(TileEntityType.class, tileEntityType);
+        registry.content(TileEntityType.class, tileEntityType);
     }
 
     public abstract IFactory<T> getTileEntityFactory();

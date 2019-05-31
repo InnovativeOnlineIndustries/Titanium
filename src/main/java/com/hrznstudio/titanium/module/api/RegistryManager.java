@@ -5,10 +5,10 @@
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
 
-package com.hrznstudio.titanium.proton.api;
+package com.hrznstudio.titanium.module.api;
 
-import net.minecraft.item.ItemStack;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
-public interface IItemColorProvider {
-    int getColor(ItemStack var1, int var2);
+public interface RegistryManager<B> {
+    <T extends IForgeRegistryEntry<T>> B content(Class<T> tClass, T t);
 }

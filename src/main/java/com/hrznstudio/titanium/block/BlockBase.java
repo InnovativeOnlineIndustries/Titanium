@@ -9,8 +9,8 @@ package com.hrznstudio.titanium.block;
 
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.raytrace.DistanceRayTraceResult;
-import com.hrznstudio.titanium.proton.api.IAlternativeEntries;
-import com.hrznstudio.titanium.proton.api.RegistryManager;
+import com.hrznstudio.titanium.module.api.IAlternativeEntries;
+import com.hrznstudio.titanium.module.api.RegistryManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
@@ -84,7 +84,7 @@ public abstract class BlockBase extends Block implements IAlternativeEntries {
 
     @Override
     public void addAlternatives(RegistryManager registry) {
-        registry.addEntry(Item.class, getItemBlockFactory().create());
+        registry.content(Item.class, getItemBlockFactory().create());
     }
 
     public List<VoxelShape> getBoundingBoxes(IBlockState state, IBlockReader source, BlockPos pos) {
@@ -94,7 +94,6 @@ public abstract class BlockBase extends Block implements IAlternativeEntries {
     public boolean hasCustomBoxes(IBlockState state, IBlockReader source, BlockPos pos) {
         return false;
     }
-
 
     @Nullable
     protected RayTraceResult rayTraceBoxesClosest(Vec3d start, Vec3d end, BlockPos pos, List<VoxelShape> boxes) {

@@ -7,24 +7,30 @@
 
 package com.hrznstudio.titanium;
 
-import com.hrznstudio.titanium.proton.EventReceiver;
-import com.hrznstudio.titanium.proton.control.ProtonManager;
+import com.hrznstudio.titanium._test.BlockTest;
+import com.hrznstudio.titanium._test.BlockTwentyFourTest;
 import com.hrznstudio.titanium.api.raytrace.DistanceRayTraceResult;
 import com.hrznstudio.titanium.block.tile.TileActive;
 import com.hrznstudio.titanium.client.gui.addon.BasicButtonAddon;
+import com.hrznstudio.titanium.event.handler.EventManager;
+import com.hrznstudio.titanium.module.Feature;
+import com.hrznstudio.titanium.module.Module;
+import com.hrznstudio.titanium.module.ModuleController;
 import com.hrznstudio.titanium.network.NetworkHandler;
 import com.hrznstudio.titanium.util.TileUtil;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Items;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -32,11 +38,13 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 @Mod(Titanium.MODID)
-public class Titanium extends ProtonManager {
+public class Titanium extends ModuleController {
     public static final String MODID = "titanium";
 
     public Titanium() {
         NetworkHandler.registerMessage(BasicButtonAddon.ButtonClickNetworkMessage.class);
+
+        EventManager.mod(FMLClientSetupEvent.class).process(this::clientSetup).subscribe();
     }
 
     public static void openGui(TileActive tile, EntityPlayerMP player) {
@@ -47,9 +55,26 @@ public class Titanium extends ProtonManager {
         });
     }
 
-    @EventReceiver
+    @Override
+    protected void initModules() {
+        addModule(Module.builder("test_module")
+                .disableByDefault()
+                .description("Test module for titanium features")
+                .feature(Feature.builder("blocks")
+                        .description("Adds test titanium blocks")
+                        .content(Block.class, BlockTest.TEST = new BlockTest())
+                        .content(Block.class, BlockTwentyFourTest.TEST = new BlockTwentyFourTest())
+                )
+                .feature(Feature.builder("events")
+                        .description("Adds test titanium events")
+                        .event(EventManager.forge(EntityItemPickupEvent.class).filter(ev -> ev.getItem().getItem().getItem() == Items.STICK).process(ev -> ev.getItem().lifespan = 0).cancel())
+                )
+        );
+    }
+
     @OnlyIn(Dist.CLIENT)
-    public void clientSetup(FMLClientSetupEvent event) {
+    private void clientSetup(FMLClientSetupEvent event) {
+        EventManager.forge(DrawBlockHighlightEvent.class).process(this::drawBlockHighlight);
         TitaniumClient.registerModelLoader();
         ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.GUIFACTORY, () -> data -> {
             int x = data.getAdditionalData().readInt();
@@ -64,7 +89,6 @@ public class Titanium extends ProtonManager {
         });
     }
 
-    @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
     public void drawBlockHighlight(DrawBlockHighlightEvent event) {
         BlockPos pos = event.getTarget().getBlockPos();

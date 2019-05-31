@@ -58,13 +58,13 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
         return new Color(color).getRGB();
     }
 
-    public SidedInvHandler setColor(EnumDyeColor color) {
-        this.color = color.getFireworkColor();
+    public SidedInvHandler setColor(int color) {
+        this.color = color;
         return this;
     }
 
-    public SidedInvHandler setColor(int color) {
-        this.color = color;
+    public SidedInvHandler setColor(EnumDyeColor color) {
+        this.color = color.getFireworkColor();
         return this;
     }
 
