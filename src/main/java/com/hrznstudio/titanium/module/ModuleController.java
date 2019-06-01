@@ -59,13 +59,13 @@ public abstract class ModuleController {
                 if (!l.isEmpty())
                     l.forEach(event.getRegistry()::register);
             });
-        });
+        }).subscribe();
         AnnotationUtil.getFilteredAnnotatedClasses(ConfigFile.class, modid).forEach(aClass -> {
             ConfigFile annotation = (ConfigFile) aClass.getAnnotation(ConfigFile.class);
             addConfig(AnnotationConfigManager.Type.of(annotation.type(), aClass).setName(annotation.value()));
         });
-        EventManager.mod(ModConfig.Loading.class).process(ev -> configManager.inject());
-        EventManager.mod(ModConfig.ConfigReloading.class).process(ev -> configManager.inject());
+        EventManager.mod(ModConfig.Loading.class).process(ev -> configManager.inject()).subscribe();
+        EventManager.mod(ModConfig.ConfigReloading.class).process(ev -> configManager.inject()).subscribe();
     }
 
     private void addConfig(AnnotationConfigManager.Type type) {
