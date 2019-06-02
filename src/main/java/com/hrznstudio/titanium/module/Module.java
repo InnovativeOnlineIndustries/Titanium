@@ -65,10 +65,11 @@ public final class Module {
                 String c = cm + ".enabled";
                 config.setComment(cm, f.getDescription());
                 boolean active = config.add(c, f.isEnabledByDefault()) ? f.isEnabledByDefault() : config.getOrElse(c, f.isEnabledByDefault());
-                if (!active) {
-                    disabledFeatureMap.put(id, featureMap.remove(id));
-                } else {
+                if (active) {
                     f.initConfig(cm, config);
+                    f.initEvents();
+                } else {
+                    disabledFeatureMap.put(id, featureMap.remove(id));
                 }
             }
         });

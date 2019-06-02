@@ -69,6 +69,10 @@ public class Feature {
         //Currently Unused
     }
 
+    public void initEvents() {
+        events.forEach(EventManager.FilteredEventManager::subscribe);
+    }
+
     public <T extends IForgeRegistryEntry<T>> List<? extends T> getEntries(Class<T> tClass) {
         return (List<T>) content.computeIfAbsent(tClass, aClass -> new ArrayList<>());
     }
