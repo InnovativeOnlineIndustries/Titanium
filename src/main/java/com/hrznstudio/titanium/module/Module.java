@@ -78,7 +78,7 @@ public final class Module {
         private final String id;
         private final Map<String, Feature> featureMap = new HashMap<>();
         private boolean forced;
-        private boolean enabledByDefault;
+        private boolean enabledByDefault = true;
         private String description;
 
         private Builder(String id) {
