@@ -74,7 +74,7 @@ public class Titanium extends ModuleController {
 
     @OnlyIn(Dist.CLIENT)
     private void clientSetup(FMLClientSetupEvent event) {
-        EventManager.forge(DrawBlockHighlightEvent.class).process(this::drawBlockHighlight);
+        EventManager.forge(DrawBlockHighlightEvent.class).process(this::drawBlockHighlight).subscribe();
         TitaniumClient.registerModelLoader();
         ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.GUIFACTORY, () -> data -> {
             int x = data.getAdditionalData().readInt();
