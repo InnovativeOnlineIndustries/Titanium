@@ -55,7 +55,6 @@ public class ParticleRenderer {
             Particle.interpPosX = player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTicks;
             Particle.interpPosY = player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTicks;
             Particle.interpPosZ = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialTicks;
-            Particle.cameraViewDir = player.getLook(partialTicks);
             GlStateManager.enableAlphaTest();
             GlStateManager.enableBlend();
             GlStateManager.alphaFunc(516, 0.003921569F);

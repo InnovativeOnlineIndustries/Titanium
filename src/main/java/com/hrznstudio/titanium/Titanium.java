@@ -91,7 +91,7 @@ public class Titanium extends ModuleController {
 
     @OnlyIn(Dist.CLIENT)
     public void drawBlockHighlight(DrawBlockHighlightEvent event) {
-        BlockPos pos = event.getTarget().getBlockPos();
+        BlockPos pos = new BlockPos(event.getTarget().getHitVec().x, event.getTarget().getHitVec().y, event.getTarget().getHitVec().z);
         RayTraceResult hit = event.getTarget();
         if (hit.getType() == RayTraceResult.Type.BLOCK && hit instanceof DistanceRayTraceResult) {
             event.setCanceled(true);
