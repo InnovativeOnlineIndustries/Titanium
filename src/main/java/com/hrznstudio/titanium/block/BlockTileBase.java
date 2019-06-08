@@ -40,7 +40,7 @@ public abstract class BlockTileBase<T extends TileBase> extends BlockBase implem
     public void addAlternatives(RegistryManager registry) {
         super.addAlternatives(registry);
         NBTManager.getInstance().scanTileClassForAnnotations(tileClass);
-        tileEntityType = TileEntityType.register(getRegistryName().toString(), TileEntityType.Builder.create(getTileEntityFactory()::create));
+        tileEntityType = TileEntityType.register(getRegistryName().toString(), TileEntityType.Builder.func_223042_a(getTileEntityFactory()::create));
         registry.content(TileEntityType.class, tileEntityType);
     }
 
