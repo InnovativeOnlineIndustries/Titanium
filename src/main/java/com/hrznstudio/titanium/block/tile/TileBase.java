@@ -10,13 +10,13 @@ package com.hrznstudio.titanium.block.tile;
 import com.hrznstudio.titanium.block.BlockTileBase;
 import com.hrznstudio.titanium.nbthandler.NBTManager;
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 
 public class TileBase extends TileEntity {
@@ -25,7 +25,7 @@ public class TileBase extends TileEntity {
         super(base.getTileEntityType());
     }
 
-    public boolean onActivated(EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+    public boolean onActivated(PlayerEntity playerIn, Hand hand, Direction facing, float hitX, float hitY, float hitZ) {
         return false;
     }
 
@@ -34,13 +34,13 @@ public class TileBase extends TileEntity {
     }
 
     @Override
-    public void read(NBTTagCompound compound) {
+    public void read(CompoundNBT compound) {
         NBTManager.getInstance().readTileEntity(this, compound);
         super.read(compound);
     }
 
     @Override
-    public NBTTagCompound write(NBTTagCompound compound) {
+    public CompoundNBT write(CompoundNBT compound) {
         return NBTManager.getInstance().writeTileEntity(this, super.write(compound));
     }
 
@@ -50,20 +50,20 @@ public class TileBase extends TileEntity {
     }
 
     @Override
-    public NBTTagCompound getUpdateTag() {
-        return write(new NBTTagCompound());
+    public CompoundNBT getUpdateTag() {
+        return write(new CompoundNBT());
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
         read(pkt.getNbtCompound());
     }
 
     @Override
-    public SPacketUpdateTileEntity getUpdatePacket() {
-        NBTTagCompound tag = new NBTTagCompound();
+    public SUpdateTileEntityPacket getUpdatePacket() {
+        CompoundNBT tag = new CompoundNBT();
         write(tag);
-        return new SPacketUpdateTileEntity(getPos(), 1, tag);
+        return new SUpdateTileEntityPacket(getPos(), 1, tag);
     }
 
     public void updateNeigh() {

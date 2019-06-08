@@ -11,7 +11,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.function.BiPredicate;
@@ -69,7 +69,7 @@ public interface IItemStackQuery extends Predicate<ItemStack> {
             return itemStack.hasTag() && matches(itemStack.getTag());
         }
 
-        boolean matches(NBTTagCompound compound);
+        boolean matches(CompoundNBT compound);
     }
 
     class ItemStackQuery implements IItemStackQueryRecipe {

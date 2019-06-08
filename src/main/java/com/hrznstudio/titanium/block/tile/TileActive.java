@@ -27,18 +27,18 @@ import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.container.ContainerTileBase;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.block.Block;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.ITickable;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.IInteractionObject;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -52,7 +52,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileActive extends TileBase implements IGuiAddonProvider, ITickable, IInteractionObject {
+public class TileActive extends TileBase implements IGuiAddonProvider, ITickableTileEntity, IInteractionObject {
 
     private MultiInventoryHandler multiInventoryHandler;
     private MultiProgressBarHandler multiProgressBarHandler;
@@ -67,7 +67,7 @@ public class TileActive extends TileBase implements IGuiAddonProvider, ITickable
     }
 
     @Override
-    public boolean onActivated(EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+    public boolean onActivated(PlayerEntity playerIn, Hand hand, Direction facing, float hitX, float hitY, float hitZ) {
         if (multiTankHandler != null) {
             return FluidUtil.interactWithFluidHandler(playerIn, hand, multiTankHandler.getCapabilityForSide(null));
         }
@@ -79,17 +79,17 @@ public class TileActive extends TileBase implements IGuiAddonProvider, ITickable
 
     }
 
-    public void openGui(EntityPlayer player) {
-        if (player instanceof EntityPlayerMP)
-            Titanium.openGui(this, (EntityPlayerMP) player);
+    public void openGui(PlayerEntity player) {
+        if (player instanceof ServerPlayerEntity)
+            Titanium.openGui(this, (ServerPlayerEntity) player);
     }
 
     @Override
-    public Container createContainer(InventoryPlayer inventoryPlayer, EntityPlayer entityPlayer) {
+    public Container createContainer(PlayerInventory inventoryPlayer, PlayerEntity entityPlayer) {
         return new ContainerTileBase<>(this, inventoryPlayer);
     }
 
-    public GuiScreen createGui(Container container) {
+    public Screen createGui(Container container) {
         return new GuiContainerTile<>((ContainerTileBase<TileActive>) container);
     }
 
@@ -100,7 +100,7 @@ public class TileActive extends TileBase implements IGuiAddonProvider, ITickable
 
     @Override
     public ITextComponent getName() {
-        return new TextComponentString("what. pls");
+        return new StringTextComponent("what. pls");
     }
 
     @Override
@@ -144,7 +144,7 @@ public class TileActive extends TileBase implements IGuiAddonProvider, ITickable
 
     @Nonnull
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable EnumFacing side) {
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && multiInventoryHandler != null) {
             return LazyOptional.of(new NonNullSupplier<T>() {
                 @Nonnull
@@ -229,7 +229,7 @@ public class TileActive extends TileBase implements IGuiAddonProvider, ITickable
         return multiButtonHandler;
     }
 
-    public EnumFacing getFacingDirection() {
+    public Direction getFacingDirection() {
         return this.world.getBlockState(pos).get(BlockRotation.FACING);
     }
 
@@ -245,7 +245,7 @@ public class TileActive extends TileBase implements IGuiAddonProvider, ITickable
         return null;
     }
 
-    public void handleButtonMessage(int id, NBTTagCompound compound) {
+    public void handleButtonMessage(int id, CompoundNBT compound) {
         if (id == -1) {
             String name = compound.getString("Name");
             FacingUtil.Sideness facing = FacingUtil.Sideness.valueOf(compound.getString("Facing"));

@@ -16,7 +16,7 @@ import com.hrznstudio.titanium.client.gui.addon.IClickable;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.util.AssetUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.glfw.GLFW;
 
@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class GuiAddonScreen extends GuiScreen implements IGuiAddonConsumer {
+public abstract class GuiAddonScreen extends Screen implements IGuiAddonConsumer {
 
     private IAssetProvider assetProvider;
     private int x;

@@ -11,7 +11,7 @@ import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAssetType;
 import com.hrznstudio.titanium.client.gui.addon.StateButtonInfo;
 import com.hrznstudio.titanium.util.FacingUtil;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -29,7 +29,7 @@ public interface IFacingHandler {
 
     String getName();
 
-    boolean work(World world, BlockPos pos, EnumFacing blockFacing, int workAmount);
+    boolean work(World world, BlockPos pos, Direction blockFacing, int workAmount);
 
     enum FaceMode {
         NONE(false, 0, AssetTypes.BUTTON_SIDENESS_DISABLED, TextFormatting.RED),

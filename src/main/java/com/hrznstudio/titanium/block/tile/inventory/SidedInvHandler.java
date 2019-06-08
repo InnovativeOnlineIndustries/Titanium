@@ -14,11 +14,11 @@ import com.hrznstudio.titanium.block.tile.sideness.IFacingHandler;
 import com.hrznstudio.titanium.block.tile.sideness.SidedHandlerManager;
 import com.hrznstudio.titanium.client.gui.addon.FacingHandlerGuiAddon;
 import com.hrznstudio.titanium.util.FacingUtil;
-import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -39,7 +39,7 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
 
     public SidedInvHandler(String name, int xPos, int yPos, int size, int position) {
         super(name, xPos, yPos, size);
-        this.color = EnumDyeColor.WHITE.getFireworkColor();
+        this.color = DyeColor.WHITE.getFireworkColor();
         this.facingModes = new HashMap<>();
         this.slotCache = new HashMap<>();
         for (FacingUtil.Sideness value : FacingUtil.Sideness.values()) {
@@ -63,7 +63,7 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
         return this;
     }
 
-    public SidedInvHandler setColor(EnumDyeColor color) {
+    public SidedInvHandler setColor(DyeColor color) {
         this.color = color.getFireworkColor();
         return this;
     }
@@ -75,10 +75,10 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
     }
 
     @Override
-    public boolean work(World world, BlockPos pos, EnumFacing blockFacing, int workAmount) {
+    public boolean work(World world, BlockPos pos, Direction blockFacing, int workAmount) {
         for (FacingUtil.Sideness sideness : facingModes.keySet()) {
             if (facingModes.get(sideness).equals(FaceMode.PUSH)) {
-                EnumFacing real = FacingUtil.getFacingFromSide(blockFacing, sideness);
+                Direction real = FacingUtil.getFacingFromSide(blockFacing, sideness);
                 TileEntity entity = world.getTileEntity(pos.offset(real));
                 AtomicBoolean hasWorked = new AtomicBoolean(false);
                 if (entity != null) {
@@ -91,7 +91,7 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
         }
         for (FacingUtil.Sideness sideness : facingModes.keySet()) {
             if (facingModes.get(sideness).equals(FaceMode.PULL)) {
-                EnumFacing real = FacingUtil.getFacingFromSide(blockFacing, sideness);
+                Direction real = FacingUtil.getFacingFromSide(blockFacing, sideness);
                 TileEntity entity = world.getTileEntity(pos.offset(real));
                 AtomicBoolean hasWorked = new AtomicBoolean(false);
                 if (entity != null) {
@@ -106,9 +106,9 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
     }
 
     @Override
-    public NBTTagCompound serializeNBT() {
-        NBTTagCompound nbt = super.serializeNBT();
-        NBTTagCompound compound = new NBTTagCompound();
+    public CompoundNBT serializeNBT() {
+        CompoundNBT nbt = super.serializeNBT();
+        CompoundNBT compound = new CompoundNBT();
         for (FacingUtil.Sideness facing : facingModes.keySet()) {
             compound.putString(facing.name(), facingModes.get(facing).name());
         }
@@ -117,10 +117,10 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
     }
 
     @Override
-    public void deserializeNBT(NBTTagCompound nbt) {
+    public void deserializeNBT(CompoundNBT nbt) {
         super.deserializeNBT(nbt);
         if (nbt.contains("FacingModes")) {
-            NBTTagCompound compound = nbt.getCompound("FacingModes");
+            CompoundNBT compound = nbt.getCompound("FacingModes");
             for (String face : compound.keySet()) {
                 facingModes.put(FacingUtil.Sideness.valueOf(face), FaceMode.valueOf(compound.getString(face)));
             }

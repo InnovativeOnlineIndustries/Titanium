@@ -7,11 +7,11 @@
 
 package com.hrznstudio.titanium.util;
 
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 
 public class LangUtil {
 
     public static String get(String string, Object... args) {
-        return new TextComponentTranslation(string, args).getFormattedText();
+        return new TranslationTextComponent(string, args).getFormattedText();
     }
 }

@@ -19,9 +19,9 @@ import com.hrznstudio.titanium.network.NetworkHandler;
 import com.hrznstudio.titanium.util.AssetUtil;
 import com.hrznstudio.titanium.util.FacingUtil;
 import com.hrznstudio.titanium.util.LangUtil;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.TextFormatting;
 
 import java.awt.*;
@@ -72,13 +72,13 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
     }
 
     @Override
-    public void drawGuiContainerBackgroundLayer(GuiScreen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+    public void drawGuiContainerBackgroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         this.xSize = provider.getAsset(AssetTypes.BUTTON_SIDENESS_MANAGER).getArea().width;
         this.ySize = provider.getAsset(AssetTypes.BUTTON_SIDENESS_MANAGER).getArea().height;
         GlStateManager.color4f(1, 1, 1, 1);
         AssetUtil.drawAsset(screen, provider.getAsset(AssetTypes.BUTTON_SIDENESS_MANAGER), guiX + getPosX(), guiY + getPosY());
         int offset = 2;
-        GuiScreen.drawRect(guiX + getPosX() + offset, guiY + getPosY() + offset, guiX + getPosX() + getXSize() - offset, guiY + getPosY() + getYSize() - offset, handler.getColor());
+        Screen.drawRect(guiX + getPosX() + offset, guiY + getPosY() + offset, guiX + getPosX() + getXSize() - offset, guiY + getPosY() + getYSize() - offset, handler.getColor());
         GlStateManager.color4f(1, 1, 1, 1);
         if (isClicked()) {
             //TODO draw the overlay for the slots
@@ -88,7 +88,7 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
     }
 
     @Override
-    public void drawGuiContainerForegroundLayer(GuiScreen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
+    public void drawGuiContainerForegroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
         if (isInside(screen, mouseX - guiX, mouseY - guiY) || isClicked()) {
             AssetUtil.drawHorizontalLine(handler.getRectangle().x, handler.getRectangle().x + handler.getRectangle().width, handler.getRectangle().y, handler.getColor());
             AssetUtil.drawHorizontalLine(handler.getRectangle().x, handler.getRectangle().x + handler.getRectangle().width, handler.getRectangle().y + handler.getRectangle().height, handler.getColor());
@@ -113,7 +113,7 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
     }
 
     @Override
-    public void handleClick(GuiScreen screen, int guiX, int guiY, double mouseX, double mouseY, int button) {
+    public void handleClick(Screen screen, int guiX, int guiY, double mouseX, double mouseY, int button) {
         if (screen instanceof GuiContainerTile) {
             for (IGuiAddon addon : new ArrayList<>(((IGuiAddonConsumer) screen).getAddons())) {
                 if (addon instanceof FacingHandlerGuiAddon && addon != this) {
@@ -134,10 +134,10 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
                         }
 
                         @Override
-                        public void handleClick(GuiScreen gui, int guiX, int guiY, double mouseX, double mouseY, int mouse) {
+                        public void handleClick(Screen gui, int guiX, int guiY, double mouseX, double mouseY, int mouse) {
                             StateButtonInfo info = getStateInfo();
                             if (info != null && gui instanceof GuiContainerTile) {
-                                NBTTagCompound compound = new NBTTagCompound();
+                                CompoundNBT compound = new CompoundNBT();
                                 compound.putString("Facing", facing.name());
                                 int faceMode = (getState() + (mouse == 0 ? 1 : -1)) % IFacingHandler.FaceMode.values().length;
                                 if (faceMode < 0) faceMode = IFacingHandler.FaceMode.values().length - 1;

@@ -10,7 +10,7 @@ package com.hrznstudio.titanium.client.gui.addon;
 import com.hrznstudio.titanium.block.tile.button.PosButton;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.util.AssetUtil;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.GlStateManager;
 
 import java.util.Arrays;
@@ -28,7 +28,7 @@ public abstract class StateButtonAddon extends BasicButtonAddon {
 
 
     @Override
-    public void drawGuiContainerBackgroundLayer(GuiScreen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+    public void drawGuiContainerBackgroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         StateButtonInfo buttonInfo = getStateInfo();
         if (buttonInfo != null) {
             GlStateManager.color4f(1, 1, 1, 1);
@@ -37,7 +37,7 @@ public abstract class StateButtonAddon extends BasicButtonAddon {
     }
 
     @Override
-    public void drawGuiContainerForegroundLayer(GuiScreen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
+    public void drawGuiContainerForegroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
         StateButtonInfo buttonInfo = getStateInfo();
         if (buttonInfo != null && isInside(screen, mouseX, mouseY)) {
             AssetUtil.drawSelectingOverlay(getPosX() + 1, getPosY() + 1, getPosX() + getXSize() - 1, getPosY() + getYSize() - 1);

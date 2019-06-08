@@ -8,7 +8,7 @@
 package com.hrznstudio.titanium.client.gui.addon;
 
 import com.hrznstudio.titanium.api.client.IAssetType;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 
 public class StateButtonInfo {
 
@@ -23,7 +23,7 @@ public class StateButtonInfo {
         if (tooltip != null) {
             this.tooltip = new String[tooltip.length];
             for (int i = 0; i < tooltip.length; i++) {
-                this.tooltip[i] = new TextComponentTranslation(tooltip[i]).getFormattedText();
+                this.tooltip[i] = new TranslationTextComponent(tooltip[i]).getFormattedText();
             }
         }
     }

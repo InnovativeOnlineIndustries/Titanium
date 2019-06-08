@@ -8,7 +8,7 @@
 package com.hrznstudio.titanium.api.client;
 
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 
 import java.util.Collections;
 import java.util.List;
@@ -25,7 +25,7 @@ public interface IGuiAddon {
      * @param mouseY       The current mouse Y
      * @param partialTicks Partial ticks
      */
-    void drawGuiContainerBackgroundLayer(GuiScreen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks);
+    void drawGuiContainerBackgroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks);
 
     /**
      * Draws the component in the foreground layer
@@ -37,7 +37,7 @@ public interface IGuiAddon {
      * @param mouseX   The current mouse X
      * @param mouseY   The current mouse Y
      */
-    void drawGuiContainerForegroundLayer(GuiScreen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY);
+    void drawGuiContainerForegroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY);
 
     /**
      * A list of strings that will be drawn as a tooltip when `isInside` returns true
@@ -56,6 +56,6 @@ public interface IGuiAddon {
      * @param mouseY The current mouse Y
      * @return True if the mouse is inside the component
      */
-    boolean isInside(GuiScreen screen, double mouseX, double mouseY);
+    boolean isInside(Screen screen, double mouseX, double mouseY);
 
 }

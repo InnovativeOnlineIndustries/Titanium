@@ -13,9 +13,9 @@ import com.hrznstudio.titanium.block.tile.TilePowered;
 import com.hrznstudio.titanium.block.tile.inventory.PosInvHandler;
 import com.hrznstudio.titanium.block.tile.progress.PosProgressBar;
 import com.hrznstudio.titanium.client.gui.addon.EnergyBarGuiAddon;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ITickable;
 
 public class TileTwentyFourTest extends TilePowered implements ITickable {
@@ -41,7 +41,7 @@ public class TileTwentyFourTest extends TilePowered implements ITickable {
     }
 
     @Override
-    public boolean onActivated(EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+    public boolean onActivated(PlayerEntity playerIn, Hand hand, Direction facing, float hitX, float hitY, float hitZ) {
         openGui(playerIn);
         return true;
     }

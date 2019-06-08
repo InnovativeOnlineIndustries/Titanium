@@ -33,7 +33,7 @@ license {
 }
 
 minecraft {
-    mappings channel: 'snapshot', version: '20190429-1.13.2'
+    mappings channel: 'snapshot', version: '20190608-1.14.2'
     runs {
         client = {
             // recommended logging data for a userdev environment
@@ -55,7 +55,7 @@ minecraft {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.13.2-25.0.191'
+    minecraft 'net.minecraftforge:forge:1.14.2-26.0.5'
 }
 
 jar {
@@ -117,14 +117,14 @@ publishing {
 processResources {
     // this will ensure that this task is redone when the versions change.
     inputs.property 'version', project.version
-    inputs.property 'mcversion', '1.13'
+    inputs.property 'mcversion', '1.14'
 
     // replace stuff in mcmod.info, nothing else
     from(sourceSets.main.resources.srcDirs) {
         include 'META_INF/mods.toml'
 
         // replace version and mcversion
-        expand 'version':project.version, 'mcversion': '1.13'
+        expand 'version':project.version, 'mcversion': '1.14'
     }
 
     // copy everything else except the mcmod.info

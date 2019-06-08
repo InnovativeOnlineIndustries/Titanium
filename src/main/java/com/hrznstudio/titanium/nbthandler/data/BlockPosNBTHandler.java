@@ -9,7 +9,7 @@ package com.hrznstudio.titanium.nbthandler.data;
 
 
 import com.hrznstudio.titanium.api.INBTHandler;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
@@ -23,13 +23,13 @@ public class BlockPosNBTHandler implements INBTHandler<BlockPos> {
     }
 
     @Override
-    public boolean storeToNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, @Nonnull BlockPos object) {
+    public boolean storeToNBT(@Nonnull CompoundNBT compound, @Nonnull String name, @Nonnull BlockPos object) {
         compound.putLong(name, object.toLong());
         return false;
     }
 
     @Override
-    public BlockPos readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, @Nullable BlockPos current) {
+    public BlockPos readFromNBT(@Nonnull CompoundNBT compound, @Nonnull String name, @Nullable BlockPos current) {
         return compound.contains(name) ? BlockPos.fromLong(compound.getLong(name)) : current;
     }
 }

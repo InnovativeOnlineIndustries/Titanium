@@ -8,11 +8,11 @@
 package com.hrznstudio.titanium.energy;
 
 import com.hrznstudio.titanium.block.tile.TileBase;
-import net.minecraft.nbt.NBTTagInt;
+import net.minecraft.nbt.IntNBT;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.energy.EnergyStorage;
 
-public class NBTEnergyHandler extends EnergyStorage implements INBTSerializable<NBTTagInt> {
+public class NBTEnergyHandler extends EnergyStorage implements INBTSerializable<IntNBT> {
 
     private TileBase base;
 
@@ -51,12 +51,12 @@ public class NBTEnergyHandler extends EnergyStorage implements INBTSerializable<
     }
 
     @Override
-    public NBTTagInt serializeNBT() {
-        return new NBTTagInt(getEnergyStored());
+    public IntNBT serializeNBT() {
+        return new IntNBT(getEnergyStored());
     }
 
     @Override
-    public void deserializeNBT(NBTTagInt nbt) {
+    public void deserializeNBT(IntNBT nbt) {
         energy = nbt.getInt();
     }
 }

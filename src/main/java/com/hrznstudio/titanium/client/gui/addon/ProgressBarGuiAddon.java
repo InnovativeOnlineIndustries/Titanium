@@ -11,8 +11,8 @@ import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.block.tile.progress.PosProgressBar;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.gui.screen.Screen;
 
 import java.awt.*;
 
@@ -36,23 +36,23 @@ public class ProgressBarGuiAddon extends BasicGuiAddon {
     }
 
     @Override
-    public void drawGuiContainerBackgroundLayer(GuiScreen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+    public void drawGuiContainerBackgroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         IAsset asset = IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_BORDER);
         Point offset = asset.getOffset();
         Rectangle area = asset.getArea();
-        screen.mc.getTextureManager().bindTexture(asset.getResourceLocation());
+        screen.getMinecraft().getTextureManager().bindTexture(asset.getResourceLocation());
         screen.drawTexturedModalRect(guiX + getPosX() + offset.x, guiY + getPosY() + offset.y, area.x, area.y, area.width, area.height);
         GlStateManager.color4f(progressBar.getColor().getColorComponentValues()[0], progressBar.getColor().getColorComponentValues()[1], progressBar.getColor().getColorComponentValues()[2], 1);
         asset = IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_BACKGROUND);
         offset = asset.getOffset();
         area = asset.getArea();
-        screen.mc.getTextureManager().bindTexture(asset.getResourceLocation());
+        screen.getMinecraft().getTextureManager().bindTexture(asset.getResourceLocation());
         screen.drawTexturedModalRect(guiX + getPosX() + offset.x, guiY + getPosY() + offset.y, area.x, area.y, area.width, area.height);
         GlStateManager.color4f(1, 1, 1, 1);
     }
 
     @Override
-    public void drawGuiContainerForegroundLayer(GuiScreen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
+    public void drawGuiContainerForegroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
         GlStateManager.color4f(progressBar.getColor().getColorComponentValues()[0], progressBar.getColor().getColorComponentValues()[1], progressBar.getColor().getColorComponentValues()[2], 1);
         IAsset asset = IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR);
         progressBar.getBarDirection().render(screen, asset, this);

@@ -13,9 +13,9 @@ import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
 import com.hrznstudio.titanium.block.tile.TileBase;
 import com.hrznstudio.titanium.client.gui.addon.ProgressBarGuiAddon;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.item.EnumDyeColor;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.item.DyeColor;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.INBTSerializable;
 
@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAddonProvider {
+public class PosProgressBar implements INBTSerializable<CompoundNBT>, IGuiAddonProvider {
 
     private int posX;
     private int posY;
@@ -39,7 +39,7 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
     private Runnable onStart;
     private TileBase tileBase;
     private BarDirection barDirection;
-    private EnumDyeColor color;
+    private DyeColor color;
 
     public PosProgressBar(int posX, int posY, int maxProgress) {
         this.posX = posX;
@@ -57,7 +57,7 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
         this.onStart = () -> {
         };
         this.barDirection = BarDirection.VERTICAL_UP;
-        this.color = EnumDyeColor.WHITE;
+        this.color = DyeColor.WHITE;
     }
 
     /**
@@ -289,7 +289,7 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
      *
      * @return the color
      */
-    public EnumDyeColor getColor() {
+    public DyeColor getColor() {
         return color;
     }
 
@@ -299,7 +299,7 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
      * @param color the color
      * @return Self
      */
-    public PosProgressBar setColor(EnumDyeColor color) {
+    public PosProgressBar setColor(DyeColor color) {
         this.color = color;
         return this;
     }
@@ -315,15 +315,15 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
     }
 
     @Override
-    public NBTTagCompound serializeNBT() {
-        NBTTagCompound compound = new NBTTagCompound();
+    public CompoundNBT serializeNBT() {
+        CompoundNBT compound = new CompoundNBT();
         compound.putInt("Tick", progress);
         compound.putInt("MaxProgress", maxProgress);
         return compound;
     }
 
     @Override
-    public void deserializeNBT(NBTTagCompound nbt) {
+    public void deserializeNBT(CompoundNBT nbt) {
         progress = nbt.getInt("Tick");
         maxProgress = nbt.getInt("MaxProgress");
     }
@@ -335,7 +335,7 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
     public enum BarDirection {
         VERTICAL_UP {
             @Override
-            public void render(GuiScreen screen, IAsset asset, ProgressBarGuiAddon addon) {
+            public void render(Screen screen, IAsset asset, ProgressBarGuiAddon addon) {
                 Point offset = asset.getOffset();
                 Rectangle area = asset.getArea();
                 screen.mc.getTextureManager().bindTexture(asset.getResourceLocation());
@@ -347,7 +347,7 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
         },
         HORIZONTAL_RIGHT {
             @Override
-            public void render(GuiScreen screen, IAsset asset, ProgressBarGuiAddon addon) {
+            public void render(Screen screen, IAsset asset, ProgressBarGuiAddon addon) {
                 Point offset = asset.getOffset();
                 Rectangle area = asset.getArea();
                 screen.mc.getTextureManager().bindTexture(asset.getResourceLocation());
@@ -358,7 +358,7 @@ public class PosProgressBar implements INBTSerializable<NBTTagCompound>, IGuiAdd
             }
         };
 
-        public abstract void render(GuiScreen screen, IAsset asset, ProgressBarGuiAddon addon);
+        public abstract void render(Screen screen, IAsset asset, ProgressBarGuiAddon addon);
 
     }
 }

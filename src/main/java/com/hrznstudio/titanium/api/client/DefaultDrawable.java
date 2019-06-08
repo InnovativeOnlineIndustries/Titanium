@@ -7,7 +7,7 @@
 
 package com.hrznstudio.titanium.api.client;
 
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 
 import java.awt.*;
 
@@ -19,7 +19,7 @@ public class DefaultDrawable implements IDrawable {
     }
 
     @Override
-    public void draw(GuiScreen gui, Point position, Point mousePosition) {
+    public void draw(Screen gui, Point position, Point mousePosition) {
         gui.mc.getTextureManager().bindTexture(asset.getResourceLocation());
         Rectangle area = asset.getArea();
         gui.drawTexturedModalRect(position.x, position.y, area.x, area.y, area.width, area.height);

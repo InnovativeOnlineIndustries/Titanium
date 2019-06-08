@@ -16,14 +16,14 @@ import com.hrznstudio.titanium.client.gui.addon.IClickable;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.container.ContainerTileBase;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GuiContainerTile<T extends TileActive> extends GuiContainer implements IGuiAddonConsumer, ITileContainer {
+public class GuiContainerTile<T extends TileActive> extends ContainerScreen implements IGuiAddonConsumer, ITileContainer {
 
     private final ContainerTileBase<T> containerTileBase;
     private IAssetProvider assetProvider;

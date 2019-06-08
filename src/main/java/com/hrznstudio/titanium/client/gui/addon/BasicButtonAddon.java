@@ -16,9 +16,9 @@ import com.hrznstudio.titanium.network.NetworkHandler;
 import com.hrznstudio.titanium.util.TileUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -35,12 +35,12 @@ public class BasicButtonAddon extends BasicGuiAddon implements IClickable {
     }
 
     @Override
-    public void drawGuiContainerBackgroundLayer(GuiScreen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+    public void drawGuiContainerBackgroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
 
     }
 
     @Override
-    public void drawGuiContainerForegroundLayer(GuiScreen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
+    public void drawGuiContainerForegroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
 
     }
 
@@ -50,10 +50,10 @@ public class BasicButtonAddon extends BasicGuiAddon implements IClickable {
     }
 
     @Override
-    public void handleClick(GuiScreen tile, int guiX, int guiY, double mouseX, double mouseY, int button) {
+    public void handleClick(Screen tile, int guiX, int guiY, double mouseX, double mouseY, int button) {
         Minecraft.getInstance().getSoundHandler().play(new SimpleSound(SoundEvents.UI_BUTTON_CLICK, SoundCategory.PLAYERS, 1f, 1f, Minecraft.getInstance().player.getPosition()));
         if (tile instanceof ITileContainer)
-            NetworkHandler.NETWORK.sendToServer(new ButtonClickNetworkMessage(((ITileContainer) tile).getTile().getPos(), this.button.getId(), new NBTTagCompound()));
+            NetworkHandler.NETWORK.sendToServer(new ButtonClickNetworkMessage(((ITileContainer) tile).getTile().getPos(), this.button.getId(), new CompoundNBT()));
     }
 
     @Override
@@ -70,9 +70,9 @@ public class BasicButtonAddon extends BasicGuiAddon implements IClickable {
 
         private BlockPos pos;
         private int id;
-        private NBTTagCompound data;
+        private CompoundNBT data;
 
-        public ButtonClickNetworkMessage(BlockPos pos, int id, NBTTagCompound data) {
+        public ButtonClickNetworkMessage(BlockPos pos, int id, CompoundNBT data) {
             this.pos = pos;
             this.id = id;
             this.data = data;

@@ -7,7 +7,7 @@
 
 package com.hrznstudio.titanium.api.client;
 
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 
 import java.awt.*;
 
@@ -16,5 +16,5 @@ public interface IDrawable {
         return new DefaultDrawable(asset);
     }
 
-    void draw(GuiScreen gui, Point position, Point mousePosition);
+    void draw(Screen gui, Point position, Point mousePosition);
 }

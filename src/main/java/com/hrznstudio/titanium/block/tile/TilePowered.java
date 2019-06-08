@@ -12,7 +12,7 @@ import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.block.BlockTileBase;
 import com.hrznstudio.titanium.energy.NBTEnergyHandler;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -42,13 +42,13 @@ public class TilePowered extends TileActive {
         return energyHandler;
     }
 
-    public Set<EnumFacing> getValidEnergyFaces() {
-        return Sets.newHashSet(EnumFacing.values());
+    public Set<Direction> getValidEnergyFaces() {
+        return Sets.newHashSet(Direction.values());
     }
 
     @Nonnull
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable EnumFacing side) {
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if (cap == CapabilityEnergy.ENERGY)
             return energyCap.cast();
         return super.getCapability(cap, side);

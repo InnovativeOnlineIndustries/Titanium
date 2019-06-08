@@ -12,7 +12,7 @@ import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.api.client.IAssetType;
 import com.hrznstudio.titanium.api.client.assets.types.IBackgroundAsset;
 import com.hrznstudio.titanium.api.client.assets.types.ITankAsset;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 import javax.annotation.Nullable;
 import java.awt.*;
@@ -33,7 +33,7 @@ public final class DefaultAssetProvider implements IAssetProvider {
     };
     private final ITankAsset TANK = new ITankAsset() {
         @Override
-        public int getFluidRenderPadding(EnumFacing facing) {
+        public int getFluidRenderPadding(Direction facing) {
             return 3;
         }
 

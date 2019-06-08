@@ -20,10 +20,10 @@ import com.hrznstudio.titanium.block.tile.progress.PosProgressBar;
 import com.hrznstudio.titanium.client.gui.addon.EnergyBarGuiAddon;
 import com.hrznstudio.titanium.client.gui.addon.StateButtonAddon;
 import com.hrznstudio.titanium.client.gui.addon.StateButtonInfo;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumDyeColor;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.DyeColor;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ITickable;
 
 import java.util.Collections;
@@ -49,7 +49,7 @@ public class TileTest extends TilePowered implements ITickable {
         this.addInventory(first = (SidedInvHandler) new SidedInvHandler("test", 80, 60, 1, 0).setTile(this).setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
         this.addInventory(second = (SidedInvHandler) new SidedInvHandler("test2", 80, 30, 1, 1).setTile(this).setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
         this.addGuiAddonFactory(() -> new EnergyBarGuiAddon(4, 10, getEnergyStorage()));
-        this.addProgressBar(bar = new PosProgressBar(40, 20, 500).setCanIncrease(tileEntity -> true).setOnFinishWork(() -> System.out.println("WOWOOW")).setBarDirection(PosProgressBar.BarDirection.VERTICAL_UP).setColor(EnumDyeColor.LIME));
+        this.addProgressBar(bar = new PosProgressBar(40, 20, 500).setCanIncrease(tileEntity -> true).setOnFinishWork(() -> System.out.println("WOWOOW")).setBarDirection(PosProgressBar.BarDirection.VERTICAL_UP).setColor(DyeColor.LIME));
         this.addTank(third = new PosFluidTank(8000, 130, 30, "testTank"));
         this.addButton(button = new PosButton(0, 0, 14, 14) {
             @Override
@@ -67,12 +67,12 @@ public class TileTest extends TilePowered implements ITickable {
             if (state >= 4) state = 0;
             markForUpdate();
         }));
-        first.setColor(EnumDyeColor.LIME);
-        second.setColor(EnumDyeColor.CYAN);
+        first.setColor(DyeColor.LIME);
+        second.setColor(DyeColor.CYAN);
     }
 
     @Override
-    public boolean onActivated(EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+    public boolean onActivated(PlayerEntity playerIn, Hand hand, Direction facing, float hitX, float hitY, float hitZ) {
         if (!super.onActivated(playerIn, hand, facing, hitX, hitY, hitZ)) {
             openGui(playerIn);
             return true;

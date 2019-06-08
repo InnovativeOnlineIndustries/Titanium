@@ -11,10 +11,10 @@ import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.block.tile.TileActive;
 import com.hrznstudio.titanium.block.tile.inventory.PosInvHandler;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.SlotItemHandler;
 
@@ -23,11 +23,11 @@ import java.awt.*;
 public class ContainerTileBase<T extends TileActive> extends Container {
 
     private T tile;
-    private InventoryPlayer player;
+    private PlayerInventory player;
     private boolean hasPlayerInventory;
     private int totalSlots;
 
-    public ContainerTileBase(T tile, InventoryPlayer player) {
+    public ContainerTileBase(T tile, PlayerInventory player) {
         this.tile = tile;
         this.player = player;
         this.totalSlots = 0;
@@ -87,12 +87,12 @@ public class ContainerTileBase<T extends TileActive> extends Container {
     }
 
     @Override
-    public boolean canInteractWith(EntityPlayer playerIn) {
+    public boolean canInteractWith(PlayerEntity playerIn) {
         return true;
     }
 
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer player, int index) {
+    public ItemStack transferStackInSlot(PlayerEntity player, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = inventorySlots.get(index);
         if (slot != null && slot.getHasStack()) {

@@ -8,8 +8,8 @@
 package com.hrznstudio.titanium.api.multiblock;
 
 import jdk.nashorn.internal.ir.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.block.BlockState;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -20,17 +20,17 @@ import java.util.function.Predicate;
 public class MachineMultiblock implements IMultiblock {
 
     private final ResourceLocation resourceLocation;
-    private final Predicate<IBlockState>[][][] multiblockStructure;
+    private final Predicate<BlockState>[][][] multiblockStructure;
     private final BlockPos controller;
 
-    public MachineMultiblock(ResourceLocation resourceLocation, Predicate<IBlockState>[][][] multiblockStructure, BlockPos controller) {
+    public MachineMultiblock(ResourceLocation resourceLocation, Predicate<BlockState>[][][] multiblockStructure, BlockPos controller) {
         this.resourceLocation = resourceLocation;
         this.multiblockStructure = multiblockStructure;
         this.controller = controller;
     }
 
     @Override
-    public Predicate<IBlockState>[][][] getStructureBlocks() {
+    public Predicate<BlockState>[][][] getStructureBlocks() {
         return multiblockStructure;
     }
 
@@ -40,12 +40,12 @@ public class MachineMultiblock implements IMultiblock {
     }
 
     @Override
-    public boolean isStructureMultiblock(World world, BlockPos pos, IBlockState state, EnumFacing playerFacing) {
+    public boolean isStructureMultiblock(World world, BlockPos pos, BlockState state, Direction playerFacing) {
         for (int x = 0; x < getStructureBlocks().length; ++x) {
             for (int z = 0; z < getStructureBlocks()[0][0].length; ++z) {
                 for (int y = 0; y < getStructureBlocks()[0].length; ++y) {
-                    BlockPos blockPos = pos.offset(EnumFacing.DOWN, controller.getY()).offset(playerFacing.rotateY(), x).offset(EnumFacing.UP, y).offset(playerFacing, z);
-                    IBlockState test = world.getBlockState(blockPos);
+                    BlockPos blockPos = pos.offset(Direction.DOWN, controller.getY()).offset(playerFacing.rotateY(), x).offset(Direction.UP, y).offset(playerFacing, z);
+                    BlockState test = world.getBlockState(blockPos);
                     if (!getStructureBlocks()[x][y][z].test(test)) { //TODO Check for controller blocks
                         return false;
                     }
@@ -56,12 +56,12 @@ public class MachineMultiblock implements IMultiblock {
     }
 
     @Override
-    public void createStructureMultiblock(World world, BlockPos pos, IBlockState state, EnumFacing playerFacing) {
+    public void createStructureMultiblock(World world, BlockPos pos, BlockState state, Direction playerFacing) {
 
     }
 
     @Override
-    public void destroyMultiblock(World world, BlockPos pos, IBlockState state, EnumFacing facing) {
+    public void destroyMultiblock(World world, BlockPos pos, BlockState state, Direction facing) {
 
     }
 

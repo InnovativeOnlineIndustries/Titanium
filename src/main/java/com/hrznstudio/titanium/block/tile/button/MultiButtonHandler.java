@@ -10,7 +10,7 @@ package com.hrznstudio.titanium.block.tile.button;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ public class MultiButtonHandler implements IGuiAddonProvider {
         basicButtonAddons.add(buttonAddon.setId(basicButtonAddons.size()));
     }
 
-    public void clickButton(int id, NBTTagCompound compound) {
+    public void clickButton(int id, CompoundNBT compound) {
         basicButtonAddons.stream().filter(buttonAddon -> buttonAddon.getId() == id).forEach(buttonAddon -> buttonAddon.onButtonClicked(compound));
     }
 

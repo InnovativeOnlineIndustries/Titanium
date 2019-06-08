@@ -11,7 +11,7 @@ import com.google.common.collect.Lists;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.INBTHandler;
 import com.hrznstudio.titanium.nbthandler.data.*;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 
 import javax.annotation.Nullable;
@@ -93,7 +93,7 @@ public class NBTManager {
      * @param compound The NBTTagCompound to save the values.
      * @return the modified NBTTagCompound.
      */
-    public NBTTagCompound writeTileEntity(TileEntity entity, NBTTagCompound compound) {
+    public CompoundNBT writeTileEntity(TileEntity entity, CompoundNBT compound) {
         if (tileFieldList.containsKey(entity.getClass())) {
             for (Field field : tileFieldList.get(entity.getClass())) {
                 Save save = field.getAnnotation(Save.class);
@@ -115,7 +115,7 @@ public class NBTManager {
      * @param entity   The tile entity instance.
      * @param compound The NBTTagCompound to save the values.
      */
-    public void readTileEntity(TileEntity entity, NBTTagCompound compound) {
+    public void readTileEntity(TileEntity entity, CompoundNBT compound) {
         if (tileFieldList.containsKey(entity.getClass())) {
             for (Field field : tileFieldList.get(entity.getClass())) {
                 Save save = field.getAnnotation(Save.class);
@@ -137,7 +137,7 @@ public class NBTManager {
      * @param value    The value to store in the NBTTagCompound.
      * @return the modified NBTTagCompound.
      */
-    private NBTTagCompound handleNBTWrite(NBTTagCompound compound, String name, Object value, Field field) {
+    private CompoundNBT handleNBTWrite(CompoundNBT compound, String name, Object value, Field field) {
         for (INBTHandler handler : handlerList) {
             if (handler.isClassValid(value == null ? field.getType() : value.getClass())) {
                 if (handler.storeToNBT(compound, name, value)) return compound;
@@ -154,7 +154,7 @@ public class NBTManager {
      * @param value    The current value.
      * @return
      */
-    private Object handleNBTRead(NBTTagCompound compound, String name, @Nullable Object value, Field field) {
+    private Object handleNBTRead(CompoundNBT compound, String name, @Nullable Object value, Field field) {
         for (INBTHandler handler : handlerList) {
             if (handler.isClassValid(value == null ? field.getType() : value.getClass())) {
                 if (!compound.contains(name)) continue;

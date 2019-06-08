@@ -12,15 +12,17 @@ import com.hrznstudio.titanium.api.raytrace.DistanceRayTraceResult;
 import com.hrznstudio.titanium.module.api.IAlternativeEntries;
 import com.hrznstudio.titanium.module.api.RegistryManager;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.IBooleanFunction;
+import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
@@ -45,8 +47,8 @@ public abstract class BlockBase extends Block implements IAlternativeEntries {
     protected static DistanceRayTraceResult rayTraceBox(BlockPos pos, Vec3d start, Vec3d end, VoxelShape shape) {
         RayTraceResult bbResult = shape.rayTrace(start, end, pos);
         if (bbResult != null) {
-            Vec3d hitVec = bbResult.hitVec;
-            EnumFacing sideHit = bbResult.sideHit;
+            Vec3d hitVec = bbResult.getHitVec();
+            Direction sideHit = ((BlockRayTraceResult) bbResult).getFace();
             double dist = start.distanceTo(hitVec);
             return new DistanceRayTraceResult(hitVec, sideHit, pos, shape, dist);
         }
@@ -55,7 +57,7 @@ public abstract class BlockBase extends Block implements IAlternativeEntries {
 
     @Nullable
     @Override
-    public RayTraceResult getRayTraceResult(IBlockState state, World world, BlockPos pos, Vec3d start, Vec3d end, RayTraceResult original) {
+    public RayTraceResult getRayTraceResult(BlockState state, World world, BlockPos pos, Vec3d start, Vec3d end, RayTraceResult original) {
         if (hasCustomBoxes(state, world, pos)) {
             return rayTraceBoxesClosest(start, end, pos, getBoundingBoxes(state, world, pos));
         }
@@ -63,7 +65,7 @@ public abstract class BlockBase extends Block implements IAlternativeEntries {
     }
 
     @Override
-    public VoxelShape getCollisionShape(IBlockState state, IBlockReader worldIn, BlockPos pos) {
+    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext selectionContext) {
         if (hasCustomBoxes(state, worldIn, pos)) {
             VoxelShape shape = null;
             for (VoxelShape shape1 : getBoundingBoxes(state, worldIn, pos)) {
@@ -75,11 +77,11 @@ public abstract class BlockBase extends Block implements IAlternativeEntries {
             }
             return shape;
         }
-        return super.getCollisionShape(state, worldIn, pos);
+        return super.getCollisionShape(state, worldIn, pos, selectionContext);
     }
 
-    public IFactory<ItemBlock> getItemBlockFactory() {
-        return () -> (ItemBlock) new ItemBlock(this, new Item.Properties().group(this.itemGroup)).setRegistryName(Objects.requireNonNull(getRegistryName()));
+    public IFactory<BlockItem> getItemBlockFactory() {
+        return () -> (BlockItem) new BlockItem(this, new Item.Properties().group(this.itemGroup)).setRegistryName(Objects.requireNonNull(getRegistryName()));
     }
 
     @Override
@@ -87,11 +89,11 @@ public abstract class BlockBase extends Block implements IAlternativeEntries {
         registry.content(Item.class, getItemBlockFactory().create());
     }
 
-    public List<VoxelShape> getBoundingBoxes(IBlockState state, IBlockReader source, BlockPos pos) {
+    public List<VoxelShape> getBoundingBoxes(BlockState state, IBlockReader source, BlockPos pos) {
         return Collections.emptyList();
     }
 
-    public boolean hasCustomBoxes(IBlockState state, IBlockReader source, BlockPos pos) {
+    public boolean hasCustomBoxes(BlockState state, IBlockReader source, BlockPos pos) {
         return false;
     }
 

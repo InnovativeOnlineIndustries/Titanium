@@ -9,17 +9,17 @@ package com.hrznstudio.titanium.block;
 
 import com.hrznstudio.titanium.block.tile.TileBase;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 import javax.annotation.Nullable;
 
 public abstract class BlockRotation<T extends TileBase> extends BlockTileBase<T> {
-    public static final DirectionProperty FACING = DirectionProperty.create("facing", EnumFacing.values());
-    public static final DirectionProperty SUB_FACING = DirectionProperty.create("subfacing", EnumFacing.Plane.HORIZONTAL);
+    public static final DirectionProperty FACING = DirectionProperty.create("facing", Direction.values());
+    public static final DirectionProperty SUB_FACING = DirectionProperty.create("subfacing", Direction.Plane.HORIZONTAL);
     private RotationType rotationType = RotationType.NONE;
 
     public BlockRotation(String name, Properties properties, Class<T> tileClass) {
@@ -36,12 +36,12 @@ public abstract class BlockRotation<T extends TileBase> extends BlockTileBase<T>
 
     @Nullable
     @Override
-    public IBlockState getStateForPlacement(BlockItemUseContext p_196258_1_) {
+    public BlockState getStateForPlacement(BlockItemUseContext p_196258_1_) {
         return getRotationType().getHandler().getStateForPlacement(this, p_196258_1_);
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, IBlockState> p_206840_1_) {
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> p_206840_1_) {
         super.fillStateContainer(p_206840_1_);
         p_206840_1_.add(FACING, SUB_FACING);
     }

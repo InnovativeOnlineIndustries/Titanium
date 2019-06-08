@@ -7,13 +7,13 @@
 
 package com.hrznstudio.titanium.util;
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 public class FacingUtil {
 
-    public static Sideness getFacingRelative(EnumFacing relative, EnumFacing facing) {
-        if (facing == EnumFacing.UP) return Sideness.TOP;
-        if (facing == EnumFacing.DOWN) return Sideness.BOTTOM;
+    public static Sideness getFacingRelative(Direction relative, Direction facing) {
+        if (facing == Direction.UP) return Sideness.TOP;
+        if (facing == Direction.DOWN) return Sideness.BOTTOM;
         if (relative == facing) return Sideness.FRONT;
         if (relative == facing.getOpposite()) return Sideness.BACK;
         if (relative == facing.rotateYCCW()) return Sideness.RIGHT;
@@ -21,16 +21,16 @@ public class FacingUtil {
         return Sideness.BOTTOM;
     }
 
-    public static EnumFacing getFacingFromSide(EnumFacing block, Sideness sideness) {
+    public static Direction getFacingFromSide(Direction block, Sideness sideness) {
         if (block.getAxis().isHorizontal()) {
-            if (sideness == Sideness.TOP) return EnumFacing.UP;
-            if (sideness == Sideness.BOTTOM) return EnumFacing.DOWN;
+            if (sideness == Sideness.TOP) return Direction.UP;
+            if (sideness == Sideness.BOTTOM) return Direction.DOWN;
             if (sideness == Sideness.FRONT) return block;
             if (sideness == Sideness.BACK) return block.getOpposite();
             if (sideness == Sideness.LEFT) return block.rotateYCCW();
             if (sideness == Sideness.RIGHT) return block.rotateY();
         }
-        return EnumFacing.NORTH;
+        return Direction.NORTH;
     }
 
     public enum Sideness {

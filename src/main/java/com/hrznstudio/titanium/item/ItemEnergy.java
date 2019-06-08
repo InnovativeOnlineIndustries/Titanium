@@ -9,8 +9,8 @@ package com.hrznstudio.titanium.item;
 
 import com.hrznstudio.titanium.energy.EnergyStorageItemStack;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -86,7 +86,7 @@ public class ItemEnergy extends ItemBase {
 
     @Nullable
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable NBTTagCompound nbt) {
+    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt) {
         return new CapabilityProvider(new EnergyStorageItemStack(stack, capacity, input, output));
     }
 
@@ -99,7 +99,7 @@ public class ItemEnergy extends ItemBase {
 
         @Nonnull
         @Override
-        public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable EnumFacing side) {
+        public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
             if (cap == CapabilityEnergy.ENERGY) {
                 return energyCap.cast();
             }

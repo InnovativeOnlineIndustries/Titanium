@@ -8,7 +8,7 @@
 package com.hrznstudio.titanium.tab;
 
 import com.google.common.base.Stopwatch;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;

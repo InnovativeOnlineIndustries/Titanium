@@ -11,12 +11,12 @@ import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.assets.types.ITankAsset;
 import com.hrznstudio.titanium.block.tile.fluid.PosFluidTank;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.MissingTextureSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -35,7 +35,7 @@ public class TankGuiAddon extends BasicGuiAddon {
     }
 
     @Override
-    public void drawGuiContainerBackgroundLayer(GuiScreen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+    public void drawGuiContainerBackgroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         ITankAsset asset = IAssetProvider.getAsset(provider, AssetTypes.TANK);
         Rectangle area = asset.getArea();
         if (tank.getFluid() != null) {
@@ -45,13 +45,13 @@ public class TankGuiAddon extends BasicGuiAddon {
             if (flowing != null) {
                 TextureAtlasSprite sprite = screen.mc.getTextureMap().getAtlasSprite(flowing.toString());
                 if (sprite == null) sprite = MissingTextureSprite.getSprite();
-                screen.mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+                screen.mc.getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
                 GlStateManager.enableBlend();
-                int topBottomPadding = asset.getFluidRenderPadding(EnumFacing.UP) + asset.getFluidRenderPadding(EnumFacing.DOWN);
-                screen.drawTexturedModalRect(this.getPosX() + guiX + asset.getFluidRenderPadding(EnumFacing.WEST),
-                        (int) (this.getPosY() + guiY + asset.getFluidRenderPadding(EnumFacing.UP) + (stack.getFluid().isGaseous() ? area.height - topBottomPadding : (area.height - topBottomPadding) - (area.height - topBottomPadding) * filledAmount)),
+                int topBottomPadding = asset.getFluidRenderPadding(Direction.UP) + asset.getFluidRenderPadding(Direction.DOWN);
+                screen.drawTexturedModalRect(this.getPosX() + guiX + asset.getFluidRenderPadding(Direction.WEST),
+                        (int) (this.getPosY() + guiY + asset.getFluidRenderPadding(Direction.UP) + (stack.getFluid().isGaseous() ? area.height - topBottomPadding : (area.height - topBottomPadding) - (area.height - topBottomPadding) * filledAmount)),
                         sprite,
-                        area.width - asset.getFluidRenderPadding(EnumFacing.WEST) - asset.getFluidRenderPadding(EnumFacing.WEST),
+                        area.width - asset.getFluidRenderPadding(Direction.WEST) - asset.getFluidRenderPadding(Direction.WEST),
                         (int) ((area.height - topBottomPadding) * filledAmount));
                 GlStateManager.disableBlend();
             }
@@ -62,7 +62,7 @@ public class TankGuiAddon extends BasicGuiAddon {
     }
 
     @Override
-    public void drawGuiContainerForegroundLayer(GuiScreen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
+    public void drawGuiContainerForegroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
 
     }
 

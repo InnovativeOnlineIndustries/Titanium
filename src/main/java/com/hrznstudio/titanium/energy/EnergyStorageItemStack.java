@@ -8,7 +8,7 @@
 package com.hrznstudio.titanium.energy;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.energy.IEnergyStorage;
 
 public class EnergyStorageItemStack implements IEnergyStorage {
@@ -23,17 +23,17 @@ public class EnergyStorageItemStack implements IEnergyStorage {
         boolean hasTags = stack.hasTag();
         if (!hasTags || !stack.getTag().contains("energy")) {
             if (!hasTags) {
-                stack.setTag(new NBTTagCompound());
+                stack.setTag(new CompoundNBT());
             }
-            NBTTagCompound tag = stack.getTag();
-            NBTTagCompound energyTag = new NBTTagCompound();
+            CompoundNBT tag = stack.getTag();
+            CompoundNBT energyTag = new CompoundNBT();
             energyTag.putInt(ENERGY, 0);
             energyTag.putInt(MAX, capacity);
             energyTag.putInt(INPUT, in);
             energyTag.putInt(OUTPUT, out);
             tag.put("energy", energyTag);
         } else {
-            NBTTagCompound energyTag = getStackEnergyTag();
+            CompoundNBT energyTag = getStackEnergyTag();
             energyTag.putInt(MAX, capacity);
             energyTag.putInt(INPUT, in);
             energyTag.putInt(OUTPUT, out);
@@ -41,11 +41,11 @@ public class EnergyStorageItemStack implements IEnergyStorage {
     }
 
     public void putInternal(int energy) {
-        NBTTagCompound energyTag = getStackEnergyTag();
+        CompoundNBT energyTag = getStackEnergyTag();
         energyTag.putInt(ENERGY, Math.min(energyTag.getInt(ENERGY) + energy, energyTag.getInt(MAX)));
     }
 
-    private NBTTagCompound getStackEnergyTag() {
+    private CompoundNBT getStackEnergyTag() {
         return stack.getChildTag("energy");
     }
 

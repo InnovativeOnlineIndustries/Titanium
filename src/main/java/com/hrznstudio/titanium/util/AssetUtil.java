@@ -8,8 +8,8 @@
 package com.hrznstudio.titanium.util;
 
 import com.hrznstudio.titanium.api.client.IAsset;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.GlStateManager;
 
 import java.awt.*;
@@ -17,7 +17,7 @@ import java.awt.*;
 
 public class AssetUtil {
 
-    public static void drawAsset(GuiScreen screen, IAsset asset, int xPos, int yPos) {
+    public static void drawAsset(Screen screen, IAsset asset, int xPos, int yPos) {
         Point offset = asset.getOffset();
         Rectangle area = asset.getArea();
         screen.mc.getTextureManager().bindTexture(asset.getResourceLocation());
@@ -32,7 +32,7 @@ public class AssetUtil {
     public static void drawSelectingOverlay(int x, int y, int width, int height) {
         GlStateManager.disableLighting();
         GlStateManager.disableDepthTest();
-        Gui.drawRect(x, y, width, height, -2130706433);
+        AbstractGui.drawRect(x, y, width, height, -2130706433);
         GlStateManager.enableLighting();
         GlStateManager.disableDepthTest();
     }
@@ -43,7 +43,7 @@ public class AssetUtil {
             startX = endX;
             endX = i;
         }
-        Gui.drawRect(startX, y, endX + 1, y + 1, color);
+        AbstractGui.drawRect(startX, y, endX + 1, y + 1, color);
     }
 
     public static void drawVerticalLine(int x, int startY, int endY, int color) {
@@ -52,6 +52,6 @@ public class AssetUtil {
             startY = endY;
             endY = i;
         }
-        Gui.drawRect(x, startY + 1, x + 1, endY, color);
+        AbstractGui.drawRect(x, startY + 1, x + 1, endY, color);
     }
 }

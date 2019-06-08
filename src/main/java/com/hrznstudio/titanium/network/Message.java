@@ -8,9 +8,9 @@
 package com.hrznstudio.titanium.network;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fluids.FluidStack;
@@ -52,14 +52,14 @@ public abstract class Message implements Serializable {
         map(long[].class, Message::readLongArray, PacketBuffer::writeLongArray);
 
         map(String.class, Message::readString, PacketBuffer::writeString);
-        map(NBTTagCompound.class, PacketBuffer::readCompoundTag, PacketBuffer::writeCompoundTag);
+        map(CompoundNBT.class, PacketBuffer::readCompoundTag, PacketBuffer::writeCompoundTag);
         map(ItemStack.class, PacketBuffer::readItemStack, PacketBuffer::writeItemStack);
         map(FluidStack.class, Message::readFluidStack, Message::writeFluidStack);
         map(BlockPos.class, PacketBuffer::readBlockPos, PacketBuffer::writeBlockPos);
         map(ITextComponent.class, PacketBuffer::readTextComponent, PacketBuffer::writeTextComponent);
         map(Date.class, PacketBuffer::readTime, PacketBuffer::writeTime);
         map(UUID.class, PacketBuffer::readUniqueId, PacketBuffer::writeUniqueId);
-        map(SPacketUpdateTileEntity.class, Message::readUpdatePacket, Message::writeUpdatePacket);
+        map(SUpdateTileEntityPacket.class, Message::readUpdatePacket, Message::writeUpdatePacket);
     }
 
     private static long[] readLongArray(PacketBuffer buf) {
@@ -75,10 +75,10 @@ public abstract class Message implements Serializable {
     }
 
     private static void writeFluidStack(PacketBuffer buf, FluidStack stack) {
-        buf.writeCompoundTag(stack.writeToNBT(new NBTTagCompound()));
+        buf.writeCompoundTag(stack.writeToNBT(new CompoundNBT()));
     }
 
-    private static void writeUpdatePacket(PacketBuffer buf, SPacketUpdateTileEntity packet) {
+    private static void writeUpdatePacket(PacketBuffer buf, SUpdateTileEntityPacket packet) {
         try {
             packet.writePacketData(buf);
         } catch (IOException e) {
@@ -86,8 +86,8 @@ public abstract class Message implements Serializable {
         }
     }
 
-    private static SPacketUpdateTileEntity readUpdatePacket(PacketBuffer buf) {
-        SPacketUpdateTileEntity packet = new SPacketUpdateTileEntity();
+    private static SUpdateTileEntityPacket readUpdatePacket(PacketBuffer buf) {
+        SUpdateTileEntityPacket packet = new SUpdateTileEntityPacket();
         try {
             packet.writePacketData(buf);
         } catch (IOException e) {

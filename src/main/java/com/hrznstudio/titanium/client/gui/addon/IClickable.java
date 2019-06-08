@@ -7,10 +7,10 @@
 
 package com.hrznstudio.titanium.client.gui.addon;
 
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 
 public interface IClickable {
 
-    void handleClick(GuiScreen tile, int guiX, int guiY, double mouseX, double mouseY, int button);
+    void handleClick(Screen tile, int guiX, int guiY, double mouseX, double mouseY, int button);
 
 }

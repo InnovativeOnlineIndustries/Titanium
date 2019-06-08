@@ -10,7 +10,7 @@ package com.hrznstudio.titanium.client.gui.addon;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import java.awt.*;
@@ -28,7 +28,7 @@ public class EnergyBarGuiAddon extends BasicGuiAddon {
     }
 
     @Override
-    public void drawGuiContainerBackgroundLayer(GuiScreen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+    public void drawGuiContainerBackgroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         background = IAssetProvider.getAsset(provider, AssetTypes.ENERGY_BACKGROUND);
         Point offset = background.getOffset();
         Rectangle area = background.getArea();
@@ -37,7 +37,7 @@ public class EnergyBarGuiAddon extends BasicGuiAddon {
     }
 
     @Override
-    public void drawGuiContainerForegroundLayer(GuiScreen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
+    public void drawGuiContainerForegroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
         IAsset asset = IAssetProvider.getAsset(provider, AssetTypes.ENERGY_BAR);
         Point offset = asset.getOffset();
         Rectangle area = asset.getArea();

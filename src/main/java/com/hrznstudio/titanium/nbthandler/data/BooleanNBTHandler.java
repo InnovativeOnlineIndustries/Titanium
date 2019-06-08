@@ -9,7 +9,7 @@ package com.hrznstudio.titanium.nbthandler.data;
 
 import com.hrznstudio.titanium.api.INBTHandler;
 import com.hrznstudio.titanium.util.Unboxing;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -22,13 +22,13 @@ public class BooleanNBTHandler implements INBTHandler<Boolean> {
     }
 
     @Override
-    public boolean storeToNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, @Nonnull Boolean object) {
+    public boolean storeToNBT(@Nonnull CompoundNBT compound, @Nonnull String name, @Nonnull Boolean object) {
         compound.putBoolean(name, object);
         return true;
     }
 
     @Override
-    public Boolean readFromNBT(@Nonnull NBTTagCompound compound, @Nonnull String name, @Nullable Boolean currentValue) {
+    public Boolean readFromNBT(@Nonnull CompoundNBT compound, @Nonnull String name, @Nullable Boolean currentValue) {
         return compound.contains(name) ? compound.getBoolean(name) : Unboxing.safelyUnbox(currentValue);
     }
 }

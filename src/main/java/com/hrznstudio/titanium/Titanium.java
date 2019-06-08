@@ -22,9 +22,9 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Items;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.Items;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.api.distmarker.Dist;
@@ -47,7 +47,7 @@ public class Titanium extends ModuleController {
         EventManager.mod(FMLClientSetupEvent.class).process(this::clientSetup).subscribe();
     }
 
-    public static void openGui(TileActive tile, EntityPlayerMP player) {
+    public static void openGui(TileActive tile, ServerPlayerEntity player) {
         NetworkHooks.openGui(player, tile, buf -> {
             buf.writeInt(tile.getPos().getX());
             buf.writeInt(tile.getPos().getY());
@@ -100,7 +100,7 @@ public class Titanium extends ModuleController {
             GlStateManager.lineWidth(2.0F);
             GlStateManager.disableTexture2D();
             GlStateManager.depthMask(false);
-            EntityPlayer player = event.getPlayer();
+            PlayerEntity player = event.getPlayer();
             double x = player.lastTickPosX + (player.posX - player.lastTickPosX) * event.getPartialTicks();
             double y = player.lastTickPosY + (player.posY - player.lastTickPosY) * event.getPartialTicks();
             double z = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * event.getPartialTicks();

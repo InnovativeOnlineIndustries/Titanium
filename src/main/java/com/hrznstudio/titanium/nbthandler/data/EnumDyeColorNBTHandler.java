@@ -7,22 +7,22 @@
 
 package com.hrznstudio.titanium.nbthandler.data;
 
-import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.DyeColor;
 
-public class EnumDyeColorNBTHandler extends EnumNBTHandler<EnumDyeColor> {
+public class EnumDyeColorNBTHandler extends EnumNBTHandler<DyeColor> {
 
     @Override
     public boolean isClassValid(Class<?> aClass) {
-        return EnumDyeColor.class.isAssignableFrom(aClass);
+        return DyeColor.class.isAssignableFrom(aClass);
     }
 
     @Override
-    protected int getIdFrom(EnumDyeColor obj) {
+    protected int getIdFrom(DyeColor obj) {
         return obj.getId();
     }
 
     @Override
-    protected EnumDyeColor getFromId(int id) {
-        return EnumDyeColor.byId(id);
+    protected DyeColor getFromId(int id) {
+        return DyeColor.byId(id);
     }
 }
