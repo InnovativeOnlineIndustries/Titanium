@@ -32,8 +32,8 @@ public class EnergyBarGuiAddon extends BasicGuiAddon {
         background = IAssetProvider.getAsset(provider, AssetTypes.ENERGY_BACKGROUND);
         Point offset = background.getOffset();
         Rectangle area = background.getArea();
-        screen.mc.getTextureManager().bindTexture(background.getResourceLocation());
-        screen.drawTexturedModalRect(guiX + getPosX() + offset.x, guiY + getPosY() + offset.y, area.x, area.y, area.width, area.height);
+        screen.getMinecraft().getTextureManager().bindTexture(background.getResourceLocation());
+        screen.blit(guiX + getPosX() + offset.x, guiY + getPosY() + offset.y, area.x, area.y, area.width, area.height);
     }
 
     @Override
@@ -41,11 +41,11 @@ public class EnergyBarGuiAddon extends BasicGuiAddon {
         IAsset asset = IAssetProvider.getAsset(provider, AssetTypes.ENERGY_BAR);
         Point offset = asset.getOffset();
         Rectangle area = asset.getArea();
-        screen.mc.getTextureManager().bindTexture(asset.getResourceLocation());
+        screen.getMinecraft().getTextureManager().bindTexture(asset.getResourceLocation());
         int stored = handler.getEnergyStored();
         int capacity = handler.getMaxEnergyStored();
         int powerOffset = stored * area.height / capacity;
-        screen.drawTexturedModalRect(getPosX() + offset.x, getPosY() + offset.y + area.height - powerOffset, area.x, area.y + (area.height - powerOffset), area.width, powerOffset);
+        screen.blit(getPosX() + offset.x, getPosY() + offset.y + area.height - powerOffset, area.x, area.y + (area.height - powerOffset), area.width, powerOffset);
     }
 
     @Override

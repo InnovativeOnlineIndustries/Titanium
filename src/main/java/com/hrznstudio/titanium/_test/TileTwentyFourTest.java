@@ -14,11 +14,11 @@ import com.hrznstudio.titanium.block.tile.inventory.PosInvHandler;
 import com.hrznstudio.titanium.block.tile.progress.PosProgressBar;
 import com.hrznstudio.titanium.client.gui.addon.EnergyBarGuiAddon;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ITickable;
 
-public class TileTwentyFourTest extends TilePowered implements ITickable {
+public class TileTwentyFourTest extends TilePowered implements ITickableTileEntity {
 
     @Save
     private PosProgressBar bar;
@@ -41,7 +41,7 @@ public class TileTwentyFourTest extends TilePowered implements ITickable {
     }
 
     @Override
-    public boolean onActivated(PlayerEntity playerIn, Hand hand, Direction facing, float hitX, float hitY, float hitZ) {
+    public boolean onActivated(PlayerEntity playerIn, Hand hand, Direction facing, double hitX, double hitY, double hitZ) {
         openGui(playerIn);
         return true;
     }

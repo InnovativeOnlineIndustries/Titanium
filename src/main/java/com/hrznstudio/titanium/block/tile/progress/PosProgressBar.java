@@ -338,11 +338,11 @@ public class PosProgressBar implements INBTSerializable<CompoundNBT>, IGuiAddonP
             public void render(Screen screen, IAsset asset, ProgressBarGuiAddon addon) {
                 Point offset = asset.getOffset();
                 Rectangle area = asset.getArea();
-                screen.mc.getTextureManager().bindTexture(asset.getResourceLocation());
+                screen.getMinecraft().getTextureManager().bindTexture(asset.getResourceLocation());
                 int progress = addon.getProgressBar().getProgress();
                 int maxProgress = addon.getProgressBar().getMaxProgress();
                 int progressOffset = progress * area.height / maxProgress;
-                screen.drawTexturedModalRect(addon.getPosX() + offset.x, addon.getPosY() + offset.y + area.height - progressOffset, area.x, area.y + (area.height - progressOffset), area.width, progressOffset);
+                screen.blit(addon.getPosX() + offset.x, addon.getPosY() + offset.y + area.height - progressOffset, area.x, area.y + (area.height - progressOffset), area.width, progressOffset);
             }
         },
         HORIZONTAL_RIGHT {
@@ -350,11 +350,11 @@ public class PosProgressBar implements INBTSerializable<CompoundNBT>, IGuiAddonP
             public void render(Screen screen, IAsset asset, ProgressBarGuiAddon addon) {
                 Point offset = asset.getOffset();
                 Rectangle area = asset.getArea();
-                screen.mc.getTextureManager().bindTexture(asset.getResourceLocation());
+                screen.getMinecraft().getTextureManager().bindTexture(asset.getResourceLocation());
                 int progress = addon.getProgressBar().getProgress();
                 int maxProgress = addon.getProgressBar().getMaxProgress();
                 int progressOffset = progress * area.width / maxProgress;
-                screen.drawTexturedModalRect(addon.getPosX() + offset.x, addon.getPosY() + offset.y, area.x, area.y, progressOffset, area.height);
+                screen.blit(addon.getPosX() + offset.x, addon.getPosY() + offset.y, area.x, area.y, progressOffset, area.height);
             }
         };
 

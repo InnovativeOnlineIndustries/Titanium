@@ -20,6 +20,7 @@ import com.hrznstudio.titanium.util.AssetUtil;
 import com.hrznstudio.titanium.util.FacingUtil;
 import com.hrznstudio.titanium.util.LangUtil;
 import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.TextFormatting;
@@ -78,12 +79,12 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
         GlStateManager.color4f(1, 1, 1, 1);
         AssetUtil.drawAsset(screen, provider.getAsset(AssetTypes.BUTTON_SIDENESS_MANAGER), guiX + getPosX(), guiY + getPosY());
         int offset = 2;
-        Screen.drawRect(guiX + getPosX() + offset, guiY + getPosY() + offset, guiX + getPosX() + getXSize() - offset, guiY + getPosY() + getYSize() - offset, handler.getColor());
+        AbstractGui.fill(guiX + getPosX() + offset, guiY + getPosY() + offset, guiX + getPosX() + getXSize() - offset, guiY + getPosY() + getYSize() - offset, handler.getColor());
         GlStateManager.color4f(1, 1, 1, 1);
         if (isClicked()) {
             //TODO draw the overlay for the slots
-            screen.drawTexturedModalRect(guiX + getPosX(), guiY + getPosY(), 16, 213 + 18, 14, 14);
-            screen.drawTexturedModalRect(guiX + 7, guiY + 101, 56, 185, 162, 54);
+            screen.blit(guiX + getPosX(), guiY + getPosY(), 16, 213 + 18, 14, 14);
+            screen.blit(guiX + 7, guiY + 101, 56, 185, 162, 54);
         }
     }
 

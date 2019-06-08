@@ -84,7 +84,7 @@ public class Titanium extends ModuleController {
                     Minecraft.getInstance().world,
                     new BlockPos(x, y, z),
                     TileActive.class
-            ).map(tile -> tile.createGui(tile.createContainer(Minecraft.getInstance().player.inventory, Minecraft.getInstance().player))
+            ).map(tile -> tile.createGui(tile.createMenu(0, Minecraft.getInstance().player.inventory, Minecraft.getInstance().player))
             ).orElse(null);
         });
     }
@@ -93,7 +93,7 @@ public class Titanium extends ModuleController {
     public void drawBlockHighlight(DrawBlockHighlightEvent event) {
         BlockPos pos = event.getTarget().getBlockPos();
         RayTraceResult hit = event.getTarget();
-        if (hit.type == RayTraceResult.Type.BLOCK && hit instanceof DistanceRayTraceResult) {
+        if (hit.getType() == RayTraceResult.Type.BLOCK && hit instanceof DistanceRayTraceResult) {
             event.setCanceled(true);
             GlStateManager.enableBlend();
             GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);

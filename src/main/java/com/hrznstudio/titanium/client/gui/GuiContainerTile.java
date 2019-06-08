@@ -18,6 +18,8 @@ import com.hrznstudio.titanium.container.ContainerTileBase;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -35,8 +37,8 @@ public class GuiContainerTile<T extends TileActive> extends ContainerScreen impl
     private int dragX;
     private int dragY;
 
-    public GuiContainerTile(ContainerTileBase<T> containerTileBase) {
-        super(containerTileBase);
+    public GuiContainerTile(ContainerTileBase<T> containerTileBase, PlayerInventory inventory, ITextComponent component) {
+        super(containerTileBase, inventory, component);
         this.containerTileBase = containerTileBase;
         this.assetProvider = containerTileBase.getTile().getAssetProvider();
         IAsset background = IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND);
@@ -48,13 +50,13 @@ public class GuiContainerTile<T extends TileActive> extends ContainerScreen impl
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-        this.drawDefaultBackground();
+        //this.drawDefaultBackground();
         x = (width - xSize) / 2;
         y = (height - ySize) / 2;
         //BG RENDERING
         GlStateManager.color4f(1, 1, 1, 1);
         getMinecraft().getTextureManager().bindTexture(IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND).getResourceLocation());
-        drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
+        blit(x, y, 0, 0, xSize, ySize);
 
         this.checkForMouseDrag(mouseX, mouseY);
         addonList.forEach(iGuiAddon -> iGuiAddon.drawGuiContainerBackgroundLayer(this, assetProvider, x, y, mouseX, mouseY, partialTicks));
@@ -68,7 +70,7 @@ public class GuiContainerTile<T extends TileActive> extends ContainerScreen impl
         renderHoveredToolTip(mouseX - x, mouseY - y);
         for (IGuiAddon iGuiAddon : addonList) {
             if (iGuiAddon.isInside(this, mouseX - x, mouseY - y) && !iGuiAddon.getTooltipLines().isEmpty()) {
-                drawHoveringText(iGuiAddon.getTooltipLines(), mouseX - x, mouseY - y);
+                renderTooltip(iGuiAddon.getTooltipLines(), mouseX - x, mouseY - y);
             }
         }
     }

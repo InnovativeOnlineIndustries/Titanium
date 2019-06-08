@@ -21,7 +21,7 @@ public class AssetUtil {
         Point offset = asset.getOffset();
         Rectangle area = asset.getArea();
         screen.getMinecraft().getTextureManager().bindTexture(asset.getResourceLocation());
-        screen.drawTexturedModalRect(xPos + offset.x,
+        screen.blit(xPos + offset.x,
                 yPos + offset.y,
                 area.x,
                 area.y,
@@ -32,7 +32,7 @@ public class AssetUtil {
     public static void drawSelectingOverlay(int x, int y, int width, int height) {
         GlStateManager.disableLighting();
         GlStateManager.disableDepthTest();
-        AbstractGui.drawRect(x, y, width, height, -2130706433);
+        AbstractGui.fill(x, y, width, height, -2130706433);
         GlStateManager.enableLighting();
         GlStateManager.disableDepthTest();
     }
@@ -43,7 +43,7 @@ public class AssetUtil {
             startX = endX;
             endX = i;
         }
-        AbstractGui.drawRect(startX, y, endX + 1, y + 1, color);
+        AbstractGui.fill(startX, y, endX + 1, y + 1, color);
     }
 
     public static void drawVerticalLine(int x, int startY, int endY, int color) {
@@ -52,6 +52,6 @@ public class AssetUtil {
             startY = endY;
             endY = i;
         }
-        AbstractGui.drawRect(x, startY + 1, x + 1, endY, color);
+        AbstractGui.fill(x, startY + 1, x + 1, endY, color);
     }
 }

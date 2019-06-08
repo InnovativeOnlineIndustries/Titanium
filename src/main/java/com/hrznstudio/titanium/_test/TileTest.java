@@ -22,14 +22,14 @@ import com.hrznstudio.titanium.client.gui.addon.StateButtonAddon;
 import com.hrznstudio.titanium.client.gui.addon.StateButtonInfo;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ITickable;
 
 import java.util.Collections;
 import java.util.List;
 
-public class TileTest extends TilePowered implements ITickable {
+public class TileTest extends TilePowered implements ITickableTileEntity {
 
     @Save
     private PosProgressBar bar;
@@ -72,7 +72,7 @@ public class TileTest extends TilePowered implements ITickable {
     }
 
     @Override
-    public boolean onActivated(PlayerEntity playerIn, Hand hand, Direction facing, float hitX, float hitY, float hitZ) {
+    public boolean onActivated(PlayerEntity playerIn, Hand hand, Direction facing, double hitX, double hitY, double hitZ) {
         if (!super.onActivated(playerIn, hand, facing, hitX, hitY, hitZ)) {
             openGui(playerIn);
             return true;

@@ -25,7 +25,7 @@ public class TileBase extends TileEntity {
         super(base.getTileEntityType());
     }
 
-    public boolean onActivated(PlayerEntity playerIn, Hand hand, Direction facing, float hitX, float hitY, float hitZ) {
+    public boolean onActivated(PlayerEntity playerIn, Hand hand, Direction facing, double hitX, double hitY, double hitZ) {
         return false;
     }
 

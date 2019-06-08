@@ -18,6 +18,7 @@ import com.hrznstudio.titanium.util.AssetUtil;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.text.StringTextComponent;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ public abstract class GuiAddonScreen extends Screen implements IGuiAddonConsumer
     private int dragY;
 
     public GuiAddonScreen(IAssetProvider assetProvider, boolean drawBackground) {
+        super(new StringTextComponent(""));
         this.assetProvider = assetProvider;
         this.drawBackground = drawBackground;
     }
@@ -56,7 +58,7 @@ public abstract class GuiAddonScreen extends Screen implements IGuiAddonConsumer
         this.checkForMouseDrag(mouseX, mouseY);
         GlStateManager.color4f(1, 1, 1, 1);
         if (drawBackground) {
-            this.drawDefaultBackground();
+            //this.drawDefaultBackground();
             AssetUtil.drawAsset(this, assetProvider.getAsset(AssetTypes.BACKGROUND), x, y);
         }
         addonList.forEach(iGuiAddon -> iGuiAddon.drawGuiContainerBackgroundLayer(this, assetProvider, x, y, mouseX, mouseY, partialTicks));
@@ -64,7 +66,7 @@ public abstract class GuiAddonScreen extends Screen implements IGuiAddonConsumer
         addonList.forEach(iGuiAddon -> iGuiAddon.drawGuiContainerForegroundLayer(this, assetProvider, x, y, mouseX, mouseY));
         for (IGuiAddon iGuiAddon : addonList) {
             if (iGuiAddon.isInside(null, mouseX - x, mouseY - y) && !iGuiAddon.getTooltipLines().isEmpty()) {
-                drawHoveringText(iGuiAddon.getTooltipLines(), mouseX - x, mouseY - y);
+                renderTooltip(iGuiAddon.getTooltipLines(), mouseX - x, mouseY - y);
             }
         }
     }

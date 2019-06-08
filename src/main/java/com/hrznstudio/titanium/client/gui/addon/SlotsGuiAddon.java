@@ -46,14 +46,14 @@ public class SlotsGuiAddon extends BasicGuiAddon {
         for (int x = 0; x < handler.getXSize(); x++) {
             for (int y = 0; y < handler.getYSize(); y++) {
                 if (handler instanceof SidedInvHandler) {
-                    AbstractGui.drawRect(guiX + handler.getXPos() + area.width * x - 2, guiY + handler.getYPos() + area.height * y - 2,
+                    AbstractGui.fill(guiX + handler.getXPos() + area.width * x - 2, guiY + handler.getYPos() + area.height * y - 2,
                             guiX + handler.getXPos() + area.width * x + area.width, guiY + handler.getYPos() + area.height * y + area.height, ((SidedInvHandler) handler).getColor());
                     GlStateManager.color4f(1, 1, 1, 1);
                 }
                 AssetUtil.drawAsset(screen, slot, handler.getXPos() + area.width * x + guiX - 1, handler.getYPos() + area.height * y + guiY - 1);
                 if (handler instanceof SidedInvHandler) {
                     Color color = new Color(((SidedInvHandler) handler).getColor());
-                    AbstractGui.drawRect(guiX + handler.getXPos() + area.width * x, guiY + handler.getYPos() + area.height * y,
+                    AbstractGui.fill(guiX + handler.getXPos() + area.width * x, guiY + handler.getYPos() + area.height * y,
                             guiX + handler.getXPos() + area.width * x + area.width - 2, guiY + handler.getYPos() + area.height * y + area.height - 2, new Color(color.getRed(), color.getGreen(), color.getBlue(), 256 / 2).getRGB());
                     GlStateManager.color4f(1, 1, 1, 1);
                 }

@@ -13,9 +13,9 @@ import com.hrznstudio.titanium.block.tile.fluid.PosFluidTank;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.MissingTextureSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
@@ -44,21 +44,21 @@ public class TankGuiAddon extends BasicGuiAddon {
             ResourceLocation flowing = stack.getFluid().getFlowing();
             if (flowing != null) {
                 TextureAtlasSprite sprite = screen.getMinecraft().getTextureMap().getAtlasSprite(flowing.toString());
-                if (sprite == null) sprite = MissingTextureSprite.getSprite();
+                if (sprite == null) sprite = MissingTextureSprite.func_217790_a();
                 screen.getMinecraft().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
                 GlStateManager.enableBlend();
                 int topBottomPadding = asset.getFluidRenderPadding(Direction.UP) + asset.getFluidRenderPadding(Direction.DOWN);
-                screen.drawTexturedModalRect(this.getPosX() + guiX + asset.getFluidRenderPadding(Direction.WEST),
+                screen.blit(this.getPosX() + guiX + asset.getFluidRenderPadding(Direction.WEST),
                         (int) (this.getPosY() + guiY + asset.getFluidRenderPadding(Direction.UP) + (stack.getFluid().isGaseous() ? area.height - topBottomPadding : (area.height - topBottomPadding) - (area.height - topBottomPadding) * filledAmount)),
-                        sprite,
                         area.width - asset.getFluidRenderPadding(Direction.WEST) - asset.getFluidRenderPadding(Direction.WEST),
-                        (int) ((area.height - topBottomPadding) * filledAmount));
+                        (int) ((area.height - topBottomPadding) * filledAmount), sprite.getHeight(),
+                        sprite);
                 GlStateManager.disableBlend();
             }
         }
         Point offset = asset.getOffset();
         screen.getMinecraft().getTextureManager().bindTexture(asset.getResourceLocation());
-        screen.drawTexturedModalRect(guiX + getPosX() + offset.x, guiY + getPosY() + offset.y, area.x, area.y, area.width, area.height);
+        screen.blit(guiX + getPosX() + offset.x, guiY + getPosY() + offset.y, area.x, area.y, area.width, area.height);
     }
 
     @Override

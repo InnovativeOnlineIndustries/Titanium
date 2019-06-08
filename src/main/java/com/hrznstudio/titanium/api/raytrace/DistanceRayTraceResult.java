@@ -17,7 +17,7 @@ public class DistanceRayTraceResult extends RayTraceResult {
     private double distance;
 
     public DistanceRayTraceResult(Vec3d hitVecIn, Direction sideHitIn, BlockPos blockPosIn, VoxelShape box, double distance) {
-        super(hitVecIn, sideHitIn, blockPosIn);
+        super(hitVecIn);
         this.hitInfo = box;
         this.distance = distance;
     }
@@ -28,5 +28,10 @@ public class DistanceRayTraceResult extends RayTraceResult {
 
     public double getDistance() {
         return distance;
+    }
+
+    @Override
+    public Type getType() {
+        return Type.BLOCK;
     }
 }

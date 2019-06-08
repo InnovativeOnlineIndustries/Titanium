@@ -20,8 +20,8 @@ public class DefaultDrawable implements IDrawable {
 
     @Override
     public void draw(Screen gui, Point position, Point mousePosition) {
-        gui.mc.getTextureManager().bindTexture(asset.getResourceLocation());
+        gui.getMinecraft().getTextureManager().bindTexture(asset.getResourceLocation());
         Rectangle area = asset.getArea();
-        gui.drawTexturedModalRect(position.x, position.y, area.x, area.y, area.width, area.height);
+        gui.blit(position.x, position.y, area.x, area.y, area.width, area.height);
     }
 }
