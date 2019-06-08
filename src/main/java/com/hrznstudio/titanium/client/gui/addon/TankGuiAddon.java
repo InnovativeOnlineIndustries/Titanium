@@ -11,8 +11,8 @@ import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.assets.types.ITankAsset;
 import com.hrznstudio.titanium.block.tile.fluid.PosFluidTank;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.MissingTextureSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.AtlasTexture;
@@ -43,9 +43,9 @@ public class TankGuiAddon extends BasicGuiAddon {
             double filledAmount = tank.getFluidAmount() / (double) tank.getCapacity();
             ResourceLocation flowing = stack.getFluid().getFlowing();
             if (flowing != null) {
-                TextureAtlasSprite sprite = screen.mc.getTextureMap().getAtlasSprite(flowing.toString());
+                TextureAtlasSprite sprite = screen.getMinecraft().getTextureMap().getAtlasSprite(flowing.toString());
                 if (sprite == null) sprite = MissingTextureSprite.getSprite();
-                screen.mc.getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+                screen.getMinecraft().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
                 GlStateManager.enableBlend();
                 int topBottomPadding = asset.getFluidRenderPadding(Direction.UP) + asset.getFluidRenderPadding(Direction.DOWN);
                 screen.drawTexturedModalRect(this.getPosX() + guiX + asset.getFluidRenderPadding(Direction.WEST),
@@ -57,7 +57,7 @@ public class TankGuiAddon extends BasicGuiAddon {
             }
         }
         Point offset = asset.getOffset();
-        screen.mc.getTextureManager().bindTexture(asset.getResourceLocation());
+        screen.getMinecraft().getTextureManager().bindTexture(asset.getResourceLocation());
         screen.drawTexturedModalRect(guiX + getPosX() + offset.x, guiY + getPosY() + offset.y, area.x, area.y, area.width, area.height);
     }
 

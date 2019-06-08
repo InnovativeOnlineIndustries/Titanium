@@ -32,6 +32,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
@@ -39,7 +40,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.IInteractionObject;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.NonNullSupplier;
@@ -52,7 +52,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileActive extends TileBase implements IGuiAddonProvider, ITickableTileEntity, IInteractionObject {
+public class TileActive extends TileBase implements IGuiAddonProvider, ITickableTileEntity, INamedContainerProvider {
 
     private MultiInventoryHandler multiInventoryHandler;
     private MultiProgressBarHandler multiProgressBarHandler;
@@ -84,8 +84,9 @@ public class TileActive extends TileBase implements IGuiAddonProvider, ITickable
             Titanium.openGui(this, (ServerPlayerEntity) player);
     }
 
+    @Nullable
     @Override
-    public Container createContainer(PlayerInventory inventoryPlayer, PlayerEntity entityPlayer) {
+    public Container createMenu(int menu, PlayerInventory inventoryPlayer, PlayerEntity entityPlayer) {
         return new ContainerTileBase<>(this, inventoryPlayer);
     }
 
@@ -93,30 +94,10 @@ public class TileActive extends TileBase implements IGuiAddonProvider, ITickable
         return new GuiContainerTile<>((ContainerTileBase<TileActive>) container);
     }
 
-    @Override
-    public String getGuiID() {
-        return "titanium:tilegui";
-    }
-
-    @Override
-    public ITextComponent getName() {
-        return new StringTextComponent("what. pls");
-    }
 
     @Override
     public ITextComponent getDisplayName() {
-        return getName();
-    }
-
-    @Override
-    public boolean hasCustomName() {
-        return false;
-    }
-
-    @Nullable
-    @Override
-    public ITextComponent getCustomName() {
-        return null;
+        return new StringTextComponent("what. pls");
     }
 
     /*

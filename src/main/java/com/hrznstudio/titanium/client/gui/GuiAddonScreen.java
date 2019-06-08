@@ -15,9 +15,9 @@ import com.hrznstudio.titanium.client.gui.addon.ICanMouseDrag;
 import com.hrznstudio.titanium.client.gui.addon.IClickable;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.util.AssetUtil;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -42,8 +42,8 @@ public abstract class GuiAddonScreen extends Screen implements IGuiAddonConsumer
     }
 
     @Override
-    public void initGui() {
-        super.initGui();
+    public void init() {
+        super.init();
         IBackgroundAsset background = IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND);
         this.x = this.width / 2 - background.getArea().width / 2;
         this.y = this.height / 2 - background.getArea().height / 2;

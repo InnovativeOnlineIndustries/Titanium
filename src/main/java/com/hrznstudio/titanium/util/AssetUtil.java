@@ -8,9 +8,9 @@
 package com.hrznstudio.titanium.util;
 
 import com.hrznstudio.titanium.api.client.IAsset;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.renderer.GlStateManager;
 
 import java.awt.*;
 
@@ -20,7 +20,7 @@ public class AssetUtil {
     public static void drawAsset(Screen screen, IAsset asset, int xPos, int yPos) {
         Point offset = asset.getOffset();
         Rectangle area = asset.getArea();
-        screen.mc.getTextureManager().bindTexture(asset.getResourceLocation());
+        screen.getMinecraft().getTextureManager().bindTexture(asset.getResourceLocation());
         screen.drawTexturedModalRect(xPos + offset.x,
                 yPos + offset.y,
                 area.x,

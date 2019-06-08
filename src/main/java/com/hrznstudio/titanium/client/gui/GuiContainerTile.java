@@ -15,9 +15,9 @@ import com.hrznstudio.titanium.client.gui.addon.ICanMouseDrag;
 import com.hrznstudio.titanium.client.gui.addon.IClickable;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.container.ContainerTileBase;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -53,7 +53,7 @@ public class GuiContainerTile<T extends TileActive> extends ContainerScreen impl
         y = (height - ySize) / 2;
         //BG RENDERING
         GlStateManager.color4f(1, 1, 1, 1);
-        mc.getTextureManager().bindTexture(IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND).getResourceLocation());
+        getMinecraft().getTextureManager().bindTexture(IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND).getResourceLocation());
         drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
 
         this.checkForMouseDrag(mouseX, mouseY);
