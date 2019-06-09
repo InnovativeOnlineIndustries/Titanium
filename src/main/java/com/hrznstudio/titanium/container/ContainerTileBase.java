@@ -128,4 +128,8 @@ public class ContainerTileBase<T extends TileActive> extends Container {
     public T getTile() {
         return tile;
     }
+
+    public PlayerInventory getPlayer() {
+        return player;
+    }
 }

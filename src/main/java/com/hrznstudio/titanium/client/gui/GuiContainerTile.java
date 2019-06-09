@@ -18,8 +18,7 @@ import com.hrznstudio.titanium.container.ContainerTileBase;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -37,8 +36,8 @@ public class GuiContainerTile<T extends TileActive> extends ContainerScreen impl
     private int dragX;
     private int dragY;
 
-    public GuiContainerTile(ContainerTileBase<T> containerTileBase, PlayerInventory inventory, ITextComponent component) {
-        super(containerTileBase, inventory, component);
+    public GuiContainerTile(ContainerTileBase<T> containerTileBase) {
+        super(containerTileBase, containerTileBase.getPlayer(), new StringTextComponent("HI"));
         this.containerTileBase = containerTileBase;
         this.assetProvider = containerTileBase.getTile().getAssetProvider();
         IAsset background = IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND);
