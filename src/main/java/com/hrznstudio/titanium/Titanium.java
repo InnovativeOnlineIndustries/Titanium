@@ -98,15 +98,15 @@ public class Titanium extends ModuleController {
             GlStateManager.enableBlend();
             GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
             GlStateManager.lineWidth(2.0F);
-            GlStateManager.disableTexture2D();
+            GlStateManager.disableTexture();
             GlStateManager.depthMask(false);
-            PlayerEntity player = event.getPlayer();
+            PlayerEntity player = Minecraft.getInstance().player;
             double x = player.lastTickPosX + (player.posX - player.lastTickPosX) * event.getPartialTicks();
             double y = player.lastTickPosY + (player.posY - player.lastTickPosY) * event.getPartialTicks();
             double z = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * event.getPartialTicks();
             WorldRenderer.drawShape(((DistanceRayTraceResult) hit).getHitBox().withOffset(pos.getX(), pos.getY(), pos.getZ()), -x, -y, -z, 0.0F, 0.0F, 0.0F, 0.4F);
             GlStateManager.depthMask(true);
-            GlStateManager.enableTexture2D();
+            GlStateManager.enableTexture();
             GlStateManager.disableBlend();
         }
     }
