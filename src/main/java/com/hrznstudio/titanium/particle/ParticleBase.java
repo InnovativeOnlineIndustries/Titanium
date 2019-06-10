@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-public class ParticleBase extends Particle implements IParticle {
+public class ParticleBase extends Particle implements IParticle { //TODO Missing patches?
     private int lifetime = 0;
 
     public ParticleBase(World world, double x, double y, double z, double vx, double vy, double vz, double[] data) {

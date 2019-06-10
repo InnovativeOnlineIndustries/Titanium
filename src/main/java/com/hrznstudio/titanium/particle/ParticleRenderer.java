@@ -45,7 +45,7 @@ public class ParticleRenderer {
     }
 
     public synchronized void renderParticles(float partialTicks) {
-        ActiveRenderInfo renderInfo = Minecraft.getInstance().gameRenderer.func_215316_n();
+        ActiveRenderInfo renderInfo = Minecraft.getInstance().gameRenderer.func_215316_n(); //TODO Missing missing?
         float f = renderInfo.getRotationX();
         float f1 = renderInfo.getRotationZ();
         float f2 = renderInfo.getRotationYZ();
