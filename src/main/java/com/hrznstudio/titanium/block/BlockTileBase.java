@@ -40,7 +40,8 @@ public abstract class BlockTileBase<T extends TileBase> extends BlockBase implem
     public void addAlternatives(RegistryManager registry) {
         super.addAlternatives(registry);
         NBTManager.getInstance().scanTileClassForAnnotations(tileClass);
-        tileEntityType = TileEntityType.register(getRegistryName().toString(), TileEntityType.Builder.func_223042_a(getTileEntityFactory()::create));//TODO Missing Forge Access transformers?
+        tileEntityType = TileEntityType.Builder.create(getTileEntityFactory()::create, this).build(null);
+        tileEntityType.setRegistryName(this.getRegistryName());
         registry.content(TileEntityType.class, tileEntityType);
     }
 
