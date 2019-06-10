@@ -16,10 +16,11 @@ import com.hrznstudio.titanium.network.NetworkHandler;
 import com.hrznstudio.titanium.util.TileUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
+import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -52,7 +53,7 @@ public class BasicButtonAddon extends BasicGuiAddon implements IClickable {
     @Override
     public void handleClick(Screen tile, int guiX, int guiY, double mouseX, double mouseY, int button) {
         Minecraft.getInstance().getSoundHandler().play(new SimpleSound(SoundEvents.UI_BUTTON_CLICK, SoundCategory.PLAYERS, 1f, 1f, Minecraft.getInstance().player.getPosition()));
-        if (tile instanceof ITileContainer)
+        if (tile instanceof IHasContainer)
             NetworkHandler.NETWORK.sendToServer(new ButtonClickNetworkMessage(((ITileContainer) tile).getTile().getPos(), this.button.getId(), new CompoundNBT()));
     }
 

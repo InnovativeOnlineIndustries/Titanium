@@ -12,7 +12,6 @@ import com.hrznstudio.titanium.event.RegisterParticleEvent;
 import com.hrznstudio.titanium.particle.ParticleRegistry;
 import com.hrznstudio.titanium.particle.ParticleRenderer;
 import com.mojang.blaze3d.platform.GlStateManager;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -58,7 +57,7 @@ public class TitaniumClient {
     @SubscribeEvent
     public static void onTextureStitch(TextureStitchEvent event) {
         for (Map.Entry<String, ResourceLocation> e : ParticleRegistry.particleTextures.entrySet()) {
-            event.getMap().registerSprite(Minecraft.getInstance().getResourceManager(), e.getValue());
+            //event.getMap().registerSprite(Minecraft.getInstance().getResourceManager(), e.getValue()); TODO
         }
     }
 }

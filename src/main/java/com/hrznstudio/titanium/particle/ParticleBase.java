@@ -8,7 +8,10 @@
 package com.hrznstudio.titanium.particle;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.client.renderer.ActiveRenderInfo;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -27,8 +30,8 @@ public class ParticleBase extends Particle implements IParticle { //TODO Missing
         this.maxAge = lifetime;
         ResourceLocation texture = ParticleRegistry.particleTextures.get(getClass().getName().toLowerCase());
         TextureAtlasSprite sprite = Minecraft.getInstance().getTextureMap().getAtlasSprite(texture.toString());
-        this.setParticleTexture(sprite);
-        this.particleScale = 1.0f;
+        //this.setParticleTexture(sprite);
+        //this.particleScale = 1.0f;
         this.canCollide = false;
     }
 
@@ -43,9 +46,19 @@ public class ParticleBase extends Particle implements IParticle { //TODO Missing
     }
 
     @Override
-    public int getFXLayer() {
-        return 1;
+    public void renderParticle(BufferBuilder buffer, ActiveRenderInfo entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+
     }
+
+    @Override
+    public IParticleRenderType func_217558_b() {
+        return null;
+    }
+
+    //@Override
+    //public int getFXLayer() {
+    //    return 1;
+    //}
 
     @Override
     public boolean alive() {

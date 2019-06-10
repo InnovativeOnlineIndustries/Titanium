@@ -17,16 +17,18 @@ import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.container.ContainerTileBase;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GuiContainerTile<T extends TileActive> extends ContainerScreen implements IGuiAddonConsumer, ITileContainer {
+public class GuiContainerTile extends ContainerScreen<ContainerTileBase> implements IGuiAddonConsumer, IHasContainer<ContainerTileBase> {
 
-    private final ContainerTileBase<T> containerTileBase;
+    private final ContainerTileBase containerTileBase;
     private IAssetProvider assetProvider;
     private int x;
     private int y;
@@ -36,9 +38,10 @@ public class GuiContainerTile<T extends TileActive> extends ContainerScreen impl
     private int dragX;
     private int dragY;
 
-    public GuiContainerTile(ContainerTileBase<T> containerTileBase) {
-        super(containerTileBase, containerTileBase.getPlayer(), new StringTextComponent("HI"));
+    public GuiContainerTile(ContainerTileBase containerTileBase, PlayerInventory playerInventory, ITextComponent title) {
+        super(containerTileBase, playerInventory, title);
         this.containerTileBase = containerTileBase;
+        System.out.println(Minecraft.getInstance().player.openContainer);
         this.assetProvider = containerTileBase.getTile().getAssetProvider();
         IAsset background = IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND);
         this.xSize = background.getArea().width;
@@ -101,12 +104,8 @@ public class GuiContainerTile<T extends TileActive> extends ContainerScreen impl
         return assetProvider;
     }
 
-    public T getTile() {
+    public TileActive getTile() {
         return containerTileBase.getTile();
-    }
-
-    public ContainerTileBase<T> getContainer() {
-        return containerTileBase;
     }
 
     public int getX() {
@@ -115,6 +114,11 @@ public class GuiContainerTile<T extends TileActive> extends ContainerScreen impl
 
     public int getY() {
         return y;
+    }
+
+    @Override
+    public ContainerTileBase getContainer() {
+        return containerTileBase;
     }
 
     @Override

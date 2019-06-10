@@ -46,11 +46,11 @@ public class ParticleRenderer {
 
     public synchronized void renderParticles(float partialTicks) {
         ActiveRenderInfo renderInfo = Minecraft.getInstance().gameRenderer.func_215316_n(); //TODO Missing missing?
-        float f = renderInfo.getRotationX();
-        float f1 = renderInfo.getRotationZ();
-        float f2 = renderInfo.getRotationYZ();
-        float f3 = renderInfo.getRotationXY();
-        float f4 = renderInfo.getRotationXZ();
+        float f = 0;//renderInfo.getRotationX();
+        float f1 = 0;//renderInfo.getRotationZ();
+        float f2 = 0;//renderInfo.getRotationYZ();
+        float f3 = 0;//renderInfo.getRotationXY();
+        float f4 = 0;//renderInfo.getRotationXZ();
         PlayerEntity player = Minecraft.getInstance().player;
         if (player != null) {
             Particle.interpPosX = player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTicks;

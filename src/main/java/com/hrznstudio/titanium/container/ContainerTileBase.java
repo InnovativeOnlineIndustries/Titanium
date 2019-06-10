@@ -14,20 +14,32 @@ import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.SlotItemHandler;
+import net.minecraftforge.registries.ObjectHolder;
 
 import java.awt.*;
 
-public class ContainerTileBase<T extends TileActive> extends Container {
+public class ContainerTileBase extends Container {
 
-    private T tile;
+    @ObjectHolder("titanium:tile_container")
+    public static ContainerType<ContainerTileBase> TYPE;
+
+    private TileActive tile;
     private PlayerInventory player;
     private boolean hasPlayerInventory;
     private int totalSlots;
 
-    public ContainerTileBase(T tile, PlayerInventory player) {
+    public ContainerTileBase(int id, PlayerInventory player) {
+        super(TYPE, id);
+        System.out.println("Using empty container");
+    }
+
+    public ContainerTileBase(TileActive tile, PlayerInventory player) {
+        super(TYPE, 0);
+        System.out.println("Using full container");
         this.tile = tile;
         this.player = player;
         this.totalSlots = 0;
@@ -125,7 +137,7 @@ public class ContainerTileBase<T extends TileActive> extends Container {
         return itemstack;
     }
 
-    public T getTile() {
+    public TileActive getTile() {
         return tile;
     }
 

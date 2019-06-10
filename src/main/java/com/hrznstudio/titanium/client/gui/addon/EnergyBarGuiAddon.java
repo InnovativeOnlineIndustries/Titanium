@@ -50,7 +50,7 @@ public class EnergyBarGuiAddon extends BasicGuiAddon {
 
     @Override
     public List<String> getTooltipLines() {
-        return Arrays.asList(/*TextFormatting.AQUA + "Power:", new DecimalFormat().format(handler.getEnergyStored()) + TextFormatting.GOLD + "/" + TextFormatting.WHITE + new DecimalFormat().format(handler.getMaxEnergyStored()) TODO*/);
+        return Arrays.asList(/*TextFormatting.AQUA + "Power:", new DecimalFormat().format(handler.getEnergyStored()) + TextFormatting.GOLD + "/" + TextFormatting.WHITE + new DecimalFormat().format(handler.getMaxEnergyStored())  TODO*/);
     }
 
     @Override
