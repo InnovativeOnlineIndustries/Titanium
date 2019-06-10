@@ -17,6 +17,7 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.registries.ObjectHolder;
 
@@ -32,14 +33,12 @@ public class ContainerTileBase extends Container {
     private boolean hasPlayerInventory;
     private int totalSlots;
 
-    public ContainerTileBase(int id, PlayerInventory player) {
-        super(TYPE, id);
-        System.out.println("Using empty container");
+    public ContainerTileBase(int id, PlayerInventory player, PacketBuffer buffer) {
+        this((TileActive) player.player.getEntityWorld().getTileEntity(buffer.readBlockPos()), player);
     }
 
     public ContainerTileBase(TileActive tile, PlayerInventory player) {
         super(TYPE, 0);
-        System.out.println("Using full container");
         this.tile = tile;
         this.player = player;
         this.totalSlots = 0;

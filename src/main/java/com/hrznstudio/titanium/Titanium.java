@@ -34,6 +34,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
+import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -55,7 +56,7 @@ public class Titanium extends ModuleController {
 
     @Override
     protected void initModules() {
-        addModule(Module.builder("core").force().feature(Feature.builder("core").content(ContainerType.class, (ContainerType) new ContainerType<>(ContainerTileBase::new).setRegistryName(new ResourceLocation(Titanium.MODID, "tile_container")))));
+        addModule(Module.builder("core").force().feature(Feature.builder("core").content(ContainerType.class, (ContainerType) IForgeContainerType.create(ContainerTileBase::new).setRegistryName(new ResourceLocation(Titanium.MODID, "tile_container")))));
         addModule(Module.builder("test_module")
                 .disableByDefault()
                 .description("Test module for titanium features")
@@ -76,17 +77,6 @@ public class Titanium extends ModuleController {
         EventManager.forge(DrawBlockHighlightEvent.class).process(this::drawBlockHighlight).subscribe();
         TitaniumClient.registerModelLoader();
         ScreenManager.registerFactory(ContainerTileBase.TYPE, GuiContainerTile::new);
-        //ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> data -> { //TODO Wrong Extension Point, GUIFACTORY Missing
-        //    int x = data.getAdditionalData().readInt();
-        //    int y = data.getAdditionalData().readInt();
-        //    int z = data.getAdditionalData().readInt();
-        //    return TileUtil.getTileEntity(
-        //            Minecraft.getInstance().world,
-        //            new BlockPos(x, y, z),
-        //            TileActive.class
-        //    ).map(tile -> tile.createGui(tile.createMenu(0, Minecraft.getInstance().player.inventory, Minecraft.getInstance().player))
-        //    ).orElse(null);
-        //});
     }
 
     @OnlyIn(Dist.CLIENT)
