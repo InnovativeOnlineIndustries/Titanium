@@ -45,11 +45,12 @@ public class ParticleRenderer {
     }
 
     public synchronized void renderParticles(float partialTicks) {
-        float f = ActiveRenderInfo.getRotationX();
-        float f1 = ActiveRenderInfo.getRotationZ();
-        float f2 = ActiveRenderInfo.getRotationYZ();
-        float f3 = ActiveRenderInfo.getRotationXY();
-        float f4 = ActiveRenderInfo.getRotationXZ();
+        ActiveRenderInfo renderInfo = Minecraft.getInstance().gameRenderer.func_215316_n();
+        float f = renderInfo.getRotationX();
+        float f1 = renderInfo.getRotationZ();
+        float f2 = renderInfo.getRotationYZ();
+        float f3 = renderInfo.getRotationXY();
+        float f4 = renderInfo.getRotationXZ();
         PlayerEntity player = Minecraft.getInstance().player;
         if (player != null) {
             Particle.interpPosX = player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTicks;
@@ -70,14 +71,14 @@ public class ParticleRenderer {
             buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
             particles.stream()
                     .filter(particle -> particle instanceof IParticle && !((IParticle) particle).isAdditive())
-                    .forEach(particle -> particle.renderParticle(buffer, player, partialTicks, f, f4, f1, f2, f3));
+                    .forEach(particle -> particle.renderParticle(buffer, renderInfo, partialTicks, f, f4, f1, f2, f3));
             tess.draw();
 
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
             buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
             particles.stream()
                     .filter(particle -> particle instanceof IParticle && ((IParticle) particle).isAdditive())
-                    .forEach(particle -> particle.renderParticle(buffer, player, partialTicks, f, f4, f1, f2, f3));
+                    .forEach(particle -> particle.renderParticle(buffer, renderInfo, partialTicks, f, f4, f1, f2, f3));
             tess.draw();
 
             GlStateManager.disableDepthTest();
@@ -85,14 +86,14 @@ public class ParticleRenderer {
             buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
             particles.stream()
                     .filter(particle -> particle instanceof IParticle && !((IParticle) particle).isAdditive() && ((IParticle) particle).renderThroughBlocks())
-                    .forEach(particle -> particle.renderParticle(buffer, player, partialTicks, f, f4, f1, f2, f3));
+                    .forEach(particle -> particle.renderParticle(buffer, renderInfo, partialTicks, f, f4, f1, f2, f3));
             tess.draw();
 
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
             buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
             particles.stream()
                     .filter(particle -> particle instanceof IParticle && ((IParticle) particle).isAdditive() && ((IParticle) particle).renderThroughBlocks())
-                    .forEach(particle -> particle.renderParticle(buffer, player, partialTicks, f, f4, f1, f2, f3));
+                    .forEach(particle -> particle.renderParticle(buffer, renderInfo, partialTicks, f, f4, f1, f2, f3));
             tess.draw();
             GlStateManager.enableDepthTest();
 
