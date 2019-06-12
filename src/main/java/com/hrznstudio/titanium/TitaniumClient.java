@@ -8,56 +8,12 @@
 package com.hrznstudio.titanium;
 
 import com.hrznstudio.titanium.client.TitaniumModelLoader;
-import com.hrznstudio.titanium.event.RegisterParticleEvent;
-import com.hrznstudio.titanium.particle.ParticleRegistry;
-import com.hrznstudio.titanium.particle.ParticleRenderer;
-import com.mojang.blaze3d.platform.GlStateManager;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-
-import java.util.Map;
 
 @EventBusSubscriber
 public class TitaniumClient {
-
-    public static ParticleRenderer particleRenderer = new ParticleRenderer();
-
-    public static int ticks = 0;
-
     public static void registerModelLoader() {
         ModelLoaderRegistry.registerLoader(new TitaniumModelLoader());
-    }
-
-    public static void registerParticleRegistry() {
-        MinecraftForge.EVENT_BUS.post(new RegisterParticleEvent());
-    }
-
-    @SubscribeEvent
-    public static void onClientTick(TickEvent.ClientTickEvent event) {
-        if (event.phase == TickEvent.Phase.END) {
-            ticks++;
-            TitaniumClient.particleRenderer.updateParticles();
-        }
-    }
-
-    @SubscribeEvent
-    public static void onRenderAfterWorld(RenderWorldLastEvent event) {
-        // Renders all particles in Titanium
-        GlStateManager.pushMatrix();
-        TitaniumClient.particleRenderer.renderParticles(event.getPartialTicks());
-        GlStateManager.popMatrix();
-    }
-
-    @SubscribeEvent
-    public static void onTextureStitch(TextureStitchEvent event) {
-        for (Map.Entry<String, ResourceLocation> e : ParticleRegistry.particleTextures.entrySet()) {
-            //event.getMap().registerSprite(Minecraft.getInstance().getResourceManager(), e.getValue()); TODO
-        }
     }
 }
