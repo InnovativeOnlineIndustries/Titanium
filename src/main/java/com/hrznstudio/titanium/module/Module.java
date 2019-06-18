@@ -60,8 +60,8 @@ public final class Module {
 
     void initConfig(CommentedFileConfig config) {
         new HashMap<>(featureMap).forEach((id, f) -> {
+            String cm = "modules." + this.id + "." + id;
             if (!f.isForced()) {
-                String cm = "modules." + this.id + "." + id;
                 String c = cm + ".enabled";
                 config.setComment(cm, f.getDescription());
                 boolean active = config.add(c, f.isEnabledByDefault()) ? f.isEnabledByDefault() : config.getOrElse(c, f.isEnabledByDefault());
@@ -71,6 +71,9 @@ public final class Module {
                 } else {
                     disabledFeatureMap.put(id, featureMap.remove(id));
                 }
+            } else {
+                f.initConfig(cm, config);
+                f.initEvents();
             }
         });
     }

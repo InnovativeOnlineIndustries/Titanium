@@ -48,6 +48,8 @@ public abstract class ModuleController {
                 } else {
                     disabledModuleMap.put(id, moduleMap.remove(id));
                 }
+            } else {
+                m.initConfig(config);
             }
         });
         config.save();
