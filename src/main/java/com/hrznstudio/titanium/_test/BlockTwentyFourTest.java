@@ -11,17 +11,24 @@ import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.block.BlockRotation;
 import net.minecraft.block.material.Material;
 
+import javax.annotation.Nonnull;
+
 public class BlockTwentyFourTest extends BlockRotation<TileTwentyFourTest> {
 
     public static BlockTwentyFourTest TEST;
 
     public BlockTwentyFourTest() {
         super("block_twenty_four_test", Properties.create(Material.ROCK), TileTwentyFourTest.class);
-        setRotationType(RotationType.TWENTY_FOUR_WAY);
     }
 
     @Override
     public IFactory<TileTwentyFourTest> getTileEntityFactory() {
         return TileTwentyFourTest::new;
+    }
+
+    @Nonnull
+    @Override
+    public RotationType getRotationType() {
+        return RotationType.TWENTY_FOUR_WAY;
     }
 }
