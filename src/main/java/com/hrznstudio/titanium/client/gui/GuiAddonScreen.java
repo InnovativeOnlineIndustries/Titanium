@@ -58,7 +58,7 @@ public abstract class GuiAddonScreen extends Screen implements IGuiAddonConsumer
         this.checkForMouseDrag(mouseX, mouseY);
         GlStateManager.color4f(1, 1, 1, 1);
         if (drawBackground) {
-            //this.drawDefaultBackground();
+            this.renderBackground();
             AssetUtil.drawAsset(this, assetProvider.getAsset(AssetTypes.BACKGROUND), x, y);
         }
         addonList.forEach(iGuiAddon -> iGuiAddon.drawGuiContainerBackgroundLayer(this, assetProvider, x, y, mouseX, mouseY, partialTicks));
