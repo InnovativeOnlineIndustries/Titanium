@@ -30,4 +30,17 @@ public @interface ConfigFile {
      * @return the config name with `.toml` at the end
      */
     String value() default "";
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ElementType.TYPE})
+    public @interface Child {
+
+        /**
+         * The class which the config file is child to
+         *
+         * @return the parent class
+         */
+        Class value();
+
+    }
 }

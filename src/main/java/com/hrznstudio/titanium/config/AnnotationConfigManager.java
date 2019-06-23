@@ -7,7 +7,9 @@
 
 package com.hrznstudio.titanium.config;
 
+import com.hrznstudio.titanium.annotation.config.ConfigFile;
 import com.hrznstudio.titanium.annotation.config.ConfigVal;
+import com.hrznstudio.titanium.util.AnnotationUtil;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
@@ -68,6 +70,8 @@ public class AnnotationConfigManager {
                     }
                 }
             }
+            AnnotationUtil.getFilteredAnnotatedClasses(ConfigFile.Child.class, ModLoadingContext.get().getActiveContainer().getModId()).stream()
+                    .filter(aClass -> ((ConfigFile.Child) aClass.getAnnotation(ConfigFile.Child.class)).value().equals(configClass)).forEach(aClass -> scanClass(aClass, builder));
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }

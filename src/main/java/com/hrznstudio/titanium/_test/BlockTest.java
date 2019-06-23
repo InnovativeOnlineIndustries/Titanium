@@ -7,13 +7,19 @@
 
 package com.hrznstudio.titanium._test;
 
+import com.hrznstudio.titanium.annotation.config.ConfigFile;
+import com.hrznstudio.titanium.annotation.config.ConfigVal;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.block.BlockRotation;
 import net.minecraft.block.material.Material;
 
 import javax.annotation.Nonnull;
 
+@ConfigFile.Child(TitaniumConfig.class)
 public class BlockTest extends BlockRotation<TileTest> {
+
+    @ConfigVal
+    public static int DUMB_VALUE = 135;
 
     public static BlockTest TEST;
 
