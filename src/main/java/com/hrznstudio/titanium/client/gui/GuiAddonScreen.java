@@ -28,8 +28,8 @@ import java.util.stream.Collectors;
 public abstract class GuiAddonScreen extends Screen implements IGuiAddonConsumer {
 
     private IAssetProvider assetProvider;
-    private int x;
-    private int y;
+    public int x;
+    public int y;
     private List<IGuiAddon> addonList;
     private boolean drawBackground;
 
@@ -55,6 +55,15 @@ public abstract class GuiAddonScreen extends Screen implements IGuiAddonConsumer
     @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
         super.render(mouseX, mouseY, partialTicks);
+        GlStateManager.pushMatrix();
+        renderBackground(mouseX, mouseY, partialTicks);
+        GlStateManager.popMatrix();
+        GlStateManager.pushMatrix();
+        renderForeground(mouseX, mouseY, partialTicks);
+        GlStateManager.popMatrix();
+    }
+
+    public void renderBackground(int mouseX, int mouseY, float partialTicks) {
         this.checkForMouseDrag(mouseX, mouseY);
         GlStateManager.color4f(1, 1, 1, 1);
         if (drawBackground) {
@@ -62,11 +71,13 @@ public abstract class GuiAddonScreen extends Screen implements IGuiAddonConsumer
             AssetUtil.drawAsset(this, assetProvider.getAsset(AssetTypes.BACKGROUND), x, y);
         }
         addonList.forEach(iGuiAddon -> iGuiAddon.drawGuiContainerBackgroundLayer(this, assetProvider, x, y, mouseX, mouseY, partialTicks));
+    }
 
+    public void renderForeground(int mouseX, int mouseY, float partialTicks) {
         addonList.forEach(iGuiAddon -> iGuiAddon.drawGuiContainerForegroundLayer(this, assetProvider, x, y, mouseX, mouseY));
         for (IGuiAddon iGuiAddon : addonList) {
             if (iGuiAddon.isInside(null, mouseX - x, mouseY - y) && !iGuiAddon.getTooltipLines().isEmpty()) {
-                renderTooltip(iGuiAddon.getTooltipLines(), mouseX - x, mouseY - y);
+                renderTooltip(iGuiAddon.getTooltipLines(), mouseX, mouseY);
             }
         }
     }
