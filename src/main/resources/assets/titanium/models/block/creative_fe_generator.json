@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "titanium:blocks/creative/side_fe",
+    "north": "titanium:blocks/creative/side_fe",
+    "west": "titanium:blocks/creative/side_fe",
+    "east": "titanium:blocks/creative/side_fe",
+    "south": "titanium:blocks/creative/side_fe",
+    "up": "titanium:blocks/creative/top",
+    "down": "titanium:blocks/creative/bottom"
+  }
+}

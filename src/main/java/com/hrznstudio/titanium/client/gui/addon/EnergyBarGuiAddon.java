@@ -42,9 +42,9 @@ public class EnergyBarGuiAddon extends BasicGuiAddon {
         Point offset = asset.getOffset();
         Rectangle area = asset.getArea();
         screen.getMinecraft().getTextureManager().bindTexture(asset.getResourceLocation());
-        int stored = handler.getEnergyStored();
-        int capacity = handler.getMaxEnergyStored();
-        int powerOffset = stored * area.height / capacity;
+        long stored = handler.getEnergyStored();
+        long capacity = handler.getMaxEnergyStored();
+        int powerOffset = (int) (stored * area.height / capacity);
         screen.blit(getPosX() + offset.x, getPosY() + offset.y + area.height - powerOffset, area.x, area.y + (area.height - powerOffset), area.width, powerOffset);
     }
 

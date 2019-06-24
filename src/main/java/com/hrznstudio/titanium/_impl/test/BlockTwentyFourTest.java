@@ -5,8 +5,9 @@
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
 
-package com.hrznstudio.titanium._test;
+package com.hrznstudio.titanium._impl.test;
 
+import com.hrznstudio.titanium._impl.test.tile.TileTwentyFourTest;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.block.BlockRotation;
 import net.minecraft.block.material.Material;

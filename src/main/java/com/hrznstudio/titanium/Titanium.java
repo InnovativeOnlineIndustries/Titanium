@@ -7,8 +7,9 @@
 
 package com.hrznstudio.titanium;
 
-import com.hrznstudio.titanium._test.BlockTest;
-import com.hrznstudio.titanium._test.BlockTwentyFourTest;
+import com.hrznstudio.titanium._impl.creative.BlockCreativeFEGenerator;
+import com.hrznstudio.titanium._impl.test.BlockTest;
+import com.hrznstudio.titanium._impl.test.BlockTwentyFourTest;
 import com.hrznstudio.titanium.api.raytrace.DistanceRayTraceResult;
 import com.hrznstudio.titanium.block.tile.TileActive;
 import com.hrznstudio.titanium.client.gui.GuiContainerTile;
@@ -56,7 +57,7 @@ public class Titanium extends ModuleController {
 
     @Override
     protected void initModules() {
-        addModule(Module.builder("core").force().feature(Feature.builder("core").content(ContainerType.class, (ContainerType) IForgeContainerType.create(ContainerTileBase::new).setRegistryName(new ResourceLocation(Titanium.MODID, "tile_container")))));
+        addModule(Module.builder("core").force().feature(Feature.builder("core").force().content(ContainerType.class, (ContainerType) IForgeContainerType.create(ContainerTileBase::new).setRegistryName(new ResourceLocation(Titanium.MODID, "tile_container")))));
         addModule(Module.builder("test_module")
                 .disableByDefault()
                 .description("Test module for titanium features")
@@ -70,6 +71,12 @@ public class Titanium extends ModuleController {
                         .event(EventManager.forge(EntityItemPickupEvent.class).filter(ev -> ev.getItem().getItem().getItem() == Items.STICK).process(ev -> ev.getItem().lifespan = 0).cancel())
                 )
         );
+        addModule(Module.builder("creative")
+                .disableByDefault()
+                .description("Creative features")
+                .feature(Feature.builder("blocks")
+                        .description("Adds creative machine features")
+                        .content(Block.class, BlockCreativeFEGenerator.INSTANCE)));
     }
 
     @OnlyIn(Dist.CLIENT)

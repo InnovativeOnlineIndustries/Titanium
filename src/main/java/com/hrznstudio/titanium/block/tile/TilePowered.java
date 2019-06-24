@@ -11,6 +11,7 @@ import com.google.common.collect.Sets;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.block.BlockTileBase;
+import com.hrznstudio.titanium.client.gui.addon.EnergyBarGuiAddon;
 import com.hrznstudio.titanium.energy.NBTEnergyHandler;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
@@ -32,6 +33,7 @@ public class TilePowered extends TileActive {
         super(blockTileBase);
         this.energyHandler = getEnergyHandlerFactory().create();
         this.energyCap = LazyOptional.of(() -> this.energyHandler);
+        addGuiAddonFactory(() -> new EnergyBarGuiAddon(20, 20, energyHandler));
     }
 
     protected IFactory<NBTEnergyHandler> getEnergyHandlerFactory() {
