@@ -219,7 +219,7 @@ public class TileActive extends TileBase implements IGuiAddonProvider, ITickable
         return null;
     }
 
-    public void handleButtonMessage(int id, CompoundNBT compound) {
+    public void handleButtonMessage(int id, PlayerEntity playerEntity, CompoundNBT compound) {
         if (id == -1) {
             String name = compound.getString("Name");
             FacingUtil.Sideness facing = FacingUtil.Sideness.valueOf(compound.getString("Facing"));
@@ -230,7 +230,7 @@ public class TileActive extends TileBase implements IGuiAddonProvider, ITickable
                 markForUpdate();
             }
         } else if (multiButtonHandler != null) {
-            multiButtonHandler.clickButton(id, compound);
+            multiButtonHandler.clickButton(id, playerEntity, compound);
         }
     }
 }

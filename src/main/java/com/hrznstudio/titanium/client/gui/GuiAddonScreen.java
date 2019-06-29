@@ -54,10 +54,10 @@ public abstract class GuiAddonScreen extends Screen implements IGuiAddonConsumer
 
     @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
-        super.render(mouseX, mouseY, partialTicks);
         GlStateManager.pushMatrix();
         renderBackground(mouseX, mouseY, partialTicks);
         GlStateManager.popMatrix();
+        super.render(mouseX, mouseY, partialTicks);
         GlStateManager.pushMatrix();
         renderForeground(mouseX, mouseY, partialTicks);
         GlStateManager.popMatrix();
@@ -76,7 +76,7 @@ public abstract class GuiAddonScreen extends Screen implements IGuiAddonConsumer
     public void renderForeground(int mouseX, int mouseY, float partialTicks) {
         addonList.forEach(iGuiAddon -> iGuiAddon.drawGuiContainerForegroundLayer(this, assetProvider, x, y, mouseX, mouseY));
         for (IGuiAddon iGuiAddon : addonList) {
-            if (iGuiAddon.isInside(null, mouseX - x, mouseY - y) && !iGuiAddon.getTooltipLines().isEmpty()) {
+            if (iGuiAddon.isInside(this, mouseX - x, mouseY - y) && !iGuiAddon.getTooltipLines().isEmpty()) {
                 renderTooltip(iGuiAddon.getTooltipLines(), mouseX, mouseY);
             }
         }
@@ -105,6 +105,17 @@ public abstract class GuiAddonScreen extends Screen implements IGuiAddonConsumer
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
         super.mouseClicked(mouseX, mouseY, mouseButton);
+        //for (IGuiAddon iGuiAddon : addonList) {
+        //    if (iGuiAddon instanceof  IClickable && iGuiAddon instanceof BasicGuiAddon){
+        //        System.out.println(iGuiAddon);
+        //        if (iGuiAddon.isInside(this, mouseX , mouseY)) {
+        //            System.out.println("INSIDE");
+        //            ((IClickable) iGuiAddon).handleClick(this, x, y, mouseX, mouseY, mouseButton);
+        //        } else {
+        //            System.out.println((x + ((BasicGuiAddon) iGuiAddon).getPosX() - mouseX) + ":" +( y+ ((BasicGuiAddon) iGuiAddon).getPosY() - mouseY));
+        //        }
+        //    }
+        //}
         new ArrayList<>(addonList).stream().filter(iGuiAddon -> iGuiAddon instanceof IClickable && iGuiAddon.isInside(this, mouseX - x, mouseY - y))
                 .forEach(iGuiAddon -> ((IClickable) iGuiAddon).handleClick(this, x, y, mouseX, mouseY, mouseButton));
         return false;

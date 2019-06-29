@@ -62,7 +62,7 @@ public class TileTest extends TilePowered implements ITickableTileEntity {
                     }
                 });
             }
-        }.setId(0).setPredicate(nbtTagCompound -> {
+        }.setId(0).setPredicate((playerEntity, compoundNBT) -> {
             System.out.println(":pepeD:");
             ++state;
             if (state >= 4) state = 0;

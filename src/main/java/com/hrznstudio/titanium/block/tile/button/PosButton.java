@@ -11,11 +11,12 @@ import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
 import com.hrznstudio.titanium.client.gui.addon.BasicButtonAddon;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 public class PosButton implements IGuiAddonProvider {
 
@@ -24,7 +25,7 @@ public class PosButton implements IGuiAddonProvider {
     private final int sizeX;
     private final int sizeY;
     private int id;
-    private Consumer<CompoundNBT> serverPredicate;
+    private BiConsumer<PlayerEntity, CompoundNBT> serverPredicate;
 
     public PosButton(int posX, int posY, int sizeX, int sizeY) {
         this.posX = posX;
@@ -39,13 +40,13 @@ public class PosButton implements IGuiAddonProvider {
      * @param serverPredicate A predicate that has a NBTTagCompound with client information
      * @return itself
      */
-    public PosButton setPredicate(Consumer<CompoundNBT> serverPredicate) {
+    public PosButton setPredicate(BiConsumer<PlayerEntity, CompoundNBT> serverPredicate) {
         this.serverPredicate = serverPredicate;
         return this;
     }
 
-    public void onButtonClicked(CompoundNBT information) {
-        if (serverPredicate != null) serverPredicate.accept(information);
+    public void onButtonClicked(PlayerEntity entity, CompoundNBT information) {
+        if (serverPredicate != null) serverPredicate.accept(entity, information);
     }
 
     public int getPosX() {

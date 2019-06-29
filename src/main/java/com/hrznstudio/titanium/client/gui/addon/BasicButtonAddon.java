@@ -25,6 +25,7 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.network.NetworkEvent;
 
+import java.util.Collections;
 import java.util.List;
 
 public class BasicButtonAddon extends BasicGuiAddon implements IClickable {
@@ -48,7 +49,7 @@ public class BasicButtonAddon extends BasicGuiAddon implements IClickable {
 
     @Override
     public List<String> getTooltipLines() {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
@@ -90,7 +91,7 @@ public class BasicButtonAddon extends BasicGuiAddon implements IClickable {
         @Override
         protected void handleMessage(NetworkEvent.Context context) {
             TileUtil.getTileEntity(context.getSender().world, pos, TileActive.class).ifPresent(tileActive -> {
-                tileActive.handleButtonMessage(id, data);
+                tileActive.handleButtonMessage(id, context.getSender(), data);
             });
         }
     }

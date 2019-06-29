@@ -10,6 +10,7 @@ package com.hrznstudio.titanium.block.tile.button;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 
 import java.util.ArrayList;
@@ -27,8 +28,8 @@ public class MultiButtonHandler implements IGuiAddonProvider {
         basicButtonAddons.add(buttonAddon.setId(basicButtonAddons.size()));
     }
 
-    public void clickButton(int id, CompoundNBT compound) {
-        basicButtonAddons.stream().filter(buttonAddon -> buttonAddon.getId() == id).forEach(buttonAddon -> buttonAddon.onButtonClicked(compound));
+    public void clickButton(int id, PlayerEntity playerEntity, CompoundNBT compound) {
+        basicButtonAddons.stream().filter(buttonAddon -> buttonAddon.getId() == id).forEach(buttonAddon -> buttonAddon.onButtonClicked(playerEntity, compound));
     }
 
     @Override
