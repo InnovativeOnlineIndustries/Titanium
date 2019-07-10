@@ -54,8 +54,20 @@ minecraft {
     }
 }
 
+repositories {
+    mavenCentral()
+    jcenter()
+    maven {
+        // location of the maven that hosts JEI files
+        name = "Progwml6 maven"
+        url = "https://dvs1.progwml6.com/files/maven/"
+    }
+}
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.14.3-27.0.16'
+    minecraft 'net.minecraftforge:forge:1.14.3-27.0.43'
+    compileOnly fg.deobf("mezz.jei:jei-1.14.3:6.0.0.8:api")
+    // at runtime, use the full JEI jar
+    runtimeOnly fg.deobf("mezz.jei:jei-1.14.3:6.0.0.8")
 }
 
 jar {
