@@ -65,9 +65,12 @@ repositories {
 }
 dependencies {
     minecraft 'net.minecraftforge:forge:1.14.3-27.0.43'
-    compileOnly fg.deobf("mezz.jei:jei-1.14.3:6.0.0.8:api")
-    // at runtime, use the full JEI jar
-    runtimeOnly fg.deobf("mezz.jei:jei-1.14.3:6.0.0.8")
+    if (findProject(':workspace') == null) {
+        compileOnly fg.deobf("mezz.jei:jei-1.14.3:6.0.0.8:api")
+        // at runtime, use the full JEI jar
+        runtimeOnly fg.deobf("mezz.jei:jei-1.14.3:6.0.0.8")
+    }
+
 }
 
 jar {
