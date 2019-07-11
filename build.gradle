@@ -52,6 +52,7 @@ minecraft {
             source sourceSets.main
         }
     }
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 }
 
 repositories {
