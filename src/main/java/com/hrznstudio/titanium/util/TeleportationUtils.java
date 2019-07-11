@@ -137,7 +137,6 @@ public class TeleportationUtils {
             if (!player.queuedEndExit) {
                 player.queuedEndExit = true;
             }
-
             return player;
         } else {
             ServerWorld serverworld = player.server.getWorld(dimensiontype);
@@ -180,7 +179,6 @@ public class TeleportationUtils {
 
             player.setLocationAndAngles(xCoord, yCoord, zCoord, yaw, pitch);
             player.setMotion(Vec3d.ZERO);
-            player.setNoGravity(true);
 
             player.setWorld(serverworld1);
             serverworld1.func_217447_b(player);
