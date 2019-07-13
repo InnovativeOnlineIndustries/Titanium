@@ -179,7 +179,7 @@ public class TileActive extends TileBase implements IGuiAddonProvider, ITickable
                         }
                     }
                 }
-                if (multiButtonHandler != null) {
+                if (multiTankHandler != null) {
                     for (PosFluidTank tank : multiTankHandler.getTanks()) {
                         if (tank instanceof IFacingHandler) {
                             if (((IFacingHandler) tank).work(this.world, this.pos, this.getFacingDirection(), getFacingHandlerWorkAmount()))
