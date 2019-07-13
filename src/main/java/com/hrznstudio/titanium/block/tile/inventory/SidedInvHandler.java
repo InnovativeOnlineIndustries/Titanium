@@ -36,6 +36,7 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
     private HashMap<FacingUtil.Sideness, FaceMode> facingModes;
     private HashMap<FacingUtil.Sideness, Integer> slotCache;
     private int position;
+    private boolean colorGuiEnabled;
 
     public SidedInvHandler(String name, int xPos, int yPos, int size, int position) {
         super(name, xPos, yPos, size);
@@ -46,6 +47,7 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
             this.facingModes.put(value, FaceMode.ENABLED);
         }
         this.position = position;
+        this.colorGuiEnabled = true;
     }
 
     @Override
@@ -65,6 +67,15 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
 
     public SidedInvHandler setColor(DyeColor color) {
         this.color = color.getFireworkColor();
+        return this;
+    }
+
+    public boolean isColorGuiEnabled() {
+        return colorGuiEnabled;
+    }
+
+    public SidedInvHandler setColorGuiEnabled(boolean colorGuiEnabled) {
+        this.colorGuiEnabled = colorGuiEnabled;
         return this;
     }
 

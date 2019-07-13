@@ -41,7 +41,6 @@ public class GuiContainerTile extends ContainerScreen<ContainerTileBase> impleme
     public GuiContainerTile(ContainerTileBase containerTileBase, PlayerInventory playerInventory, ITextComponent title) {
         super(containerTileBase, playerInventory, title);
         this.containerTileBase = containerTileBase;
-        System.out.println(Minecraft.getInstance().player.openContainer);
         this.assetProvider = containerTileBase.getTile().getAssetProvider();
         IAsset background = IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND);
         this.xSize = background.getArea().width;
@@ -52,7 +51,7 @@ public class GuiContainerTile extends ContainerScreen<ContainerTileBase> impleme
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-        //this.drawDefaultBackground();
+        this.renderBackground();
         x = (width - xSize) / 2;
         y = (height - ySize) / 2;
         //BG RENDERING
