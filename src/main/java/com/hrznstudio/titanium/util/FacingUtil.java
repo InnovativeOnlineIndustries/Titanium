@@ -12,6 +12,7 @@ import net.minecraft.util.Direction;
 public class FacingUtil {
 
     public static Sideness getFacingRelative(Direction relative, Direction facing) {
+        if (facing == null) return null;
         if (facing == Direction.UP) return Sideness.TOP;
         if (facing == Direction.DOWN) return Sideness.BOTTOM;
         if (relative == facing) return Sideness.FRONT;
