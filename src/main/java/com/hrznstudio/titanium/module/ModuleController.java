@@ -31,29 +31,31 @@ public abstract class ModuleController {
     public ModuleController() {
         modid = ModLoadingContext.get().getActiveContainer().getModId();
         initModules();
-        File modulesConfig = new File("config/" + modid + "/modules.toml");
-        if (!modulesConfig.exists()) {
-            modulesConfig.getParentFile().mkdirs();
-        }
-        CommentedFileConfig config = CommentedFileConfig.of(modulesConfig);
-        config.load();
-        new HashMap<>(moduleMap).forEach((id, m) -> {
-            if (!m.isForced()) {
-                String cm = "modules." + id;
-                String c = cm + ".enabled";
-                config.setComment(cm, m.getDescription());
-                boolean active = config.add(c, m.isEnabledByDefault()) ? m.isEnabledByDefault() : config.getOrElse(c, m.isEnabledByDefault());
-                if (active) {
-                    m.initConfig(config);
-                } else {
-                    disabledModuleMap.put(id, moduleMap.remove(id));
-                }
-            } else {
-                m.initConfig(config);
+        if (!moduleMap.isEmpty()) {
+            File modulesConfig = new File("config/" + modid + "/modules.toml");
+            if (!modulesConfig.exists()) {
+                modulesConfig.getParentFile().mkdirs();
             }
-        });
-        config.save();
-        config.close();
+            CommentedFileConfig config = CommentedFileConfig.of(modulesConfig);
+            config.load();
+            new HashMap<>(moduleMap).forEach((id, m) -> {
+                if (!m.isForced()) {
+                    String cm = "modules." + id;
+                    String c = cm + ".enabled";
+                    config.setComment(cm, m.getDescription());
+                    boolean active = config.add(c, m.isEnabledByDefault()) ? m.isEnabledByDefault() : config.getOrElse(c, m.isEnabledByDefault());
+                    if (active) {
+                        m.initConfig(config);
+                    } else {
+                        disabledModuleMap.put(id, moduleMap.remove(id));
+                    }
+                } else {
+                    m.initConfig(config);
+                }
+            });
+            config.save();
+            config.close();
+        }
 
         EventManager.mod(RegistryEvent.Register.class).process(event -> {
             moduleMap.values().forEach(m -> {
