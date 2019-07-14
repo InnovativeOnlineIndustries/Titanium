@@ -50,6 +50,16 @@ public class NBTEnergyHandler extends EnergyStorage implements INBTSerializable<
         return energy;
     }
 
+    public void receiveEnergyForced(int maxReceive) {
+        this.energy = Math.min(this.capacity, this.energy + maxReceive);
+        base.markForUpdate();
+    }
+
+    public void extractEnergyForced(int maxExtract) {
+        this.energy = Math.max(0, this.energy - maxExtract);
+        base.markForUpdate();
+    }
+
     @Override
     public IntNBT serializeNBT() {
         return new IntNBT(getEnergyStored());

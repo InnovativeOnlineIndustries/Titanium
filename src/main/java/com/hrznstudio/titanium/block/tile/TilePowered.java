@@ -39,7 +39,7 @@ public class TilePowered extends TileActive {
         return () -> new NBTEnergyHandler(this, 10000);
     }
 
-    public IEnergyStorage getEnergyStorage() {
+    public NBTEnergyHandler getEnergyStorage() {
         return energyHandler;
     }
 

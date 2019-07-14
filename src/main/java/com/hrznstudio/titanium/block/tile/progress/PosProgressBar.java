@@ -60,6 +60,11 @@ public class PosProgressBar implements INBTSerializable<CompoundNBT>, IGuiAddonP
         this.color = DyeColor.WHITE;
     }
 
+    public PosProgressBar(int posX, int posY, int progress, int maxProgress) {
+        this(posX, posY, maxProgress);
+        this.progress = progress;
+    }
+
     /**
      * Sets a runnable to be executed when the bar is completed
      *
@@ -137,11 +142,11 @@ public class PosProgressBar implements INBTSerializable<CompoundNBT>, IGuiAddonP
      * Ticks the bar so it can increase if possible, managed by {@link MultiProgressBarHandler#update()}
      */
     public void tickBar() {
-        if (tileBase != null && tileBase.getWorld().getGameTime() % tickingTime == 0) {
+        if (progress < maxProgress && tileBase != null && tileBase.getWorld().getGameTime() % tickingTime == 0) {
             setProgress(this.progress + progressIncrease);
             this.onTickWork.run();
         }
-        if (progress > maxProgress) {
+        if (progress >= maxProgress && canReset.test(tileBase)) {
             setProgress(0);
             this.onFinishWork.run();
         }
