@@ -21,6 +21,8 @@ import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -58,7 +60,7 @@ public class GuiContainerTile extends ContainerScreen<ContainerTileBase> impleme
         GlStateManager.color4f(1, 1, 1, 1);
         getMinecraft().getTextureManager().bindTexture(IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND).getResourceLocation());
         blit(x, y, 0, 0, xSize, ySize);
-
+        drawCenteredString(Minecraft.getInstance().fontRenderer, TextFormatting.GRAY + new TranslationTextComponent(containerTileBase.getTile().getBlockState().getBlock().getTranslationKey()).getFormattedText(), x + xSize / 2, y + 6, 0xFFFFFF);
         this.checkForMouseDrag(mouseX, mouseY);
         addonList.forEach(iGuiAddon -> iGuiAddon.drawGuiContainerBackgroundLayer(this, assetProvider, x, y, mouseX, mouseY, partialTicks));
         containerTileBase.updateSlotPosition();
