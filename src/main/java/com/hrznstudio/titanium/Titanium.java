@@ -20,6 +20,7 @@ import com.hrznstudio.titanium.module.Feature;
 import com.hrznstudio.titanium.module.Module;
 import com.hrznstudio.titanium.module.ModuleController;
 import com.hrznstudio.titanium.network.NetworkHandler;
+import com.hrznstudio.titanium.util.SidedHandler;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -48,7 +49,7 @@ public class Titanium extends ModuleController {
     public Titanium() {
         NetworkHandler.registerMessage(BasicButtonAddon.ButtonClickNetworkMessage.class);
 
-        EventManager.mod(FMLClientSetupEvent.class).process(this::clientSetup).subscribe();
+        SidedHandler.runOn(Dist.CLIENT, () -> () -> EventManager.mod(FMLClientSetupEvent.class).process(this::clientSetup).subscribe());
     }
 
     public static void openGui(TileActive tile, ServerPlayerEntity player) {

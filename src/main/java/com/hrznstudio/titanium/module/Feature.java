@@ -11,12 +11,15 @@ import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.hrznstudio.titanium.event.handler.EventManager;
 import com.hrznstudio.titanium.module.api.IAlternativeEntries;
 import com.hrznstudio.titanium.module.api.RegistryManager;
+import com.hrznstudio.titanium.util.SidedHandler;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 public class Feature {
     private final String id;
@@ -98,6 +101,11 @@ public class Feature {
 
         public Builder event(EventManager.FilteredEventManager manager) {
             events.add(manager);
+            return this;
+        }
+
+        public Builder eventClient(Supplier<Runnable> managerSupplier) {
+            SidedHandler.runOn(Dist.CLIENT, managerSupplier);
             return this;
         }
 
