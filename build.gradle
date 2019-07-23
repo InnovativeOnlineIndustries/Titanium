@@ -33,7 +33,7 @@ license {
 }
 
 minecraft {
-    mappings channel: 'snapshot', version: '20190629-1.14.3'
+    mappings channel: 'snapshot', version: '20190723-1.14.3'
     runs {
         client = {
             // recommended logging data for a userdev environment
@@ -65,7 +65,7 @@ repositories {
     }
 }
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.14.3-27.0.43'
+    minecraft 'net.minecraftforge:forge:1.14.4-28.0.13'
     if (findProject(':workspace') == null) {
         compileOnly fg.deobf("mezz.jei:jei-1.14.3:6.0.0.8:api")
         // at runtime, use the full JEI jar
