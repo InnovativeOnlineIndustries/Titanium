@@ -20,6 +20,7 @@ import com.hrznstudio.titanium.module.Feature;
 import com.hrznstudio.titanium.module.Module;
 import com.hrznstudio.titanium.module.ModuleController;
 import com.hrznstudio.titanium.network.NetworkHandler;
+import com.hrznstudio.titanium.recipe.JsonDataGenerator;
 import com.hrznstudio.titanium.util.SidedHandler;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.Block;
@@ -45,6 +46,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 @Mod(Titanium.MODID)
 public class Titanium extends ModuleController {
     public static final String MODID = "titanium";
+    public static JsonDataGenerator RECIPE = new JsonDataGenerator(JsonDataGenerator.DataTypes.RECIPE, MODID);
 
     public Titanium() {
         NetworkHandler.registerMessage(BasicButtonAddon.ButtonClickNetworkMessage.class);
@@ -78,6 +80,20 @@ public class Titanium extends ModuleController {
                 .feature(Feature.builder("blocks")
                         .description("Adds creative machine features")
                         .content(Block.class, BlockCreativeFEGenerator.INSTANCE)));
+    }
+
+    @Override
+    public void initJsonGenerators() {
+        //addJsonDataGenerator(RECIPE);
+        //RECIPE.addRecipe(FurnaceJsonData.of(IIngredient.ItemStackIngredient.of(new ItemStack(Blocks.DIRT)), new ItemStack(Blocks.DIAMOND_BLOCK), 0.25, 200));
+        //RECIPE.addRecipe(CraftingJsonData.ofShaped(new ItemStack(Items.DIAMOND),
+        //        new String[]{"DDS", "DDS", "SS "},
+        //        'D', IIngredient.ItemStackIngredient.of(new ItemStack(Blocks.DIRT)),
+        //        'S', IIngredient.ItemStackIngredient.of(new ItemStack(Items.STICK))));
+        //RECIPE.addRecipe(CraftingJsonData.ofShapeless(new ItemStack(Items.DIAMOND),
+        //        IIngredient.ItemStackIngredient.of(new ItemStack(Blocks.DIRT)),
+        //        IIngredient.ItemStackIngredient.of(new ItemStack(Blocks.STONE)),
+        //        IIngredient.ItemStackIngredient.of(new ItemStack(Items.STICK))));
     }
 
     @OnlyIn(Dist.CLIENT)

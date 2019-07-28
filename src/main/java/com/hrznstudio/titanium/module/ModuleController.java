@@ -11,6 +11,7 @@ import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.hrznstudio.titanium.annotation.config.ConfigFile;
 import com.hrznstudio.titanium.config.AnnotationConfigManager;
 import com.hrznstudio.titanium.event.handler.EventManager;
+import com.hrznstudio.titanium.recipe.JsonDataGenerator;
 import com.hrznstudio.titanium.util.AnnotationUtil;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -18,6 +19,7 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +29,7 @@ public abstract class ModuleController {
     private final Map<String, Module> moduleMap = new HashMap<>();
     private final Map<String, Module> disabledModuleMap = new HashMap<>();
     private final AnnotationConfigManager configManager = new AnnotationConfigManager();
+    private final List<JsonDataGenerator> jsonDataGenerators = new ArrayList<>();
 
     public ModuleController() {
         modid = ModLoadingContext.get().getActiveContainer().getModId();
@@ -70,6 +73,8 @@ public abstract class ModuleController {
         });
         EventManager.mod(ModConfig.Loading.class).process(ev -> configManager.inject()).subscribe();
         EventManager.mod(ModConfig.ConfigReloading.class).process(ev -> configManager.inject()).subscribe();
+        initJsonGenerators();
+        jsonDataGenerators.forEach(JsonDataGenerator::generate);
     }
 
     private void addConfig(AnnotationConfigManager.Type type) {
@@ -87,5 +92,13 @@ public abstract class ModuleController {
 
     public void addModule(Module.Builder builder) {
         addModule(builder.build());
+    }
+
+    public void addJsonDataGenerator(JsonDataGenerator generator) {
+        this.jsonDataGenerators.add(generator);
+    }
+
+    public void initJsonGenerators() {
+
     }
 }
