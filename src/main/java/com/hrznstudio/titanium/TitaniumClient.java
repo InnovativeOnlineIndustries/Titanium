@@ -8,12 +8,16 @@
 package com.hrznstudio.titanium;
 
 import com.hrznstudio.titanium.client.TitaniumModelLoader;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
-@EventBusSubscriber
 public class TitaniumClient {
     public static void registerModelLoader() {
         ModelLoaderRegistry.registerLoader(new TitaniumModelLoader());
+    }
+
+    public static PlayerRenderer getPlayerRenderer(Minecraft minecraft) {
+        return minecraft.getRenderManager().playerRenderer;
     }
 }
