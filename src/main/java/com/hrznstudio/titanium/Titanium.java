@@ -14,6 +14,8 @@ import com.hrznstudio.titanium.api.raytrace.DistanceRayTraceResult;
 import com.hrznstudio.titanium.block.tile.TileActive;
 import com.hrznstudio.titanium.client.gui.GuiContainerTile;
 import com.hrznstudio.titanium.client.gui.addon.BasicButtonAddon;
+import com.hrznstudio.titanium.command.RewardCommand;
+import com.hrznstudio.titanium.command.RewardGrantCommand;
 import com.hrznstudio.titanium.container.ContainerTileBase;
 import com.hrznstudio.titanium.event.handler.EventManager;
 import com.hrznstudio.titanium.module.Feature;
@@ -21,6 +23,9 @@ import com.hrznstudio.titanium.module.Module;
 import com.hrznstudio.titanium.module.ModuleController;
 import com.hrznstudio.titanium.network.NetworkHandler;
 import com.hrznstudio.titanium.recipe.JsonDataGenerator;
+import com.hrznstudio.titanium.reward.RewardManager;
+import com.hrznstudio.titanium.reward.RewardSyncMessage;
+import com.hrznstudio.titanium.reward.storage.RewardWorldStorage;
 import com.hrznstudio.titanium.util.SidedHandler;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.Block;
@@ -31,16 +36,22 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 @Mod(Titanium.MODID)
@@ -50,8 +61,12 @@ public class Titanium extends ModuleController {
 
     public Titanium() {
         NetworkHandler.registerMessage(BasicButtonAddon.ButtonClickNetworkMessage.class);
+        NetworkHandler.registerMessage(RewardSyncMessage.class);
 
         SidedHandler.runOn(Dist.CLIENT, () -> () -> EventManager.mod(FMLClientSetupEvent.class).process(this::clientSetup).subscribe());
+        EventManager.mod(FMLCommonSetupEvent.class).process(this::commonSetup).subscribe();
+        EventManager.forge(PlayerEvent.PlayerLoggedInEvent.class).process(this::onPlayerLoggedIn).subscribe();
+        EventManager.forge(FMLServerStartingEvent.class).process(this::onServerStart).subscribe();
     }
 
     public static void openGui(TileActive tile, ServerPlayerEntity player) {
@@ -96,11 +111,28 @@ public class Titanium extends ModuleController {
         //        IIngredient.ItemStackIngredient.of(new ItemStack(Items.STICK))));
     }
 
+    private void commonSetup(FMLCommonSetupEvent event) {
+        RewardManager.get().getRewards().values().forEach(rewardGiver -> rewardGiver.getRewards().forEach(reward -> reward.register(Dist.DEDICATED_SERVER)));
+    }
+
     @OnlyIn(Dist.CLIENT)
     private void clientSetup(FMLClientSetupEvent event) {
         EventManager.forge(DrawBlockHighlightEvent.class).process(this::drawBlockHighlight).subscribe();
         TitaniumClient.registerModelLoader();
         ScreenManager.registerFactory(ContainerTileBase.TYPE, GuiContainerTile::new);
+        RewardManager.get().getRewards().values().forEach(rewardGiver -> rewardGiver.getRewards().forEach(reward -> reward.register(Dist.CLIENT)));
+    }
+
+    private void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
+        event.getPlayer().getServer().execute(() -> {
+            CompoundNBT nbt = RewardWorldStorage.get(event.getPlayer().getServer().getWorld(DimensionType.OVERWORLD)).serializeNBT();
+            event.getPlayer().getServer().getPlayerList().getPlayers().forEach(serverPlayerEntity -> NetworkHandler.NETWORK.sendTo(new RewardSyncMessage(nbt), serverPlayerEntity.connection.netManager, NetworkDirection.PLAY_TO_CLIENT));
+        });
+    }
+
+    private void onServerStart(FMLServerStartingEvent event) {
+        RewardCommand.register(event.getCommandDispatcher());
+        RewardGrantCommand.register(event.getCommandDispatcher());
     }
 
     @OnlyIn(Dist.CLIENT)
