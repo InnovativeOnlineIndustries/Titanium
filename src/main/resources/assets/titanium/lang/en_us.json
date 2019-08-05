@@ -12,5 +12,8 @@
   "tooltip.titanium.facing_handler.push": "Push",
   "tooltip.titanium.facing_handler.enabled": "Enabled",
   "tooltip.titanium.facing_handler.test": "Test Facing Thing",
-  "tooltip.titanium.facing_handler.test2": "This is a Second Test"
+  "tooltip.titanium.facing_handler.test2": "This is a Second Test",
+  "titanium.rewards.remove_success": "Removed reward successfully",
+  "titanium.rewards.enabled_success": "Enabled reward successfully",
+  "titanium.rewards.granted_success": "Granted reward to the server successfully"
 }
