@@ -89,4 +89,10 @@ public class RewardWorldStorage extends WorldSavedData {
         compound.put("ConfiguredPlayers", configured);
         return compound;
     }
+
+    public CompoundNBT serializeSimple() {
+        CompoundNBT compoundNBT = new CompoundNBT();
+        rewards.forEach((uuid, enabledRewards) -> compoundNBT.put(uuid.toString(), enabledRewards.serializeNBT()));
+        return compoundNBT;
+    }
 }

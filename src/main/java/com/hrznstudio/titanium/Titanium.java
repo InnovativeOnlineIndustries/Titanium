@@ -135,7 +135,7 @@ public class Titanium extends ModuleController {
                 storage.getConfiguredPlayers().add(event.getPlayer().getUniqueID());
                 storage.markDirty();
             }
-            CompoundNBT nbt = storage.serializeNBT();
+            CompoundNBT nbt = storage.serializeSimple();
             event.getPlayer().getServer().getPlayerList().getPlayers().forEach(serverPlayerEntity -> NetworkHandler.NETWORK.sendTo(new RewardSyncMessage(nbt), serverPlayerEntity.connection.netManager, NetworkDirection.PLAY_TO_CLIENT));
         });
     }
