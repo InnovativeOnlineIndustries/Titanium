@@ -22,11 +22,13 @@ public class RewardWorldStorage extends WorldSavedData {
     public static String NAME = "TitaniumReward";
     private HashMap<UUID, EnabledRewards> rewards;
     private List<ResourceLocation> freeRewards;
+    private List<UUID> configuredPlayers;
 
     private RewardWorldStorage(String p_i2141_1_) {
         super(NAME);
         this.rewards = new HashMap<>();
         this.freeRewards = new ArrayList<>();
+        this.configuredPlayers = new ArrayList<>();
     }
 
     public RewardWorldStorage() {
@@ -53,6 +55,10 @@ public class RewardWorldStorage extends WorldSavedData {
         return freeRewards;
     }
 
+    public List<UUID> getConfiguredPlayers() {
+        return configuredPlayers;
+    }
+
     @Override
     public void read(CompoundNBT nbt) {
         CompoundNBT compoundNBT = nbt.getCompound(NAME);
@@ -65,6 +71,9 @@ public class RewardWorldStorage extends WorldSavedData {
         freeRewards.clear();
         CompoundNBT free = nbt.getCompound("FreeRewards");
         free.keySet().forEach(s -> freeRewards.add(new ResourceLocation(s)));
+        configuredPlayers.clear();
+        CompoundNBT configured = nbt.getCompound("ConfiguredPlayers");
+        configured.keySet().forEach(s -> configuredPlayers.add(UUID.fromString(s)));
     }
 
     @Override
@@ -74,6 +83,10 @@ public class RewardWorldStorage extends WorldSavedData {
         compound.put(NAME, compoundNBT);
         CompoundNBT free = new CompoundNBT();
         freeRewards.forEach(resourceLocation -> free.putBoolean(resourceLocation.toString(), true));
+        compound.put("FreeRewards", free);
+        CompoundNBT configured = new CompoundNBT();
+        configuredPlayers.forEach(uuid -> configured.putBoolean(uuid.toString(), true));
+        compound.put("ConfiguredPlayers", configured);
         return compound;
     }
 }
