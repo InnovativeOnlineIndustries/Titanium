@@ -13,9 +13,11 @@ import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 
 public class AssetTypes {
     public static final IAssetType<IAsset> BUTTON_SIDENESS_MANAGER = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
-    public static final IAssetType<IAsset> PROGRESS_BAR_BORDER = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
-    public static final IAssetType<IAsset> PROGRESS_BAR = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
-    public static final IAssetType<IAsset> PROGRESS_BAR_BACKGROUND = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
+    public static final IAssetType<IAsset> PROGRESS_BAR_BACKGROUND_HORIZONTAL = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
+    public static final IAssetType<IAsset> PROGRESS_BAR_HORIZONTAL = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
+    public static final IAssetType<IAsset> PROGRESS_BAR_BACKGROUND_VERTICAL = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
+    public static final IAssetType<IAsset> PROGRESS_BAR_VERTICAL = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
+    public static final IAssetType<IAsset> PROGRESS_BAR_BORDER_VERTICAL = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
     public static final IAssetType<IAsset> ENERGY_BACKGROUND = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
     public static final IAssetType<IAsset> ENERGY_BAR = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
     public static final IAssetType<IAsset> SLOT = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);

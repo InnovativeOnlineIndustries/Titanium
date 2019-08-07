@@ -89,6 +89,8 @@ public final class DefaultAssetProvider implements IAssetProvider {
     private final IAsset BUTTON_SIDENESS_PULL = () -> new Rectangle(196, 31, 14, 14);
     private final IAsset BUTTON_SIDENESS_PUSH = () -> new Rectangle(196, 46, 14, 14);
     private final IAsset BUTTON_SIDENESS_MANAGER = () -> new Rectangle(1, 231, 14, 14);
+    private final IAsset PROGRESS_BAR_HORIZONTAL = () -> new Rectangle(177, 77, 22, 16);
+    private final IAsset PROGRESS_BAR_BACKGROUND_HORIZONTAL = () -> new Rectangle(177, 61, 22, 15);
 
     DefaultAssetProvider() {
     }
@@ -102,15 +104,15 @@ public final class DefaultAssetProvider implements IAssetProvider {
             return assetType.castOrDefault(ENERGY_BAR);
         if (assetType == AssetTypes.ENERGY_BAR)
             return assetType.castOrDefault(ENERGY_FILL);
-        if (assetType == AssetTypes.PROGRESS_BAR_BACKGROUND)
+        if (assetType == AssetTypes.PROGRESS_BAR_BACKGROUND_VERTICAL)
             return assetType.castOrDefault(PROGRESS_BAR_BACKGROUND);
-        if (assetType == AssetTypes.PROGRESS_BAR)
+        if (assetType == AssetTypes.PROGRESS_BAR_VERTICAL)
             return assetType.castOrDefault(PROGRESS_BAR_FILL);
         if (assetType == AssetTypes.SLOT)
             return assetType.castOrDefault(SLOT);
         if (assetType == AssetTypes.TANK)
             return assetType.castOrDefault(TANK);
-        if (assetType == AssetTypes.PROGRESS_BAR_BORDER)
+        if (assetType == AssetTypes.PROGRESS_BAR_BORDER_VERTICAL)
             return assetType.castOrDefault(PROGRESS_BAR_BORDER);
         if (assetType == AssetTypes.BUTTON_SIDENESS_DISABLED)
             return assetType.castOrDefault(BUTTON_SIDENESS_DISABLED);
@@ -122,6 +124,10 @@ public final class DefaultAssetProvider implements IAssetProvider {
             return assetType.castOrDefault(BUTTON_SIDENESS_PUSH);
         if (assetType == AssetTypes.BUTTON_SIDENESS_MANAGER)
             return assetType.castOrDefault(BUTTON_SIDENESS_MANAGER);
+        if (assetType == AssetTypes.PROGRESS_BAR_BACKGROUND_HORIZONTAL)
+            return assetType.castOrDefault(PROGRESS_BAR_BACKGROUND_HORIZONTAL);
+        if (assetType == AssetTypes.PROGRESS_BAR_HORIZONTAL)
+            return assetType.castOrDefault(PROGRESS_BAR_HORIZONTAL);
         return null;
     }
 }

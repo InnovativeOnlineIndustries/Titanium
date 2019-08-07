@@ -7,15 +7,11 @@
 
 package com.hrznstudio.titanium.client.gui.addon;
 
-import com.hrznstudio.titanium.api.client.AssetTypes;
-import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.block.tile.progress.PosProgressBar;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.text.TextFormatting;
 
-import java.awt.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +19,7 @@ import java.util.List;
 public class ProgressBarGuiAddon extends BasicGuiAddon {
 
     private PosProgressBar progressBar;
-    private IAsset assetBar;
-    private IAsset assetBorder;
+    private IAssetProvider provider;
 
     public ProgressBarGuiAddon(int posX, int posY, PosProgressBar posProgressBar) {
         super(posX, posY);
@@ -33,36 +28,24 @@ public class ProgressBarGuiAddon extends BasicGuiAddon {
 
     @Override
     public int getXSize() {
-        return (assetBorder != null ? assetBorder.getArea().width : 0);
+        return (provider != null ? progressBar.getBarDirection().getXSize(provider) : 0);
     }
 
     @Override
     public int getYSize() {
-        return (assetBorder != null ? assetBorder.getArea().height : 0);
+        return (provider != null ? progressBar.getBarDirection().getYSize(provider) : 0);
     }
 
     @Override
     public void drawGuiContainerBackgroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
-        assetBorder = IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_BORDER);
-        Point offset = assetBorder.getOffset();
-        Rectangle area = assetBorder.getArea();
-        screen.getMinecraft().getTextureManager().bindTexture(assetBorder.getResourceLocation());
-        screen.blit(guiX + getPosX() + offset.x, guiY + getPosY() + offset.y, area.x, area.y, area.width, area.height);
-        GlStateManager.color4f(progressBar.getColor().getColorComponentValues()[0], progressBar.getColor().getColorComponentValues()[1], progressBar.getColor().getColorComponentValues()[2], 1);
-        assetBar = IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_BACKGROUND);
-        offset = assetBar.getOffset();
-        area = assetBar.getArea();
-        screen.getMinecraft().getTextureManager().bindTexture(assetBar.getResourceLocation());
-        screen.blit(guiX + getPosX() + offset.x, guiY + getPosY() + offset.y, area.x, area.y, area.width, area.height);
-        GlStateManager.color4f(1, 1, 1, 1);
+        this.provider = provider;
+        progressBar.getBarDirection().render(screen, guiX, guiY, provider, this);
     }
 
     @Override
     public void drawGuiContainerForegroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
-        GlStateManager.color4f(progressBar.getColor().getColorComponentValues()[0], progressBar.getColor().getColorComponentValues()[1], progressBar.getColor().getColorComponentValues()[2], 1);
-        IAsset asset = IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR);
-        progressBar.getBarDirection().render(screen, asset, this);
-        GlStateManager.color4f(1, 1, 1, 1);
+
+
     }
 
     public PosProgressBar getProgressBar() {

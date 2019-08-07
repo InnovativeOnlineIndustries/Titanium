@@ -50,7 +50,7 @@ public class TileTest extends TilePowered implements ITickableTileEntity {
         this.addInventory(first = (SidedInvHandler) new SidedInvHandler("test", 80, 60, 1, 0).setTile(this).setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
         this.addInventory(second = (SidedInvHandler) new SidedInvHandler("test2", 80, 30, 1, 1).setTile(this).setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
         this.addGuiAddonFactory(() -> new EnergyBarGuiAddon(4, 10, getEnergyStorage()));
-        this.addProgressBar(bar = new PosProgressBar(40, 20, 500).setCanIncrease(tileEntity -> true).setOnFinishWork(() -> System.out.println("WOWOOW")).setBarDirection(PosProgressBar.BarDirection.VERTICAL_UP).setColor(DyeColor.LIME));
+        this.addProgressBar(bar = new PosProgressBar(40, 20, 500).setCanIncrease(tileEntity -> true).setOnFinishWork(() -> System.out.println("WOWOOW")).setBarDirection(PosProgressBar.BarDirection.HORIZONTAL_RIGHT).setColor(DyeColor.LIME));
         this.addTank(third = new PosFluidTank(8000, 130, 30, "testTank"));
         this.addButton(button = new PosButton(0, 0, 14, 14) {
             @Override

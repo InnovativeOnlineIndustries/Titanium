@@ -8,15 +8,21 @@
 package com.hrznstudio.titanium.block.tile.progress;
 
 import com.hrznstudio.titanium.api.IFactory;
+import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
 import com.hrznstudio.titanium.block.tile.TileBase;
 import com.hrznstudio.titanium.client.gui.addon.ProgressBarGuiAddon;
+import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
+import com.hrznstudio.titanium.util.AssetUtil;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.DyeColor;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import java.awt.*;
@@ -340,30 +346,73 @@ public class PosProgressBar implements INBTSerializable<CompoundNBT>, IGuiAddonP
     public enum BarDirection {
         VERTICAL_UP {
             @Override
-            public void render(Screen screen, IAsset asset, ProgressBarGuiAddon addon) {
-                Point offset = asset.getOffset();
-                Rectangle area = asset.getArea();
+            public void render(Screen screen, int guiX, int guiY, IAssetProvider provider, ProgressBarGuiAddon addon) {
+                IAsset assetBorder = IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_BORDER_VERTICAL);
+                Point offset = assetBorder.getOffset();
+                Rectangle area = assetBorder.getArea();
+                screen.getMinecraft().getTextureManager().bindTexture(assetBorder.getResourceLocation());
+                screen.blit(guiX + addon.getPosX() + offset.x, guiY + addon.getPosY() + offset.y, area.x, area.y, area.width, area.height);
+                GlStateManager.color4f(addon.getProgressBar().getColor().getColorComponentValues()[0], addon.getProgressBar().getColor().getColorComponentValues()[1], addon.getProgressBar().getColor().getColorComponentValues()[2], 1);
+                IAsset assetBar = IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_BACKGROUND_VERTICAL);
+                offset = assetBar.getOffset();
+                area = assetBar.getArea();
+                screen.getMinecraft().getTextureManager().bindTexture(assetBar.getResourceLocation());
+                screen.blit(guiX + addon.getPosX() + offset.x, guiY + addon.getPosY() + offset.y, area.x, area.y, area.width, area.height);
+                IAsset asset = IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_VERTICAL);
+                offset = asset.getOffset();
+                area = asset.getArea();
                 screen.getMinecraft().getTextureManager().bindTexture(asset.getResourceLocation());
                 int progress = addon.getProgressBar().getProgress();
                 int maxProgress = addon.getProgressBar().getMaxProgress();
                 int progressOffset = progress * area.height / maxProgress;
-                screen.blit(addon.getPosX() + offset.x, addon.getPosY() + offset.y + area.height - progressOffset, area.x, area.y + (area.height - progressOffset), area.width, progressOffset);
+                screen.blit(addon.getPosX() + offset.x + guiX, addon.getPosY() + offset.y + area.height - progressOffset + guiY, area.x, area.y + (area.height - progressOffset), area.width, progressOffset);
+                GlStateManager.color4f(1, 1, 1, 1);
+            }
+
+            @Override
+            public int getXSize(IAssetProvider provider) {
+                return (int) IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_BORDER_VERTICAL).getArea().getWidth();
+            }
+
+            @Override
+            public int getYSize(IAssetProvider provider) {
+                return (int) IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_BORDER_VERTICAL).getArea().getHeight();
             }
         },
         HORIZONTAL_RIGHT {
             @Override
-            public void render(Screen screen, IAsset asset, ProgressBarGuiAddon addon) {
+            public void render(Screen screen, int guiX, int guiY, IAssetProvider provider, ProgressBarGuiAddon addon) {
+                AssetUtil.drawAsset(screen, IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_BACKGROUND_HORIZONTAL), addon.getPosX() + guiX, addon.getPosY() + guiY);
+                IAsset asset = IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_HORIZONTAL);
                 Point offset = asset.getOffset();
                 Rectangle area = asset.getArea();
                 screen.getMinecraft().getTextureManager().bindTexture(asset.getResourceLocation());
                 int progress = addon.getProgressBar().getProgress();
                 int maxProgress = addon.getProgressBar().getMaxProgress();
                 int progressOffset = progress * area.width / maxProgress;
-                screen.blit(addon.getPosX() + offset.x, addon.getPosY() + offset.y, area.x, area.y, progressOffset, area.height);
+                GlStateManager.color4f(addon.getProgressBar().getColor().getColorComponentValues()[0], addon.getProgressBar().getColor().getColorComponentValues()[1], addon.getProgressBar().getColor().getColorComponentValues()[2], 1);
+                screen.blit(addon.getPosX() + offset.x + guiX, addon.getPosY() + offset.y + guiY, area.x, area.y, progressOffset, area.height);
+                GlStateManager.color4f(1, 1, 1, 1);
+            }
+
+            @Override
+            public int getXSize(IAssetProvider provider) {
+                return (int) IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_BACKGROUND_HORIZONTAL).getArea().getWidth();
+            }
+
+            @Override
+            public int getYSize(IAssetProvider provider) {
+                return (int) IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_BACKGROUND_HORIZONTAL).getArea().getHeight();
             }
         };
 
-        public abstract void render(Screen screen, IAsset asset, ProgressBarGuiAddon addon);
+        @OnlyIn(Dist.CLIENT)
+        public abstract void render(Screen screen, int guiX, int guiY, IAssetProvider provider, ProgressBarGuiAddon addon);
 
+        @OnlyIn(Dist.CLIENT)
+        public abstract int getXSize(IAssetProvider provider);
+
+        @OnlyIn(Dist.CLIENT)
+        public abstract int getYSize(IAssetProvider provider);
     }
 }
