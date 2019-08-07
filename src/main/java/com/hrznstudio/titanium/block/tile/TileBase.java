@@ -70,4 +70,12 @@ public class TileBase extends TileEntity {
         this.world.notifyNeighborsOfStateChange(this.pos, this.getBlockState().getBlock());
         this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(pos), this.world.getBlockState(pos), 3);
     }
+
+    public boolean isClient() {
+        return this.world.isRemote;
+    }
+
+    public boolean isServer() {
+        return !isClient();
+    }
 }
