@@ -23,6 +23,7 @@ import com.hrznstudio.titanium.module.Module;
 import com.hrznstudio.titanium.module.ModuleController;
 import com.hrznstudio.titanium.network.NetworkHandler;
 import com.hrznstudio.titanium.recipe.JsonDataGenerator;
+import com.hrznstudio.titanium.reward.Reward;
 import com.hrznstudio.titanium.reward.RewardManager;
 import com.hrznstudio.titanium.reward.RewardSyncMessage;
 import com.hrznstudio.titanium.reward.storage.RewardWorldStorage;
@@ -125,7 +126,16 @@ public class Titanium extends ModuleController {
 
     private void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         event.getPlayer().getServer().execute(() -> {
-            CompoundNBT nbt = RewardWorldStorage.get(event.getPlayer().getServer().getWorld(DimensionType.OVERWORLD)).serializeNBT();
+            RewardWorldStorage storage = RewardWorldStorage.get(event.getPlayer().getServer().getWorld(DimensionType.OVERWORLD));
+            if (!storage.getConfiguredPlayers().contains(event.getPlayer().getUniqueID())) {
+                for (ResourceLocation collectRewardsResourceLocation : RewardManager.get().collectRewardsResourceLocations(event.getPlayer().getUniqueID())) {
+                    Reward reward = RewardManager.get().getReward(collectRewardsResourceLocation);
+                    storage.add(event.getPlayer().getUniqueID(), reward.getResourceLocation(), reward.getOptions()[0]);
+                }
+                storage.getConfiguredPlayers().add(event.getPlayer().getUniqueID());
+                storage.markDirty();
+            }
+            CompoundNBT nbt = storage.serializeSimple();
             event.getPlayer().getServer().getPlayerList().getPlayers().forEach(serverPlayerEntity -> NetworkHandler.NETWORK.sendTo(new RewardSyncMessage(nbt), serverPlayerEntity.connection.netManager, NetworkDirection.PLAY_TO_CLIENT));
         });
     }

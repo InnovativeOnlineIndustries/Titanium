@@ -30,11 +30,10 @@ public class ClientRewardStorage implements INBTSerializable<CompoundNBT> {
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
-        CompoundNBT compoundNBT = nbt.getCompound(RewardWorldStorage.NAME);
         rewards.clear();
-        compoundNBT.keySet().forEach(s -> {
+        nbt.keySet().forEach(s -> {
             EnabledRewards rewards = new EnabledRewards();
-            rewards.deserializeNBT(compoundNBT.getCompound(s));
+            rewards.deserializeNBT(nbt.getCompound(s));
             this.rewards.put(UUID.fromString(s), rewards);
         });
     }
