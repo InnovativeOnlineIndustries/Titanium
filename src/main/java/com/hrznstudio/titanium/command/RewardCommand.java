@@ -57,7 +57,7 @@ public class RewardCommand {
         }
         if (changed) {
             context.getSource().getServer().execute(() -> {
-                CompoundNBT nbt = RewardWorldStorage.get(context.getSource().getServer().getWorld(DimensionType.OVERWORLD)).serializeNBT();
+                CompoundNBT nbt = RewardWorldStorage.get(context.getSource().getServer().getWorld(DimensionType.OVERWORLD)).serializeSimple();
                 context.getSource().getServer().getPlayerList().getPlayers().forEach(serverPlayerEntity -> NetworkHandler.NETWORK.sendTo(new RewardSyncMessage(nbt), serverPlayerEntity.connection.netManager, NetworkDirection.PLAY_TO_CLIENT));
             });
         }
