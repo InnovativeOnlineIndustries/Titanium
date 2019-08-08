@@ -9,6 +9,7 @@ package com.hrznstudio.titanium.network;
 
 import com.hrznstudio.titanium.Titanium;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
@@ -34,6 +35,10 @@ public class NetworkHandler {
                         throw new RuntimeException(e);
                     }
                 },
-                (req, contextSupplier) -> req.handleMessage(contextSupplier.get()));
+                (req, contextSupplier) -> {
+                    NetworkEvent.Context context = contextSupplier.get();
+                    req.handleMessage(context);
+                    context.setPacketHandled(true);
+                });
     }
 }
