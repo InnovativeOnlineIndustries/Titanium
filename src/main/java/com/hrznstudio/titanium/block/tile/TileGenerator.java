@@ -20,16 +20,12 @@ import net.minecraftforge.energy.CapabilityEnergy;
 
 public abstract class TileGenerator extends TilePowered {
 
-    private int capacity;
-    private int extractingEnergy;
     @Save
     private PosProgressBar progressBar;
 
-    public TileGenerator(BlockTileBase blockTileBase, int capacity, int extractingEnergy) {
+    public TileGenerator(BlockTileBase blockTileBase) {
         super(blockTileBase);
         this.addGuiAddonFactory(() -> new EnergyBarGuiAddon(10, 20, getEnergyStorage()));
-        this.capacity = capacity;
-        this.extractingEnergy = extractingEnergy;
         this.addProgressBar(progressBar = getProgressBar()
                 .setTile(this)
                 .setCanIncrease(tileEntity -> true)
@@ -38,13 +34,13 @@ public abstract class TileGenerator extends TilePowered {
                     markForUpdate();
                 })
                 .setCanReset(tileEntity -> canStart())
-                .setOnTickWork(() -> this.getEnergyStorage().extractEnergyForced(getEnergyProducedEveryTick()))
+                .setOnTickWork(() -> this.getEnergyStorage().receiveEnergyForced(getEnergyProducedEveryTick()))
         );
     }
 
     @Override
     protected IFactory<NBTEnergyHandler> getEnergyHandlerFactory() {
-        return () -> new NBTEnergyHandler(this, capacity, 0, extractingEnergy);
+        return () -> new NBTEnergyHandler(this, getEnergyCapacity(), 0, getExtractingEnergy());
     }
 
     /**
@@ -52,26 +48,40 @@ public abstract class TileGenerator extends TilePowered {
      *
      * @return the amount of ticks the fuel will last for
      */
-    abstract int consumeFuel();
+    public abstract int consumeFuel();
 
     /**
      * Gets if the generator can start
      *
      * @return True if the generator can start
      */
-    abstract boolean canStart();
+    public abstract boolean canStart();
 
     /**
      * @return The amount of energy produced every tick
      */
-    abstract int getEnergyProducedEveryTick();
+    public abstract int getEnergyProducedEveryTick();
 
     /**
      * Gets the progress bar used for the generator
      *
      * @return The progress bar
      */
-    abstract PosProgressBar getProgressBar();
+    public abstract PosProgressBar getProgressBar();
+
+    /**
+     * Gets how big the energy buffer on the generator is
+     *
+     * @return The amount of energy that can be stored
+     */
+    public abstract int getEnergyCapacity();
+
+    /**
+     * Gets how much energy can be extracted every tick
+     *
+     * @return The amount of energy that can be extracted
+     */
+    public abstract int getExtractingEnergy();
 
 
     @Override
@@ -82,7 +92,7 @@ public abstract class TileGenerator extends TilePowered {
             TileEntity checkingTile = this.world.getTileEntity(checking);
             if (checkingTile != null) {
                 checkingTile.getCapability(CapabilityEnergy.ENERGY, facing.getOpposite()).ifPresent(storage -> {
-                    int energy = storage.receiveEnergy(Math.min(this.getEnergyStorage().getEnergyStored(), extractingEnergy), false);
+                    int energy = storage.receiveEnergy(Math.min(this.getEnergyStorage().getEnergyStored(), getExtractingEnergy()), false);
                     if (energy > 0) {
                         this.getEnergyStorage().extractEnergy(energy, false);
                         return;
