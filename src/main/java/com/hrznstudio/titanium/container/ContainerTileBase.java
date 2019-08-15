@@ -22,6 +22,8 @@ import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.registries.ObjectHolder;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ContainerTileBase extends Container {
 
@@ -31,17 +33,17 @@ public class ContainerTileBase extends Container {
     private TileActive tile;
     private PlayerInventory player;
     private boolean hasPlayerInventory;
-    private int totalSlots;
+    private List<Integer> removableSlots;
 
     public ContainerTileBase(int id, PlayerInventory player, PacketBuffer buffer) {
-        this((TileActive) player.player.getEntityWorld().getTileEntity(buffer.readBlockPos()), player);
+        this((TileActive) player.player.getEntityWorld().getTileEntity(buffer.readBlockPos()), player, id);
     }
 
-    public ContainerTileBase(TileActive tile, PlayerInventory player) {
-        super(TYPE, 0);
+    public ContainerTileBase(TileActive tile, PlayerInventory player, int id) {
+        super(TYPE, id);
         this.tile = tile;
         this.player = player;
-        this.totalSlots = 0;
+        this.removableSlots = new ArrayList<>();
         if (tile.getMultiInventoryHandler() != null) {
             for (PosInvHandler handler : tile.getMultiInventoryHandler().getInventoryHandlers()) {
                 int i = 0;
@@ -65,14 +67,15 @@ public class ContainerTileBase extends Container {
         if (hasPlayerInventory) return;
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {
-                addSlot(new Slot(player, j + i * 9 + 9, invPos.x + j * 18, invPos.y + i * 18));
+                this.removableSlots.add(addSlot(new Slot(player, j + i * 9 + 9, invPos.x + j * 18, invPos.y + i * 18)).slotNumber);
             }
         }
         hasPlayerInventory = true;
     }
 
     public void removeChestInventory() {
-        this.inventorySlots.removeIf(slot -> slot.getSlotIndex() >= 9 && slot.getSlotIndex() < 9 + 3 * 9);
+        this.inventorySlots.removeIf(slot -> removableSlots.contains(slot.slotNumber));
+        removableSlots.clear();
         hasPlayerInventory = false;
     }
 

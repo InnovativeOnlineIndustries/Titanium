@@ -85,7 +85,7 @@ public class TileActive extends TileBase implements IGuiAddonProvider, ITickable
     @Nullable
     @Override
     public Container createMenu(int menu, PlayerInventory inventoryPlayer, PlayerEntity entityPlayer) {
-        return new ContainerTileBase(this, inventoryPlayer);
+        return new ContainerTileBase(this, inventoryPlayer, menu);
     }
 
     @Override
