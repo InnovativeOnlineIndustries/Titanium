@@ -38,8 +38,9 @@ public class AnnotationConfigManager {
             scanClass(configClass, builder);
         }
         // REGISTERING CONFIG
-        if (type.fileName.isEmpty()) ModLoadingContext.get().registerConfig(type.type, builder.build());
-        else ModLoadingContext.get().registerConfig(type.type, builder.build(), type.fileName);
+        String fileName = ModLoadingContext.get().getActiveContainer().getModId() + "/" + (type.fileName.isEmpty() ? ModLoadingContext.get().getActiveContainer().getModId() : type.fileName);
+        if (!fileName.endsWith(".toml")) fileName = fileName + ".toml";
+        ModLoadingContext.get().registerConfig(type.type, builder.build(), fileName);
     }
 
     private void scanClass(Class configClass, ForgeConfigSpec.Builder builder) {

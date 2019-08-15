@@ -27,7 +27,7 @@ public @interface ConfigFile {
     /**
      * The file name of the config
      *
-     * @return the config name with `.toml` at the end
+     * @return the config name
      */
     String value() default "";
 
