@@ -7,16 +7,20 @@
 
 package com.hrznstudio.titanium.block;
 
+import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.raytrace.DistanceRayTraceResult;
 import com.hrznstudio.titanium.module.api.IAlternativeEntries;
 import com.hrznstudio.titanium.module.api.RegistryManager;
+import com.hrznstudio.titanium.recipe.JsonDataGenerator;
+import com.hrznstudio.titanium.recipe.LootPoolBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
@@ -36,11 +40,14 @@ import java.util.Objects;
 
 public abstract class BlockBase extends Block implements IAlternativeEntries {
 
+    public static JsonDataGenerator BLOCK_LOOT = new JsonDataGenerator(JsonDataGenerator.DataTypes.LOOT_BLOCKS, Titanium.MODID);
+
     private ItemGroup itemGroup = ItemGroup.SEARCH;
 
     public BlockBase(String name, Properties properties) {
         super(properties);
         setRegistryName(name);
+        BLOCK_LOOT.addRecipe(new LootPoolBlock(this.getRegistryName(), getStaticDrops()));
     }
 
     @Nullable
@@ -53,6 +60,16 @@ public abstract class BlockBase extends Block implements IAlternativeEntries {
             return new DistanceRayTraceResult(hitVec, sideHit, pos, shape, dist);
         }
         return null;
+    }
+
+    @Override
+    public float getBlockHardness(BlockState blockState, IBlockReader worldIn, BlockPos pos) {
+        return 1.5F;
+    }
+
+    @Override
+    public ResourceLocation getLootTable() {
+        return new ResourceLocation(getRegistryName().getNamespace(), "blocks/" + getRegistryName().getNamespace() + "_" + getRegistryName().getPath());
     }
 
     @Nullable
@@ -119,4 +136,52 @@ public abstract class BlockBase extends Block implements IAlternativeEntries {
     public void setItemGroup(ItemGroup itemGroup) {
         this.itemGroup = itemGroup;
     }
+
+    public List<Pool> getStaticDrops() {
+        List<Pool> pools = new ArrayList<>();
+        pools.add(new Pool(1, new Pool.Entry[]{Pool.Entry.of(this)}, new Pool.Condition[]{Pool.Condition.of(new ResourceLocation("minecraft", "survives_explosion"))}));
+        return pools;
+    }
+
+    public static class Pool {
+
+        private int rolls;
+        private Entry[] entries;
+        private Condition[] conditions;
+
+        public Pool(int rolls, Entry[] entries, Condition[] conditions) {
+            this.rolls = rolls;
+            this.entries = entries;
+            this.conditions = conditions;
+        }
+
+        public static class Entry {
+
+            private final String type = "minecraft:item";
+            private String name;
+
+            private Entry(String name) {
+                this.name = name;
+            }
+
+            public static Entry of(Block block) {
+                return new Entry(block.getRegistryName().toString());
+            }
+        }
+
+        public static class Condition {
+
+            private String condition;
+
+            private Condition(String string) {
+                this.condition = string;
+            }
+
+            public static Condition of(ResourceLocation location) {
+                return new Condition(location.toString());
+            }
+
+        }
+    }
+
 }

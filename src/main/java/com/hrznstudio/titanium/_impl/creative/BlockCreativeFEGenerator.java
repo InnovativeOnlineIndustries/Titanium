@@ -13,6 +13,9 @@ import com.hrznstudio.titanium.block.BlockTileBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BlockCreativeFEGenerator extends BlockTileBase<TileCreativeFEGenerator> {
 
     public static BlockCreativeFEGenerator INSTANCE = new BlockCreativeFEGenerator();
@@ -24,5 +27,10 @@ public class BlockCreativeFEGenerator extends BlockTileBase<TileCreativeFEGenera
     @Override
     public IFactory<TileCreativeFEGenerator> getTileEntityFactory() {
         return TileCreativeFEGenerator::new;
+    }
+
+    @Override
+    public List<Pool> getStaticDrops() {
+        return new ArrayList<>();
     }
 }

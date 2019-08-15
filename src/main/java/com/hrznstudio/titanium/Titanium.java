@@ -11,6 +11,7 @@ import com.hrznstudio.titanium._impl.creative.BlockCreativeFEGenerator;
 import com.hrznstudio.titanium._impl.test.BlockTest;
 import com.hrznstudio.titanium._impl.test.BlockTwentyFourTest;
 import com.hrznstudio.titanium.api.raytrace.DistanceRayTraceResult;
+import com.hrznstudio.titanium.block.BlockBase;
 import com.hrznstudio.titanium.block.tile.TileActive;
 import com.hrznstudio.titanium.client.gui.GuiContainerTile;
 import com.hrznstudio.titanium.client.gui.addon.BasicButtonAddon;
@@ -100,16 +101,7 @@ public class Titanium extends ModuleController {
 
     @Override
     public void initJsonGenerators() {
-        //addJsonDataGenerator(RECIPE);
-        //RECIPE.addRecipe(FurnaceJsonData.of(IIngredient.ItemStackIngredient.of(new ItemStack(Blocks.DIRT)), new ItemStack(Blocks.DIAMOND_BLOCK), 0.25, 200));
-        //RECIPE.addRecipe(CraftingJsonData.ofShaped(new ItemStack(Items.DIAMOND),
-        //        new String[]{"DDS", "DDS", "SS "},
-        //        'D', IIngredient.ItemStackIngredient.of(new ItemStack(Blocks.DIRT)),
-        //        'S', IIngredient.ItemStackIngredient.of(new ItemStack(Items.STICK))));
-        //RECIPE.addRecipe(CraftingJsonData.ofShapeless(new ItemStack(Items.DIAMOND),
-        //        IIngredient.ItemStackIngredient.of(new ItemStack(Blocks.DIRT)),
-        //        IIngredient.ItemStackIngredient.of(new ItemStack(Blocks.STONE)),
-        //        IIngredient.ItemStackIngredient.of(new ItemStack(Items.STICK))));
+        addJsonDataGenerator(BlockBase.BLOCK_LOOT);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {

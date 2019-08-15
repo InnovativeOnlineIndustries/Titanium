@@ -13,6 +13,8 @@ import com.hrznstudio.titanium.block.BlockRotation;
 import net.minecraft.block.material.Material;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BlockTwentyFourTest extends BlockRotation<TileTwentyFourTest> {
 
@@ -31,5 +33,10 @@ public class BlockTwentyFourTest extends BlockRotation<TileTwentyFourTest> {
     @Override
     public RotationType getRotationType() {
         return RotationType.TWENTY_FOUR_WAY;
+    }
+
+    @Override
+    public List<Pool> getStaticDrops() {
+        return new ArrayList<>();
     }
 }

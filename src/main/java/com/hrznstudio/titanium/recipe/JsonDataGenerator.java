@@ -63,7 +63,10 @@ public class JsonDataGenerator {
 
     public enum DataTypes {
         ADVANCEMENT("advancements"),
-        LOOT("loot_tables"),
+        LOOT_BLOCKS("loot_tables/blocks"),
+        LOOT_CHESTS("loot_tables/chests"),
+        LOOT_ENTITIES("loot_tables/entities"),
+        LOOT_GAMEPLAY("loot_tables/gameplay"),
         RECIPE("recipes"),
         TAG("tags");
 
