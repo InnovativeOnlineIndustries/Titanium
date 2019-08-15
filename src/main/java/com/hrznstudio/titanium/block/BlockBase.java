@@ -16,10 +16,14 @@ import com.hrznstudio.titanium.recipe.JsonDataGenerator;
 import com.hrznstudio.titanium.recipe.LootPoolBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -31,6 +35,7 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -141,6 +146,28 @@ public abstract class BlockBase extends Block implements IAlternativeEntries {
         List<Pool> pools = new ArrayList<>();
         pools.add(new Pool(1, new Pool.Entry[]{Pool.Entry.of(this)}, new Pool.Condition[]{Pool.Condition.of(new ResourceLocation("minecraft", "survives_explosion"))}));
         return pools;
+    }
+
+    @Override
+    public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (state.getBlock() != newState.getBlock()) {
+            InventoryHelper.dropItems(worldIn, pos, getDynamicDrops(state, worldIn, pos, newState, isMoving));
+            worldIn.updateComparatorOutputLevel(pos, this);
+        }
+        super.onReplaced(state, worldIn, pos, newState, isMoving);
+    }
+
+    public NonNullList<ItemStack> getDynamicDrops(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+        NonNullList<ItemStack> stacks = NonNullList.create();
+        TileEntity tileentity = worldIn.getTileEntity(pos);
+        if (tileentity != null) {
+            tileentity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(iItemHandler -> {
+                for (int i = 0; i < iItemHandler.getSlots(); i++) {
+                    stacks.add(iItemHandler.getStackInSlot(i));
+                }
+            });
+        }
+        return stacks;
     }
 
     public static class Pool {

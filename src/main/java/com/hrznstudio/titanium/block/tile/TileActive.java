@@ -124,7 +124,7 @@ public class TileActive extends TileBase implements IGuiAddonProvider, ITickable
                 @Nonnull
                 @Override
                 public T get() {
-                    return (T) multiInventoryHandler.getCapabilityForSide(FacingUtil.getFacingRelative(TileActive.this.getFacingDirection(), side));
+                    return (T) multiInventoryHandler.getCapabilityForSide(side == null ? null : FacingUtil.getFacingRelative(TileActive.this.getFacingDirection(), side));
                 }
             });
         }
@@ -133,7 +133,7 @@ public class TileActive extends TileBase implements IGuiAddonProvider, ITickable
                 @Nonnull
                 @Override
                 public T get() {
-                    return (T) multiTankHandler.getCapabilityForSide(FacingUtil.getFacingRelative(TileActive.this.getFacingDirection(), side));
+                    return (T) multiTankHandler.getCapabilityForSide(side == null ? null : FacingUtil.getFacingRelative(TileActive.this.getFacingDirection(), side));
                 }
             });
         }
