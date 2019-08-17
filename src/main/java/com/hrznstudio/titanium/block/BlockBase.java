@@ -170,6 +170,10 @@ public abstract class BlockBase extends Block implements IAlternativeEntries {
         return stacks;
     }
 
+    public boolean hasIndividualRenderVoxelShape() {
+        return false;
+    }
+
     public static class Pool {
 
         private int rolls;

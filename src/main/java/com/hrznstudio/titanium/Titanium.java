@@ -11,7 +11,6 @@ import com.hrznstudio.titanium._impl.creative.BlockCreativeFEGenerator;
 import com.hrznstudio.titanium._impl.test.BlockTest;
 import com.hrznstudio.titanium._impl.test.BlockTwentyFourTest;
 import com.hrznstudio.titanium._impl.test.recipe.TestSerializableRecipe;
-import com.hrznstudio.titanium.api.raytrace.DistanceRayTraceResult;
 import com.hrznstudio.titanium.block.BlockBase;
 import com.hrznstudio.titanium.block.tile.TileActive;
 import com.hrznstudio.titanium.client.gui.GuiContainerTile;
@@ -29,12 +28,8 @@ import com.hrznstudio.titanium.reward.RewardManager;
 import com.hrznstudio.titanium.reward.RewardSyncMessage;
 import com.hrznstudio.titanium.reward.storage.RewardWorldStorage;
 import com.hrznstudio.titanium.util.SidedHandler;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Items;
@@ -44,8 +39,6 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.RecipeManager;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.api.distmarker.Dist;
@@ -69,8 +62,8 @@ import java.util.Map;
 
 @Mod(Titanium.MODID)
 public class Titanium extends ModuleController {
-    public static final String MODID = "titanium";
 
+    public static final String MODID = "titanium";
 
     public Titanium() {
         NetworkHandler.registerMessage(BasicButtonAddon.ButtonClickNetworkMessage.class);
@@ -88,7 +81,9 @@ public class Titanium extends ModuleController {
 
     @Override
     protected void initModules() {
-        addModule(Module.builder("core").force().feature(Feature.builder("core").force().content(ContainerType.class, (ContainerType) IForgeContainerType.create(ContainerTileBase::new).setRegistryName(new ResourceLocation(Titanium.MODID, "tile_container")))));
+        addModule(Module.builder("core").force()
+                .feature(Feature.builder("core").force()
+                        .content(ContainerType.class, (ContainerType) IForgeContainerType.create(ContainerTileBase::new).setRegistryName(new ResourceLocation(Titanium.MODID, "tile_container")))));
         addModule(Module.builder("test_module")
                 .disableByDefault()
                 .description("Test module for titanium features")
@@ -140,7 +135,7 @@ public class Titanium extends ModuleController {
 
     @OnlyIn(Dist.CLIENT)
     private void clientSetup(FMLClientSetupEvent event) {
-        EventManager.forge(DrawBlockHighlightEvent.class).process(this::drawBlockHighlight).subscribe();
+        EventManager.forge(DrawBlockHighlightEvent.class).process(TitaniumClient::blockOverlayEvent).subscribe();
         TitaniumClient.registerModelLoader();
         ScreenManager.registerFactory(ContainerTileBase.TYPE, GuiContainerTile::new);
         RewardManager.get().getRewards().values().forEach(rewardGiver -> rewardGiver.getRewards().forEach(reward -> reward.register(Dist.CLIENT)));
@@ -165,27 +160,5 @@ public class Titanium extends ModuleController {
     private void onServerStart(FMLServerStartingEvent event) {
         RewardCommand.register(event.getCommandDispatcher());
         RewardGrantCommand.register(event.getCommandDispatcher());
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public void drawBlockHighlight(DrawBlockHighlightEvent event) {
-        BlockPos pos = new BlockPos(event.getTarget().getHitVec().x, event.getTarget().getHitVec().y, event.getTarget().getHitVec().z);
-        RayTraceResult hit = event.getTarget();
-        if (hit.getType() == RayTraceResult.Type.BLOCK && hit instanceof DistanceRayTraceResult) {
-            event.setCanceled(true);
-            GlStateManager.enableBlend();
-            GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-            GlStateManager.lineWidth(2.0F);
-            GlStateManager.disableTexture();
-            GlStateManager.depthMask(false);
-            PlayerEntity player = Minecraft.getInstance().player;
-            double x = player.lastTickPosX + (player.posX - player.lastTickPosX) * event.getPartialTicks();
-            double y = player.lastTickPosY + (player.posY - player.lastTickPosY) * event.getPartialTicks();
-            double z = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * event.getPartialTicks();
-            WorldRenderer.drawShape(((DistanceRayTraceResult) hit).getHitBox().withOffset(pos.getX(), pos.getY(), pos.getZ()), -x, -y, -z, 0.0F, 0.0F, 0.0F, 0.4F);
-            GlStateManager.depthMask(true);
-            GlStateManager.enableTexture();
-            GlStateManager.disableBlend();
-        }
     }
 }

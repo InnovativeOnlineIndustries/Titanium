@@ -104,8 +104,8 @@ public class Feature {
             return this;
         }
 
-        public Builder eventClient(Supplier<Runnable> managerSupplier) {
-            SidedHandler.runOn(Dist.CLIENT, managerSupplier);
+        public Builder eventClient(Supplier<Supplier<EventManager.FilteredEventManager>> managerSupplier) {
+            SidedHandler.runOn(Dist.CLIENT, () -> () -> events.add(managerSupplier.get().get()));
             return this;
         }
 
