@@ -5,7 +5,7 @@
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
 
-package com.hrznstudio.titanium.recipe;
+package com.hrznstudio.titanium.recipe.generator;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -44,7 +44,7 @@ public class JsonDataGenerator {
             for (IJsonFile recipe : recipes) {
                 try {
                     FileWriter writer = new FileWriter(new File(DATA_DIR, getUniqueName(recipe.getRecipeKey()) + ".json"));
-                    GSON.toJson(recipe, writer);
+                    GSON.toJson(recipe instanceof IJSONGenerator ? ((IJSONGenerator) recipe).generate() : recipe, writer);
                     writer.close();
                 } catch (IOException e) {
                     e.printStackTrace();

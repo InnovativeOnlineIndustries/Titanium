@@ -8,6 +8,7 @@
 package com.hrznstudio.titanium.recipe;
 
 import com.hrznstudio.titanium.block.BlockBase;
+import com.hrznstudio.titanium.recipe.generator.IJsonFile;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.List;

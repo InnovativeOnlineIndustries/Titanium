@@ -10,6 +10,7 @@ package com.hrznstudio.titanium;
 import com.hrznstudio.titanium._impl.creative.BlockCreativeFEGenerator;
 import com.hrznstudio.titanium._impl.test.BlockTest;
 import com.hrznstudio.titanium._impl.test.BlockTwentyFourTest;
+import com.hrznstudio.titanium._impl.test.recipe.TestSerializableRecipe;
 import com.hrznstudio.titanium.api.raytrace.DistanceRayTraceResult;
 import com.hrznstudio.titanium.block.BlockBase;
 import com.hrznstudio.titanium.block.tile.TileActive;
@@ -23,7 +24,6 @@ import com.hrznstudio.titanium.module.Feature;
 import com.hrznstudio.titanium.module.Module;
 import com.hrznstudio.titanium.module.ModuleController;
 import com.hrznstudio.titanium.network.NetworkHandler;
-import com.hrznstudio.titanium.recipe.JsonDataGenerator;
 import com.hrznstudio.titanium.reward.Reward;
 import com.hrznstudio.titanium.reward.RewardManager;
 import com.hrznstudio.titanium.reward.RewardSyncMessage;
@@ -38,10 +38,15 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Items;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.item.crafting.RecipeManager;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -49,17 +54,23 @@ import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.items.ItemHandlerHelper;
+
+import java.util.Map;
+
 
 @Mod(Titanium.MODID)
 public class Titanium extends ModuleController {
     public static final String MODID = "titanium";
-    public static JsonDataGenerator RECIPE = new JsonDataGenerator(JsonDataGenerator.DataTypes.RECIPE, MODID);
+
 
     public Titanium() {
         NetworkHandler.registerMessage(BasicButtonAddon.ButtonClickNetworkMessage.class);
@@ -90,6 +101,24 @@ public class Titanium extends ModuleController {
                         .description("Adds test titanium events")
                         .event(EventManager.forge(EntityItemPickupEvent.class).filter(ev -> ev.getItem().getItem().getItem() == Items.STICK).process(ev -> ev.getItem().lifespan = 0).cancel())
                 )
+                .feature(Feature.builder("recipe")
+                        .description("Testing of recipe stuff")
+                        .content(IRecipeSerializer.class, (IRecipeSerializer) TestSerializableRecipe.SERIALIZER)
+                        .event(EventManager.mod(FMLCommonSetupEvent.class).process(event -> Registry.register(Registry.RECIPE_TYPE, TestSerializableRecipe.SERIALIZER.getRegistryName(), TestSerializableRecipe.SERIALIZER.getRecipeType())))
+                        .event(EventManager.forge(PlayerInteractEvent.LeftClickBlock.class)
+                                .filter(leftClickBlock -> !leftClickBlock.getWorld().isRemote && leftClickBlock.getPlayer() != null)
+                                .process(leftClickBlock -> {
+                                    Map<IRecipeType<?>, Map<ResourceLocation, IRecipe<?>>> recipes = ObfuscationReflectionHelper.getPrivateValue(RecipeManager.class, leftClickBlock.getWorld().getRecipeManager(), "field_199522_d");
+                                    recipes.get(TestSerializableRecipe.SERIALIZER.getRecipeType()).values().stream()
+                                            .map(iRecipe -> (TestSerializableRecipe) iRecipe)
+                                            .filter(testSerializableRecipe -> testSerializableRecipe.isValid(leftClickBlock.getPlayer().getHeldItem(leftClickBlock.getHand()), leftClickBlock.getWorld().getBlockState(leftClickBlock.getPos()).getBlock()))
+                                            .findFirst().ifPresent(testSerializableRecipe -> {
+                                        leftClickBlock.getPlayer().getHeldItem(leftClickBlock.getHand()).shrink(1);
+                                        ItemHandlerHelper.giveItemToPlayer(leftClickBlock.getPlayer(), testSerializableRecipe.getRecipeOutput().copy());
+                                        leftClickBlock.setCanceled(true);
+                                    });
+                                }))
+                )
         );
         addModule(Module.builder("creative")
                 .disableByDefault()
@@ -102,6 +131,7 @@ public class Titanium extends ModuleController {
     @Override
     public void initJsonGenerators() {
         addJsonDataGenerator(BlockBase.BLOCK_LOOT);
+        addJsonDataGenerator(TestSerializableRecipe.RECIPE);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {

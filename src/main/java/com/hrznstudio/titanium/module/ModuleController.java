@@ -11,7 +11,7 @@ import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.hrznstudio.titanium.annotation.config.ConfigFile;
 import com.hrznstudio.titanium.config.AnnotationConfigManager;
 import com.hrznstudio.titanium.event.handler.EventManager;
-import com.hrznstudio.titanium.recipe.JsonDataGenerator;
+import com.hrznstudio.titanium.recipe.generator.JsonDataGenerator;
 import com.hrznstudio.titanium.util.AnnotationUtil;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.ModLoadingContext;

@@ -5,7 +5,7 @@
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
 
-package com.hrznstudio.titanium.recipe;
+package com.hrznstudio.titanium.recipe.generator;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
