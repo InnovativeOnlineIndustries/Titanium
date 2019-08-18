@@ -35,13 +35,15 @@ public interface IIngredient {
     public static class ItemStackIngredient implements IIngredient {
 
         public final String item;
+        public final int count;
 
-        private ItemStackIngredient(String item) {
+        private ItemStackIngredient(String item, int count) {
             this.item = item;
+            this.count = count;
         }
 
         public static ItemStackIngredient of(ItemStack stack) {
-            return new ItemStackIngredient(stack.getItem().getRegistryName().toString());
+            return new ItemStackIngredient(stack.getItem().getRegistryName().toString(), stack.getCount());
         }
 
         @Override

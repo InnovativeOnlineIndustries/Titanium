@@ -36,6 +36,9 @@ public class CraftingJsonData implements IJsonFile {
     public static CraftingJsonData ofShaped(ItemStack stack, String[] pattern, Object... keyPairs) {
         IIngredient result = IIngredient.ItemStackIngredient.of(stack);
         HashMap<Character, Character> charMapping = new HashMap<>();
+        for (int i = 0; i < pattern.length; i++) {
+            pattern[i] = pattern[i].toLowerCase();
+        }
         char letter = 'A';
         for (String patternLine : pattern) {
             for (char c : patternLine.toCharArray()) {
@@ -53,7 +56,7 @@ public class CraftingJsonData implements IJsonFile {
         });
         PatternKey patternKey = new PatternKey();
         for (int i = 0; i < keyPairs.length; i = i + 2) {
-            char key = (char) keyPairs[i];
+            char key = Character.toLowerCase((char) keyPairs[i]);
             IIngredient value = (IIngredient) keyPairs[i + 1];
             patternKey.set(charMapping.get(key) - 'A', value);
         }
