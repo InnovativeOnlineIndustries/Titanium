@@ -142,6 +142,10 @@ public abstract class BlockBase extends Block implements IAlternativeEntries {
         this.itemGroup = itemGroup;
     }
 
+    public ItemGroup getItemGroup() {
+        return itemGroup;
+    }
+
     public List<Pool> getStaticDrops() {
         List<Pool> pools = new ArrayList<>();
         pools.add(new Pool(1, new Pool.Entry[]{Pool.Entry.of(this)}, new Pool.Condition[]{Pool.Condition.of(new ResourceLocation("minecraft", "survives_explosion"))}));

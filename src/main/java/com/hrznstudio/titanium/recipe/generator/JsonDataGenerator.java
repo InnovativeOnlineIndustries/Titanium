@@ -39,7 +39,7 @@ public class JsonDataGenerator {
 
     public JsonDataGenerator addRecipe(IJsonFile recipe) {
         if (alreadyGenerating) {
-            Titanium.LOGGER.warn("Tried to add %s too late! This file won't be generated", recipe.getRecipeKey());
+            Titanium.LOGGER.warn("Tried to add " + recipe.getRecipeKey() + " too late! This file won't be generated");
         } else {
             recipes.add(recipe);
         }
