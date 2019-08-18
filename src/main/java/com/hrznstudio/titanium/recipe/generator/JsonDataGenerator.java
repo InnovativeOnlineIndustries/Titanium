@@ -9,6 +9,7 @@ package com.hrznstudio.titanium.recipe.generator;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.hrznstudio.titanium.Titanium;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -24,6 +25,7 @@ public class JsonDataGenerator {
     private boolean dev;
     private List<IJsonFile> recipes = new ArrayList<>();
     private List<String> usedNames;
+    private boolean alreadyGenerating;
 
     public JsonDataGenerator(DataTypes type, String modid) {
         dev = new File("../src/main/resources/").exists();
@@ -32,16 +34,22 @@ public class JsonDataGenerator {
         if (dev) {
             if (!DATA_DIR.exists()) DATA_DIR.mkdirs();
         }
+        alreadyGenerating = false;
     }
 
     public JsonDataGenerator addRecipe(IJsonFile recipe) {
-        recipes.add(recipe);
+        if (alreadyGenerating) {
+            Titanium.LOGGER.warn("Tried to add %s too late! This file won't be generated", recipe.getRecipeKey());
+        } else {
+            recipes.add(recipe);
+        }
         return this;
     }
 
     public void generate() {
         if (dev) {
-            for (IJsonFile recipe : recipes) {
+            this.alreadyGenerating = true;
+            for (IJsonFile recipe : new ArrayList<>(recipes)) {
                 try {
                     FileWriter writer = new FileWriter(new File(DATA_DIR, getUniqueName(recipe.getRecipeKey()) + ".json"));
                     GSON.toJson(recipe instanceof IJSONGenerator ? ((IJSONGenerator) recipe).generate() : recipe, writer);
