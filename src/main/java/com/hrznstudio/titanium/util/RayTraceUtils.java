@@ -9,7 +9,6 @@ package com.hrznstudio.titanium.util;
 
 import com.hrznstudio.titanium.block.BlockBase;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext;
@@ -32,12 +31,12 @@ public class RayTraceUtils {
 
     @Nullable
     public static VoxelShape rayTraceVoxelShape(BlockRayTraceResult original, World world, LivingEntity living, double blockReachDistance, float partialTicks) {
-        BlockState og = Minecraft.getInstance().world.getBlockState(original.getPos());
+        BlockState og = world.getBlockState(original.getPos());
         if (og.getBlock() instanceof BlockBase && ((BlockBase) og.getBlock()).hasIndividualRenderVoxelShape()) {
             Vec3d vec3d = living.getEyePosition(partialTicks);
             Vec3d vec3d1 = living.getLook(partialTicks);
             Vec3d vec3d2 = vec3d.add(vec3d1.x * blockReachDistance, vec3d1.y * blockReachDistance, vec3d1.z * blockReachDistance);
-            List<VoxelShape> voxelShapes = ((BlockBase) og.getBlock()).getBoundingBoxes(og, Minecraft.getInstance().world, ((BlockRayTraceResult) original).getPos());
+            List<VoxelShape> voxelShapes = ((BlockBase) og.getBlock()).getBoundingBoxes(og, world, ((BlockRayTraceResult) original).getPos());
             VoxelShape closest = voxelShapes.get(0);
             double distance = Double.MAX_VALUE;
             for (VoxelShape voxelShape : voxelShapes) {
