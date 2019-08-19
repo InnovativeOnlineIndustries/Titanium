@@ -8,7 +8,12 @@
 package com.hrznstudio.titanium.network;
 
 import com.hrznstudio.titanium.Titanium;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
@@ -40,5 +45,11 @@ public class NetworkHandler {
                     req.handleMessage(context);
                     context.setPacketHandled(true);
                 });
+    }
+
+    public static void sendToNearby(World world, BlockPos pos, int distance, Message message) {
+        world.getEntitiesWithinAABB(ServerPlayerEntity.class, new AxisAlignedBB(pos).grow(distance)).forEach(playerEntity -> {
+            NETWORK.sendTo(message, playerEntity.connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
+        });
     }
 }
