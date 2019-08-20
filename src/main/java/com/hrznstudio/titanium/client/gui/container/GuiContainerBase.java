@@ -1,6 +1,5 @@
 package com.hrznstudio.titanium.client.gui.container;
 
-import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
@@ -21,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GuiContainerBase<T extends Container> extends ContainerScreen<T> implements IGuiAddonConsumer {
-    private final Container container;
+    private final T container;
     private final ITextComponent title;
     private IAssetProvider assetProvider;
     private int xCenter;
