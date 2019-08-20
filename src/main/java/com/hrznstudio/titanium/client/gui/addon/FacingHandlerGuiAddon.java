@@ -14,7 +14,7 @@ import com.hrznstudio.titanium.block.tile.sideness.IFacingHandler;
 import com.hrznstudio.titanium.block.tile.sideness.SidedHandlerManager;
 import com.hrznstudio.titanium.client.gui.IGuiAddonConsumer;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
-import com.hrznstudio.titanium.client.gui.container.GuiContainerTile;
+import com.hrznstudio.titanium.client.gui.container.GuiContainerTileBase;
 import com.hrznstudio.titanium.network.NetworkHandler;
 import com.hrznstudio.titanium.util.AssetUtil;
 import com.hrznstudio.titanium.util.FacingUtil;
@@ -115,38 +115,38 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
 
     @Override
     public void handleClick(Screen screen, int guiX, int guiY, double mouseX, double mouseY, int button) {
-        if (screen instanceof GuiContainerTile) {
+        if (screen instanceof GuiContainerTileBase) {
             for (IGuiAddon addon : new ArrayList<>(((IGuiAddonConsumer) screen).getAddons())) {
                 if (addon instanceof FacingHandlerGuiAddon && addon != this) {
-                    ((FacingHandlerGuiAddon) addon).setClicked((GuiContainerTile) screen, false);
+                    ((FacingHandlerGuiAddon) addon).setClicked((GuiContainerTileBase) screen, false);
                 }
             }
-            this.setClicked((GuiContainerTile) screen, !clicked);
+            this.setClicked((GuiContainerTileBase) screen, !clicked);
             if (clicked) {
-                ((GuiContainerTile) screen).getContainer().removeChestInventory();
+                ((GuiContainerTileBase) screen).getContainer().removeChestInventory();
                 for (FacingUtil.Sideness facing : FacingUtil.Sideness.values()) {
                     if (!handler.getFacingModes().containsKey(facing)) continue;
                     Point point = getPointFromFacing(facing);
                     StateButtonAddon addon = new StateButtonAddon(new PosButton(point.x, point.y, 14, 14), IFacingHandler.FaceMode.NONE.getInfo(), IFacingHandler.FaceMode.ENABLED.getInfo(), IFacingHandler.FaceMode.PULL.getInfo(), IFacingHandler.FaceMode.PUSH.getInfo()) {
                         @Override
                         public int getState() {
-                            IFacingHandler handler = ((GuiContainerTile) screen).getContainer().getTile().getHandlerFromName(FacingHandlerGuiAddon.this.handler.getName());
+                            IFacingHandler handler = ((GuiContainerTileBase) screen).getContainer().getTile().getHandlerFromName(FacingHandlerGuiAddon.this.handler.getName());
                             return handler != null && handler.getFacingModes().containsKey(facing) ? handler.getFacingModes().get(facing).getIndex() : 0;
                         }
 
                         @Override
                         public void handleClick(Screen gui, int guiX, int guiY, double mouseX, double mouseY, int mouse) {
                             StateButtonInfo info = getStateInfo();
-                            if (info != null && gui instanceof GuiContainerTile) {
+                            if (info != null && gui instanceof GuiContainerTileBase) {
                                 CompoundNBT compound = new CompoundNBT();
                                 compound.putString("Facing", facing.name());
                                 int faceMode = (getState() + (mouse == 0 ? 1 : -1)) % IFacingHandler.FaceMode.values().length;
                                 if (faceMode < 0) faceMode = IFacingHandler.FaceMode.values().length - 1;
                                 compound.putInt("Next", faceMode);
                                 compound.putString("Name", handler.getName());
-                                NetworkHandler.NETWORK.sendToServer(new ButtonClickNetworkMessage(((GuiContainerTile) gui).getContainer().getTile().getPos(), -1, compound));
+                                NetworkHandler.NETWORK.sendToServer(new ButtonClickNetworkMessage(((GuiContainerTileBase) gui).getContainer().getTile().getPos(), -1, compound));
                                 handler.getFacingModes().put(facing, IFacingHandler.FaceMode.values()[faceMode]);
-                                ((GuiContainerTile) gui).getContainer().getTile().updateNeigh();
+                                ((GuiContainerTileBase) gui).getContainer().getTile().updateNeigh();
                             }
                         }
 
@@ -162,7 +162,7 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
                         }
                     };
                     buttonAddons.add(addon);
-                    ((GuiContainerTile) screen).getAddons().add(addon);
+                    ((GuiContainerTileBase) screen).getAddons().add(addon);
                 }
             }
         }
@@ -173,7 +173,7 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
         return clicked;
     }
 
-    public void setClicked(GuiContainerTile information, boolean clicked) {
+    public void setClicked(GuiContainerTileBase information, boolean clicked) {
         this.clicked = clicked;
         if (!clicked) {
             information.getContainer().addPlayerChestInventory();

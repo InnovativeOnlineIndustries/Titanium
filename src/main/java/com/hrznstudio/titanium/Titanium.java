@@ -14,7 +14,7 @@ import com.hrznstudio.titanium._impl.test.recipe.TestSerializableRecipe;
 import com.hrznstudio.titanium.block.BlockBase;
 import com.hrznstudio.titanium.block.tile.TileActive;
 import com.hrznstudio.titanium.client.gui.addon.BasicButtonAddon;
-import com.hrznstudio.titanium.client.gui.container.GuiContainerTile;
+import com.hrznstudio.titanium.client.gui.container.GuiContainerTileBase;
 import com.hrznstudio.titanium.command.RewardCommand;
 import com.hrznstudio.titanium.command.RewardGrantCommand;
 import com.hrznstudio.titanium.container.ContainerTileBase;
@@ -149,7 +149,7 @@ public class Titanium extends ModuleController {
          * It's HIGHLY not, without it the code won't load because the ScreenManager for some reason tries to generate a Screen not our Gui class which down the line extends screen.
          * Thus is the price you pay for using Generics.
          */
-        ScreenManager.registerFactory(ContainerTileBase.TYPE, (ScreenManager.IScreenFactory<ContainerTileBase, GuiContainerTile>) (containerTileBase, inventory, title) -> new GuiContainerTile(containerTileBase, inventory, title));
+        ScreenManager.registerFactory(ContainerTileBase.TYPE, (ScreenManager.IScreenFactory<ContainerTileBase, GuiContainerTileBase>) (containerTileBase, inventory, title) -> new GuiContainerTileBase(containerTileBase, inventory, title));
     }
 
     private void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
