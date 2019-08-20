@@ -42,41 +42,6 @@ public class GuiContainerBase<T extends Container> extends ContainerScreen<T> im
         this.addons = new ArrayList<>();
     }
 
-    public GuiContainerBase(T container, PlayerInventory inventory, ITextComponent title, IAssetProvider assetProvider) {
-        super(container, inventory, title);
-        this.container = container;
-        this.title = title;
-        this.assetProvider = assetProvider;
-        IAsset background = IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND);
-        this.xSize = background.getArea().width;
-        this.ySize = background.getArea().height;
-        this.addons = new ArrayList<>();
-    }
-
-    public GuiContainerBase(T container, PlayerInventory inventory, ITextComponent title, List<IFactory<? extends IGuiAddon>> passableAddons) {
-        super(container, inventory, title);
-        this.container = container;
-        this.title = title;
-        this.assetProvider = IAssetProvider.DEFAULT_PROVIDER;
-        IAsset background = IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND);
-        this.xSize = background.getArea().width;
-        this.ySize = background.getArea().height;
-        this.addons = new ArrayList<>();
-        passableAddons.forEach(factory -> addons.add(factory.create()));
-    }
-
-    public GuiContainerBase(T container, PlayerInventory inventory, ITextComponent title, IAssetProvider assetProvider, List<IFactory<? extends IGuiAddon>> passableAddons) {
-        super(container, inventory, title);
-        this.container = container;
-        this.title = title;
-        this.assetProvider = assetProvider;
-        IAsset background = IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND);
-        this.xSize = background.getArea().width;
-        this.ySize = background.getArea().height;
-        this.addons = new ArrayList<>();
-        passableAddons.forEach(factory -> addons.add(factory.create()));
-    }
-
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         this.renderBackground();
