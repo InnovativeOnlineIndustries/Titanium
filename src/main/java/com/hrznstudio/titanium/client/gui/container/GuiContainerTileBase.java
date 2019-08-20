@@ -9,10 +9,10 @@ import net.minecraft.util.text.ITextComponent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GuiContainerTile extends GuiContainerBase<ContainerTileBase> implements IHasContainer<ContainerTileBase> {
+public class GuiContainerTileBase extends GuiContainerBase<ContainerTileBase> implements IHasContainer<ContainerTileBase> {
     private final ContainerTileBase containerTileBase;
 
-    public GuiContainerTile(ContainerTileBase containerTileBase, PlayerInventory inventory, ITextComponent title) {
+    public GuiContainerTileBase(ContainerTileBase containerTileBase, PlayerInventory inventory, ITextComponent title) {
         super(containerTileBase, inventory, title);
         this.containerTileBase = containerTileBase;
         setAssetProvider(containerTileBase.getTile().getAssetProvider());
