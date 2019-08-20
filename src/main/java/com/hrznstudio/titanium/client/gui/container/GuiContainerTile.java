@@ -26,9 +26,4 @@ public class GuiContainerTile extends GuiContainerBase<ContainerTileBase> implem
         containerTileBase.getTile().getGuiAddons().forEach(factory -> list.add(factory.create()));
         setAddons(list);
     }
-
-    @Override
-    public ContainerTileBase getContainer() {
-        return super.getContainer();
-    }
 }
