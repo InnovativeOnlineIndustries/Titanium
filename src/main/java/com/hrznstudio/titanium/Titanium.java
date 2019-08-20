@@ -13,8 +13,8 @@ import com.hrznstudio.titanium._impl.test.BlockTwentyFourTest;
 import com.hrznstudio.titanium._impl.test.recipe.TestSerializableRecipe;
 import com.hrznstudio.titanium.block.BlockBase;
 import com.hrznstudio.titanium.block.tile.TileActive;
-import com.hrznstudio.titanium.client.gui.GuiContainerTile;
 import com.hrznstudio.titanium.client.gui.addon.BasicButtonAddon;
+import com.hrznstudio.titanium.client.gui.container.GuiContainerTile;
 import com.hrznstudio.titanium.command.RewardCommand;
 import com.hrznstudio.titanium.command.RewardGrantCommand;
 import com.hrznstudio.titanium.container.ContainerTileBase;
@@ -136,12 +136,20 @@ public class Titanium extends ModuleController {
         RewardManager.get().getRewards().values().forEach(rewardGiver -> rewardGiver.getRewards().forEach(reward -> reward.register(Dist.DEDICATED_SERVER)));
     }
 
+    @SuppressWarnings("Convert2MethodRef")
     @OnlyIn(Dist.CLIENT)
     private void clientSetup(FMLClientSetupEvent event) {
         EventManager.forge(DrawBlockHighlightEvent.class).process(TitaniumClient::blockOverlayEvent).subscribe();
         TitaniumClient.registerModelLoader();
-        ScreenManager.registerFactory(ContainerTileBase.TYPE, GuiContainerTile::new);
         RewardManager.get().getRewards().values().forEach(rewardGiver -> rewardGiver.getRewards().forEach(reward -> reward.register(Dist.CLIENT)));
+
+        /**
+         * From this point factory registrations for Container -> Gui is done.
+         * Please note that while IntelliJ or Eclipse MIGHT say that (ScreenManager.IScreenFactory<ContainerTileBase, NewGuiContainerTile>) is redundant.
+         * It's HIGHLY not, without it the code won't load because the ScreenManager for some reason tries to generate a Screen not our Gui class which down the line extends screen.
+         * Thus is the price you pay for using Generics.
+         */
+        ScreenManager.registerFactory(ContainerTileBase.TYPE, (ScreenManager.IScreenFactory<ContainerTileBase, GuiContainerTile>) (containerTileBase, inventory, title) -> new GuiContainerTile(containerTileBase, inventory, title));
     }
 
     private void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
