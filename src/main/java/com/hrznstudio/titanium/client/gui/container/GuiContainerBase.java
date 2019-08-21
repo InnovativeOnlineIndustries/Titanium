@@ -4,8 +4,8 @@ import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.client.gui.IGuiAddonConsumer;
-import com.hrznstudio.titanium.client.gui.addon.ICanMouseDrag;
-import com.hrznstudio.titanium.client.gui.addon.IClickable;
+import com.hrznstudio.titanium.client.gui.addon.interfaces.ICanMouseDrag;
+import com.hrznstudio.titanium.client.gui.addon.interfaces.IClickable;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
@@ -97,7 +97,7 @@ public class GuiContainerBase<T extends Container> extends ContainerScreen<T> im
 
     @Override
     public T getContainer() {
-        return (T) container;
+        return container;
     }
 
     @Override
