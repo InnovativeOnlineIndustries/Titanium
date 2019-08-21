@@ -17,7 +17,7 @@ import com.hrznstudio.titanium.client.gui.addon.BasicButtonAddon;
 import com.hrznstudio.titanium.client.gui.container.GuiContainerTileBase;
 import com.hrznstudio.titanium.command.RewardCommand;
 import com.hrznstudio.titanium.command.RewardGrantCommand;
-import com.hrznstudio.titanium.container.ContainerTileBase;
+import com.hrznstudio.titanium.container.impl.ContainerTileBase;
 import com.hrznstudio.titanium.event.handler.EventManager;
 import com.hrznstudio.titanium.module.Feature;
 import com.hrznstudio.titanium.module.Module;

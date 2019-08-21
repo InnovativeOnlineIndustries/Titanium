@@ -11,7 +11,7 @@ import com.hrznstudio.titanium.block.tile.TileActive;
 import com.hrznstudio.titanium.block.tile.button.PosButton;
 import com.hrznstudio.titanium.client.gui.ITileContainer;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
-import com.hrznstudio.titanium.container.ContainerTileBase;
+import com.hrznstudio.titanium.container.impl.ContainerTileBase;
 import com.hrznstudio.titanium.network.Message;
 import com.hrznstudio.titanium.network.NetworkHandler;
 import com.hrznstudio.titanium.util.TileUtil;
