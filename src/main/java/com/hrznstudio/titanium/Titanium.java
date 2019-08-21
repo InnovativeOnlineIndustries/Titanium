@@ -13,7 +13,7 @@ import com.hrznstudio.titanium._impl.test.BlockTwentyFourTest;
 import com.hrznstudio.titanium._impl.test.recipe.TestSerializableRecipe;
 import com.hrznstudio.titanium.block.BlockBase;
 import com.hrznstudio.titanium.block.tile.TileActive;
-import com.hrznstudio.titanium.client.gui.addon.BasicButtonAddon;
+import com.hrznstudio.titanium.client.gui.addon.ButtonTileAddon;
 import com.hrznstudio.titanium.client.gui.container.GuiContainerTileBase;
 import com.hrznstudio.titanium.command.RewardCommand;
 import com.hrznstudio.titanium.command.RewardGrantCommand;
@@ -69,7 +69,7 @@ public class Titanium extends ModuleController {
     public static final Logger LOGGER = LogManager.getLogger(MODID);
 
     public Titanium() {
-        NetworkHandler.registerMessage(BasicButtonAddon.ButtonClickNetworkMessage.class);
+        NetworkHandler.registerMessage(ButtonTileAddon.ButtonClickNetworkMessage.class);
         NetworkHandler.registerMessage(RewardSyncMessage.class);
 
         SidedHandler.runOn(Dist.CLIENT, () -> () -> EventManager.mod(FMLClientSetupEvent.class).process(this::clientSetup).subscribe());

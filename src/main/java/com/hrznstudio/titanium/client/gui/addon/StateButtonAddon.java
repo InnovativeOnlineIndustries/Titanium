@@ -16,7 +16,7 @@ import net.minecraft.client.gui.screen.Screen;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class StateButtonAddon extends BasicButtonAddon {
+public abstract class StateButtonAddon extends ButtonTileAddon {
 
     private StateButtonInfo[] buttonInfos;
 
