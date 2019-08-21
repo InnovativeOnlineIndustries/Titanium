@@ -8,10 +8,20 @@
 package com.hrznstudio.titanium.client.gui.addon;
 
 import com.hrznstudio.titanium.block.tile.button.PosButton;
+import com.hrznstudio.titanium.client.gui.ITileContainer;
+import com.hrznstudio.titanium.client.gui.addon.interfaces.IClickable;
+import com.hrznstudio.titanium.client.gui.addon.interfaces.INetworkable;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
+import com.hrznstudio.titanium.client.gui.container.GuiContainerBase;
+import com.hrznstudio.titanium.client.gui.container.GuiContainerTileBase;
+import com.hrznstudio.titanium.container.TitaniumContainerBase;
+import com.hrznstudio.titanium.container.impl.ContainerTileBase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
+import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 
@@ -43,8 +53,12 @@ public class BasicButtonAddon extends BasicGuiAddon implements IClickable {
     }
 
     @Override
-    public void handleClick(Screen tile, int guiX, int guiY, double mouseX, double mouseY, int button) {
+    public void handleClick(Screen screen, int guiX, int guiY, double mouseX, double mouseY, int button) {
         Minecraft.getInstance().getSoundHandler().play(new SimpleSound(SoundEvents.UI_BUTTON_CLICK, SoundCategory.PLAYERS, 1f, 1f, Minecraft.getInstance().player.getPosition()));
+        if (screen instanceof ContainerScreen && ((ContainerScreen) screen).getContainer() instanceof INetworkable) {
+            INetworkable networkable = (INetworkable) ((ContainerScreen) screen).getContainer();
+            networkable.sendMessage(getButton().getId(), new CompoundNBT());
+        }
     }
 
     @Override

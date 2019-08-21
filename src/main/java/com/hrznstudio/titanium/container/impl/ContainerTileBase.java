@@ -10,18 +10,22 @@ package com.hrznstudio.titanium.container.impl;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.block.tile.TileActive;
 import com.hrznstudio.titanium.block.tile.inventory.PosInvHandler;
+import com.hrznstudio.titanium.client.gui.addon.interfaces.INetworkable;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
+import com.hrznstudio.titanium.network.NetworkHandler;
+import com.hrznstudio.titanium.network.messages.ButtonClickNetworkMessage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.registries.ObjectHolder;
 
 import java.awt.*;
 
-public class ContainerTileBase extends ContainerInventoryBase {
+public class ContainerTileBase extends ContainerInventoryBase implements INetworkable {
 
     @ObjectHolder("titanium:tile_container")
     public static ContainerType<ContainerTileBase> TYPE;
@@ -81,5 +85,10 @@ public class ContainerTileBase extends ContainerInventoryBase {
 
     public TileActive getTile() {
         return tile;
+    }
+
+    @Override
+    public void sendMessage(int id, CompoundNBT data) {
+        NetworkHandler.NETWORK.sendToServer(new ButtonClickNetworkMessage(tile.getPos(), id, data));
     }
 }

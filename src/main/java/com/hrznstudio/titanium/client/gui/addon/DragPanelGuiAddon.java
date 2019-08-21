@@ -7,6 +7,7 @@
 
 package com.hrznstudio.titanium.client.gui.addon;
 
+import com.hrznstudio.titanium.client.gui.addon.interfaces.ICanMouseDrag;
 import net.minecraft.util.math.MathHelper;
 
 public abstract class DragPanelGuiAddon extends BasicGuiAddon implements ICanMouseDrag {
