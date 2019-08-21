@@ -142,14 +142,7 @@ public class Titanium extends ModuleController {
         EventManager.forge(DrawBlockHighlightEvent.class).process(TitaniumClient::blockOverlayEvent).subscribe();
         TitaniumClient.registerModelLoader();
         RewardManager.get().getRewards().values().forEach(rewardGiver -> rewardGiver.getRewards().forEach(reward -> reward.register(Dist.CLIENT)));
-
-        /**
-         * From this point factory registrations for Container -> Gui is done.
-         * Please note that while IntelliJ or Eclipse MIGHT say that (ScreenManager.IScreenFactory<ContainerTileBase, NewGuiContainerTile>) is redundant.
-         * It's HIGHLY not, without it the code won't load because the ScreenManager for some reason tries to generate a Screen not our Gui class which down the line extends screen.
-         * Thus is the price you pay for using Generics.
-         */
-        ScreenManager.registerFactory(ContainerTileBase.TYPE, (ScreenManager.IScreenFactory<ContainerTileBase, GuiContainerTileBase>) (containerTileBase, inventory, title) -> new GuiContainerTileBase(containerTileBase, inventory, title));
+        ScreenManager.registerFactory(ContainerTileBase.TYPE, GuiContainerTileBase::new);
     }
 
     private void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
