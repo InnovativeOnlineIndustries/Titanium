@@ -1,7 +1,7 @@
 package com.hrznstudio.titanium.client.gui.container;
 
 import com.hrznstudio.titanium.api.client.IGuiAddon;
-import com.hrznstudio.titanium.container.ContainerTileBase;
+import com.hrznstudio.titanium.container.impl.ContainerTileBase;
 import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
