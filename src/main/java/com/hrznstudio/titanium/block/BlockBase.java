@@ -48,6 +48,7 @@ public abstract class BlockBase extends Block implements IAlternativeEntries {
     public static JsonDataGenerator BLOCK_LOOT = new JsonDataGenerator(JsonDataGenerator.DataTypes.LOOT_BLOCKS, Titanium.MODID);
 
     private ItemGroup itemGroup = ItemGroup.SEARCH;
+    private BlockItem item;
 
     public BlockBase(String name, Properties properties) {
         super(properties);
@@ -108,7 +109,12 @@ public abstract class BlockBase extends Block implements IAlternativeEntries {
 
     @Override
     public void addAlternatives(RegistryManager registry) {
-        registry.content(Item.class, getItemBlockFactory().create());
+        registry.content(Item.class, item = getItemBlockFactory().create());
+    }
+
+    @Override
+    public Item asItem() {
+        return item;
     }
 
     public List<VoxelShape> getBoundingBoxes(BlockState state, IBlockReader source, BlockPos pos) {
