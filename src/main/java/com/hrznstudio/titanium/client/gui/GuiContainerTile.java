@@ -60,7 +60,8 @@ public class GuiContainerTile extends ContainerScreen<ContainerTileBase> impleme
         GlStateManager.color4f(1, 1, 1, 1);
         getMinecraft().getTextureManager().bindTexture(IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND).getResourceLocation());
         blit(x, y, 0, 0, xSize, ySize);
-        drawCenteredString(Minecraft.getInstance().fontRenderer, TextFormatting.GRAY + new TranslationTextComponent(containerTileBase.getTile().getBlockState().getBlock().getTranslationKey()).getFormattedText(), x + xSize / 2, y + 6, 0xFFFFFF);
+        String string = TextFormatting.DARK_GRAY + new TranslationTextComponent(containerTileBase.getTile().getBlockState().getBlock().getTranslationKey()).getFormattedText();
+        font.drawString(string, (float) (x + xSize / 2 - font.getStringWidth(string) / 2), (float) y + 8, 0xFFFFFF);
         this.checkForMouseDrag(mouseX, mouseY);
         addonList.forEach(iGuiAddon -> iGuiAddon.drawGuiContainerBackgroundLayer(this, assetProvider, x, y, mouseX, mouseY, partialTicks));
         containerTileBase.updateSlotPosition();
