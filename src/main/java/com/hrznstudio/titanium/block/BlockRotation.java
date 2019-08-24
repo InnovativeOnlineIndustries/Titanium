@@ -45,7 +45,7 @@ public abstract class BlockRotation<T extends TileBase> extends BlockTileBase<T>
 
     public enum RotationType {
         NONE((block, context) -> block.getDefaultState()),
-        FOUR_WAY(((block, context) -> block.getDefaultState().with(FACING, context.getPlacementHorizontalFacing())), FACING),
+        FOUR_WAY(((block, context) -> block.getDefaultState().with(FACING, context.getPlacementHorizontalFacing().getOpposite())), FACING),
         SIX_WAY((block, context) -> block.getDefaultState().with(FACING, context.getNearestLookingDirection()), FACING),
         TWENTY_FOUR_WAY((block, context) -> {
             //TODO: Sub facing
