@@ -29,12 +29,15 @@ public class MultiProgressBarHandler implements IGuiAddonProvider {
     public void update() {
         for (PosProgressBar posWorkBar : posWorkBars) {
             if (posWorkBar.getCanIncrease().test(posWorkBar.getTileBase())) {
-                if (posWorkBar.getProgress() == 0) {
+                if (posWorkBar.getIncreaseType() && posWorkBar.getProgress() == 0) {
+                    posWorkBar.onStart();
+                }
+                if (!posWorkBar.getIncreaseType() && posWorkBar.getProgress() == posWorkBar.getMaxProgress()) {
                     posWorkBar.onStart();
                 }
                 posWorkBar.tickBar();
             } else if (posWorkBar.getCanReset().test(posWorkBar.getTileBase())) {
-                posWorkBar.setProgress(0);
+                posWorkBar.setProgress(posWorkBar.getIncreaseType() ? 0 : posWorkBar.getMaxProgress());
             }
         }
     }

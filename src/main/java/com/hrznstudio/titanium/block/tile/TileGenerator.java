@@ -29,8 +29,10 @@ public abstract class TileGenerator extends TilePowered {
         this.addProgressBar(progressBar = getProgressBar()
                 .setTile(this)
                 .setCanIncrease(tileEntity -> true)
+                .setIncreaseType(false)
                 .setOnStart(() -> {
                     progressBar.setMaxProgress(consumeFuel());
+                    progressBar.setProgress(progressBar.getMaxProgress());
                     markForUpdate();
                 })
                 .setCanReset(tileEntity -> canStart())
