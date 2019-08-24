@@ -57,6 +57,7 @@ public class ProgressBarGuiAddon extends BasicGuiAddon {
         List<String> tooltip = new ArrayList<>();
         tooltip.add(TextFormatting.GOLD + "Progress: " + TextFormatting.WHITE + new DecimalFormat().format(progressBar.getProgress()) + TextFormatting.GOLD + "/" + TextFormatting.WHITE + new DecimalFormat().format(progressBar.getMaxProgress()));
         int progress = (progressBar.getMaxProgress() - progressBar.getProgress()) / progressBar.getProgressIncrease();
+        if (!progressBar.getIncreaseType()) progress = progressBar.getMaxProgress() - progress;
         tooltip.add(TextFormatting.GOLD + "ETA: " + TextFormatting.WHITE + new DecimalFormat().format(Math.ceil(progress * progressBar.getTickingTime() / 20D)) + TextFormatting.DARK_AQUA + "s");
         return tooltip;
     }

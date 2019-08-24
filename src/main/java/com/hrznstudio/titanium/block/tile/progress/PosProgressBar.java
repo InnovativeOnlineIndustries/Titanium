@@ -46,6 +46,7 @@ public class PosProgressBar implements INBTSerializable<CompoundNBT>, IGuiAddonP
     private TileBase tileBase;
     private BarDirection barDirection;
     private DyeColor color;
+    private boolean increaseType;
 
     public PosProgressBar(int posX, int posY, int maxProgress) {
         this.posX = posX;
@@ -64,6 +65,7 @@ public class PosProgressBar implements INBTSerializable<CompoundNBT>, IGuiAddonP
         };
         this.barDirection = BarDirection.VERTICAL_UP;
         this.color = DyeColor.WHITE;
+        this.increaseType = true;
     }
 
     public PosProgressBar(int posX, int posY, int progress, int maxProgress) {
@@ -144,16 +146,40 @@ public class PosProgressBar implements INBTSerializable<CompoundNBT>, IGuiAddonP
         return this;
     }
 
+    public boolean getIncreaseType() {
+        return increaseType;
+    }
+
+    /**
+     * Changes how the progress bar behaves when working
+     * @param increaseType True if the progress bar increases when working, false if the progress bar decreases when working
+     * @return itself
+     */
+    public PosProgressBar setIncreaseType(boolean increaseType) {
+        this.increaseType = increaseType;
+        return this;
+    }
+
     /**
      * Ticks the bar so it can increase if possible, managed by {@link MultiProgressBarHandler#update()}
      */
     public void tickBar() {
-        if (progress < maxProgress && tileBase != null && tileBase.getWorld().getGameTime() % tickingTime == 0) {
-            setProgress(this.progress + progressIncrease);
-            this.onTickWork.run();
+        if (tileBase != null && tileBase.getWorld().getGameTime() % tickingTime == 0) {
+            if (increaseType && progress < maxProgress) {
+                setProgress(this.progress + progressIncrease);
+                this.onTickWork.run();
+            }
+            if (!increaseType && progress > 0) {
+                setProgress(this.progress - progressIncrease);
+                this.onTickWork.run();
+            }
         }
-        if (progress >= maxProgress && canReset.test(tileBase)) {
+        if (increaseType && progress >= maxProgress && canReset.test(tileBase)) {
             setProgress(0);
+            this.onFinishWork.run();
+        }
+        if (!increaseType && progress <= 0 && canReset.test(tileBase)) {
+            setProgress(maxProgress);
             this.onFinishWork.run();
         }
     }
