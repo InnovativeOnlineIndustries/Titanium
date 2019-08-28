@@ -19,11 +19,11 @@ import java.awt.*;
 
 public final class DefaultAssetProvider implements IAssetProvider {
     private final IAsset SLOT = () -> new Rectangle(1, 185, 18, 18);
-    private final IAsset ENERGY_BAR = () -> new Rectangle(177, 94, 18, 46);
+    private final IAsset ENERGY_BAR = () -> new Rectangle(177, 94, 18, 56);
     private final IAsset ENERGY_FILL = new IAsset() {
         @Override
         public Rectangle getArea() {
-            return new Rectangle(196, 97, 12, 40);
+            return new Rectangle(196, 97, 12, 50);
         }
 
         @Override
@@ -39,7 +39,7 @@ public final class DefaultAssetProvider implements IAssetProvider {
 
         @Override
         public Rectangle getArea() {
-            return new Rectangle(177, 1, 18, 46);
+            return new Rectangle(177, 1, 18, 56);
         }
     };
     private final Point HOTBAR_POS = new Point(8, 160);
