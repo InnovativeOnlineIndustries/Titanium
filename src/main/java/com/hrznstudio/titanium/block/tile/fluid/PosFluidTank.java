@@ -9,50 +9,21 @@ package com.hrznstudio.titanium.block.tile.fluid;
 
 import com.hrznstudio.titanium.block.tile.TileBase;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
-import javax.annotation.Nullable;
-import java.util.function.Predicate;
-
-public class PosFluidTank extends FluidTank implements IFluidTankProperties {
+public class PosFluidTank extends FluidTank {
 
     private final int posX;
     private final int posY;
-    private Predicate<FluidStack> fillPredicate;
-    private Predicate<FluidStack> drainPredicate;
     private String name;
+    private TileEntity tile;
 
     public PosFluidTank(int amount, int posX, int posY, String name) {
         super(amount);
         this.posX = posX;
         this.posY = posY;
         this.name = name;
-        this.fillPredicate = fluidStack1 -> true;
-        this.drainPredicate = fluidStack1 -> true;
-    }
-
-    /**
-     * Sets the predicate fill filter
-     *
-     * @param filter The predicate where the fluidstack is the fluid trying to fill the tank
-     * @return itself
-     */
-    public PosFluidTank setFillFilter(Predicate<FluidStack> filter) {
-        this.fillPredicate = filter;
-        return this;
-    }
-
-    /**
-     * Sets the predicate drain filter
-     *
-     * @param filter The predicate where the fluidstack is the fluid trying to be drained from the tank
-     * @return itself
-     */
-    public PosFluidTank setDrainFilter(Predicate<FluidStack> filter) {
-        this.drainPredicate = filter;
-        return this;
+        ;
     }
 
     /**
@@ -64,22 +35,6 @@ public class PosFluidTank extends FluidTank implements IFluidTankProperties {
     public PosFluidTank setTile(TileEntity tile) {
         this.tile = tile;
         return this;
-    }
-
-    @Nullable
-    @Override
-    public FluidStack getContents() {
-        return getFluid();
-    }
-
-    @Override
-    public boolean canFillFluidType(FluidStack fluidStack) {
-        return fluidStack != null && fillPredicate.test(fluidStack);
-    }
-
-    @Override
-    public boolean canDrainFluidType(FluidStack fluidStack) {
-        return fluidStack != null && drainPredicate.test(fluidStack);
     }
 
     @Override
