@@ -29,6 +29,9 @@ public interface IFacingHandler {
 
     String getName();
 
+    int getButtonX();
+    int getButtonY();
+
     boolean work(World world, BlockPos pos, Direction blockFacing, int workAmount);
 
     enum FaceMode {

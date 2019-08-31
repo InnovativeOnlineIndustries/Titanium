@@ -32,6 +32,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
 
+    private int buttonX = 8;
+    private int buttonY = 84;
     private int color;
     private HashMap<FacingUtil.Sideness, FaceMode> facingModes;
     private HashMap<FacingUtil.Sideness, Integer> slotCache;
@@ -83,6 +85,26 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
     public Rectangle getRectangle() {
         int renderingOffset = 1;
         return new Rectangle(this.getXPos() - renderingOffset - 3, this.getYPos() - renderingOffset - 3, 18 * this.getXSize() + renderingOffset * 2 + 3, 18 * this.getYSize() + renderingOffset * 2 + 3);
+    }
+
+    public SidedInvHandler setButtonX(int buttonX) {
+        this.buttonX = buttonX;
+        return this;
+    }
+
+    public SidedInvHandler setButtonY(int buttonY) {
+        this.buttonY = buttonY;
+        return this;
+    }
+
+    @Override
+    public int getButtonX() {
+        return this.buttonX;
+    }
+
+    @Override
+    public int getButtonY() {
+        return this.buttonY;
     }
 
     @Override
@@ -141,7 +163,7 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
     @Override
     public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
         List<IFactory<? extends IGuiAddon>> addons = super.getGuiAddons();
-        addons.add(() -> new FacingHandlerGuiAddon(SidedHandlerManager.ofRight(8, 84, position, AssetTypes.BUTTON_SIDENESS_MANAGER, 4), this));
+        addons.add(() -> new FacingHandlerGuiAddon(SidedHandlerManager.ofRight(getButtonX(), getButtonY(), position, AssetTypes.BUTTON_SIDENESS_MANAGER, 4), this));
         return addons;
     }
 

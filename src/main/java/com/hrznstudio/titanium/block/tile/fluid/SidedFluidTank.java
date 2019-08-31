@@ -22,6 +22,8 @@ import java.util.HashMap;
 public class SidedFluidTank extends PosFluidTank implements IFacingHandler {
 
     private int color;
+    private int buttonX;
+    private int buttonY;
     private HashMap<FacingUtil.Sideness, FaceMode> facingModes;
 
     public SidedFluidTank(int amount, int posX, int posY, String name) {
@@ -56,6 +58,26 @@ public class SidedFluidTank extends PosFluidTank implements IFacingHandler {
     @Override
     public Rectangle getRectangle() {
         return new Rectangle(this.getPosX(), this.getPosY(), 18 - 1, 46 - 1);
+    }
+
+    public SidedFluidTank setButtonX(int buttonX) {
+        this.buttonX = buttonX;
+        return this;
+    }
+
+    public SidedFluidTank setButtonY(int buttonY) {
+        this.buttonY = buttonY;
+        return this;
+    }
+
+    @Override
+    public int getButtonX() {
+        return this.buttonX;
+    }
+
+    @Override
+    public int getButtonY() {
+        return this.buttonY;
     }
 
     @Override
