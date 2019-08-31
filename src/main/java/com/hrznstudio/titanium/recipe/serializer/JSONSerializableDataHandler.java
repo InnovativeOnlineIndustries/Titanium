@@ -55,7 +55,8 @@ public class JSONSerializableDataHandler {
         map(ItemStack.class, JSONSerializableDataHandler::writeItemStack, element -> readItemStack(element.getAsJsonObject()));
         map(ResourceLocation.class, type -> new JsonPrimitive(type.toString()), element -> new ResourceLocation(element.getAsString()));
         map(Block.class, type -> new JsonPrimitive(type.getRegistryName().toString()), element -> ForgeRegistries.BLOCKS.getValue(new ResourceLocation(element.getAsString())));
-        map(FluidStack.class, JSONSerializableDataHandler::writeFluidStack, element -> readFluidStack(element.getAsJsonObject()));
+        map(FluidStack.class, JSONSerializableDataHandler::writeFluidStack, JSONSerializableDataHandler::readFluidStack);
+        map(Ingredient.IItemList.class, Ingredient.IItemList::serialize, element -> Ingredient.deserializeItemList(element.getAsJsonObject()));
     }
 
     private static <T> void map(Class<T> type, Writer<T> writer, Reader<T> reader) {
@@ -89,7 +90,7 @@ public class JSONSerializableDataHandler {
         return new JsonPrimitive(fluidStack.writeToNBT(new CompoundNBT()).toString());
     }
 
-    public static FluidStack readFluidStack(JsonObject object) {
+    public static FluidStack readFluidStack(JsonElement object) {
         try {
             return FluidStack.loadFluidStackFromNBT(JsonToNBT.getTagFromJson(object.getAsString()));
         } catch (CommandSyntaxException e) {
