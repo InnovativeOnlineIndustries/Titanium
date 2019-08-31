@@ -16,6 +16,7 @@ import com.hrznstudio.titanium.util.AnnotationUtil;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.io.File;
@@ -74,7 +75,7 @@ public abstract class ModuleController {
         EventManager.mod(ModConfig.Loading.class).process(ev -> configManager.inject()).subscribe();
         EventManager.mod(ModConfig.ConfigReloading.class).process(ev -> configManager.inject()).subscribe();
         initJsonGenerators();
-        jsonDataGenerators.forEach(JsonDataGenerator::generate);
+        EventManager.mod(FMLLoadCompleteEvent.class).process(fmlLoadCompleteEvent -> jsonDataGenerators.forEach(JsonDataGenerator::generate)).subscribe();
     }
 
     private void addConfig(AnnotationConfigManager.Type type) {
