@@ -11,6 +11,7 @@ import com.hrznstudio.titanium.block.BlockBase;
 import com.hrznstudio.titanium.recipe.generator.IJsonFile;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class LootPoolBlock implements IJsonFile {
@@ -27,5 +28,11 @@ public class LootPoolBlock implements IJsonFile {
     @Override
     public String getRecipeKey() {
         return key;
+    }
+
+    @Nullable
+    @Override
+    public String getRecipeSubfolder() {
+        return null;
     }
 }

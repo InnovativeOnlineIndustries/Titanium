@@ -14,6 +14,8 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nullable;
+
 public abstract class SerializableRecipe implements IRecipe<IInventory>, IJsonFile, IJSONGenerator {
 
     public String type = getSerializer().getRegistryName().toString();
@@ -31,6 +33,12 @@ public abstract class SerializableRecipe implements IRecipe<IInventory>, IJsonFi
     @Override
     public String getRecipeKey() {
         return resourceLocation.getPath();
+    }
+
+    @Nullable
+    @Override
+    public String getRecipeSubfolder() {
+        return new ResourceLocation(type).getPath();
     }
 
     @Override

@@ -7,8 +7,13 @@
 
 package com.hrznstudio.titanium.recipe.generator;
 
+import javax.annotation.Nullable;
+
 public interface IJsonFile {
 
     String getRecipeKey();
+
+    @Nullable
+    String getRecipeSubfolder();
 
 }

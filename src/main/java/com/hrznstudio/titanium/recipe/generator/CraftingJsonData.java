@@ -9,6 +9,7 @@ package com.hrznstudio.titanium.recipe.generator;
 
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 
 public class CraftingJsonData implements IJsonFile {
@@ -71,6 +72,12 @@ public class CraftingJsonData implements IJsonFile {
     @Override
     public String getRecipeKey() {
         return result.getKey();
+    }
+
+    @Nullable
+    @Override
+    public String getRecipeSubfolder() {
+        return "crafting";
     }
 
     private static class PatternKey {
