@@ -15,9 +15,8 @@ import com.hrznstudio.titanium.client.gui.addon.TankGuiAddon;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -73,47 +72,54 @@ public class MultiTankHandler implements IGuiAddonProvider {
             this.tanks = tanks;
         }
 
-        @Override
-        public IFluidTankProperties[] getTankProperties() {
-            IFluidTankProperties[] properties = new IFluidTankProperties[tanks.size()];
-            for (int i = 0; i < tanks.size(); i++) {
-                properties[i] = tanks.get(i).getTankProperties()[0];
-            }
-            return properties;
+        public boolean isEmpty() {
+            return tanks.isEmpty();
         }
 
         @Override
-        public int fill(FluidStack resource, boolean doFill) {
-            if (resource == null) return 0;
-            for (PosFluidTank tank : tanks) {
-                if (tank.canFill() && tank.canFillFluidType(resource) && tank.fill(resource, false) != 0)
-                    return tank.fill(resource, doFill);
-            }
+        public int getTanks() {
+            return tanks.size();
+        }
+
+        @Nonnull
+        @Override
+        public FluidStack getFluidInTank(int tank) {
+            return tanks.get(tank).getFluid();
+        }
+
+        @Override
+        public int getTankCapacity(int tank) {
+            return tanks.get(tank).getTankCapacity(tank);
+        }
+
+        @Override
+        public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
+            return tanks.get(tank).isFluidValid(stack);
+        }
+
+        @Override
+        public int fill(FluidStack resource, FluidAction action) {
             return 0;
         }
 
-        @Nullable
+        @Nonnull
         @Override
-        public FluidStack drain(FluidStack resource, boolean doDrain) {
-            if (resource == null) return null;
+        public FluidStack drain(FluidStack resource, FluidAction action) {
             for (PosFluidTank tank : tanks) {
-                if (tank.canDrain() && tank.canDrainFluidType(resource) && tank.drain(resource, false) != null)
-                    return tank.drain(resource, doDrain);
+                if (tank.drain(resource, action).isEmpty())
+                    return tank.drain(resource, action);
             }
-            return null;
+            return FluidStack.EMPTY;
         }
 
-        @Nullable
+        @Nonnull
         @Override
-        public FluidStack drain(int maxDrain, boolean doDrain) {
+        public FluidStack drain(int maxDrain, FluidAction action) {
             for (PosFluidTank tank : tanks) {
-                if (tank.canDrain() && tank.drain(maxDrain, false) != null) return tank.drain(maxDrain, doDrain);
+                if (tank.drain(maxDrain, action).isEmpty())
+                    return tank.drain(maxDrain, action);
             }
-            return null;
-        }
-
-        public boolean isEmpty() {
-            return tanks.isEmpty();
+            return FluidStack.EMPTY;
         }
     }
 }

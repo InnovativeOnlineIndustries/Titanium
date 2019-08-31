@@ -14,7 +14,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import java.awt.*;
 import java.util.HashMap;

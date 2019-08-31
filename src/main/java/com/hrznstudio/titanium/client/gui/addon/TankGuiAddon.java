@@ -41,7 +41,7 @@ public class TankGuiAddon extends BasicGuiAddon {
         if (tank.getFluid() != null) {
             FluidStack stack = tank.getFluid();
             double filledAmount = tank.getFluidAmount() / (double) tank.getCapacity();
-            ResourceLocation flowing = stack.getFluid().getFlowing();
+            ResourceLocation flowing = stack.getFluid().getAttributes().getFlowing(stack);
             if (flowing != null) {
                 TextureAtlasSprite sprite = screen.getMinecraft().getTextureMap().getAtlasSprite(flowing.toString());
                 if (sprite == null) sprite = MissingTextureSprite.func_217790_a();
@@ -49,7 +49,7 @@ public class TankGuiAddon extends BasicGuiAddon {
                 GlStateManager.enableBlend();
                 int topBottomPadding = asset.getFluidRenderPadding(Direction.UP) + asset.getFluidRenderPadding(Direction.DOWN);
                 screen.blit(this.getPosX() + guiX + asset.getFluidRenderPadding(Direction.WEST),
-                        (int) (this.getPosY() + guiY + asset.getFluidRenderPadding(Direction.UP) + (stack.getFluid().isGaseous() ? area.height - topBottomPadding : (area.height - topBottomPadding) - (area.height - topBottomPadding) * filledAmount)),
+                        (int) (this.getPosY() + guiY + asset.getFluidRenderPadding(Direction.UP) + (stack.getFluid().getAttributes().isGaseous() ? area.height - topBottomPadding : (area.height - topBottomPadding) - (area.height - topBottomPadding) * filledAmount)),
                         area.width - asset.getFluidRenderPadding(Direction.WEST) - asset.getFluidRenderPadding(Direction.WEST),
                         (int) ((area.height - topBottomPadding) * filledAmount), sprite.getHeight(),
                         sprite);
@@ -68,7 +68,7 @@ public class TankGuiAddon extends BasicGuiAddon {
 
     @Override
     public List<String> getTooltipLines() { ///TODO localize
-        return Arrays.asList("Fluid: " + (tank.getFluid() == null ? "Empty" : tank.getFluid().getFluid().getLocalizedName(tank.getFluid())), "Amount: " + new DecimalFormat().format(tank.getFluidAmount()) + "/" + new DecimalFormat().format(tank.getCapacity()) + "mb");
+        return Arrays.asList("Fluid: " + (tank.getFluid() == null ? "Empty" : tank.getFluid().getFluid().getAttributes().getTranslationKey(tank.getFluid())), "Amount: " + new DecimalFormat().format(tank.getFluidAmount()) + "/" + new DecimalFormat().format(tank.getCapacity()) + "mb");
     }
 
     @Override
