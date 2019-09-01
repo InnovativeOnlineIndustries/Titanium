@@ -35,7 +35,7 @@ public class TitaniumFluidInstance extends net.minecraftforge.registries.ForgeRe
     @Override
     public void addAlternatives(RegistryManager registry) {
         registry.content(Fluid.class, flowingFluid);
-        registry.content(Fluid.class, bucketFluid);
+        registry.content(Fluid.class, sourceFluid);
         registry.content(Block.class, blockFluid);
         if (bucketFluid != null) registry.content(Item.class, bucketFluid);
     }
