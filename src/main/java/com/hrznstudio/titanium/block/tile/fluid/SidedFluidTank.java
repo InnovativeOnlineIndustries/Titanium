@@ -7,7 +7,12 @@
 
 package com.hrznstudio.titanium.block.tile.fluid;
 
+import com.hrznstudio.titanium.api.IFactory;
+import com.hrznstudio.titanium.api.client.AssetTypes;
+import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.block.tile.sideness.IFacingHandler;
+import com.hrznstudio.titanium.block.tile.sideness.SidedHandlerManager;
+import com.hrznstudio.titanium.client.gui.addon.FacingHandlerGuiAddon;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.item.DyeColor;
 import net.minecraft.nbt.CompoundNBT;
@@ -18,16 +23,19 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import java.awt.*;
 import java.util.HashMap;
+import java.util.List;
 
 public class SidedFluidTank extends PosFluidTank implements IFacingHandler {
 
     private int color;
     private HashMap<FacingUtil.Sideness, FaceMode> facingModes;
+    private int pos;
 
-    public SidedFluidTank(int amount, int posX, int posY, String name) {
-        super(amount, posX, posY, name);
+    public SidedFluidTank(String name, int amount, int posX, int posY, int pos) {
+        super(name, amount, posX, posY);
         this.color = DyeColor.WHITE.getFireworkColor();
         this.facingModes = new HashMap<>();
+        this.pos = pos;
         for (FacingUtil.Sideness facing : FacingUtil.Sideness.values()) {
             this.facingModes.put(facing, FaceMode.ENABLED);
         }
@@ -64,6 +72,12 @@ public class SidedFluidTank extends PosFluidTank implements IFacingHandler {
         return false;
     }
 
+    @Override
+    public java.util.List<IFactory<? extends IGuiAddon>> getGuiAddons() {
+        List<IFactory<? extends IGuiAddon>> addons = super.getGuiAddons();
+        addons.add(() -> new FacingHandlerGuiAddon(SidedHandlerManager.ofRight(8, 84, pos, AssetTypes.BUTTON_SIDENESS_MANAGER, 4), this));
+        return addons;
+    }
 
     @Override
     public FluidTank readFromNBT(CompoundNBT nbt) {

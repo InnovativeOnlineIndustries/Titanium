@@ -391,7 +391,12 @@ public class PosProgressBar implements INBTSerializable<CompoundNBT>, IGuiAddonP
                 int progress = addon.getProgressBar().getProgress();
                 int maxProgress = addon.getProgressBar().getMaxProgress();
                 int progressOffset = progress * area.height / maxProgress;
-                screen.blit(addon.getPosX() + offset.x + guiX, addon.getPosY() + offset.y + area.height - progressOffset + guiY, area.x, area.y + (area.height - progressOffset), area.width, progressOffset);
+                screen.blit(addon.getPosX() + offset.x + guiX,
+                        addon.getPosY() + offset.y + area.height - progressOffset + guiY,
+                        area.x,
+                        area.y + (area.height - progressOffset),
+                        area.width,
+                        progressOffset);
                 GlStateManager.color4f(1, 1, 1, 1);
             }
 

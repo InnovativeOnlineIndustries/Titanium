@@ -7,23 +7,29 @@
 
 package com.hrznstudio.titanium.block.tile.fluid;
 
+import com.hrznstudio.titanium.api.IFactory;
+import com.hrznstudio.titanium.api.client.IGuiAddon;
+import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
 import com.hrznstudio.titanium.block.tile.TileBase;
+import com.hrznstudio.titanium.client.gui.addon.TankGuiAddon;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
-public class PosFluidTank extends FluidTank {
+import java.util.ArrayList;
+import java.util.List;
+
+public class PosFluidTank extends FluidTank implements IGuiAddonProvider {
 
     private final int posX;
     private final int posY;
     private String name;
     private TileEntity tile;
 
-    public PosFluidTank(int amount, int posX, int posY, String name) {
+    public PosFluidTank(String name, int amount, int posX, int posY) {
         super(amount);
         this.posX = posX;
         this.posY = posY;
         this.name = name;
-        ;
     }
 
     /**
@@ -57,5 +63,12 @@ public class PosFluidTank extends FluidTank {
 
     public int getPosY() {
         return posY;
+    }
+
+    @Override
+    public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
+        List<IFactory<? extends IGuiAddon>> addons = new ArrayList<>();
+        addons.add(() -> new TankGuiAddon(this));
+        return addons;
     }
 }
