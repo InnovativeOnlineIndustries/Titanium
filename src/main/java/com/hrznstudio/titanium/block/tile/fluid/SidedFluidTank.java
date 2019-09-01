@@ -60,12 +60,8 @@ public class SidedFluidTank extends PosFluidTank implements IFacingHandler {
         return new Rectangle(this.getPosX(), this.getPosY(), 18 - 1, 46 - 1);
     }
 
-    public SidedFluidTank setButtonX(int buttonX) {
+    public SidedFluidTank setButtonCoords(int buttonX, int buttonY) {
         this.buttonX = buttonX;
-        return this;
-    }
-
-    public SidedFluidTank setButtonY(int buttonY) {
         this.buttonY = buttonY;
         return this;
     }
