@@ -10,6 +10,8 @@ package com.hrznstudio.titanium.recipe.generator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nullable;
+
 public class FurnaceJsonData implements IJsonFile {
 
     public String type = "minecraft:smelting";
@@ -32,5 +34,11 @@ public class FurnaceJsonData implements IJsonFile {
     @Override
     public String getRecipeKey() {
         return new ResourceLocation(result).getPath();
+    }
+
+    @Nullable
+    @Override
+    public String getRecipeSubfolder() {
+        return "smelting";
     }
 }

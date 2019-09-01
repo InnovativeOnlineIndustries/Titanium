@@ -16,8 +16,10 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.lang.reflect.Field;
@@ -53,6 +55,8 @@ public class JSONSerializableDataHandler {
         map(ItemStack.class, JSONSerializableDataHandler::writeItemStack, element -> readItemStack(element.getAsJsonObject()));
         map(ResourceLocation.class, type -> new JsonPrimitive(type.toString()), element -> new ResourceLocation(element.getAsString()));
         map(Block.class, type -> new JsonPrimitive(type.getRegistryName().toString()), element -> ForgeRegistries.BLOCKS.getValue(new ResourceLocation(element.getAsString())));
+        map(FluidStack.class, JSONSerializableDataHandler::writeFluidStack, JSONSerializableDataHandler::readFluidStack);
+        map(Ingredient.IItemList.class, Ingredient.IItemList::serialize, element -> Ingredient.deserializeItemList(element.getAsJsonObject()));
     }
 
     private static <T> void map(Class<T> type, Writer<T> writer, Reader<T> reader) {
@@ -80,6 +84,19 @@ public class JSONSerializableDataHandler {
         return object;
         //throw new UnsupportedOperationException("ItemStacks with nbt aren't implemented yet. Please do.");
         //net.minecraftforge.common.crafting.CraftingHelper.getItemStack
+    }
+
+    public static JsonElement writeFluidStack(FluidStack fluidStack) {
+        return new JsonPrimitive(fluidStack.writeToNBT(new CompoundNBT()).toString());
+    }
+
+    public static FluidStack readFluidStack(JsonElement object) {
+        try {
+            return FluidStack.loadFluidStackFromNBT(JsonToNBT.getTagFromJson(object.getAsString()));
+        } catch (CommandSyntaxException e) {
+            e.printStackTrace();
+        }
+        return FluidStack.EMPTY;
     }
 
     public static ItemStack readItemStack(JsonObject object) {

@@ -51,7 +51,12 @@ public class JsonDataGenerator {
             this.alreadyGenerating = true;
             for (IJsonFile recipe : new ArrayList<>(recipes)) {
                 try {
-                    FileWriter writer = new FileWriter(new File(DATA_DIR, getUniqueName(recipe.getRecipeKey()) + ".json"));
+                    File folder = DATA_DIR;
+                    if (recipe.getRecipeSubfolder() != null) {
+                        folder = new File(DATA_DIR, recipe.getRecipeSubfolder());
+                        if (!folder.exists()) folder.mkdirs();
+                    }
+                    FileWriter writer = new FileWriter(new File(folder, getUniqueName(recipe.getRecipeKey()) + ".json"));
                     GSON.toJson(recipe instanceof IJSONGenerator ? ((IJSONGenerator) recipe).generate() : recipe, writer);
                     writer.close();
                 } catch (IOException e) {
