@@ -40,20 +40,27 @@ public class ContainerTileBase extends ContainerInventoryBase implements INetwor
     public ContainerTileBase(TileActive tile, PlayerInventory inventory, int id) {
         super(TYPE, inventory, id, tile.getAssetProvider());
         this.tile = tile;
+        addTileSlots();
+        addHotbarSlots(IAssetProvider.getAsset(tile.getAssetProvider(), AssetTypes.BACKGROUND).getHotbarPosition());
+    }
+
+    public void addHotbarSlots(Point hotbarPos) {
+        for (int k = 0; k < 9; k++) {
+            addRemovableSlot(addSlot(new Slot(getPlayerInventory(), k, hotbarPos.x + k * 18, hotbarPos.y)));
+        }
+    }
+
+    public void addTileSlots() {
         if (tile.getMultiInventoryHandler() != null) {
             for (PosInvHandler handler : tile.getMultiInventoryHandler().getInventoryHandlers()) {
                 int i = 0;
                 for (int y = 0; y < handler.getYSize(); ++y) {
                     for (int x = 0; x < handler.getXSize(); ++x) {
-                        addSlot(new SlotItemHandler(handler, i, handler.getXPos() + x * 18, handler.getYPos() + y * 18));
+                        addRemovableSlot(addSlot(new SlotItemHandler(handler, i, handler.getXPos() + x * 18, handler.getYPos() + y * 18)));
                         ++i;
                     }
                 }
             }
-        }
-        Point hotbarPos = IAssetProvider.getAsset(tile.getAssetProvider(), AssetTypes.BACKGROUND).getHotbarPosition();
-        for (int k = 0; k < 9; k++) {
-            addSlot(new Slot(getPlayerInventory(), k, hotbarPos.x + k * 18, hotbarPos.y));
         }
     }
 

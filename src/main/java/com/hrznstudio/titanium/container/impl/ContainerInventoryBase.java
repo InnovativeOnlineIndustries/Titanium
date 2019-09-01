@@ -53,7 +53,11 @@ public class ContainerInventoryBase extends TitaniumContainerBase {
         hasPlayerInventory = true;
     }
 
-    public void removeChestInventory() {
+    public void addRemovableSlot(Slot slot) {
+        this.removableSlots.add(addSlot(slot).slotNumber);
+    }
+
+    public void removeSlots() {
         this.inventorySlots.removeIf(slot -> removableSlots.contains(slot.slotNumber));
         removableSlots.clear();
         hasPlayerInventory = false;

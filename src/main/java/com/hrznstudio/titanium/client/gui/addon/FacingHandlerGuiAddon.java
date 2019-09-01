@@ -43,6 +43,7 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
     private int ySize;
     private boolean clicked;
     private Point inventoryPoint;
+    private Point hotbarPoint;
 
     public FacingHandlerGuiAddon(SidedHandlerManager manager, IFacingHandler facingHandler) {
         super(manager.getPosX(), manager.getPosY());
@@ -80,6 +81,7 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
     public void drawGuiContainerBackgroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         IBackgroundAsset backgroundInfo = provider.getAsset(AssetTypes.BACKGROUND);
         inventoryPoint = backgroundInfo.getInventoryPosition();
+        hotbarPoint = backgroundInfo.getHotbarPosition();
         this.xSize = provider.getAsset(AssetTypes.BUTTON_SIDENESS_MANAGER).getArea().width;
         this.ySize = provider.getAsset(AssetTypes.BUTTON_SIDENESS_MANAGER).getArea().height;
         GlStateManager.color4f(1, 1, 1, 1);
@@ -129,7 +131,7 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
             }
             this.setClicked((GuiContainerTileBase) screen, !clicked);
             if (clicked) {
-                ((GuiContainerTileBase) screen).getContainer().removeChestInventory();
+                ((GuiContainerTileBase) screen).getContainer().removeSlots();
                 for (FacingUtil.Sideness facing : FacingUtil.Sideness.values()) {
                     if (!handler.getFacingModes().containsKey(facing)) continue;
                     Point point = getPointFromFacing(facing, inventoryPoint);
@@ -183,6 +185,8 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
         this.clicked = clicked;
         if (!clicked) {
             information.getContainer().addPlayerChestInventory();
+            information.getContainer().addHotbarSlots(hotbarPoint);
+            information.getContainer().addTileSlots();
             information.getAddons().removeIf(iGuiAddon -> buttonAddons.contains(iGuiAddon));
             buttonAddons.clear();
         }
