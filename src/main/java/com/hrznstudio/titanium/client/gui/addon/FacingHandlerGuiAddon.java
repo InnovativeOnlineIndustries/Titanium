@@ -42,6 +42,7 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
     private int xSize;
     private int ySize;
     private boolean clicked;
+    private Point inventoryPoint;
 
     public FacingHandlerGuiAddon(SidedHandlerManager manager, IFacingHandler facingHandler) {
         super(manager.getPosX(), manager.getPosY());
@@ -53,8 +54,8 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
         this.clicked = false;
     }
 
-    public static Point getPointFromFacing(FacingUtil.Sideness sideness) {
-        Point origin = new Point(82, 121);
+    public static Point getPointFromFacing(FacingUtil.Sideness sideness, Point inventory) {
+        Point origin = new Point(inventory.x + 73, inventory.y + 19);
         switch (sideness) {
             case TOP:
                 origin.translate(0, -16);
@@ -78,6 +79,7 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
     @Override
     public void drawGuiContainerBackgroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         IBackgroundAsset backgroundInfo = provider.getAsset(AssetTypes.BACKGROUND);
+        inventoryPoint = backgroundInfo.getInventoryPosition();
         this.xSize = provider.getAsset(AssetTypes.BUTTON_SIDENESS_MANAGER).getArea().width;
         this.ySize = provider.getAsset(AssetTypes.BUTTON_SIDENESS_MANAGER).getArea().height;
         GlStateManager.color4f(1, 1, 1, 1);
@@ -89,7 +91,6 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
             //TODO draw the overlay for the slots
             screen.blit(guiX + backgroundInfo.getInventoryPosition().x - 1, guiY + backgroundInfo.getInventoryPosition().y - 1, 16, 213 + 18, 14, 14);
             screen.blit(guiX + backgroundInfo.getInventoryPosition().x - 1, guiY + backgroundInfo.getInventoryPosition().y - 1, 56, 185, 162, 54);
-
         }
     }
 
@@ -131,7 +132,7 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
                 ((GuiContainerTileBase) screen).getContainer().removeChestInventory();
                 for (FacingUtil.Sideness facing : FacingUtil.Sideness.values()) {
                     if (!handler.getFacingModes().containsKey(facing)) continue;
-                    Point point = getPointFromFacing(facing);
+                    Point point = getPointFromFacing(facing, inventoryPoint);
                     StateButtonAddon addon = new StateButtonAddon(new PosButton(point.x, point.y, 14, 14), IFacingHandler.FaceMode.NONE.getInfo(), IFacingHandler.FaceMode.ENABLED.getInfo(), IFacingHandler.FaceMode.PULL.getInfo(), IFacingHandler.FaceMode.PUSH.getInfo()) {
                         @Override
                         public int getState() {

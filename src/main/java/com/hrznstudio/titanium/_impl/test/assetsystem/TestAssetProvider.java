@@ -60,6 +60,11 @@ public class TestAssetProvider implements IAssetProvider {
         }
 
         @Override
+        public Point getOffset() {
+            return new Point(0, 1);
+        }
+
+        @Override
         public ResourceLocation getResourceLocation() {
             return TEST_LOCATION;
         }

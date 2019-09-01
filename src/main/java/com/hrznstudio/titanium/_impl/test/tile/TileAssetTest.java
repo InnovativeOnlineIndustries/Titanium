@@ -1,7 +1,9 @@
 package com.hrznstudio.titanium._impl.test.tile;
 
+import com.hrznstudio.titanium._impl.test.BlockAssetTest;
 import com.hrznstudio.titanium._impl.test.BlockTest;
 import com.hrznstudio.titanium._impl.test.assetsystem.NewAssetProviderTest;
+import com.hrznstudio.titanium._impl.test.assetsystem.TestAssetProvider;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.IItemStackQuery;
 import com.hrznstudio.titanium.block.tile.TilePowered;
@@ -35,7 +37,7 @@ public class TileAssetTest extends TilePowered implements ITickableTileEntity {
     private SidedFluidTank fluidTank;
 
     public TileAssetTest() {
-        super(BlockTest.TEST);
+        super(BlockAssetTest.TEST);
         this.addInventory(inventory = (SidedInvHandler) new SidedInvHandler("inventory", 8, 88, 18, 0).setButtonCoords(-15, 82).setRange(9, 2).setTile(this).setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
         this.addInventory(recipe = new PosInvHandler("recipe", 10, 20, 9).setRange(3, 3).setTile(this).setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
         this.addInventory(fakeOutput = new PosInvHandler("fake_output", 80, 51, 1).setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
@@ -43,7 +45,7 @@ public class TileAssetTest extends TilePowered implements ITickableTileEntity {
         this.addInventory(randomSlot = new PosInvHandler("random_slot", 83, 20, 1).setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
         this.addInventory(fluidInput = (SidedInvHandler) new SidedInvHandler("fluid_input", 119, 20, 1, 0).setButtonCoords(-15, 112).setSlotLimit(1).setTile(this));
         this.addProgressBar(progressBar = new PosProgressBar(98, 50, 500).setCanIncrease(tileEntity -> true).setBarDirection(PosProgressBar.BarDirection.VERTICAL_UP));
-        this.addTank(fluidTank = new SidedFluidTank(16000, 150, 17, "fluid"));
+        this.addTank(fluidTank = new SidedFluidTank(16000, 150, 17, "fluid").setButtonCoords(-15, 127));
         inventory.setColor(DyeColor.CYAN);
         realOutput.setColor(DyeColor.RED);
         fluidInput.setColor(DyeColor.LIGHT_BLUE);
@@ -66,6 +68,6 @@ public class TileAssetTest extends TilePowered implements ITickableTileEntity {
 
     @Override
     public IAssetProvider getAssetProvider() {
-        return NewAssetProviderTest.TEST_PROVIDER;
+        return new TestAssetProvider();
     }
 }
