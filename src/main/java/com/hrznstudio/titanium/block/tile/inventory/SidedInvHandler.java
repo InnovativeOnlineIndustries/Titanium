@@ -87,12 +87,8 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
         return new Rectangle(this.getXPos() - renderingOffset - 3, this.getYPos() - renderingOffset - 3, 18 * this.getXSize() + renderingOffset * 2 + 3, 18 * this.getYSize() + renderingOffset * 2 + 3);
     }
 
-    public SidedInvHandler setButtonX(int buttonX) {
+    public SidedInvHandler setButtonCoords(int buttonX, int buttonY) {
         this.buttonX = buttonX;
-        return this;
-    }
-
-    public SidedInvHandler setButtonY(int buttonY) {
         this.buttonY = buttonY;
         return this;
     }

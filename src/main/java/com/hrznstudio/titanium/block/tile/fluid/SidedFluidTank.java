@@ -7,7 +7,13 @@
 
 package com.hrznstudio.titanium.block.tile.fluid;
 
+import com.hrznstudio.titanium.api.IFactory;
+import com.hrznstudio.titanium.api.client.AssetTypes;
+import com.hrznstudio.titanium.api.client.IGuiAddon;
+import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
 import com.hrznstudio.titanium.block.tile.sideness.IFacingHandler;
+import com.hrznstudio.titanium.block.tile.sideness.SidedHandlerManager;
+import com.hrznstudio.titanium.client.gui.addon.FacingHandlerGuiAddon;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.item.DyeColor;
 import net.minecraft.nbt.CompoundNBT;
@@ -17,9 +23,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-public class SidedFluidTank extends PosFluidTank implements IFacingHandler {
+public class SidedFluidTank extends PosFluidTank implements IFacingHandler, IGuiAddonProvider {
 
     private int color;
     private int buttonX;
@@ -105,4 +113,10 @@ public class SidedFluidTank extends PosFluidTank implements IFacingHandler {
         return nbt;
     }
 
+    @Override
+    public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
+        List<IFactory<? extends IGuiAddon>> addons = new ArrayList<>();
+        addons.add(() -> new FacingHandlerGuiAddon(SidedHandlerManager.ofRight(getButtonX(), getButtonY(), 0, AssetTypes.BUTTON_SIDENESS_MANAGER, 4), this));
+        return addons;
+    }
 }

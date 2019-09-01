@@ -9,6 +9,7 @@ package com.hrznstudio.titanium.client.gui.addon;
 
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
+import com.hrznstudio.titanium.api.client.assets.types.IBackgroundAsset;
 import com.hrznstudio.titanium.block.tile.button.PosButton;
 import com.hrznstudio.titanium.block.tile.sideness.IFacingHandler;
 import com.hrznstudio.titanium.block.tile.sideness.SidedHandlerManager;
@@ -53,7 +54,7 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
     }
 
     public static Point getPointFromFacing(FacingUtil.Sideness sideness) {
-        Point origin = new Point(32, 121);
+        Point origin = new Point(82, 121);
         switch (sideness) {
             case TOP:
                 origin.translate(0, -16);
@@ -76,6 +77,7 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
 
     @Override
     public void drawGuiContainerBackgroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+        IBackgroundAsset backgroundInfo = provider.getAsset(AssetTypes.BACKGROUND);
         this.xSize = provider.getAsset(AssetTypes.BUTTON_SIDENESS_MANAGER).getArea().width;
         this.ySize = provider.getAsset(AssetTypes.BUTTON_SIDENESS_MANAGER).getArea().height;
         GlStateManager.color4f(1, 1, 1, 1);
@@ -85,8 +87,9 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
         GlStateManager.color4f(1, 1, 1, 1);
         if (isClicked()) {
             //TODO draw the overlay for the slots
-            screen.blit(guiX + getPosX(), guiY + getPosY(), 16, 213 + 18, 14, 14);
-            screen.blit(guiX + 7, guiY + 101, 56, 185, 162, 54);
+            screen.blit(guiX + backgroundInfo.getInventoryPosition().x - 1, guiY + backgroundInfo.getInventoryPosition().y - 1, 16, 213 + 18, 14, 14);
+            screen.blit(guiX + backgroundInfo.getInventoryPosition().x - 1, guiY + backgroundInfo.getInventoryPosition().y - 1, 56, 185, 162, 54);
+
         }
     }
 

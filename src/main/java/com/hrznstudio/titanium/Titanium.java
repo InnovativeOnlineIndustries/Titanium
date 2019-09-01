@@ -8,6 +8,7 @@
 package com.hrznstudio.titanium;
 
 import com.hrznstudio.titanium._impl.creative.BlockCreativeFEGenerator;
+import com.hrznstudio.titanium._impl.test.BlockAssetTest;
 import com.hrznstudio.titanium._impl.test.BlockTest;
 import com.hrznstudio.titanium._impl.test.BlockTwentyFourTest;
 import com.hrznstudio.titanium._impl.test.recipe.TestSerializableRecipe;
@@ -94,6 +95,7 @@ public class Titanium extends ModuleController {
                         .description("Adds test titanium blocks")
                         .content(Block.class, BlockTest.TEST = new BlockTest())
                         .content(Block.class, BlockTwentyFourTest.TEST = new BlockTwentyFourTest())
+                        .content(Block.class, BlockAssetTest.TEST = new BlockAssetTest())
                 )
                 .feature(Feature.builder("events")
                         .description("Adds test titanium events")
