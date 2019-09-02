@@ -67,6 +67,7 @@ public class TankGuiAddon extends BasicGuiAddon {
     @Override
     public void drawGuiContainerForegroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
         GlStateManager.color4f(1, 1, 1, 1);
+        GlStateManager.enableAlphaTest();
         ITankAsset asset = IAssetProvider.getAsset(provider, AssetTypes.TANK);
         AssetUtil.drawAsset(screen, asset, getPosX(), getPosY());
     }
