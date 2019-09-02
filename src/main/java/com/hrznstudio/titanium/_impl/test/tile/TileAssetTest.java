@@ -45,7 +45,7 @@ public class TileAssetTest extends TilePowered implements ITickableTileEntity {
         this.addInventory(randomSlot = new PosInvHandler("random_slot", 83, 20, 1).setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
         this.addInventory(fluidInput = (SidedInvHandler) new SidedInvHandler("fluid_input", 119, 20, 1, 0).setButtonCoords(-15, 112).setSlotLimit(1).setTile(this));
         this.addProgressBar(progressBar = new PosProgressBar(98, 50, 500).setCanIncrease(tileEntity -> true).setBarDirection(PosProgressBar.BarDirection.VERTICAL_UP));
-        this.addTank(fluidTank = new SidedFluidTank(16000, 150, 17, "fluid").setButtonCoords(-15, 127));
+        this.addTank(fluidTank = new SidedFluidTank("fluid" , 16000, 150, 17, 0).setButtonCoords(-15, 127));
         inventory.setColor(DyeColor.CYAN);
         realOutput.setColor(DyeColor.RED);
         fluidInput.setColor(DyeColor.LIGHT_BLUE);

@@ -1,0 +1,12 @@
+{
+  "input": {
+    "item": "minecraft:stone"
+  },
+  "output": {
+    "item": "minecraft:diamond_pickaxe",
+    "count": 1,
+    "nbt": "{Damage:100}"
+  },
+  "block": "minecraft:dirt",
+  "type": "titanium:test_serializer"
+}

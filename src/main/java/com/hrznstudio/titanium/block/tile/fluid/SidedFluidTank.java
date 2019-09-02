@@ -164,10 +164,4 @@ public class SidedFluidTank extends PosFluidTank implements IFacingHandler, IGui
         return nbt;
     }
 
-    @Override
-    public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
-        List<IFactory<? extends IGuiAddon>> addons = new ArrayList<>();
-        addons.add(() -> new FacingHandlerGuiAddon(SidedHandlerManager.ofRight(getButtonX(), getButtonY(), 0, AssetTypes.BUTTON_SIDENESS_MANAGER, 4), this));
-        return addons;
-    }
 }
