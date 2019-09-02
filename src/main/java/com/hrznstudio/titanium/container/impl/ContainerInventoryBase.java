@@ -10,9 +10,11 @@ package com.hrznstudio.titanium.container.impl;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.container.TitaniumContainerBase;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 
 import java.awt.*;
@@ -20,9 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ContainerInventoryBase extends TitaniumContainerBase {
+    private boolean isDisabled = false;
     private PlayerInventory inventory;
     private boolean hasPlayerInventory;
     private List<Integer> removableSlots;
+    private List<Slot> slots;
+    private boolean slotsPopulated;
 
     public ContainerInventoryBase(int id, PlayerInventory inventory, PacketBuffer buffer) {
         super(id, inventory, buffer);
@@ -32,6 +37,7 @@ public class ContainerInventoryBase extends TitaniumContainerBase {
         super(type, id);
         this.inventory = inventory;
         this.removableSlots = new ArrayList<>();
+        this.slots = new ArrayList<>();
         addPlayerChestInventory();
     }
 
@@ -39,17 +45,25 @@ public class ContainerInventoryBase extends TitaniumContainerBase {
         super(type, id, assetProvider);
         this.inventory = inventory;
         this.removableSlots = new ArrayList<>();
+        this.slots = new ArrayList<>();
         addPlayerChestInventory();
     }
 
     public void addPlayerChestInventory() {
         Point invPos = IAssetProvider.getAsset(getAssetProvider(), AssetTypes.BACKGROUND).getInventoryPosition();
         if (hasPlayerInventory) return;
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 9; j++) {
-                this.removableSlots.add(addSlot(new Slot(inventory, j + i * 9 + 9, invPos.x + j * 18, invPos.y + i * 18)).slotNumber);
+        if (!slotsPopulated) {
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 9; j++) {
+                    this.removableSlots.add(addSlot(new DisableableSlot(inventory, j + i * 9 + 9, invPos.x + j * 18, invPos.y + i * 18, this)).slotNumber);
+                }
+            }
+        } else {
+            for (Slot slot : slots) {
+                addRemovableSlot(addSlot(slot));
             }
         }
+
         hasPlayerInventory = true;
     }
 
@@ -58,6 +72,7 @@ public class ContainerInventoryBase extends TitaniumContainerBase {
     }
 
     public void removeSlots() {
+        slots.addAll(this.inventorySlots);
         this.inventorySlots.removeIf(slot -> removableSlots.contains(slot.slotNumber));
         removableSlots.clear();
         hasPlayerInventory = false;
@@ -65,5 +80,13 @@ public class ContainerInventoryBase extends TitaniumContainerBase {
 
     public PlayerInventory getPlayerInventory() {
         return inventory;
+    }
+
+    public void setDisabled(boolean disabled) {
+        isDisabled = disabled;
+    }
+
+    public boolean isDisabled() {
+        return isDisabled;
     }
 }

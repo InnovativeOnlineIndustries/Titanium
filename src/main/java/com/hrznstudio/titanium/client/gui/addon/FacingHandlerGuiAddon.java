@@ -127,11 +127,11 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
             for (IGuiAddon addon : new ArrayList<>(((IGuiAddonConsumer) screen).getAddons())) {
                 if (addon instanceof FacingHandlerGuiAddon && addon != this) {
                     ((FacingHandlerGuiAddon) addon).setClicked((GuiContainerTileBase) screen, false);
+                    ((GuiContainerTileBase)screen).getContainer().setDisabled(true);
                 }
             }
             this.setClicked((GuiContainerTileBase) screen, !clicked);
             if (clicked) {
-                ((GuiContainerTileBase) screen).getContainer().removeSlots();
                 for (FacingUtil.Sideness facing : FacingUtil.Sideness.values()) {
                     if (!handler.getFacingModes().containsKey(facing)) continue;
                     Point point = getPointFromFacing(facing, inventoryPoint);
@@ -184,13 +184,10 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
     public void setClicked(GuiContainerTileBase information, boolean clicked) {
         this.clicked = clicked;
         if (!clicked) {
-            information.getContainer().addPlayerChestInventory();
-            information.getContainer().addHotbarSlots(hotbarPoint);
-            information.getContainer().addTileSlots();
             information.getAddons().removeIf(iGuiAddon -> buttonAddons.contains(iGuiAddon));
             buttonAddons.clear();
+            information.getContainer().setDisabled(false);
         }
     }
-
-
+    
 }

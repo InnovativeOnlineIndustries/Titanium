@@ -18,6 +18,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.SlotItemHandler;
@@ -46,7 +47,7 @@ public class ContainerTileBase extends ContainerInventoryBase implements INetwor
 
     public void addHotbarSlots(Point hotbarPos) {
         for (int k = 0; k < 9; k++) {
-            addRemovableSlot(addSlot(new Slot(getPlayerInventory(), k, hotbarPos.x + k * 18, hotbarPos.y)));
+            addRemovableSlot(addSlot(new DisableableSlot(getPlayerInventory(), k, hotbarPos.x + k * 18, hotbarPos.y, this)));
         }
     }
 
@@ -56,7 +57,7 @@ public class ContainerTileBase extends ContainerInventoryBase implements INetwor
                 int i = 0;
                 for (int y = 0; y < handler.getYSize(); ++y) {
                     for (int x = 0; x < handler.getXSize(); ++x) {
-                        addRemovableSlot(addSlot(new SlotItemHandler(handler, i, handler.getXPos() + x * 18, handler.getYPos() + y * 18)));
+                        addRemovableSlot(addSlot(new DisableableItemHandlerSlot(handler, i, handler.getXPos() + x * 18, handler.getYPos() + y * 18, this)));
                         ++i;
                     }
                 }
