@@ -10,24 +10,16 @@ package com.hrznstudio.titanium.container.impl;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.container.TitaniumContainerBase;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ContainerInventoryBase extends TitaniumContainerBase {
     private boolean isDisabled = false;
     private PlayerInventory inventory;
     private boolean hasPlayerInventory;
-    private List<Integer> removableSlots;
-    private List<Slot> slots;
-    private boolean slotsPopulated;
 
     public ContainerInventoryBase(int id, PlayerInventory inventory, PacketBuffer buffer) {
         super(id, inventory, buffer);
@@ -36,46 +28,24 @@ public class ContainerInventoryBase extends TitaniumContainerBase {
     public ContainerInventoryBase(ContainerType type, PlayerInventory inventory, int id) {
         super(type, id);
         this.inventory = inventory;
-        this.removableSlots = new ArrayList<>();
-        this.slots = new ArrayList<>();
         addPlayerChestInventory();
     }
 
     public ContainerInventoryBase(ContainerType type, PlayerInventory inventory, int id, IAssetProvider assetProvider) {
         super(type, id, assetProvider);
         this.inventory = inventory;
-        this.removableSlots = new ArrayList<>();
-        this.slots = new ArrayList<>();
         addPlayerChestInventory();
     }
 
     public void addPlayerChestInventory() {
         Point invPos = IAssetProvider.getAsset(getAssetProvider(), AssetTypes.BACKGROUND).getInventoryPosition();
         if (hasPlayerInventory) return;
-        if (!slotsPopulated) {
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 9; j++) {
-                    this.removableSlots.add(addSlot(new DisableableSlot(inventory, j + i * 9 + 9, invPos.x + j * 18, invPos.y + i * 18, this)).slotNumber);
-                }
-            }
-        } else {
-            for (Slot slot : slots) {
-                addRemovableSlot(addSlot(slot));
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 9; j++) {
+                addSlot(new DisableableSlot(inventory, j + i * 9 + 9, invPos.x + j * 18, invPos.y + i * 18, this));
             }
         }
-
         hasPlayerInventory = true;
-    }
-
-    public void addRemovableSlot(Slot slot) {
-        this.removableSlots.add(addSlot(slot).slotNumber);
-    }
-
-    public void removeSlots() {
-        slots.addAll(this.inventorySlots);
-        this.inventorySlots.removeIf(slot -> removableSlots.contains(slot.slotNumber));
-        removableSlots.clear();
-        hasPlayerInventory = false;
     }
 
     public PlayerInventory getPlayerInventory() {
