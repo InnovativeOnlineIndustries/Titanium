@@ -70,6 +70,6 @@ public class TileAssetTest extends TilePowered implements ITickableTileEntity {
 
     @Override
     public IAssetProvider getAssetProvider() {
-        return new TestAssetProvider();
+        return NewAssetProviderTest.TEST_PROVIDER;
     }
 }

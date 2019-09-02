@@ -48,6 +48,17 @@ public class GuiContainerBase<T extends Container> extends ContainerScreen<T> im
         this.addons = new ArrayList<>();
     }
 
+    public GuiContainerBase(T container, PlayerInventory inventory, ITextComponent title, IAssetProvider provider) {
+        super(container, inventory, title);
+        this.container = container;
+        this.title = title;
+        this.assetProvider = provider;
+        IAsset background = IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND);
+        this.xSize = background.getArea().width;
+        this.ySize = background.getArea().height;
+        this.addons = new ArrayList<>();
+    }
+
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         this.renderBackground();
@@ -57,7 +68,7 @@ public class GuiContainerBase<T extends Container> extends ContainerScreen<T> im
         GlStateManager.color4f(1, 1, 1, 1);
         getMinecraft().getTextureManager().bindTexture(IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND).getResourceLocation());
         blit(xCenter, yCenter, 0, 0, xSize, ySize);
-        drawCenteredString(Minecraft.getInstance().fontRenderer, TextFormatting.GRAY + title.getFormattedText(), xCenter + xSize / 2, yCenter + 6, 0xFFFFFF);
+        Minecraft.getInstance().fontRenderer.drawString(TextFormatting.GRAY + title.getFormattedText(), xCenter + xSize/3, yCenter + 6, 0xFFFFFF);
         this.checkForMouseDrag(mouseX, mouseY);
         addons.forEach(iGuiAddon -> iGuiAddon.drawGuiContainerBackgroundLayer(this, assetProvider, xCenter, yCenter, mouseX, mouseY, partialTicks));
     }

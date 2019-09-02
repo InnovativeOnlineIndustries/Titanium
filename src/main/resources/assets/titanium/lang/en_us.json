@@ -19,5 +19,5 @@
   "titanium.rewards.remove_success": "Removed reward successfully",
   "titanium.rewards.enabled_success": "Enabled reward successfully",
   "titanium.rewards.granted_success": "Granted reward to the server successfully",
-  "tile.titanium.block_asset_test": "Asset Test"
+  "block.titanium.block_asset_test": "Asset Test"
 }

@@ -18,16 +18,11 @@ import java.util.List;
 
 public class GuiContainerTileBase extends GuiContainerBase<ContainerTileBase> implements IHasContainer<ContainerTileBase> {
     private final ContainerTileBase containerTileBase;
-
     public GuiContainerTileBase(ContainerTileBase containerTileBase, PlayerInventory inventory, ITextComponent title) {
-        super(containerTileBase, inventory, title);
+        super(containerTileBase, inventory, title, containerTileBase.getAssetProvider());
         this.containerTileBase = containerTileBase;
-        setAssetProvider(containerTileBase.getTile().getAssetProvider());
         List<IGuiAddon> list = new ArrayList<>();
         containerTileBase.getTile().getGuiAddons().forEach(factory -> list.add(factory.create()));
         setAddons(list);
     }
-
-
-
 }
