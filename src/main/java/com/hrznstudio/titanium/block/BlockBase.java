@@ -38,10 +38,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public abstract class BlockBase extends Block implements IAlternativeEntries {
 
@@ -153,7 +150,7 @@ public abstract class BlockBase extends Block implements IAlternativeEntries {
     }
 
     public List<Pool> getStaticDrops() {
-        List<Pool> pools = new ArrayList<>();
+        List<Pool> pools = Collections.emptyList();
         pools.add(new Pool(1, new Pool.Entry[]{Pool.Entry.of(this)}, new Pool.Condition[]{Pool.Condition.of(new ResourceLocation("minecraft", "survives_explosion"))}));
         return pools;
     }

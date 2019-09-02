@@ -9,9 +9,9 @@ package com.hrznstudio.titanium.client.gui;
 
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface IGuiAddonConsumer {
-
-    List<IGuiAddon> getAddons();
+    Collection<IGuiAddon> getAddons();
 }

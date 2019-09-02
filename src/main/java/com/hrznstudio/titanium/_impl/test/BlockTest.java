@@ -16,6 +16,7 @@ import net.minecraft.block.material.Material;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @ConfigFile.Child(TitaniumConfig.class)
@@ -43,6 +44,6 @@ public class BlockTest extends BlockRotation<TileTest> {
 
     @Override
     public List<Pool> getStaticDrops() {
-        return new ArrayList<>();
+        return Collections.emptyList();
     }
 }

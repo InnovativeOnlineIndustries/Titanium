@@ -39,8 +39,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class SidedFluidTank extends PosFluidTank implements IFacingHandler, IGuiAddonProvider {
 
     private int color;
-    private int buttonX;
-    private int buttonY;
+    private int buttonX = 8;
+    private int buttonY = 84;
     private HashMap<FacingUtil.Sideness, FaceMode> facingModes;
     private int pos;
 
