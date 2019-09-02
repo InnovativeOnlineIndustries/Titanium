@@ -98,6 +98,10 @@ public class MultiTankHandler implements IGuiAddonProvider {
 
         @Override
         public int fill(FluidStack resource, FluidAction action) {
+            for (PosFluidTank tank : tanks) {
+                if (tank.fill(resource, FluidAction.SIMULATE) != 0)
+                    return tank.fill(resource, action);
+            }
             return 0;
         }
 
@@ -105,7 +109,7 @@ public class MultiTankHandler implements IGuiAddonProvider {
         @Override
         public FluidStack drain(FluidStack resource, FluidAction action) {
             for (PosFluidTank tank : tanks) {
-                if (tank.drain(resource, action).isEmpty())
+                if (!tank.drain(resource, FluidAction.SIMULATE).isEmpty())
                     return tank.drain(resource, action);
             }
             return FluidStack.EMPTY;
@@ -115,7 +119,7 @@ public class MultiTankHandler implements IGuiAddonProvider {
         @Override
         public FluidStack drain(int maxDrain, FluidAction action) {
             for (PosFluidTank tank : tanks) {
-                if (tank.drain(maxDrain, action).isEmpty())
+                if (!tank.drain(maxDrain, FluidAction.SIMULATE).isEmpty())
                     return tank.drain(maxDrain, action);
             }
             return FluidStack.EMPTY;
