@@ -21,8 +21,11 @@ import net.minecraft.util.math.BlockPos;
 
 public class TileBase extends TileEntity {
 
+    BlockTileBase blockTileBase;
+
     public TileBase(BlockTileBase base) {
         super(base.getTileEntityType());
+        this.blockTileBase = base;
     }
 
     public boolean onActivated(PlayerEntity playerIn, Hand hand, Direction facing, double hitX, double hitY, double hitZ) {
@@ -77,5 +80,9 @@ public class TileBase extends TileEntity {
 
     public boolean isServer() {
         return !isClient();
+    }
+
+    public BlockTileBase getBlockTileBase() {
+        return blockTileBase;
     }
 }
