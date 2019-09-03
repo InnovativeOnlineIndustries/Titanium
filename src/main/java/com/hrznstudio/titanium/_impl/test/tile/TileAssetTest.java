@@ -5,12 +5,15 @@ import com.hrznstudio.titanium._impl.test.BlockTest;
 import com.hrznstudio.titanium._impl.test.assetsystem.NewAssetProviderTest;
 import com.hrznstudio.titanium._impl.test.assetsystem.TestAssetProvider;
 import com.hrznstudio.titanium.annotation.Save;
+import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.IItemStackQuery;
+import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.block.tile.TilePowered;
 import com.hrznstudio.titanium.block.tile.fluid.SidedFluidTank;
 import com.hrznstudio.titanium.block.tile.inventory.PosInvHandler;
 import com.hrznstudio.titanium.block.tile.inventory.SidedInvHandler;
 import com.hrznstudio.titanium.block.tile.progress.PosProgressBar;
+import com.hrznstudio.titanium.client.gui.addon.AssetGuiAddon;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
@@ -19,6 +22,8 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+
+import java.util.List;
 
 public class TileAssetTest extends TilePowered implements ITickableTileEntity {
     @Save

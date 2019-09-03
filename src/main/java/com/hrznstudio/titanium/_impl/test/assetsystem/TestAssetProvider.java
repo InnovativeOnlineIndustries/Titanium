@@ -70,7 +70,7 @@ public class TestAssetProvider implements IAssetProvider {
         }
     };
 
-    private static final ITankAsset TANK = new ITankAsset() {
+    public static final ITankAsset TANK = new ITankAsset() {
         @Override
         public int getFluidRenderPadding(Direction facing) {
             return 3;
