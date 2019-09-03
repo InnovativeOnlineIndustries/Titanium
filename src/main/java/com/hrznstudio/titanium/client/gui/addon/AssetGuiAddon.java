@@ -7,8 +7,9 @@ import net.minecraft.client.gui.screen.Screen;
 
 public class AssetGuiAddon extends BasicGuiAddon {
     private IAsset asset;
+    private boolean isBackground;
 
-    public AssetGuiAddon(IAsset asset, int posX, int posY) {
+    public AssetGuiAddon(IAsset asset, int posX, int posY, boolean isBackground) {
         super(posX, posY);
         this.asset = asset;
     }
@@ -32,6 +33,12 @@ public class AssetGuiAddon extends BasicGuiAddon {
 
     @Override
     public void drawGuiContainerForegroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
+        if (asset != null) {
+            AssetUtil.drawAsset(screen, asset, this.getPosX() + guiX, this.getPosY() + guiY);
+        }
+    }
 
+    public boolean isBackground() {
+        return isBackground;
     }
 }

@@ -11,6 +11,7 @@ import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.client.gui.IGuiAddonConsumer;
+import com.hrznstudio.titanium.client.gui.addon.AssetGuiAddon;
 import com.hrznstudio.titanium.client.gui.addon.interfaces.ICanMouseDrag;
 import com.hrznstudio.titanium.client.gui.addon.interfaces.IClickable;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
@@ -70,13 +71,31 @@ public class GuiContainerBase<T extends Container> extends ContainerScreen<T> im
         blit(xCenter, yCenter, 0, 0, xSize, ySize);
         Minecraft.getInstance().fontRenderer.drawString(TextFormatting.GRAY + title.getFormattedText(), xCenter + xSize/3, yCenter + 6, 0xFFFFFF);
         this.checkForMouseDrag(mouseX, mouseY);
-        addons.forEach(iGuiAddon -> iGuiAddon.drawGuiContainerBackgroundLayer(this, assetProvider, xCenter, yCenter, mouseX, mouseY, partialTicks));
+        addons.forEach(iGuiAddon -> {
+            if (iGuiAddon instanceof AssetGuiAddon) {
+                AssetGuiAddon assetGuiAddon = (AssetGuiAddon) iGuiAddon;
+                if (assetGuiAddon.isBackground()) {
+                    iGuiAddon.drawGuiContainerBackgroundLayer(this, assetProvider, xCenter, yCenter, mouseX, mouseY, partialTicks);
+                }
+            } else {
+                iGuiAddon.drawGuiContainerBackgroundLayer(this, assetProvider, xCenter, yCenter, mouseX, mouseY, partialTicks);
+            }
+        });
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-        addons.forEach(iGuiAddon -> iGuiAddon.drawGuiContainerForegroundLayer(this, assetProvider, xCenter, yCenter, mouseX, mouseY));
+        addons.forEach(iGuiAddon -> {
+            if (iGuiAddon instanceof AssetGuiAddon) {
+                AssetGuiAddon assetGuiAddon = (AssetGuiAddon) iGuiAddon;
+                if (assetGuiAddon.isBackground()) {
+                    iGuiAddon.drawGuiContainerForegroundLayer(this, assetProvider, xCenter, yCenter, mouseX, mouseY);
+                }
+            } else {
+                iGuiAddon.drawGuiContainerForegroundLayer(this, assetProvider, xCenter, yCenter, mouseX, mouseY);
+            }
+        });
         renderHoveredToolTip(mouseX - xCenter, mouseY - yCenter);
         for (IGuiAddon iGuiAddon : addons) {
             if (iGuiAddon.isInside(this, mouseX - xCenter, mouseY - yCenter) && !iGuiAddon.getTooltipLines().isEmpty()) {
