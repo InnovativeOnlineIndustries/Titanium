@@ -1,6 +1,9 @@
 steps:
-- name: 'gcr.io/cloud-builders/gradle'
-  args: ['build publish']
+- name: 'adoptopenjdk/openjdk8-openj9'
+  args:
+    - './gradlew'
+    - 'build'
+    - 'publish'
   env:
   - 'BUILD=$BUILD_ID'
   - 'PROJECT=$PROJECT_ID'
