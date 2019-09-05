@@ -52,6 +52,8 @@ public class TankGuiAddon extends BasicGuiAddon {
                 TextureAtlasSprite sprite = screen.getMinecraft().getTextureMap().getAtlasSprite(flowing.toString());
                 if (sprite == null) sprite = MissingTextureSprite.func_217790_a();
                 screen.getMinecraft().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+                Color color = new Color(stack.getFluid().getAttributes().getColor());
+                GlStateManager.color4f(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
                 GlStateManager.enableBlend();
                 screen.blit(this.getPosX() + guiX + asset.getFluidRenderPadding(Direction.WEST),
                         (int) (this.getPosY() + guiY + asset.getFluidRenderPadding(Direction.UP) + (stack.getFluid().getAttributes().isGaseous() ? area.height - topBottomPadding : (area.height - topBottomPadding) - offset)),
@@ -60,6 +62,7 @@ public class TankGuiAddon extends BasicGuiAddon {
                         offset,
                         sprite);
                 GlStateManager.disableBlend();
+                GlStateManager.color4f(1, 1, 1, 1);
             }
         }
     }
