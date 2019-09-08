@@ -8,6 +8,8 @@
 package com.hrznstudio.titanium.block.tile.fluid;
 
 import com.hrznstudio.titanium.api.IFactory;
+import com.hrznstudio.titanium.api.client.AssetTypes;
+import com.hrznstudio.titanium.api.client.IAssetType;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
 import com.hrznstudio.titanium.block.tile.TileBase;
@@ -24,12 +26,14 @@ public class PosFluidTank extends FluidTank implements IGuiAddonProvider {
     private final int posY;
     private String name;
     private TileEntity tile;
+    private Type tankType;
 
     public PosFluidTank(String name, int amount, int posX, int posY) {
         super(amount);
         this.posX = posX;
         this.posY = posY;
         this.name = name;
+        this.tankType = Type.NORMAL;
     }
 
     /**
@@ -65,10 +69,34 @@ public class PosFluidTank extends FluidTank implements IGuiAddonProvider {
         return posY;
     }
 
+    public Type getTankType() {
+        return tankType;
+    }
+
+    public PosFluidTank setTankType(Type tankType) {
+        this.tankType = tankType;
+        return this;
+    }
+
     @Override
     public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
         List<IFactory<? extends IGuiAddon>> addons = new ArrayList<>();
         addons.add(() -> new TankGuiAddon(this));
         return addons;
+    }
+
+    public enum Type {
+        NORMAL(AssetTypes.TANK_NORMAL),
+        SMALL(AssetTypes.TANK_SMALL);
+
+        private final IAssetType assetType;
+
+        Type(IAssetType assetType) {
+            this.assetType = assetType;
+        }
+
+        public IAssetType getAssetType() {
+            return assetType;
+        }
     }
 }

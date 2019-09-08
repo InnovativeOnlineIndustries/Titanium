@@ -8,6 +8,7 @@
 package com.hrznstudio.titanium.recipe.serializer;
 
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -57,6 +58,21 @@ public class JSONSerializableDataHandler {
         map(Block.class, type -> new JsonPrimitive(type.getRegistryName().toString()), element -> ForgeRegistries.BLOCKS.getValue(new ResourceLocation(element.getAsString())));
         map(FluidStack.class, JSONSerializableDataHandler::writeFluidStack, JSONSerializableDataHandler::readFluidStack);
         map(Ingredient.IItemList.class, Ingredient.IItemList::serialize, element -> Ingredient.deserializeItemList(element.getAsJsonObject()));
+        map(Ingredient.IItemList[].class, type -> {
+            JsonArray array = new JsonArray();
+            for (Ingredient.IItemList ingredient : type) {
+                array.add(ingredient.serialize());
+            }
+            return array;
+        }, element -> {
+            Ingredient.IItemList[] ingredient = new Ingredient.IItemList[element.getAsJsonArray().size()];
+            int i = 0;
+            for (JsonElement jsonElement : element.getAsJsonArray()) {
+                ingredient[i] = Ingredient.deserializeItemList(jsonElement.getAsJsonObject());
+                ++i;
+            }
+            return ingredient;
+        });
     }
 
     private static <T> void map(Class<T> type, Writer<T> writer, Reader<T> reader) {
