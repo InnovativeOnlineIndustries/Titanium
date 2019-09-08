@@ -24,6 +24,7 @@ import com.hrznstudio.titanium.block.tile.progress.PosProgressBar;
 import com.hrznstudio.titanium.block.tile.sideness.IFacingHandler;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.container.impl.ContainerTileBase;
+import com.hrznstudio.titanium.network.IButtonHandler;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
@@ -49,7 +50,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileActive extends TileBase implements IGuiAddonProvider, ITickableTileEntity, INamedContainerProvider {
+public class TileActive extends TileBase implements IGuiAddonProvider, ITickableTileEntity, INamedContainerProvider, IButtonHandler {
 
     private MultiInventoryHandler multiInventoryHandler;
     private MultiProgressBarHandler multiProgressBarHandler;
@@ -218,6 +219,7 @@ public class TileActive extends TileBase implements IGuiAddonProvider, ITickable
         return null;
     }
 
+    @Override
     public void handleButtonMessage(int id, PlayerEntity playerEntity, CompoundNBT compound) {
         if (id == -1) {
             String name = compound.getString("Name");

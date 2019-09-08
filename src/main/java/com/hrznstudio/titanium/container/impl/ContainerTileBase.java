@@ -13,6 +13,9 @@ import com.hrznstudio.titanium.block.tile.inventory.PosInvHandler;
 import com.hrznstudio.titanium.client.gui.addon.interfaces.INetworkable;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.network.NetworkHandler;
+import com.hrznstudio.titanium.network.locator.ILocatable;
+import com.hrznstudio.titanium.network.locator.LocatorInstance;
+import com.hrznstudio.titanium.network.locator.instance.TileEntityLocatorInstance;
 import com.hrznstudio.titanium.network.messages.ButtonClickNetworkMessage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -26,7 +29,7 @@ import net.minecraftforge.registries.ObjectHolder;
 
 import java.awt.*;
 
-public class ContainerTileBase extends ContainerInventoryBase implements INetworkable {
+public class ContainerTileBase extends ContainerInventoryBase implements ILocatable {
 
     @ObjectHolder("titanium:tile_container")
     public static ContainerType<ContainerTileBase> TYPE;
@@ -96,7 +99,7 @@ public class ContainerTileBase extends ContainerInventoryBase implements INetwor
     }
 
     @Override
-    public void sendMessage(int id, CompoundNBT data) {
-        NetworkHandler.NETWORK.sendToServer(new ButtonClickNetworkMessage(tile.getPos(), id, data));
+    public LocatorInstance getLocatorInstance() {
+        return new TileEntityLocatorInstance(tile.getPos());
     }
 }

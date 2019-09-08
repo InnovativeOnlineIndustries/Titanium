@@ -152,7 +152,7 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
                                 if (faceMode < 0) faceMode = IFacingHandler.FaceMode.values().length - 1;
                                 compound.putInt("Next", faceMode);
                                 compound.putString("Name", handler.getName());
-                                NetworkHandler.NETWORK.sendToServer(new ButtonClickNetworkMessage(((GuiContainerTileBase) gui).getContainer().getTile().getPos(), -1, compound));
+                                NetworkHandler.NETWORK.sendToServer(new ButtonClickNetworkMessage(((GuiContainerTileBase) gui).getContainer().getLocatorInstance(), -1, compound));
                                 handler.getFacingModes().put(facing, IFacingHandler.FaceMode.values()[faceMode]);
                                 ((GuiContainerTileBase) gui).getContainer().getTile().updateNeigh();
                             }

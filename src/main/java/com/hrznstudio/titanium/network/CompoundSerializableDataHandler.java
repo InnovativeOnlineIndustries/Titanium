@@ -7,6 +7,8 @@
 
 package com.hrznstudio.titanium.network;
 
+import com.hrznstudio.titanium.network.locator.LocatorFactory;
+import com.hrznstudio.titanium.network.locator.LocatorInstance;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -59,6 +61,7 @@ public class CompoundSerializableDataHandler {
         map(Date.class, PacketBuffer::readTime, PacketBuffer::writeTime);
         map(UUID.class, PacketBuffer::readUniqueId, PacketBuffer::writeUniqueId);
         map(SUpdateTileEntityPacket.class, CompoundSerializableDataHandler::readUpdatePacket, CompoundSerializableDataHandler::writeUpdatePacket);
+        map(LocatorInstance.class, LocatorFactory::readPacketBuffer, LocatorFactory::writePacketBuffer);
     }
 
     public static <T> void map(Class<T> type, Reader<T> reader, Writer<T> writer) {
