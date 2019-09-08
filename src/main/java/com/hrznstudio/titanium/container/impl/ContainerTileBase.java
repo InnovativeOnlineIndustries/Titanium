@@ -74,8 +74,8 @@ public class ContainerTileBase extends ContainerInventoryBase implements INetwor
                         for (Slot inventorySlot : this.inventorySlots) {
                             if (!(inventorySlot instanceof SlotItemHandler)) continue;
                             if (((SlotItemHandler) inventorySlot).getItemHandler().equals(handler) && i == inventorySlot.getSlotIndex()) {
-                                inventorySlot.xPos = handler.getXPos() + x * 18;
-                                inventorySlot.yPos = handler.getYPos() + y * 18;
+                                inventorySlot.xPos = handler.getXPos() + handler.getSlotPosition().apply(i).getLeft();
+                                inventorySlot.yPos = handler.getYPos() + handler.getSlotPosition().apply(i).getRight();
                                 break;
                             }
                         }
