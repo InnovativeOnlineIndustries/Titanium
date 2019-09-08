@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GuiContainerBase<T extends Container> extends ContainerScreen<T> implements IGuiAddonConsumer {
+
     private final T container;
     private final ITextComponent title;
     private IAssetProvider assetProvider;
@@ -69,7 +70,8 @@ public class GuiContainerBase<T extends Container> extends ContainerScreen<T> im
         GlStateManager.color4f(1, 1, 1, 1);
         getMinecraft().getTextureManager().bindTexture(IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND).getResourceLocation());
         blit(xCenter, yCenter, 0, 0, xSize, ySize);
-        Minecraft.getInstance().fontRenderer.drawString(TextFormatting.GRAY + title.getFormattedText(), xCenter + xSize/3, yCenter + 6, 0xFFFFFF);
+        String name = TextFormatting.GRAY + title.getFormattedText();
+        Minecraft.getInstance().fontRenderer.drawString(name, xCenter + xSize / 2 - Minecraft.getInstance().fontRenderer.getStringWidth(name) / 2, yCenter + 6, 0xFFFFFF);
         this.checkForMouseDrag(mouseX, mouseY);
         addons.forEach(iGuiAddon -> {
             if (iGuiAddon instanceof AssetGuiAddon) {
