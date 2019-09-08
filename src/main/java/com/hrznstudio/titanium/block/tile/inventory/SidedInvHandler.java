@@ -96,7 +96,7 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
     public int getFacingHandlerY() {
         return this.facingHandlerY;
     }
-    
+
     @Override
     public boolean work(World world, BlockPos pos, Direction blockFacing, int workAmount) {
         for (FacingUtil.Sideness sideness : facingModes.keySet()) {
@@ -130,7 +130,7 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
 
     @Override
     public SidedInvHandler setFacingHandlerPos(int x, int y) {
-        this. = x;
+        this.facingHandlerX = x;
         this.facingHandlerY = y;
         return this;
     }
@@ -160,7 +160,7 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
     @Override
     public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
         List<IFactory<? extends IGuiAddon>> addons = super.getGuiAddons();
-        addons.add(() -> new FacingHandlerGuiAddon(SidedHandlerManager.ofRight(getButtonX(), getButtonY(), position, AssetTypes.BUTTON_SIDENESS_MANAGER, 4), this));
+        addons.add(() -> new FacingHandlerGuiAddon(SidedHandlerManager.ofRight(getFacingHandlerX(), getFacingHandlerY(), position, AssetTypes.BUTTON_SIDENESS_MANAGER, 4), this));
         return addons;
     }
 

@@ -52,14 +52,14 @@ public class TileAssetTest extends TilePowered implements ITickableTileEntity {
 
     public TileAssetTest() {
         super(BlockAssetTest.TEST);
-        this.addInventory(inventory = (SidedInvHandler) new SidedInvHandler("inventory", 8, 88, 18, 0).setButtonCoords(-15, 1).setRange(9, 2).setTile(this).setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
+        this.addInventory(inventory = (SidedInvHandler) new SidedInvHandler("inventory", 8, 88, 18, 0).setFacingHandlerPos(-15, 1).setRange(9, 2).setTile(this).setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
         this.addInventory(recipe = new PosInvHandler("recipe", 10, 20, 9).setRange(3, 3).setTile(this).setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
         this.addInventory(fakeOutput = new PosInvHandler("fake_output", 80, 51, 1).setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
-        this.addInventory(realOutput = (SidedInvHandler) new SidedInvHandler("real_output", 120, 56, 1, 0).setButtonCoords(-15, 16).setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
+        this.addInventory(realOutput = (SidedInvHandler) new SidedInvHandler("real_output", 120, 56, 1, 0).setFacingHandlerPos(-15, 16).setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
         this.addInventory(randomSlot = new PosInvHandler("random_slot", 83, 20, 1).setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
-        this.addInventory(fluidInput = (SidedInvHandler) new SidedInvHandler("fluid_input", 119, 20, 1, 0).setButtonCoords(-15, 31).setSlotLimit(1).setTile(this));
+        this.addInventory(fluidInput = (SidedInvHandler) new SidedInvHandler("fluid_input", 119, 20, 1, 0).setFacingHandlerPos(-15, 31).setSlotLimit(1).setTile(this));
         this.addProgressBar(progressBar = new PosProgressBar(98, 50, 500).setCanIncrease(tileEntity -> true).setBarDirection(PosProgressBar.BarDirection.VERTICAL_UP));
-        this.addTank(fluidTank = (SidedFluidTank) new SidedFluidTank("fluid" , 16000, 150, 17, 0).setButtonCoords(-15, 46).setTile(this));
+        this.addTank(fluidTank = (SidedFluidTank) new SidedFluidTank("fluid" , 16000, 150, 17, 0).setFacingHandlerPos(-15, 46).setTile(this));
         inventory.setColor(DyeColor.CYAN);
         realOutput.setColor(DyeColor.RED);
         fluidInput.setColor(DyeColor.LIGHT_BLUE);
