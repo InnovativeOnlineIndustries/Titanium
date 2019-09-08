@@ -32,9 +32,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
 
-    private int buttonX = 8;
-    private int buttonY = 84;
     private int color;
+    private int facingHandlerX = 8;
+    private int facingHandlerY = 84;
     private HashMap<FacingUtil.Sideness, FaceMode> facingModes;
     private HashMap<FacingUtil.Sideness, Integer> slotCache;
     private int position;
@@ -87,22 +87,16 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
         return new Rectangle(this.getXPos() - renderingOffset - 3, this.getYPos() - renderingOffset - 3, 18 * this.getXSize() + renderingOffset * 2 + 3, 18 * this.getYSize() + renderingOffset * 2 + 3);
     }
 
-    public SidedInvHandler setButtonCoords(int buttonX, int buttonY) {
-        this.buttonX = buttonX;
-        this.buttonY = buttonY;
-        return this;
+    @Override
+    public int getFacingHandlerX() {
+        return this.facingHandlerX;
     }
 
     @Override
-    public int getButtonX() {
-        return this.buttonX;
+    public int getFacingHandlerY() {
+        return this.facingHandlerY;
     }
-
-    @Override
-    public int getButtonY() {
-        return this.buttonY;
-    }
-
+    
     @Override
     public boolean work(World world, BlockPos pos, Direction blockFacing, int workAmount) {
         for (FacingUtil.Sideness sideness : facingModes.keySet()) {
@@ -132,6 +126,13 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
             }
         }
         return false;
+    }
+
+    @Override
+    public SidedInvHandler setFacingHandlerPos(int x, int y) {
+        this. = x;
+        this.facingHandlerY = y;
+        return this;
     }
 
     @Override

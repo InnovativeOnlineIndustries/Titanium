@@ -11,9 +11,6 @@ import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
-import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.api.client.AssetTypes;
-import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.block.tile.sideness.IFacingHandler;
 import com.hrznstudio.titanium.block.tile.sideness.SidedHandlerManager;
 import com.hrznstudio.titanium.client.gui.addon.FacingHandlerGuiAddon;
@@ -30,17 +27,15 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SidedFluidTank extends PosFluidTank implements IFacingHandler, IGuiAddonProvider {
 
     private int color;
-    private int buttonX = 8;
-    private int buttonY = 84;
+    private int facingHandlerX = 8;
+    private int facingHandlerY = 84;
     private HashMap<FacingUtil.Sideness, FaceMode> facingModes;
     private int pos;
 
@@ -79,21 +74,17 @@ public class SidedFluidTank extends PosFluidTank implements IFacingHandler, IGui
         return new Rectangle(this.getPosX(), this.getPosY(), 18 - 1, 46 - 1);
     }
 
-    public SidedFluidTank setButtonCoords(int buttonX, int buttonY) {
-        this.buttonX = buttonX;
-        this.buttonY = buttonY;
-        return this;
+    @Override
+    public int getFacingHandlerX() {
+        return this.facingHandlerX;
     }
 
     @Override
-    public int getButtonX() {
-        return this.buttonX;
+    public int getFacingHandlerY() {
+        return this.facingHandlerY;
     }
 
-    @Override
-    public int getButtonY() {
-        return this.buttonY;
-    }
+
 
     @Override
     public boolean work(World world, BlockPos pos, Direction blockFacing, int workAmount) {
@@ -126,6 +117,13 @@ public class SidedFluidTank extends PosFluidTank implements IFacingHandler, IGui
         return false;
     }
 
+    @Override
+    public SidedFluidTank setFacingHandlerPos(int x, int y) {
+        this.facingHandlerX = x;
+        this.facingHandlerY = y;
+        return this;
+    }
+
     private boolean transfer(FacingUtil.Sideness sideness, IFluidHandler from, IFluidHandler to, int workAmount) {
         FluidStack stack = from.drain(workAmount * 10, FluidAction.SIMULATE);
         if (!stack.isEmpty()) {
@@ -138,7 +136,7 @@ public class SidedFluidTank extends PosFluidTank implements IFacingHandler, IGui
     @Override
     public java.util.List<IFactory<? extends IGuiAddon>> getGuiAddons() {
         List<IFactory<? extends IGuiAddon>> addons = super.getGuiAddons();
-        addons.add(() -> new FacingHandlerGuiAddon(SidedHandlerManager.ofRight(buttonX, buttonY, pos, AssetTypes.BUTTON_SIDENESS_MANAGER, 4), this));
+        addons.add(() -> new FacingHandlerGuiAddon(SidedHandlerManager.ofRight(facingHandlerX, facingHandlerY, pos, AssetTypes.BUTTON_SIDENESS_MANAGER, 4), this));
         return addons;
     }
 

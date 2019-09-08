@@ -9,6 +9,7 @@ package com.hrznstudio.titanium.block.tile.sideness;
 
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAssetType;
+import com.hrznstudio.titanium.block.tile.inventory.SidedInvHandler;
 import com.hrznstudio.titanium.client.gui.addon.StateButtonInfo;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.util.Direction;
@@ -29,10 +30,12 @@ public interface IFacingHandler {
 
     String getName();
 
-    int getButtonX();
-    int getButtonY();
+    int getFacingHandlerX();
+    int getFacingHandlerY();
 
     boolean work(World world, BlockPos pos, Direction blockFacing, int workAmount);
+
+    IFacingHandler setFacingHandlerPos(int x, int y);
 
     enum FaceMode {
         NONE(false, 0, AssetTypes.BUTTON_SIDENESS_DISABLED, TextFormatting.RED),
