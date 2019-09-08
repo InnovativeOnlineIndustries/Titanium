@@ -1,0 +1,11 @@
+{
+  "input": {
+    "item": "minecraft:dirt"
+  },
+  "output": {
+    "item": "minecraft:diamond",
+    "count": 1
+  },
+  "block": "minecraft:dirt",
+  "type": "titanium:test_serializer"
+}

@@ -23,7 +23,7 @@ import com.hrznstudio.titanium.block.tile.progress.MultiProgressBarHandler;
 import com.hrznstudio.titanium.block.tile.progress.PosProgressBar;
 import com.hrznstudio.titanium.block.tile.sideness.IFacingHandler;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
-import com.hrznstudio.titanium.container.ContainerTileBase;
+import com.hrznstudio.titanium.container.impl.ContainerTileBase;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
@@ -36,8 +36,7 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.*;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.NonNullSupplier;
@@ -90,7 +89,7 @@ public class TileActive extends TileBase implements IGuiAddonProvider, ITickable
 
     @Override
     public ITextComponent getDisplayName() {
-        return new StringTextComponent("what. pls");
+        return new TranslationTextComponent(getBlockTileBase().getTranslationKey()).setStyle(new Style().setColor(TextFormatting.DARK_GRAY));
     }
 
     /*

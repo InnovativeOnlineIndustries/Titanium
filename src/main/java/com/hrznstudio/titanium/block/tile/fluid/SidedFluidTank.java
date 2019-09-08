@@ -10,6 +10,7 @@ package com.hrznstudio.titanium.block.tile.fluid;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
+import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
 import com.hrznstudio.titanium.block.tile.sideness.IFacingHandler;
 import com.hrznstudio.titanium.block.tile.sideness.SidedHandlerManager;
 import com.hrznstudio.titanium.client.gui.addon.FacingHandlerGuiAddon;
@@ -30,9 +31,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class SidedFluidTank extends PosFluidTank implements IFacingHandler {
+public class SidedFluidTank extends PosFluidTank implements IFacingHandler, IGuiAddonProvider {
 
     private int color;
+    private int facingHandlerX = 8;
+    private int facingHandlerY = 84;
     private HashMap<FacingUtil.Sideness, FaceMode> facingModes;
     private int pos;
 
@@ -72,6 +75,18 @@ public class SidedFluidTank extends PosFluidTank implements IFacingHandler {
     }
 
     @Override
+    public int getFacingHandlerX() {
+        return this.facingHandlerX;
+    }
+
+    @Override
+    public int getFacingHandlerY() {
+        return this.facingHandlerY;
+    }
+
+
+
+    @Override
     public boolean work(World world, BlockPos pos, Direction blockFacing, int workAmount) {
         for (FacingUtil.Sideness sideness : facingModes.keySet()) {
             if (facingModes.get(sideness).equals(FaceMode.PUSH)) {
@@ -102,6 +117,13 @@ public class SidedFluidTank extends PosFluidTank implements IFacingHandler {
         return false;
     }
 
+    @Override
+    public SidedFluidTank setFacingHandlerPos(int x, int y) {
+        this.facingHandlerX = x;
+        this.facingHandlerY = y;
+        return this;
+    }
+
     private boolean transfer(FacingUtil.Sideness sideness, IFluidHandler from, IFluidHandler to, int workAmount) {
         FluidStack stack = from.drain(workAmount * 10, FluidAction.SIMULATE);
         if (!stack.isEmpty()) {
@@ -114,7 +136,7 @@ public class SidedFluidTank extends PosFluidTank implements IFacingHandler {
     @Override
     public java.util.List<IFactory<? extends IGuiAddon>> getGuiAddons() {
         List<IFactory<? extends IGuiAddon>> addons = super.getGuiAddons();
-        addons.add(() -> new FacingHandlerGuiAddon(SidedHandlerManager.ofRight(8, 84, pos, AssetTypes.BUTTON_SIDENESS_MANAGER, 4), this));
+        addons.add(() -> new FacingHandlerGuiAddon(SidedHandlerManager.ofRight(getFacingHandlerX(), getFacingHandlerY(), pos, AssetTypes.BUTTON_SIDENESS_MANAGER, 4), this));
         return addons;
     }
 

@@ -33,6 +33,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
 
     private int color;
+    private int facingHandlerX = 8;
+    private int facingHandlerY = 84;
     private HashMap<FacingUtil.Sideness, FaceMode> facingModes;
     private HashMap<FacingUtil.Sideness, Integer> slotCache;
     private int position;
@@ -86,6 +88,16 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
     }
 
     @Override
+    public int getFacingHandlerX() {
+        return this.facingHandlerX;
+    }
+
+    @Override
+    public int getFacingHandlerY() {
+        return this.facingHandlerY;
+    }
+
+    @Override
     public boolean work(World world, BlockPos pos, Direction blockFacing, int workAmount) {
         for (FacingUtil.Sideness sideness : facingModes.keySet()) {
             if (facingModes.get(sideness).equals(FaceMode.PUSH)) {
@@ -117,6 +129,13 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
     }
 
     @Override
+    public SidedInvHandler setFacingHandlerPos(int x, int y) {
+        this.facingHandlerX = x;
+        this.facingHandlerY = y;
+        return this;
+    }
+
+    @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = super.serializeNBT();
         CompoundNBT compound = new CompoundNBT();
@@ -141,7 +160,7 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
     @Override
     public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
         List<IFactory<? extends IGuiAddon>> addons = super.getGuiAddons();
-        addons.add(() -> new FacingHandlerGuiAddon(SidedHandlerManager.ofRight(8, 84, position, AssetTypes.BUTTON_SIDENESS_MANAGER, 4), this));
+        addons.add(() -> new FacingHandlerGuiAddon(SidedHandlerManager.ofRight(getFacingHandlerX(), getFacingHandlerY(), position, AssetTypes.BUTTON_SIDENESS_MANAGER, 4), this));
         return addons;
     }
 

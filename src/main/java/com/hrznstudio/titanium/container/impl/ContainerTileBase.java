@@ -5,45 +5,53 @@
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
 
-package com.hrznstudio.titanium.container;
+package com.hrznstudio.titanium.container.impl;
 
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.block.tile.TileActive;
 import com.hrznstudio.titanium.block.tile.inventory.PosInvHandler;
+import com.hrznstudio.titanium.client.gui.addon.interfaces.INetworkable;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
+import com.hrznstudio.titanium.network.NetworkHandler;
+import com.hrznstudio.titanium.network.messages.ButtonClickNetworkMessage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.registries.ObjectHolder;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
-public class ContainerTileBase extends Container {
+public class ContainerTileBase extends ContainerInventoryBase implements INetworkable {
 
     @ObjectHolder("titanium:tile_container")
     public static ContainerType<ContainerTileBase> TYPE;
 
     private TileActive tile;
-    private PlayerInventory player;
     private boolean hasPlayerInventory;
-    private List<Integer> removableSlots;
 
     public ContainerTileBase(int id, PlayerInventory player, PacketBuffer buffer) {
         this((TileActive) player.player.getEntityWorld().getTileEntity(buffer.readBlockPos()), player, id);
     }
 
-    public ContainerTileBase(TileActive tile, PlayerInventory player, int id) {
-        super(TYPE, id);
+    public ContainerTileBase(TileActive tile, PlayerInventory inventory, int id) {
+        super(TYPE, inventory, id, tile.getAssetProvider());
         this.tile = tile;
-        this.player = player;
-        this.removableSlots = new ArrayList<>();
+        addTileSlots();
+        addHotbarSlots(IAssetProvider.getAsset(tile.getAssetProvider(), AssetTypes.BACKGROUND).getHotbarPosition());
+    }
+
+    public void addHotbarSlots(Point hotbarPos) {
+        for (int k = 0; k < 9; k++) {
+            addSlot(new Slot(getPlayerInventory(), k, hotbarPos.x + k * 18, hotbarPos.y));
+        }
+    }
+
+    public void addTileSlots() {
         if (tile.getMultiInventoryHandler() != null) {
             for (PosInvHandler handler : tile.getMultiInventoryHandler().getInventoryHandlers()) {
                 int i = 0;
@@ -55,28 +63,6 @@ public class ContainerTileBase extends Container {
                 }
             }
         }
-        Point hotbarPos = IAssetProvider.getAsset(tile.getAssetProvider(), AssetTypes.BACKGROUND).getHotbarPosition();
-        for (int k = 0; k < 9; k++) {
-            addSlot(new Slot(player, k, hotbarPos.x + k * 18, hotbarPos.y));
-        }
-        addPlayerChestInventory();
-    }
-
-    public void addPlayerChestInventory() {
-        Point invPos = IAssetProvider.getAsset(tile.getAssetProvider(), AssetTypes.BACKGROUND).getInventoryPosition();
-        if (hasPlayerInventory) return;
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 9; j++) {
-                this.removableSlots.add(addSlot(new Slot(player, j + i * 9 + 9, invPos.x + j * 18, invPos.y + i * 18)).slotNumber);
-            }
-        }
-        hasPlayerInventory = true;
-    }
-
-    public void removeChestInventory() {
-        this.inventorySlots.removeIf(slot -> removableSlots.contains(slot.slotNumber));
-        removableSlots.clear();
-        hasPlayerInventory = false;
     }
 
     public void updateSlotPosition() {
@@ -105,45 +91,12 @@ public class ContainerTileBase extends Container {
         return true;
     }
 
-    @Override
-    public ItemStack transferStackInSlot(PlayerEntity player, int index) {
-        ItemStack itemstack = ItemStack.EMPTY;
-        Slot slot = inventorySlots.get(index);
-        if (slot != null && slot.getHasStack()) {
-            ItemStack itemstack1 = slot.getStack();
-            itemstack = itemstack1.copy();
-
-            int containerSlots = inventorySlots.size() - player.inventory.mainInventory.size();
-
-            if (index < containerSlots) {
-                if (!this.mergeItemStack(itemstack1, containerSlots, inventorySlots.size(), true)) {
-                    return ItemStack.EMPTY;
-                }
-            } else if (!this.mergeItemStack(itemstack1, 0, containerSlots, false)) {
-                return ItemStack.EMPTY;
-            }
-
-            if (itemstack1.getCount() == 0) {
-                slot.putStack(ItemStack.EMPTY);
-            } else {
-                slot.onSlotChanged();
-            }
-
-            if (itemstack1.getCount() == itemstack.getCount()) {
-                return ItemStack.EMPTY;
-            }
-
-            slot.onTake(player, itemstack1);
-        }
-
-        return itemstack;
-    }
-
     public TileActive getTile() {
         return tile;
     }
 
-    public PlayerInventory getPlayer() {
-        return player;
+    @Override
+    public void sendMessage(int id, CompoundNBT data) {
+        NetworkHandler.NETWORK.sendToServer(new ButtonClickNetworkMessage(tile.getPos(), id, data));
     }
 }

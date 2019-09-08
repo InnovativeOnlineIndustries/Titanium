@@ -7,33 +7,25 @@
 
 package com.hrznstudio.titanium._impl.test;
 
-import com.hrznstudio.titanium._impl.test.tile.TileTest;
-import com.hrznstudio.titanium.annotation.config.ConfigFile;
-import com.hrznstudio.titanium.annotation.config.ConfigVal;
+import com.hrznstudio.titanium._impl.test.tile.TileAssetTest;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.block.BlockRotation;
 import net.minecraft.block.material.Material;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-@ConfigFile.Child(TitaniumConfig.class)
-public class BlockTest extends BlockRotation<TileTest> {
+public class BlockAssetTest extends BlockRotation<TileAssetTest>{
+    public static BlockAssetTest TEST;
 
-    @ConfigVal
-    public static int DUMB_VALUE = 135;
-
-    public static BlockTest TEST;
-
-    public BlockTest() {
-        super("block_test", Properties.create(Material.ROCK), TileTest.class);
+    public BlockAssetTest() {
+        super("block_asset_test", Properties.create(Material.ROCK), TileAssetTest.class);
     }
 
     @Override
-    public IFactory<TileTest> getTileEntityFactory() {
-        return TileTest::new;
+    public IFactory<TileAssetTest> getTileEntityFactory() {
+        return TileAssetTest::new;
     }
 
     @Nonnull
@@ -44,6 +36,6 @@ public class BlockTest extends BlockRotation<TileTest> {
 
     @Override
     public List<Pool> getStaticDrops() {
-        return Collections.emptyList();
+        return new ArrayList<>();
     }
 }
