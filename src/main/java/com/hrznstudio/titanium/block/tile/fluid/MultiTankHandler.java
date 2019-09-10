@@ -10,27 +10,84 @@ package com.hrznstudio.titanium.block.tile.fluid;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
+import com.hrznstudio.titanium.block.tile.sideness.ICapabilityHolder;
 import com.hrznstudio.titanium.block.tile.sideness.IFacingHandler;
 import com.hrznstudio.titanium.util.FacingUtil;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
+import javax.annotation.Nullable;
+import java.util.*;
 
-public class MultiTankHandler implements IGuiAddonProvider {
+public class MultiTankHandler implements IGuiAddonProvider, ICapabilityHolder<PosFluidTank, MultiTankHandler.MultiTankCapabilityHandler> {
 
-    private LinkedHashSet<PosFluidTank> tanks;
+    private final LinkedHashSet<PosFluidTank> tanks;
+    private final HashMap<FacingUtil.Sideness, LazyOptional<MultiTankCapabilityHandler>> lazyOptionals;
 
     public MultiTankHandler() {
         tanks = new LinkedHashSet<>();
+        this.lazyOptionals = new HashMap<>();
+        lazyOptionals.put(null, LazyOptional.empty());
+        for (FacingUtil.Sideness value : FacingUtil.Sideness.values()) {
+            lazyOptionals.put(value, LazyOptional.empty());
+        }
     }
 
-    public void addTank(PosFluidTank tank) {
+    @Override
+    public void add(PosFluidTank tank) {
         this.tanks.add(tank);
+        rebuildCapability(new FacingUtil.Sideness[]{null});
+        rebuildCapability(FacingUtil.Sideness.values());
+    }
+
+    private void rebuildCapability(FacingUtil.Sideness... sides){
+        for (FacingUtil.Sideness side : sides) {
+            lazyOptionals.put(side, getCapabilityForSide(side).map(multiTankCapabilityHandler -> new MultiTankCapabilityHandler(getHandlersForSide(side))));
+        }
+    }
+
+    private List<PosFluidTank> getHandlersForSide(FacingUtil.Sideness sideness){
+        if (sideness == null)
+            return new ArrayList<>(tanks);
+        List<PosFluidTank> handlers = new ArrayList<>();
+        for (PosFluidTank tankHandler : tanks) {
+            if (tankHandler instanceof IFacingHandler) {
+                if (((IFacingHandler) tankHandler).getFacingModes().containsKey(sideness) && ((IFacingHandler) tankHandler).getFacingModes().get(sideness).allowsConnection()) {
+                    handlers.add(tankHandler);
+                }
+            } else {
+                handlers.add(tankHandler);
+            }
+        }
+        return handlers;
+    }
+
+    @Override
+    public HashMap<FacingUtil.Sideness, LazyOptional<MultiTankCapabilityHandler>> getCapabilities() {
+        return lazyOptionals;
+    }
+
+    @Override
+    public LazyOptional<MultiTankCapabilityHandler> getCapabilityForSide(@Nullable FacingUtil.Sideness sideness) {
+        return lazyOptionals.get(sideness);
+    }
+
+    @Override
+    public boolean handleFacingChange(String handlerName, FacingUtil.Sideness facing, IFacingHandler.FaceMode mode) {
+        for (PosFluidTank tankHandler : tanks) {
+            if (tankHandler.getName().equals(handlerName) && tankHandler instanceof IFacingHandler){
+                ((IFacingHandler) tankHandler).getFacingModes().put(facing, mode);
+                rebuildCapability(facing);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public HashSet<PosFluidTank> getTanks() {
+        return tanks;
     }
 
     @Override
@@ -40,27 +97,6 @@ public class MultiTankHandler implements IGuiAddonProvider {
             addons.addAll(tank.getGuiAddons());
         }
         return addons;
-    }
-
-    public MultiTankCapabilityHandler getCapabilityForSide(FacingUtil.Sideness sideness) {
-        if (sideness == null)
-            return new MultiTankCapabilityHandler(new ArrayList<>(tanks));
-        List<PosFluidTank> tanks = new ArrayList<>();
-        for (PosFluidTank tank : this.tanks) {
-            if (tank instanceof IFacingHandler) {
-                if (((IFacingHandler) tank).getFacingModes().containsKey(sideness) && ((IFacingHandler) tank).getFacingModes().get(sideness).allowsConnection()) {
-                    tanks.add(tank);
-                }
-            } else {
-                tanks.add(tank);
-            }
-
-        }
-        return new MultiTankCapabilityHandler(tanks);
-    }
-
-    public HashSet<PosFluidTank> getTanks() {
-        return tanks;
     }
 
     public static class MultiTankCapabilityHandler implements IFluidHandler {

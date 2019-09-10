@@ -10,33 +10,47 @@ package com.hrznstudio.titanium.block.tile.inventory;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
+import com.hrznstudio.titanium.block.tile.sideness.ICapabilityHolder;
 import com.hrznstudio.titanium.block.tile.sideness.IFacingHandler;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
+import java.util.*;
 
 
-public class MultiInventoryHandler implements IGuiAddonProvider {
+public class MultiInventoryHandler implements IGuiAddonProvider, ICapabilityHolder<PosInvHandler, MultiInventoryHandler.MultiInvCapabilityHandler> {
 
     private final LinkedHashSet<PosInvHandler> inventoryHandlers;
+    private final HashMap<FacingUtil.Sideness, LazyOptional<MultiInvCapabilityHandler>> lazyOptionals;
 
     public MultiInventoryHandler() {
         this.inventoryHandlers = new LinkedHashSet<>();
+        this.lazyOptionals = new HashMap<>();
+        lazyOptionals.put(null, LazyOptional.empty());
+        for (FacingUtil.Sideness value : FacingUtil.Sideness.values()) {
+            lazyOptionals.put(value, LazyOptional.empty());
+        }
     }
 
-    public void addInventory(PosInvHandler invHandler) {
+    @Override
+    public void add(PosInvHandler invHandler) {
         this.inventoryHandlers.add(invHandler);
+        rebuildCapability(new FacingUtil.Sideness[]{null});
+        rebuildCapability(FacingUtil.Sideness.values());
     }
 
-    public MultiInvCapabilityHandler getCapabilityForSide(FacingUtil.Sideness sideness) {
+    private void rebuildCapability(FacingUtil.Sideness... sides){
+        for (FacingUtil.Sideness side : sides) {
+            lazyOptionals.put(side, getCapabilityForSide(side).map(multiInvCapabilityHandler -> new MultiInvCapabilityHandler(getHandlersForSide(side))));
+        }
+    }
+
+    private List<PosInvHandler> getHandlersForSide(FacingUtil.Sideness sideness){
         if (sideness == null)
-            return new MultiInvCapabilityHandler(new ArrayList<>(inventoryHandlers));
+            return new ArrayList<>(inventoryHandlers);
         List<PosInvHandler> handlers = new ArrayList<>();
         for (PosInvHandler inventoryHandler : inventoryHandlers) {
             if (inventoryHandler instanceof IFacingHandler) {
@@ -47,7 +61,29 @@ public class MultiInventoryHandler implements IGuiAddonProvider {
                 handlers.add(inventoryHandler);
             }
         }
-        return new MultiInvCapabilityHandler(handlers);
+        return handlers;
+    }
+
+    @Override
+    public HashMap<FacingUtil.Sideness, LazyOptional<MultiInvCapabilityHandler>> getCapabilities() {
+        return lazyOptionals;
+    }
+
+    @Override
+    public LazyOptional<MultiInvCapabilityHandler> getCapabilityForSide(FacingUtil.Sideness sideness) {
+        return lazyOptionals.get(sideness);
+    }
+
+    @Override
+    public boolean handleFacingChange(String handlerName, FacingUtil.Sideness facing, IFacingHandler.FaceMode mode) {
+        for (PosInvHandler inventoryHandler : inventoryHandlers) {
+            if (inventoryHandler.getName().equals(handlerName) && inventoryHandler instanceof IFacingHandler){
+                ((IFacingHandler) inventoryHandler).getFacingModes().put(facing, mode);
+                rebuildCapability(facing);
+                return true;
+            }
+        }
+        return false;
     }
 
     public HashSet<PosInvHandler> getInventoryHandlers() {
