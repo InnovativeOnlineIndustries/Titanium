@@ -18,6 +18,7 @@ import java.util.List;
 
 public class GuiContainerTileBase extends GuiContainerBase<ContainerTileBase> implements IHasContainer<ContainerTileBase> {
     private final ContainerTileBase containerTileBase;
+
     public GuiContainerTileBase(ContainerTileBase containerTileBase, PlayerInventory inventory, ITextComponent title) {
         super(containerTileBase, inventory, title, containerTileBase.getAssetProvider());
         this.containerTileBase = containerTileBase;

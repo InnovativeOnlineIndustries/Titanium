@@ -127,7 +127,7 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
             for (IGuiAddon addon : new ArrayList<>(((IGuiAddonConsumer) screen).getAddons())) {
                 if (addon instanceof FacingHandlerGuiAddon && addon != this) {
                     ((FacingHandlerGuiAddon) addon).setClicked((GuiContainerTileBase) screen, false);
-                    ((GuiContainerTileBase)screen).getContainer().setDisabled(true);
+                    ((GuiContainerTileBase) screen).getContainer().setDisabled(true);
                 }
             }
             this.setClicked((GuiContainerTileBase) screen, !clicked);
@@ -189,5 +189,5 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
             information.getContainer().setDisabled(false);
         }
     }
-    
+
 }

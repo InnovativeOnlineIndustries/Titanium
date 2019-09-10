@@ -16,7 +16,7 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BlockAssetTest extends BlockRotation<TileAssetTest>{
+public class BlockAssetTest extends BlockRotation<TileAssetTest> {
     public static BlockAssetTest TEST;
 
     public BlockAssetTest() {

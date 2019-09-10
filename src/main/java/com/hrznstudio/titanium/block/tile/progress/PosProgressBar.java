@@ -152,6 +152,7 @@ public class PosProgressBar implements INBTSerializable<CompoundNBT>, IGuiAddonP
 
     /**
      * Changes how the progress bar behaves when working
+     *
      * @param increaseType True if the progress bar increases when working, false if the progress bar decreases when working
      * @return itself
      */

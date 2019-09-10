@@ -94,7 +94,7 @@ public class TestAssetProvider implements IAssetProvider {
         }
     };
 
-    public TestAssetProvider(){
+    public TestAssetProvider() {
         assetMap = new HashMap<>();
         assetMap.put(AssetTypes.BACKGROUND, BACKGROUND_ASSET);
         assetMap.put(AssetTypes.PROGRESS_BAR_VERTICAL, PROGRESS_BAR_FILL);

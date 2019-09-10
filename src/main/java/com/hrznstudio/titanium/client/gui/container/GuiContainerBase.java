@@ -144,12 +144,12 @@ public class GuiContainerBase<T extends Container> extends ContainerScreen<T> im
         return addons;
     }
 
-    public IAssetProvider getAssetProvider() {
-        return assetProvider;
-    }
-
     public void setAddons(List<IGuiAddon> addons) {
         this.addons = addons;
+    }
+
+    public IAssetProvider getAssetProvider() {
+        return assetProvider;
     }
 
     public void setAssetProvider(IAssetProvider assetProvider) {

@@ -36,10 +36,12 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.*;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.common.util.NonNullSupplier;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -66,7 +68,7 @@ public class TileActive extends TileBase implements IGuiAddonProvider, ITickable
     @Override
     public boolean onActivated(PlayerEntity playerIn, Hand hand, Direction facing, double hitX, double hitY, double hitZ) {
         if (multiTankHandler != null) {
-            return FluidUtil.interactWithFluidHandler(playerIn, hand, multiTankHandler.getCapabilityForSide(null));
+            return FluidUtil.interactWithFluidHandler(playerIn, hand, multiTankHandler.getCapabilityForSide(null).orElse(new MultiTankHandler.MultiTankCapabilityHandler(new ArrayList<>())));
         }
         return false;
     }
@@ -97,7 +99,7 @@ public class TileActive extends TileBase implements IGuiAddonProvider, ITickable
          */
     public void addInventory(PosInvHandler handler) {
         if (multiInventoryHandler == null) multiInventoryHandler = new MultiInventoryHandler();
-        multiInventoryHandler.addInventory(handler.setTile(this));
+        multiInventoryHandler.add(handler.setTile(this));
     }
 
     public void addProgressBar(PosProgressBar posProgressBar) {
@@ -107,7 +109,7 @@ public class TileActive extends TileBase implements IGuiAddonProvider, ITickable
 
     public void addTank(PosFluidTank tank) {
         if (multiTankHandler == null) multiTankHandler = new MultiTankHandler();
-        multiTankHandler.addTank(tank);
+        multiTankHandler.add(tank.setTile(this));
     }
 
     public void addButton(PosButton button) {
@@ -119,22 +121,10 @@ public class TileActive extends TileBase implements IGuiAddonProvider, ITickable
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && multiInventoryHandler != null) {
-            return LazyOptional.of(new NonNullSupplier<T>() {
-                @Nonnull
-                @Override
-                public T get() {
-                    return (T) multiInventoryHandler.getCapabilityForSide(side == null ? null : FacingUtil.getFacingRelative(TileActive.this.getFacingDirection(), side));
-                }
-            });
+            return multiInventoryHandler.getCapabilityForSide(FacingUtil.getFacingRelative(this.getFacingDirection(), side)).cast();
         }
         if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && multiTankHandler != null) {
-            return LazyOptional.of(new NonNullSupplier<T>() {
-                @Nonnull
-                @Override
-                public T get() {
-                    return (T) multiTankHandler.getCapabilityForSide(side == null ? null : FacingUtil.getFacingRelative(TileActive.this.getFacingDirection(), side));
-                }
-            });
+            return multiTankHandler.getCapabilityForSide(FacingUtil.getFacingRelative(this.getFacingDirection(), side)).cast();
         }
         return LazyOptional.empty();
     }
@@ -223,9 +213,9 @@ public class TileActive extends TileBase implements IGuiAddonProvider, ITickable
             String name = compound.getString("Name");
             FacingUtil.Sideness facing = FacingUtil.Sideness.valueOf(compound.getString("Facing"));
             IFacingHandler.FaceMode faceMode = IFacingHandler.FaceMode.values()[compound.getInt("Next")];
-            IFacingHandler facingHandler = getHandlerFromName(name);
-            if (facingHandler != null) {
-                facingHandler.getFacingModes().put(facing, faceMode);
+            if (multiInventoryHandler != null && multiInventoryHandler.handleFacingChange(name, facing, faceMode)) {
+                markForUpdate();
+            } else if (multiTankHandler != null && multiTankHandler.handleFacingChange(name, facing, faceMode)) {
                 markForUpdate();
             }
         } else if (multiButtonHandler != null) {
