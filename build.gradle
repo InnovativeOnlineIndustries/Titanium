@@ -121,11 +121,15 @@ publishing {
         }
     }
     repositories {
-        maven {
-            url "s3://cdn.hrzn.studio/maven"
-            authentication {
-                awsIm(AwsImAuthentication)
+        if(System.getenv("BRANCH") == "1.14") {
+            maven {
+                url "s3://cdn.hrzn.studio/maven"
+                authentication {
+                    awsIm(AwsImAuthentication)
+                }
             }
+        } else {
+            mavenLocal()
         }
     }
 }
