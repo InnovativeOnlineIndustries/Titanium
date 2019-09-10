@@ -42,15 +42,16 @@ public class MultiTankHandler implements IGuiAddonProvider, ICapabilityHolder<Po
         rebuildCapability(FacingUtil.Sideness.values());
     }
 
-    private void rebuildCapability(FacingUtil.Sideness... sides) {
+    private void rebuildCapability(FacingUtil.Sideness[] sides) {
         for (FacingUtil.Sideness side : sides) {
             lazyOptionals.put(side, getCapabilityForSide(side).map(multiTankCapabilityHandler -> new MultiTankCapabilityHandler(getHandlersForSide(side))));
         }
     }
 
     private List<PosFluidTank> getHandlersForSide(FacingUtil.Sideness sideness) {
-        if (sideness == null)
+        if (sideness == null) {
             return new ArrayList<>(tanks);
+        }
         List<PosFluidTank> handlers = new ArrayList<>();
         for (PosFluidTank tankHandler : tanks) {
             if (tankHandler instanceof IFacingHandler) {
@@ -64,11 +65,7 @@ public class MultiTankHandler implements IGuiAddonProvider, ICapabilityHolder<Po
         return handlers;
     }
 
-    @Override
-    public HashMap<FacingUtil.Sideness, LazyOptional<MultiTankCapabilityHandler>> getCapabilities() {
-        return lazyOptionals;
-    }
-
+    @Nonnull
     @Override
     public LazyOptional<MultiTankCapabilityHandler> getCapabilityForSide(@Nullable FacingUtil.Sideness sideness) {
         return lazyOptionals.get(sideness);
@@ -79,7 +76,7 @@ public class MultiTankHandler implements IGuiAddonProvider, ICapabilityHolder<Po
         for (PosFluidTank tankHandler : tanks) {
             if (tankHandler.getName().equals(handlerName) && tankHandler instanceof IFacingHandler) {
                 ((IFacingHandler) tankHandler).getFacingModes().put(facing, mode);
-                rebuildCapability(facing);
+                rebuildCapability(new FacingUtil.Sideness[]{facing});
                 return true;
             }
         }
