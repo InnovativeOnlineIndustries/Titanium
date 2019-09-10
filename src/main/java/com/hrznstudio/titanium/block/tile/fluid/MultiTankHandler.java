@@ -42,13 +42,13 @@ public class MultiTankHandler implements IGuiAddonProvider, ICapabilityHolder<Po
         rebuildCapability(FacingUtil.Sideness.values());
     }
 
-    private void rebuildCapability(FacingUtil.Sideness... sides){
+    private void rebuildCapability(FacingUtil.Sideness... sides) {
         for (FacingUtil.Sideness side : sides) {
             lazyOptionals.put(side, getCapabilityForSide(side).map(multiTankCapabilityHandler -> new MultiTankCapabilityHandler(getHandlersForSide(side))));
         }
     }
 
-    private List<PosFluidTank> getHandlersForSide(FacingUtil.Sideness sideness){
+    private List<PosFluidTank> getHandlersForSide(FacingUtil.Sideness sideness) {
         if (sideness == null)
             return new ArrayList<>(tanks);
         List<PosFluidTank> handlers = new ArrayList<>();
@@ -77,7 +77,7 @@ public class MultiTankHandler implements IGuiAddonProvider, ICapabilityHolder<Po
     @Override
     public boolean handleFacingChange(String handlerName, FacingUtil.Sideness facing, IFacingHandler.FaceMode mode) {
         for (PosFluidTank tankHandler : tanks) {
-            if (tankHandler.getName().equals(handlerName) && tankHandler instanceof IFacingHandler){
+            if (tankHandler.getName().equals(handlerName) && tankHandler instanceof IFacingHandler) {
                 ((IFacingHandler) tankHandler).getFacingModes().put(facing, mode);
                 rebuildCapability(facing);
                 return true;

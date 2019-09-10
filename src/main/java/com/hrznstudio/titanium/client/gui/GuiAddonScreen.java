@@ -27,9 +27,9 @@ import java.util.stream.Collectors;
 
 public abstract class GuiAddonScreen extends Screen implements IGuiAddonConsumer {
 
-    private IAssetProvider assetProvider;
     public int x;
     public int y;
+    private IAssetProvider assetProvider;
     private List<IGuiAddon> addonList;
     private boolean drawBackground;
 

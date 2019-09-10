@@ -42,13 +42,13 @@ public class MultiInventoryHandler implements IGuiAddonProvider, ICapabilityHold
         rebuildCapability(FacingUtil.Sideness.values());
     }
 
-    private void rebuildCapability(FacingUtil.Sideness... sides){
+    private void rebuildCapability(FacingUtil.Sideness... sides) {
         for (FacingUtil.Sideness side : sides) {
             lazyOptionals.put(side, getCapabilityForSide(side).map(multiInvCapabilityHandler -> new MultiInvCapabilityHandler(getHandlersForSide(side))));
         }
     }
 
-    private List<PosInvHandler> getHandlersForSide(FacingUtil.Sideness sideness){
+    private List<PosInvHandler> getHandlersForSide(FacingUtil.Sideness sideness) {
         if (sideness == null)
             return new ArrayList<>(inventoryHandlers);
         List<PosInvHandler> handlers = new ArrayList<>();
@@ -77,7 +77,7 @@ public class MultiInventoryHandler implements IGuiAddonProvider, ICapabilityHold
     @Override
     public boolean handleFacingChange(String handlerName, FacingUtil.Sideness facing, IFacingHandler.FaceMode mode) {
         for (PosInvHandler inventoryHandler : inventoryHandlers) {
-            if (inventoryHandler.getName().equals(handlerName) && inventoryHandler instanceof IFacingHandler){
+            if (inventoryHandler.getName().equals(handlerName) && inventoryHandler instanceof IFacingHandler) {
                 ((IFacingHandler) inventoryHandler).getFacingModes().put(facing, mode);
                 rebuildCapability(facing);
                 return true;

@@ -85,7 +85,6 @@ public class SidedFluidTank extends PosFluidTank implements IFacingHandler, IGui
     }
 
 
-
     @Override
     public boolean work(World world, BlockPos pos, Direction blockFacing, int workAmount) {
         for (FacingUtil.Sideness sideness : facingModes.keySet()) {

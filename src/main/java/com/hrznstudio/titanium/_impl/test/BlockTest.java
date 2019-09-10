@@ -15,7 +15,6 @@ import com.hrznstudio.titanium.block.BlockRotation;
 import net.minecraft.block.material.Material;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 

@@ -213,9 +213,9 @@ public class TileActive extends TileBase implements IGuiAddonProvider, ITickable
             String name = compound.getString("Name");
             FacingUtil.Sideness facing = FacingUtil.Sideness.valueOf(compound.getString("Facing"));
             IFacingHandler.FaceMode faceMode = IFacingHandler.FaceMode.values()[compound.getInt("Next")];
-            if (multiInventoryHandler != null && multiInventoryHandler.handleFacingChange(name, facing, faceMode)){
+            if (multiInventoryHandler != null && multiInventoryHandler.handleFacingChange(name, facing, faceMode)) {
                 markForUpdate();
-            } else if(multiTankHandler != null && multiTankHandler.handleFacingChange(name, facing, faceMode)){
+            } else if (multiTankHandler != null && multiTankHandler.handleFacingChange(name, facing, faceMode)) {
                 markForUpdate();
             }
         } else if (multiButtonHandler != null) {

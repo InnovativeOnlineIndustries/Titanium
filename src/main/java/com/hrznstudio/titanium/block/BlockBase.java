@@ -144,12 +144,12 @@ public abstract class BlockBase extends Block implements IAlternativeEntries {
         return closestHit;
     }
 
-    public void setItemGroup(ItemGroup itemGroup) {
-        this.itemGroup = itemGroup;
-    }
-
     public ItemGroup getItemGroup() {
         return itemGroup;
+    }
+
+    public void setItemGroup(ItemGroup itemGroup) {
+        this.itemGroup = itemGroup;
     }
 
     public List<Pool> getStaticDrops() {

@@ -52,11 +52,11 @@ public class ContainerInventoryBase extends TitaniumContainerBase {
         return inventory;
     }
 
-    public void setDisabled(boolean disabled) {
-        isDisabled = disabled;
-    }
-
     public boolean isDisabled() {
         return isDisabled;
+    }
+
+    public void setDisabled(boolean disabled) {
+        isDisabled = disabled;
     }
 }

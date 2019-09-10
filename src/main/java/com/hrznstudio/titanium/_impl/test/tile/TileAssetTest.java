@@ -8,29 +8,20 @@
 package com.hrznstudio.titanium._impl.test.tile;
 
 import com.hrznstudio.titanium._impl.test.BlockAssetTest;
-import com.hrznstudio.titanium._impl.test.BlockTest;
 import com.hrznstudio.titanium._impl.test.assetsystem.NewAssetProviderTest;
-import com.hrznstudio.titanium._impl.test.assetsystem.TestAssetProvider;
 import com.hrznstudio.titanium.annotation.Save;
-import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.IItemStackQuery;
-import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.block.tile.TilePowered;
 import com.hrznstudio.titanium.block.tile.fluid.SidedFluidTank;
 import com.hrznstudio.titanium.block.tile.inventory.PosInvHandler;
 import com.hrznstudio.titanium.block.tile.inventory.SidedInvHandler;
 import com.hrznstudio.titanium.block.tile.progress.PosProgressBar;
-import com.hrznstudio.titanium.client.gui.addon.AssetGuiAddon;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-
-import java.util.List;
 
 public class TileAssetTest extends TilePowered implements ITickableTileEntity {
     @Save
@@ -59,7 +50,7 @@ public class TileAssetTest extends TilePowered implements ITickableTileEntity {
         this.addInventory(randomSlot = new PosInvHandler("random_slot", 83, 20, 1).setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
         this.addInventory(fluidInput = (SidedInvHandler) new SidedInvHandler("fluid_input", 119, 20, 1, 0).setFacingHandlerPos(-15, 31).setSlotLimit(1).setTile(this));
         this.addProgressBar(progressBar = new PosProgressBar(98, 50, 500).setCanIncrease(tileEntity -> true).setBarDirection(PosProgressBar.BarDirection.VERTICAL_UP));
-        this.addTank(fluidTank = (SidedFluidTank) new SidedFluidTank("fluid" , 16000, 150, 17, 0).setFacingHandlerPos(-15, 46).setTile(this));
+        this.addTank(fluidTank = (SidedFluidTank) new SidedFluidTank("fluid", 16000, 150, 17, 0).setFacingHandlerPos(-15, 46).setTile(this));
         inventory.setColor(DyeColor.CYAN);
         realOutput.setColor(DyeColor.RED);
         fluidInput.setColor(DyeColor.LIGHT_BLUE);
