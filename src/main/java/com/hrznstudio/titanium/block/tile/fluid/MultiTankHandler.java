@@ -44,7 +44,8 @@ public class MultiTankHandler implements IGuiAddonProvider, ICapabilityHolder<Po
 
     private void rebuildCapability(FacingUtil.Sideness[] sides) {
         for (FacingUtil.Sideness side : sides) {
-            lazyOptionals.put(side, getCapabilityForSide(side).map(multiTankCapabilityHandler -> new MultiTankCapabilityHandler(getHandlersForSide(side))));
+            lazyOptionals.get(side).invalidate();
+            lazyOptionals.put(side, LazyOptional.of(() -> new MultiTankCapabilityHandler(getHandlersForSide(side))));
         }
     }
 

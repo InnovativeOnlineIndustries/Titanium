@@ -44,7 +44,8 @@ public class MultiInventoryHandler implements IGuiAddonProvider, ICapabilityHold
 
     private void rebuildCapability(FacingUtil.Sideness[] sides) {
         for (FacingUtil.Sideness side : sides) {
-            lazyOptionals.put(side, getCapabilityForSide(side).map(multiInvCapabilityHandler -> new MultiInvCapabilityHandler(getHandlersForSide(side))));
+            lazyOptionals.get(side).invalidate();
+            lazyOptionals.put(side, LazyOptional.of(() -> new MultiInvCapabilityHandler(getHandlersForSide(side))));
         }
     }
 
