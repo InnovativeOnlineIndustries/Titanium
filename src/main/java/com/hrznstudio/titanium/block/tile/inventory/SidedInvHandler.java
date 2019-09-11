@@ -9,6 +9,7 @@ package com.hrznstudio.titanium.block.tile.inventory;
 
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.AssetTypes;
+import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.block.tile.sideness.IFacingHandler;
 import com.hrznstudio.titanium.block.tile.sideness.SidedHandlerManager;
@@ -82,9 +83,9 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
     }
 
     @Override
-    public Rectangle getRectangle() {
+    public Rectangle getRectangle(IAsset asset) {
         int renderingOffset = 1;
-        return new Rectangle(this.getXPos() - renderingOffset - 3, this.getYPos() - renderingOffset - 3, 18 * this.getXSize() + renderingOffset * 2 + 3, 18 * this.getYSize() + renderingOffset * 2 + 3);
+        return new Rectangle(this.getXPos() - renderingOffset - 3, this.getYPos() - renderingOffset - 3, (int) asset.getArea().getWidth() * this.getXSize() + renderingOffset * 2 + 3, (int) asset.getArea().getHeight() * this.getYSize() + renderingOffset * 2 + 3);
     }
 
     @Override
@@ -160,7 +161,7 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
     @Override
     public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
         List<IFactory<? extends IGuiAddon>> addons = super.getGuiAddons();
-        addons.add(() -> new FacingHandlerGuiAddon(SidedHandlerManager.ofRight(getFacingHandlerX(), getFacingHandlerY(), position, AssetTypes.BUTTON_SIDENESS_MANAGER, 4), this));
+        addons.add(() -> new FacingHandlerGuiAddon(SidedHandlerManager.ofRight(getFacingHandlerX(), getFacingHandlerY(), position, AssetTypes.BUTTON_SIDENESS_MANAGER, 4), this, AssetTypes.SLOT));
         return addons;
     }
 

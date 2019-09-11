@@ -8,6 +8,7 @@
 package com.hrznstudio.titanium.block.tile.sideness;
 
 import com.hrznstudio.titanium.api.client.AssetTypes;
+import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.api.client.IAssetType;
 import com.hrznstudio.titanium.client.gui.addon.StateButtonInfo;
 import com.hrznstudio.titanium.util.FacingUtil;
@@ -25,7 +26,7 @@ public interface IFacingHandler {
 
     int getColor();
 
-    Rectangle getRectangle();
+    Rectangle getRectangle(IAsset asset);
 
     String getName();
 
