@@ -12,7 +12,6 @@ import com.hrznstudio.titanium._impl.test.BlockAssetTest;
 import com.hrznstudio.titanium._impl.test.BlockTest;
 import com.hrznstudio.titanium._impl.test.BlockTwentyFourTest;
 import com.hrznstudio.titanium._impl.test.recipe.TestSerializableRecipe;
-import com.hrznstudio.titanium.block.BlockBase;
 import com.hrznstudio.titanium.block.tile.TileActive;
 import com.hrznstudio.titanium.client.gui.container.GuiContainerTileBase;
 import com.hrznstudio.titanium.command.RewardCommand;
@@ -24,13 +23,17 @@ import com.hrznstudio.titanium.module.Module;
 import com.hrznstudio.titanium.module.ModuleController;
 import com.hrznstudio.titanium.network.NetworkHandler;
 import com.hrznstudio.titanium.network.messages.ButtonClickNetworkMessage;
+import com.hrznstudio.titanium.recipe.generator.TitaniumRecipeProvider;
+import com.hrznstudio.titanium.recipe.generator.TitaniumShapedRecipeBuilder;
 import com.hrznstudio.titanium.reward.Reward;
 import com.hrznstudio.titanium.reward.RewardManager;
 import com.hrznstudio.titanium.reward.RewardSyncMessage;
 import com.hrznstudio.titanium.reward.storage.RewardWorldStorage;
 import com.hrznstudio.titanium.util.SidedHandler;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Items;
@@ -53,6 +56,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -61,6 +65,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
+import java.util.function.Consumer;
 
 
 @Mod(Titanium.MODID)
@@ -129,9 +134,13 @@ public class Titanium extends ModuleController {
     }
 
     @Override
-    public void initJsonGenerators() {
-        addJsonDataGenerator(BlockBase.BLOCK_LOOT);
-        addJsonDataGenerator(TestSerializableRecipe.RECIPE);
+    public void addDataProvider(GatherDataEvent event) {
+        event.getGenerator().addProvider(new TitaniumRecipeProvider(event.getGenerator()) {
+            @Override
+            public void register(Consumer<IFinishedRecipe> consumer) {
+                TitaniumShapedRecipeBuilder.shapedRecipe(BlockCreativeFEGenerator.INSTANCE, 9).key('#', Blocks.ACACIA_LOG).patternLine("##").patternLine("##").setGroup("bark").addCriterion("has_log", this.hasItem(Blocks.ACACIA_LOG)).build(consumer);
+            }
+        });
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
