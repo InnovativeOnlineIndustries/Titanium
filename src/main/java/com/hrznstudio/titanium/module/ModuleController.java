@@ -71,7 +71,6 @@ public abstract class ModuleController {
         });
         EventManager.mod(ModConfig.Loading.class).process(ev -> configManager.inject()).subscribe();
         EventManager.mod(ModConfig.ConfigReloading.class).process(ev -> configManager.inject()).subscribe();
-        ;
         EventManager.mod(GatherDataEvent.class).process(this::addDataProvider).subscribe();
     }
 

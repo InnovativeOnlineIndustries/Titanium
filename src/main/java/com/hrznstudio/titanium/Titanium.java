@@ -138,7 +138,7 @@ public class Titanium extends ModuleController {
         event.getGenerator().addProvider(new TitaniumRecipeProvider(event.getGenerator()) {
             @Override
             public void register(Consumer<IFinishedRecipe> consumer) {
-                TitaniumShapedRecipeBuilder.shapedRecipe(BlockCreativeFEGenerator.INSTANCE, 9).key('#', Blocks.ACACIA_LOG).patternLine("##").patternLine("##").setGroup("bark").addCriterion("has_log", this.hasItem(Blocks.ACACIA_LOG)).build(consumer);
+                TitaniumShapedRecipeBuilder.shapedRecipe(BlockCreativeFEGenerator.INSTANCE, 9).key('#', Blocks.ACACIA_LOG).patternLine("##").patternLine("##").setGroup("bark").build(consumer);
             }
         });
     }

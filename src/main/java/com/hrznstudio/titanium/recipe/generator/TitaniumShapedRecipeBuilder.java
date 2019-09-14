@@ -1,19 +1,33 @@
 package com.hrznstudio.titanium.recipe.generator;
 
+import net.minecraft.advancements.criterion.InventoryChangeTrigger;
+import net.minecraft.advancements.criterion.ItemPredicate;
+import net.minecraft.advancements.criterion.MinMaxBounds;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.data.ShapedRecipeBuilder;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.crafting.ConditionalRecipe;
+import net.minecraftforge.common.crafting.conditions.IConditionBuilder;
 
 import java.util.function.Consumer;
 
-public class TitaniumShapedRecipeBuilder extends ShapedRecipeBuilder {
+public class TitaniumShapedRecipeBuilder extends ShapedRecipeBuilder implements IConditionBuilder {
 
     private ResourceLocation resourceLocation;
+    private ConditionalRecipe.Builder conditional;
+    private boolean build;
+    private boolean criterion;
 
     public TitaniumShapedRecipeBuilder(IItemProvider resultIn, int countIn) {
         super(resultIn, countIn);
         this.resourceLocation = resultIn.asItem().getRegistryName();
+        this.build = false;
+        this.conditional = ConditionalRecipe.builder().addCondition(
+                and(
+                        itemExists(resourceLocation.getNamespace(), resourceLocation.getPath())
+                ));
     }
 
     public static TitaniumShapedRecipeBuilder shapedRecipe(IItemProvider resultIn) {
@@ -29,7 +43,21 @@ public class TitaniumShapedRecipeBuilder extends ShapedRecipeBuilder {
 
     @Override
     public void build(Consumer<IFinishedRecipe> consumerIn) {
-        this.build(consumerIn, resourceLocation);
+        if (!this.build) {
+            this.build = true;
+            this.conditional.addRecipe(this::build).build(consumerIn, resourceLocation);
+        } else {
+            this.build(consumerIn, resourceLocation);
+        }
+    }
+
+    @Override
+    public ShapedRecipeBuilder key(Character symbol, Ingredient ingredientIn) {
+        if (!this.criterion) {
+            this.criterion = true;
+            addCriterion("has_item", new InventoryChangeTrigger.Instance(MinMaxBounds.IntBound.UNBOUNDED, MinMaxBounds.IntBound.UNBOUNDED, MinMaxBounds.IntBound.UNBOUNDED, new ItemPredicate[]{ItemPredicate.Builder.create().item(ingredientIn.getMatchingStacks()[0].getItem()).build()}));
+        }
+        return super.key(symbol, ingredientIn);
     }
 
     public TitaniumShapedRecipeBuilder setName(ResourceLocation resourceLocation) {
@@ -37,4 +65,12 @@ public class TitaniumShapedRecipeBuilder extends ShapedRecipeBuilder {
         return this;
     }
 
+    public ConditionalRecipe.Builder getConditional() {
+        return conditional;
+    }
+
+    public TitaniumShapedRecipeBuilder setConditional(ConditionalRecipe.Builder conditional) {
+        this.conditional = conditional;
+        return this;
+    }
 }
