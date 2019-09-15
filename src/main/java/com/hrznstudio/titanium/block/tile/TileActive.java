@@ -193,7 +193,7 @@ public class TileActive extends TileBase implements IGuiAddonProvider, ITickable
     }
 
     public Direction getFacingDirection() {
-        return this.world.getBlockState(pos).get(BlockRotation.FACING);
+        return this.world.getBlockState(pos).has(BlockRotation.FACING) ? this.world.getBlockState(pos).get(BlockRotation.FACING) : Direction.NORTH;
     }
 
     public IFacingHandler getHandlerFromName(String string) {
