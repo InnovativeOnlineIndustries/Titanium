@@ -8,7 +8,6 @@
 package com.hrznstudio.titanium._impl.test.recipe;
 
 import com.hrznstudio.titanium.Titanium;
-import com.hrznstudio.titanium.recipe.generator.JsonDataGenerator;
 import com.hrznstudio.titanium.recipe.serializer.GenericSerializer;
 import com.hrznstudio.titanium.recipe.serializer.SerializableRecipe;
 import net.minecraft.block.Block;
@@ -21,12 +20,14 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TestSerializableRecipe extends SerializableRecipe {
 
     public static GenericSerializer<TestSerializableRecipe> SERIALIZER
             = new GenericSerializer<>(new ResourceLocation(Titanium.MODID, "test_serializer"), TestSerializableRecipe.class);
-
-    public static JsonDataGenerator RECIPE = new JsonDataGenerator(JsonDataGenerator.DataTypes.RECIPE, Titanium.MODID);
+    public static final List<TestSerializableRecipe> RECIPES = new ArrayList<>();
 
     static {
         new TestSerializableRecipe(new ResourceLocation(Titanium.MODID, "saplings_to_sticks"), Ingredient.fromStacks(new ItemStack(Items.OAK_SAPLING)), new ItemStack(Items.STICK, 3), Blocks.STONE);
@@ -45,11 +46,11 @@ public class TestSerializableRecipe extends SerializableRecipe {
         this.input = input;
         this.output = output;
         this.block = block;
+        RECIPES.add(this);
     }
 
     public TestSerializableRecipe(ResourceLocation resourceLocation) {
         super(resourceLocation);
-        RECIPE.addRecipe(this);
     }
 
     @Override

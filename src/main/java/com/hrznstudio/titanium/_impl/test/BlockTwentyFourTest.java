@@ -10,11 +10,10 @@ package com.hrznstudio.titanium._impl.test;
 import com.hrznstudio.titanium._impl.test.tile.TileTwentyFourTest;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.block.BlockRotation;
+import com.hrznstudio.titanium.recipe.generator.TitaniumLootTableProvider;
 import net.minecraft.block.material.Material;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
 
 public class BlockTwentyFourTest extends BlockRotation<TileTwentyFourTest> {
 
@@ -36,7 +35,7 @@ public class BlockTwentyFourTest extends BlockRotation<TileTwentyFourTest> {
     }
 
     @Override
-    public List<Pool> getStaticDrops() {
-        return new ArrayList<>();
+    public void createLootTable(TitaniumLootTableProvider provider) {
+        provider.createEmpty(this);
     }
 }

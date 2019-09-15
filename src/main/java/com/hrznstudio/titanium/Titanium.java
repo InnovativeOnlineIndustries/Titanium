@@ -23,17 +23,15 @@ import com.hrznstudio.titanium.module.Module;
 import com.hrznstudio.titanium.module.ModuleController;
 import com.hrznstudio.titanium.network.NetworkHandler;
 import com.hrznstudio.titanium.network.messages.ButtonClickNetworkMessage;
-import com.hrznstudio.titanium.recipe.generator.TitaniumRecipeProvider;
-import com.hrznstudio.titanium.recipe.generator.TitaniumShapedRecipeBuilder;
+import com.hrznstudio.titanium.recipe.generator.titanium.DefaultLootTableProvider;
+import com.hrznstudio.titanium.recipe.generator.titanium.JsonRecipeSerializerProvider;
 import com.hrznstudio.titanium.reward.Reward;
 import com.hrznstudio.titanium.reward.RewardManager;
 import com.hrznstudio.titanium.reward.RewardSyncMessage;
 import com.hrznstudio.titanium.reward.storage.RewardWorldStorage;
 import com.hrznstudio.titanium.util.SidedHandler;
 import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Items;
@@ -65,7 +63,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
-import java.util.function.Consumer;
 
 
 @Mod(Titanium.MODID)
@@ -135,12 +132,8 @@ public class Titanium extends ModuleController {
 
     @Override
     public void addDataProvider(GatherDataEvent event) {
-        event.getGenerator().addProvider(new TitaniumRecipeProvider(event.getGenerator()) {
-            @Override
-            public void register(Consumer<IFinishedRecipe> consumer) {
-                TitaniumShapedRecipeBuilder.shapedRecipe(BlockCreativeFEGenerator.INSTANCE, 9).key('#', Blocks.ACACIA_LOG).patternLine("##").patternLine("##").setGroup("bark").build(consumer);
-            }
-        });
+        event.getGenerator().addProvider(new DefaultLootTableProvider(event.getGenerator()));
+        event.getGenerator().addProvider(new JsonRecipeSerializerProvider(event.getGenerator(), MODID));
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
