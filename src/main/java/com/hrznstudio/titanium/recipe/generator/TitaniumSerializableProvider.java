@@ -70,6 +70,6 @@ public abstract class TitaniumSerializableProvider implements IDataProvider {
 
     @Override
     public String getName() {
-        return "Titanium Serializable";
+        return "Titanium Serializable (" + modid + ")";
     }
 }

@@ -54,7 +54,7 @@ minecraft {
         data {
             workingDirectory project.file('run')
             property 'forge.logging.console.level', 'info'
-            args '--mod', 'titanium', '--all', '--output', file('src/main/generated/resources'), '--input', file('src/main/resources')
+            args '--mod', 'titanium', '--all', '--output', file('src/main/resources'), '--input', file('src/main/resources')
             source sourceSets.main
         }
     }
