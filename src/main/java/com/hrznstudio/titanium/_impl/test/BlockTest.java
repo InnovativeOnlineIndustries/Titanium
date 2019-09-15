@@ -12,11 +12,10 @@ import com.hrznstudio.titanium.annotation.config.ConfigFile;
 import com.hrznstudio.titanium.annotation.config.ConfigVal;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.block.BlockRotation;
+import com.hrznstudio.titanium.recipe.generator.TitaniumLootTableProvider;
 import net.minecraft.block.material.Material;
 
 import javax.annotation.Nonnull;
-import java.util.Collections;
-import java.util.List;
 
 @ConfigFile.Child(TitaniumConfig.class)
 public class BlockTest extends BlockRotation<TileTest> {
@@ -42,7 +41,7 @@ public class BlockTest extends BlockRotation<TileTest> {
     }
 
     @Override
-    public List<Pool> getStaticDrops() {
-        return Collections.emptyList();
+    public void createLootTable(TitaniumLootTableProvider provider) {
+        provider.createEmpty(this);
     }
 }

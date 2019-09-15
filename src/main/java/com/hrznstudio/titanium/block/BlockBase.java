@@ -7,13 +7,11 @@
 
 package com.hrznstudio.titanium.block;
 
-import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.raytrace.DistanceRayTraceResult;
 import com.hrznstudio.titanium.module.api.IAlternativeEntries;
 import com.hrznstudio.titanium.module.api.RegistryManager;
-import com.hrznstudio.titanium.recipe.LootPoolBlock;
-import com.hrznstudio.titanium.recipe.generator.JsonDataGenerator;
+import com.hrznstudio.titanium.recipe.generator.TitaniumLootTableProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.inventory.InventoryHelper;
@@ -24,7 +22,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
@@ -45,7 +42,7 @@ import java.util.Objects;
 
 public abstract class BlockBase extends Block implements IAlternativeEntries {
 
-    public static JsonDataGenerator BLOCK_LOOT = new JsonDataGenerator(JsonDataGenerator.DataTypes.LOOT_BLOCKS, Titanium.MODID);
+    public static List<BlockBase> BLOCKS = new ArrayList<>();
 
     private ItemGroup itemGroup = ItemGroup.SEARCH;
     private BlockItem item;
@@ -53,7 +50,7 @@ public abstract class BlockBase extends Block implements IAlternativeEntries {
     public BlockBase(String name, Properties properties) {
         super(properties);
         setRegistryName(name);
-        BLOCK_LOOT.addRecipe(new LootPoolBlock(this.getRegistryName(), getStaticDrops()));
+        BLOCKS.add(this);
     }
 
     @Nullable
@@ -71,11 +68,6 @@ public abstract class BlockBase extends Block implements IAlternativeEntries {
     @Override
     public float getBlockHardness(BlockState blockState, IBlockReader worldIn, BlockPos pos) {
         return 1.5F;
-    }
-
-    @Override
-    public ResourceLocation getLootTable() {
-        return new ResourceLocation(getRegistryName().getNamespace(), "blocks/" + getRegistryName().getNamespace() + "_" + getRegistryName().getPath());
     }
 
     @Nullable
@@ -152,12 +144,6 @@ public abstract class BlockBase extends Block implements IAlternativeEntries {
         this.itemGroup = itemGroup;
     }
 
-    public List<Pool> getStaticDrops() {
-        List<Pool> pools = new ArrayList<>();
-        pools.add(new Pool(1, new Pool.Entry[]{Pool.Entry.of(this)}, new Pool.Condition[]{Pool.Condition.of(new ResourceLocation("minecraft", "survives_explosion"))}));
-        return pools;
-    }
-
     @Override
     public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
         if (state.getBlock() != newState.getBlock()) {
@@ -184,45 +170,8 @@ public abstract class BlockBase extends Block implements IAlternativeEntries {
         return false;
     }
 
-    public static class Pool {
-
-        private int rolls;
-        private Entry[] entries;
-        private Condition[] conditions;
-
-        public Pool(int rolls, Entry[] entries, Condition[] conditions) {
-            this.rolls = rolls;
-            this.entries = entries;
-            this.conditions = conditions;
-        }
-
-        public static class Entry {
-
-            private final String type = "minecraft:item";
-            private String name;
-
-            private Entry(String name) {
-                this.name = name;
-            }
-
-            public static Entry of(Block block) {
-                return new Entry(block.getRegistryName().toString());
-            }
-        }
-
-        public static class Condition {
-
-            private String condition;
-
-            private Condition(String string) {
-                this.condition = string;
-            }
-
-            public static Condition of(ResourceLocation location) {
-                return new Condition(location.toString());
-            }
-
-        }
+    public void createLootTable(TitaniumLootTableProvider provider) {
+        provider.createSimple(this);
     }
 
 }
