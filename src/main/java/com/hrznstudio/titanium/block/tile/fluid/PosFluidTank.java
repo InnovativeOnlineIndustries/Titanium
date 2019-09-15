@@ -30,6 +30,7 @@ public class PosFluidTank extends FluidTank implements IGuiAddonProvider {
     private TileEntity tile;
     private Type tankType;
     private Action tankAction;
+    private Runnable onContentChange;
 
     public PosFluidTank(String name, int amount, int posX, int posY) {
         super(amount);
@@ -38,6 +39,8 @@ public class PosFluidTank extends FluidTank implements IGuiAddonProvider {
         this.name = name;
         this.tankType = Type.NORMAL;
         this.tankAction = Action.BOTH;
+        this.onContentChange = () -> {
+        };
     }
 
     /**
@@ -59,6 +62,7 @@ public class PosFluidTank extends FluidTank implements IGuiAddonProvider {
         } else {
             tile.markDirty();
         }
+        onContentChange.run();
     }
 
     public String getName() {
@@ -79,6 +83,11 @@ public class PosFluidTank extends FluidTank implements IGuiAddonProvider {
 
     public PosFluidTank setTankType(Type tankType) {
         this.tankType = tankType;
+        return this;
+    }
+
+    public PosFluidTank setOnContentChange(Runnable onContentChange) {
+        this.onContentChange = onContentChange;
         return this;
     }
 
@@ -106,6 +115,23 @@ public class PosFluidTank extends FluidTank implements IGuiAddonProvider {
     @Override
     public FluidStack drain(int maxDrain, FluidAction action) {
         return getTankAction().canDrain() ? super.drain(maxDrain, action) : FluidStack.EMPTY;
+    }
+
+    public int fillForced(FluidStack resource, FluidAction action) {
+        return super.fill(resource, action);
+    }
+
+    @Nonnull
+    public FluidStack drainForced(FluidStack resource, FluidAction action) {
+        if (resource.isEmpty() || !resource.isFluidEqual(fluid)) {
+            return FluidStack.EMPTY;
+        }
+        return drainForced(resource.getAmount(), action);
+    }
+
+    @Nonnull
+    public FluidStack drainForced(int maxDrain, FluidAction action) {
+        return super.drain(maxDrain, action);
     }
 
     @Override
