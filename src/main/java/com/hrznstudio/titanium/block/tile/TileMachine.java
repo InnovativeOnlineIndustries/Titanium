@@ -3,7 +3,6 @@ package com.hrznstudio.titanium.block.tile;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.IMachine;
-import com.hrznstudio.titanium.api.augment.AugmentTypes;
 import com.hrznstudio.titanium.api.augment.IAugment;
 import com.hrznstudio.titanium.api.augment.IAugmentType;
 import com.hrznstudio.titanium.api.client.AssetTypes;
@@ -45,7 +44,7 @@ public class TileMachine extends TilePowered implements IMachine {
 
     @Override
     public boolean canAcceptAugment(IAugment augment) {
-        return augment.getAugmentType().equals(AugmentTypes.SPEED);
+        return augment.canWorkIn(this);
     }
 
     @Override
