@@ -61,7 +61,7 @@ public class TileMachine extends TilePowered implements IMachine {
 
     @Override
     public List<IAugment> getInstalledAugments(IAugmentType filter) {
-        return getInstalledAugments().stream().filter(iAugment -> iAugment.getAugmentType().equals(filter)).collect(Collectors.toList());
+        return getInstalledAugments().stream().filter(iAugment -> iAugment.getAugmentType().getType().equals(filter.getType())).collect(Collectors.toList());
     }
 
     @Override
