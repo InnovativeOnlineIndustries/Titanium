@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class TileMachine extends TilePowered implements IMachine {
+public class TileMachine extends TilePowered implements IMachine {
 
     @Save
     private PosInvHandler augmentInventory;
@@ -56,6 +56,11 @@ public abstract class TileMachine extends TilePowered implements IMachine {
     @Override
     public List<IAugment> getInstalledAugments(IAugmentType filter) {
         return getInstalledAugments().stream().filter(iAugment -> iAugment.getAugmentType().equals(filter)).collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean hasAugmentInstalled(IAugmentType augmentType) {
+        return getInstalledAugments(augmentType).size() > 0;
     }
 
     public IFactory<PosInvHandler> getAugmentFactory() {
