@@ -23,14 +23,13 @@ import com.hrznstudio.titanium.client.gui.addon.StateButtonAddon;
 import com.hrznstudio.titanium.client.gui.addon.StateButtonInfo;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 
 import java.util.Collections;
 import java.util.List;
 
-public class TileTest extends TilePowered implements ITickableTileEntity {
+public class TileTest extends TilePowered {
 
     @Save
     private PosProgressBar bar;
