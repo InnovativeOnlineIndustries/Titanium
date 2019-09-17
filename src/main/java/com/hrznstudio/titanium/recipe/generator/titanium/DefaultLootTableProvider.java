@@ -13,12 +13,15 @@ import net.minecraft.data.DataGenerator;
 
 public class DefaultLootTableProvider extends TitaniumLootTableProvider {
 
-    public DefaultLootTableProvider(DataGenerator dataGeneratorIn) {
+    private final String modid;
+
+    public DefaultLootTableProvider(DataGenerator dataGeneratorIn, String modid) {
         super(dataGeneratorIn);
+        this.modid = modid;
     }
 
     @Override
     public void add() {
-        BlockBase.BLOCKS.forEach(blockBase -> blockBase.createLootTable(this));
+        BlockBase.BLOCKS.stream().filter(blockBase -> blockBase.getRegistryName().getNamespace().equals(modid)).forEach(blockBase -> blockBase.createLootTable(this));
     }
 }

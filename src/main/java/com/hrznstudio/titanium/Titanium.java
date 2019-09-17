@@ -132,7 +132,7 @@ public class Titanium extends ModuleController {
 
     @Override
     public void addDataProvider(GatherDataEvent event) {
-        event.getGenerator().addProvider(new DefaultLootTableProvider(event.getGenerator()));
+        event.getGenerator().addProvider(new DefaultLootTableProvider(event.getGenerator(), MODID));
         event.getGenerator().addProvider(new JsonRecipeSerializerProvider(event.getGenerator(), MODID));
     }
 
