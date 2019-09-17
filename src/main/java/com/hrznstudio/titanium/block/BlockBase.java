@@ -8,12 +8,14 @@
 package com.hrznstudio.titanium.block;
 
 import com.hrznstudio.titanium.api.IFactory;
+import com.hrznstudio.titanium.api.IRecipeProvider;
 import com.hrznstudio.titanium.api.raytrace.DistanceRayTraceResult;
 import com.hrznstudio.titanium.module.api.IAlternativeEntries;
 import com.hrznstudio.titanium.module.api.RegistryManager;
 import com.hrznstudio.titanium.recipe.generator.TitaniumLootTableProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -39,8 +41,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
-public abstract class BlockBase extends Block implements IAlternativeEntries {
+public abstract class BlockBase extends Block implements IAlternativeEntries, IRecipeProvider {
 
     public static List<BlockBase> BLOCKS = new ArrayList<>();
 
@@ -142,6 +145,11 @@ public abstract class BlockBase extends Block implements IAlternativeEntries {
 
     public void setItemGroup(ItemGroup itemGroup) {
         this.itemGroup = itemGroup;
+    }
+
+    @Override
+    public void registerRecipe(Consumer<IFinishedRecipe> consumer) {
+
     }
 
     @Override
