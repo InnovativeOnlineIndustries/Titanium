@@ -59,7 +59,7 @@ public abstract class TileMachine extends TilePowered implements IMachine {
     }
 
     public IFactory<PosInvHandler> getAugmentFactory() {
-        return () -> new SidedInvHandler("augments", 180, 11, 4, 0).setColor(DyeColor.PURPLE).setRange(1, 4);
+        return () -> new SidedInvHandler("augments", 180, 11, 4, 0).disableFacingAddon().setColor(DyeColor.PURPLE).setRange(1, 4);
     }
 
     public IFactory<? extends IGuiAddon> getAugmentBackground() {

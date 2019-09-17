@@ -40,6 +40,7 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
     private HashMap<FacingUtil.Sideness, Integer> slotCache;
     private int position;
     private boolean colorGuiEnabled;
+    private boolean hasFacingAddon;
 
     public SidedInvHandler(String name, int xPos, int yPos, int size, int position) {
         super(name, xPos, yPos, size);
@@ -51,6 +52,12 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
         }
         this.position = position;
         this.colorGuiEnabled = true;
+        this.hasFacingAddon = true;
+    }
+
+    public SidedInvHandler disableFacingAddon() {
+        this.hasFacingAddon = false;
+        return this;
     }
 
     @Override
@@ -161,7 +168,8 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
     @Override
     public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
         List<IFactory<? extends IGuiAddon>> addons = super.getGuiAddons();
-        addons.add(() -> new FacingHandlerGuiAddon(SidedHandlerManager.ofRight(getFacingHandlerX(), getFacingHandlerY(), position, AssetTypes.BUTTON_SIDENESS_MANAGER, 4), this, AssetTypes.SLOT));
+        if (hasFacingAddon)
+            addons.add(() -> new FacingHandlerGuiAddon(SidedHandlerManager.ofRight(getFacingHandlerX(), getFacingHandlerY(), position, AssetTypes.BUTTON_SIDENESS_MANAGER, 4), this, AssetTypes.SLOT));
         return addons;
     }
 
