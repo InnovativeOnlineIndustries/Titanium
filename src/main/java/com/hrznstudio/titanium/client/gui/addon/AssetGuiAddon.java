@@ -8,40 +8,48 @@
 package com.hrznstudio.titanium.client.gui.addon;
 
 import com.hrznstudio.titanium.api.client.IAsset;
+import com.hrznstudio.titanium.api.client.IAssetType;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.util.AssetUtil;
 import net.minecraft.client.gui.screen.Screen;
 
-public class AssetGuiAddon extends BasicGuiAddon {
-    private IAsset asset;
-    private boolean isBackground;
+import java.awt.*;
 
-    public AssetGuiAddon(IAsset asset, int posX, int posY, boolean isBackground) {
+public class AssetGuiAddon extends BasicGuiAddon {
+
+    private IAssetType assetType;
+    private boolean isBackground;
+    private Rectangle area;
+
+    public AssetGuiAddon(IAssetType assetType, int posX, int posY, boolean isBackground) {
         super(posX, posY);
-        this.asset = asset;
+        this.assetType = assetType;
+        this.isBackground = isBackground;
     }
 
     @Override
     public int getXSize() {
-        return asset.getArea().width;
+        return area.width;
     }
 
     @Override
     public int getYSize() {
-        return asset.getArea().height;
+        return area.height;
     }
 
     @Override
     public void drawGuiContainerBackgroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
-        if (asset != null) {
+        if (assetType != null) {
+            IAsset asset = provider.getAsset(assetType);
+            area = asset.getArea();
             AssetUtil.drawAsset(screen, asset, this.getPosX() + guiX, this.getPosY() + guiY);
         }
     }
 
     @Override
     public void drawGuiContainerForegroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
-        if (asset != null) {
-            AssetUtil.drawAsset(screen, asset, this.getPosX() + guiX, this.getPosY() + guiY);
+        if (assetType != null) {
+            AssetUtil.drawAsset(screen, provider.getAsset(assetType), this.getPosX() + guiX, this.getPosY() + guiY);
         }
     }
 

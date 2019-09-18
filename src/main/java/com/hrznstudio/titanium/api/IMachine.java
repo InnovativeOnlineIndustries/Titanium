@@ -13,6 +13,7 @@ import com.hrznstudio.titanium.api.augment.IAugmentType;
 import java.util.List;
 
 public interface IMachine {
+
     boolean isActive();
 
     boolean isPaused();
@@ -22,4 +23,7 @@ public interface IMachine {
     List<IAugment> getInstalledAugments();
 
     List<IAugment> getInstalledAugments(IAugmentType filter);
+
+    boolean hasAugmentInstalled(IAugmentType augmentType);
+
 }

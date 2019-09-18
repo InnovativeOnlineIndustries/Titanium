@@ -39,6 +39,7 @@ public class SidedFluidTank extends PosFluidTank implements IFacingHandler, IGui
     private int facingHandlerY = 84;
     private HashMap<FacingUtil.Sideness, FaceMode> facingModes;
     private int pos;
+    private boolean hasFacingAddon;
 
     public SidedFluidTank(String name, int amount, int posX, int posY, int pos) {
         super(name, amount, posX, posY);
@@ -48,6 +49,12 @@ public class SidedFluidTank extends PosFluidTank implements IFacingHandler, IGui
         for (FacingUtil.Sideness facing : FacingUtil.Sideness.values()) {
             this.facingModes.put(facing, FaceMode.ENABLED);
         }
+        this.hasFacingAddon = true;
+    }
+
+    public SidedFluidTank disableFacingAddon() {
+        this.hasFacingAddon = false;
+        return this;
     }
 
     @Override
@@ -136,7 +143,8 @@ public class SidedFluidTank extends PosFluidTank implements IFacingHandler, IGui
     @Override
     public java.util.List<IFactory<? extends IGuiAddon>> getGuiAddons() {
         List<IFactory<? extends IGuiAddon>> addons = super.getGuiAddons();
-        addons.add(() -> new FacingHandlerGuiAddon(SidedHandlerManager.ofRight(getFacingHandlerX(), getFacingHandlerY(), pos, AssetTypes.BUTTON_SIDENESS_MANAGER, 4), this, getTankType().getAssetType()));
+        if (hasFacingAddon)
+            addons.add(() -> new FacingHandlerGuiAddon(SidedHandlerManager.ofRight(getFacingHandlerX(), getFacingHandlerY(), pos, AssetTypes.BUTTON_SIDENESS_MANAGER, 4), this, getTankType().getAssetType()));
         return addons;
     }
 
