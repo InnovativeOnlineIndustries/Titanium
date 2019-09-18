@@ -212,6 +212,11 @@ public class PosInvHandler extends ItemStackHandler implements IGuiAddonProvider
     }
 
     @Override
+    public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+        return insertPredicate.test(stack, slot);
+    }
+
+    @Override
     public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
         List<IFactory<? extends IGuiAddon>> addons = new ArrayList<>();
         addons.add(() -> new SlotsGuiAddon(this));
