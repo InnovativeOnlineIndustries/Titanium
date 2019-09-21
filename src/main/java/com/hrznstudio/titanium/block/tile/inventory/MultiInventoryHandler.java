@@ -118,7 +118,11 @@ public class MultiInventoryHandler implements IGuiAddonProvider, ICapabilityHold
         public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
             PosInvHandler handler = getFromSlot(slot);
             if (handler != null) {
-                return handler.insertItem(getRelativeSlot(handler, slot), stack, simulate);
+                if (handler.getInsertPredicate().test(stack, slot)) {
+                    return handler.insertItem(getRelativeSlot(handler, slot), stack, simulate);
+                } else {
+                    return stack;
+                }
             }
             return super.insertItem(slot, stack, simulate);
         }
