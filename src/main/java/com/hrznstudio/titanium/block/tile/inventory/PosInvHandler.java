@@ -51,7 +51,7 @@ public class PosInvHandler extends ItemStackHandler implements IGuiAddonProvider
         };
         this.slotAmountFilter = new HashMap<>();
         this.slotLimit = 64;
-        this.slotPosition = integer -> Pair.of(18 * (integer % xSize), 18 * (integer % ySize));
+        this.slotPosition = integer -> Pair.of(18 * (integer % xSize), 18 * (integer / xSize));
     }
 
     /**
