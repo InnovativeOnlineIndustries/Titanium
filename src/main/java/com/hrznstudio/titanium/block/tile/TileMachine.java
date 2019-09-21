@@ -17,7 +17,9 @@ import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.block.BlockTileBase;
 import com.hrznstudio.titanium.block.tile.inventory.PosInvHandler;
 import com.hrznstudio.titanium.block.tile.inventory.SidedInvHandler;
+import com.hrznstudio.titanium.block.tile.sideness.IFacingHandler;
 import com.hrznstudio.titanium.client.gui.addon.AssetGuiAddon;
+import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
@@ -31,12 +33,15 @@ import java.util.stream.Collectors;
 public class TileMachine extends TilePowered implements IMachine {
 
     @Save
-    private PosInvHandler augmentInventory;
+    private SidedInvHandler augmentInventory;
 
     public TileMachine(BlockTileBase blockTileBase) {
         super(blockTileBase);
-        addInventory(this.augmentInventory = getAugmentFactory().create().setTile(this).setInputFilter((stack, integer) -> stack.getItem() instanceof IAugment && canAcceptAugment((IAugment) stack.getItem())));
+        addInventory(this.augmentInventory = (SidedInvHandler) getAugmentFactory().create().setTile(this).setInputFilter((stack, integer) -> stack.getItem() instanceof IAugment && canAcceptAugment((IAugment) stack.getItem())));
         addGuiAddonFactory(getAugmentBackground());
+        for (FacingUtil.Sideness value : FacingUtil.Sideness.values()) {
+            augmentInventory.getFacingModes().put(value, IFacingHandler.FaceMode.NONE);
+        }
     }
 
     @Override
