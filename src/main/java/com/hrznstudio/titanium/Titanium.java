@@ -8,21 +8,24 @@
 package com.hrznstudio.titanium;
 
 import com.hrznstudio.titanium._impl.creative.BlockCreativeFEGenerator;
+import com.hrznstudio.titanium._impl.test.BlockAssetTest;
+import com.hrznstudio.titanium._impl.test.BlockMachine;
 import com.hrznstudio.titanium._impl.test.BlockTest;
 import com.hrznstudio.titanium._impl.test.BlockTwentyFourTest;
 import com.hrznstudio.titanium._impl.test.recipe.TestSerializableRecipe;
-import com.hrznstudio.titanium.block.BlockBase;
 import com.hrznstudio.titanium.block.tile.TileActive;
-import com.hrznstudio.titanium.client.gui.GuiContainerTile;
-import com.hrznstudio.titanium.client.gui.addon.BasicButtonAddon;
+import com.hrznstudio.titanium.client.gui.container.GuiContainerTileBase;
 import com.hrznstudio.titanium.command.RewardCommand;
 import com.hrznstudio.titanium.command.RewardGrantCommand;
-import com.hrznstudio.titanium.container.ContainerTileBase;
+import com.hrznstudio.titanium.container.impl.ContainerTileBase;
 import com.hrznstudio.titanium.event.handler.EventManager;
 import com.hrznstudio.titanium.module.Feature;
 import com.hrznstudio.titanium.module.Module;
 import com.hrznstudio.titanium.module.ModuleController;
 import com.hrznstudio.titanium.network.NetworkHandler;
+import com.hrznstudio.titanium.network.messages.ButtonClickNetworkMessage;
+import com.hrznstudio.titanium.recipe.generator.titanium.DefaultLootTableProvider;
+import com.hrznstudio.titanium.recipe.generator.titanium.JsonRecipeSerializerProvider;
 import com.hrznstudio.titanium.reward.Reward;
 import com.hrznstudio.titanium.reward.RewardManager;
 import com.hrznstudio.titanium.reward.RewardSyncMessage;
@@ -52,6 +55,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -69,7 +73,7 @@ public class Titanium extends ModuleController {
     public static final Logger LOGGER = LogManager.getLogger(MODID);
 
     public Titanium() {
-        NetworkHandler.registerMessage(BasicButtonAddon.ButtonClickNetworkMessage.class);
+        NetworkHandler.registerMessage(ButtonClickNetworkMessage.class);
         NetworkHandler.registerMessage(RewardSyncMessage.class);
 
         SidedHandler.runOn(Dist.CLIENT, () -> () -> EventManager.mod(FMLClientSetupEvent.class).process(this::clientSetup).subscribe());
@@ -94,6 +98,8 @@ public class Titanium extends ModuleController {
                         .description("Adds test titanium blocks")
                         .content(Block.class, BlockTest.TEST = new BlockTest())
                         .content(Block.class, BlockTwentyFourTest.TEST = new BlockTwentyFourTest())
+                        .content(Block.class, BlockAssetTest.TEST = new BlockAssetTest())
+                        .content(Block.class, BlockMachine.TEST = new BlockMachine())
                 )
                 .feature(Feature.builder("events")
                         .description("Adds test titanium events")
@@ -127,9 +133,9 @@ public class Titanium extends ModuleController {
     }
 
     @Override
-    public void initJsonGenerators() {
-        addJsonDataGenerator(BlockBase.BLOCK_LOOT);
-        addJsonDataGenerator(TestSerializableRecipe.RECIPE);
+    public void addDataProvider(GatherDataEvent event) {
+        event.getGenerator().addProvider(new DefaultLootTableProvider(event.getGenerator(), MODID));
+        event.getGenerator().addProvider(new JsonRecipeSerializerProvider(event.getGenerator(), MODID));
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
@@ -140,8 +146,8 @@ public class Titanium extends ModuleController {
     private void clientSetup(FMLClientSetupEvent event) {
         EventManager.forge(DrawBlockHighlightEvent.class).process(TitaniumClient::blockOverlayEvent).subscribe();
         TitaniumClient.registerModelLoader();
-        ScreenManager.registerFactory(ContainerTileBase.TYPE, GuiContainerTile::new);
         RewardManager.get().getRewards().values().forEach(rewardGiver -> rewardGiver.getRewards().forEach(reward -> reward.register(Dist.CLIENT)));
+        ScreenManager.registerFactory(ContainerTileBase.TYPE, GuiContainerTileBase::new);
     }
 
     private void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {

@@ -23,14 +23,13 @@ import com.hrznstudio.titanium.client.gui.addon.StateButtonAddon;
 import com.hrznstudio.titanium.client.gui.addon.StateButtonInfo;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 
 import java.util.Collections;
 import java.util.List;
 
-public class TileTest extends TilePowered implements ITickableTileEntity {
+public class TileTest extends TilePowered {
 
     @Save
     private PosProgressBar bar;
@@ -52,7 +51,7 @@ public class TileTest extends TilePowered implements ITickableTileEntity {
         this.addGuiAddonFactory(() -> new EnergyBarGuiAddon(4, 10, getEnergyStorage()));
         this.addProgressBar(bar = new PosProgressBar(40, 20, 500).setCanIncrease(tileEntity -> true).setOnFinishWork(() -> System.out.println("WOWOOW")).setBarDirection(PosProgressBar.BarDirection.HORIZONTAL_RIGHT).setColor(DyeColor.LIME));
         this.addTank(third = new PosFluidTank("testTank", 8000, 130, 30));
-        this.addButton(button = new PosButton(0, 0, 14, 14) {
+        this.addButton(button = new PosButton(-13, 1, 14, 14) {
             @Override
             public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
                 return Collections.singletonList(() -> new StateButtonAddon(button, new StateButtonInfo(0, AssetTypes.BUTTON_SIDENESS_DISABLED), new StateButtonInfo(1, AssetTypes.BUTTON_SIDENESS_ENABLED), new StateButtonInfo(2, AssetTypes.BUTTON_SIDENESS_PULL), new StateButtonInfo(3, AssetTypes.BUTTON_SIDENESS_PUSH)) {
@@ -70,6 +69,14 @@ public class TileTest extends TilePowered implements ITickableTileEntity {
         }));
         first.setColor(DyeColor.LIME);
         second.setColor(DyeColor.CYAN);
+    }
+
+    @Override
+    public void tick() {
+        bar.tickBar();
+        if (getWorld().isRaining()) {
+            getWorld().getWorldInfo().setRaining(false);
+        }
     }
 
     @Override

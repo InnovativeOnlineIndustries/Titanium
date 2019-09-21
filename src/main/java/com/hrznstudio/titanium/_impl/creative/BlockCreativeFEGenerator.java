@@ -10,11 +10,9 @@ package com.hrznstudio.titanium._impl.creative;
 import com.hrznstudio.titanium._impl.creative.tile.TileCreativeFEGenerator;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.block.BlockTileBase;
+import com.hrznstudio.titanium.recipe.generator.TitaniumLootTableProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class BlockCreativeFEGenerator extends BlockTileBase<TileCreativeFEGenerator> {
 
@@ -30,7 +28,7 @@ public class BlockCreativeFEGenerator extends BlockTileBase<TileCreativeFEGenera
     }
 
     @Override
-    public List<Pool> getStaticDrops() {
-        return new ArrayList<>();
+    public void createLootTable(TitaniumLootTableProvider provider) {
+        provider.createEmpty(this);
     }
 }

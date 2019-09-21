@@ -11,8 +11,8 @@ import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.assets.types.IBackgroundAsset;
-import com.hrznstudio.titanium.client.gui.addon.ICanMouseDrag;
-import com.hrznstudio.titanium.client.gui.addon.IClickable;
+import com.hrznstudio.titanium.client.gui.addon.interfaces.ICanMouseDrag;
+import com.hrznstudio.titanium.client.gui.addon.interfaces.IClickable;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.util.AssetUtil;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -27,9 +27,9 @@ import java.util.stream.Collectors;
 
 public abstract class GuiAddonScreen extends Screen implements IGuiAddonConsumer {
 
-    private IAssetProvider assetProvider;
     public int x;
     public int y;
+    private IAssetProvider assetProvider;
     private List<IGuiAddon> addonList;
     private boolean drawBackground;
 

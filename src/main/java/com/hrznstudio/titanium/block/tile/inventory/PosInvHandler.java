@@ -13,7 +13,9 @@ import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
 import com.hrznstudio.titanium.client.gui.addon.SlotsGuiAddon;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -21,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
+import java.util.function.Function;
 
 public class PosInvHandler extends ItemStackHandler implements IGuiAddonProvider {
 
@@ -35,6 +38,7 @@ public class PosInvHandler extends ItemStackHandler implements IGuiAddonProvider
     private BiConsumer<ItemStack, Integer> onSlotChanged;
     private HashMap<Integer, Integer> slotAmountFilter;
     private int slotLimit;
+    private Function<Integer, Pair<Integer, Integer>> slotPosition;
 
     public PosInvHandler(String name, int xPos, int yPos, int size) {
         this.name = name;
@@ -48,6 +52,7 @@ public class PosInvHandler extends ItemStackHandler implements IGuiAddonProvider
         };
         this.slotAmountFilter = new HashMap<>();
         this.slotLimit = 64;
+        this.slotPosition = integer -> Pair.of(18 * (integer % xSize), 18 * (integer / xSize));
     }
 
     /**
@@ -99,8 +104,31 @@ public class PosInvHandler extends ItemStackHandler implements IGuiAddonProvider
     @Nonnull
     @Override
     public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-        if (!insertPredicate.test(stack, slot)) return stack;
-        return super.insertItem(slot, stack, simulate);
+        if (stack.isEmpty()) {
+            return ItemStack.EMPTY;
+        }
+        validateSlotIndex(slot);
+        ItemStack existingStack = this.stacks.get(slot);
+        int limit = getStackLimit(slot, stack);
+        if (!existingStack.isEmpty()) {
+            if (!ItemHandlerHelper.canItemStacksStack(stack, existingStack)) {
+                return stack;
+            }
+            limit -= existingStack.getCount();
+        }
+        if (limit <= 0) {
+            return stack;
+        }
+        boolean reachedLimit = stack.getCount() > limit;
+        if (!simulate) {
+            if (existingStack.isEmpty()) {
+                this.stacks.set(slot, reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, limit) : stack);
+            } else {
+                existingStack.grow(reachedLimit ? limit : stack.getCount());
+            }
+            onContentsChanged(slot);
+        }
+        return reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, stack.getCount() - limit) : ItemStack.EMPTY;
     }
 
     @Nonnull
@@ -196,6 +224,20 @@ public class PosInvHandler extends ItemStackHandler implements IGuiAddonProvider
     @Override
     public int getSlotLimit(int slot) {
         return slotAmountFilter.getOrDefault(slot, this.slotLimit);
+    }
+
+    public Function<Integer, Pair<Integer, Integer>> getSlotPosition() {
+        return slotPosition;
+    }
+
+    public PosInvHandler setSlotPosition(Function<Integer, Pair<Integer, Integer>> slotPosition) {
+        this.slotPosition = slotPosition;
+        return this;
+    }
+
+    @Override
+    public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+        return insertPredicate.test(stack, slot);
     }
 
     @Override

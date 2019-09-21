@@ -7,7 +7,6 @@
 
 package com.hrznstudio.titanium.client.gui.addon;
 
-import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.assets.types.ITankAsset;
 import com.hrznstudio.titanium.block.tile.fluid.PosFluidTank;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
@@ -39,7 +38,7 @@ public class TankGuiAddon extends BasicGuiAddon {
 
     @Override
     public void drawGuiContainerBackgroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
-        asset = IAssetProvider.getAsset(provider, AssetTypes.TANK);
+        asset = (ITankAsset) IAssetProvider.getAsset(provider, tank.getTankType().getAssetType());
         Rectangle area = asset.getArea();
         if (!tank.getFluid().isEmpty()) {
             FluidStack stack = tank.getFluid();
@@ -65,14 +64,15 @@ public class TankGuiAddon extends BasicGuiAddon {
                 GlStateManager.color4f(1, 1, 1, 1);
             }
         }
+        GlStateManager.color4f(1, 1, 1, 1);
+        GlStateManager.enableAlphaTest();
+        ITankAsset asset = (ITankAsset) IAssetProvider.getAsset(provider, tank.getTankType().getAssetType());
+        AssetUtil.drawAsset(screen, asset, guiX + getPosX(), guiY + getPosY());
     }
 
     @Override
     public void drawGuiContainerForegroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
-        GlStateManager.color4f(1, 1, 1, 1);
-        GlStateManager.enableAlphaTest();
-        ITankAsset asset = IAssetProvider.getAsset(provider, AssetTypes.TANK);
-        AssetUtil.drawAsset(screen, asset, getPosX(), getPosY());
+
     }
 
     @Override

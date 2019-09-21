@@ -1,3 +1,10 @@
+/*
+ * This file is part of Titanium
+ * Copyright (C) 2019, Horizon Studio <contact@hrznstudio.com>.
+ *
+ * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
+ */
+
 package com.hrznstudio.titanium.fluid;
 
 import com.hrznstudio.titanium.module.api.IAlternativeEntries;
@@ -19,7 +26,7 @@ public class TitaniumFluidInstance extends net.minecraftforge.registries.ForgeRe
     private Item bucketFluid;
     private Block blockFluid;
 
-    public TitaniumFluidInstance(String modid, String fluid, FluidAttributes attributes, boolean hasBucket, ItemGroup group) {
+    public TitaniumFluidInstance(String modid, String fluid, FluidAttributes.Builder attributes, boolean hasBucket, ItemGroup group) {
         this.sourceFluid = (TitaniumFluid) new TitaniumFluid.Source(attributes).setRegistryName(modid, fluid);
         this.flowingFluid = (TitaniumFluid) new TitaniumFluid.Flowing(attributes).setRegistryName(modid, fluid + "_fluid");
         this.sourceFluid.setSourceFluid(sourceFluid).setFlowingFluid(flowingFluid);

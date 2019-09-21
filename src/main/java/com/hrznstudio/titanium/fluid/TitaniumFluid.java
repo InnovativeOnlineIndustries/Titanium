@@ -1,3 +1,10 @@
+/*
+ * This file is part of Titanium
+ * Copyright (C) 2019, Horizon Studio <contact@hrznstudio.com>.
+ *
+ * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
+ */
+
 package com.hrznstudio.titanium.fluid;
 
 import net.minecraft.block.Block;
@@ -20,13 +27,13 @@ import net.minecraftforge.fluids.FluidAttributes;
 
 public class TitaniumFluid extends FlowingFluid {
 
-    private final FluidAttributes fluidAttributes;
+    private final FluidAttributes.Builder fluidAttributes;
     private Fluid flowingFluid;
     private FlowingFluid sourceFluid;
     private Item bucketFluid;
     private Block blockFluid;
 
-    public TitaniumFluid(FluidAttributes fluidAttributes) {
+    public TitaniumFluid(FluidAttributes.Builder fluidAttributes) {
         this.fluidAttributes = fluidAttributes;
     }
 
@@ -112,11 +119,6 @@ public class TitaniumFluid extends FlowingFluid {
         return fluidIn == sourceFluid || fluidIn == flowingFluid;
     }
 
-    @Override
-    public FluidAttributes createAttributes(Fluid fluid) {
-        return fluidAttributes;
-    }
-
     public TitaniumFluid setSourceFluid(FlowingFluid sourceFluid) {
         this.sourceFluid = sourceFluid;
         return this;
@@ -132,12 +134,17 @@ public class TitaniumFluid extends FlowingFluid {
         return this;
     }
 
+    @Override
+    protected FluidAttributes createAttributes() {
+        return fluidAttributes.build(this);
+    }
+
     public static class Flowing extends TitaniumFluid {
         {
             setDefaultState(getStateContainer().getBaseState().with(LEVEL_1_8, 7));
         }
 
-        public Flowing(FluidAttributes fluidAttributes) {
+        public Flowing(FluidAttributes.Builder fluidAttributes) {
             super(fluidAttributes);
         }
 
@@ -160,7 +167,7 @@ public class TitaniumFluid extends FlowingFluid {
 
     public static class Source extends TitaniumFluid {
 
-        public Source(FluidAttributes fluidAttributes) {
+        public Source(FluidAttributes.Builder fluidAttributes) {
             super(fluidAttributes);
         }
 

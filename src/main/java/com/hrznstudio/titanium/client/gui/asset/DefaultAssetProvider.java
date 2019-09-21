@@ -31,7 +31,7 @@ public final class DefaultAssetProvider implements IAssetProvider {
             return new Point(3, 3);
         }
     };
-    private final ITankAsset TANK = new ITankAsset() {
+    private final ITankAsset TANK_NORMAL = new ITankAsset() {
         @Override
         public int getFluidRenderPadding(Direction facing) {
             return 3;
@@ -40,6 +40,17 @@ public final class DefaultAssetProvider implements IAssetProvider {
         @Override
         public Rectangle getArea() {
             return new Rectangle(177, 1, 18, 56);
+        }
+    };
+    private final ITankAsset TANK_SMALL = new ITankAsset() {
+        @Override
+        public int getFluidRenderPadding(Direction facing) {
+            return 3;
+        }
+
+        @Override
+        public Rectangle getArea() {
+            return new Rectangle(235, 1, 18, 19);
         }
     };
     private final Point HOTBAR_POS = new Point(8, 160);
@@ -91,6 +102,7 @@ public final class DefaultAssetProvider implements IAssetProvider {
     private final IAsset BUTTON_SIDENESS_MANAGER = () -> new Rectangle(1, 231, 14, 14);
     private final IAsset PROGRESS_BAR_HORIZONTAL = () -> new Rectangle(177, 77, 22, 16);
     private final IAsset PROGRESS_BAR_BACKGROUND_HORIZONTAL = () -> new Rectangle(177, 61, 22, 15);
+    private final IAsset AUGMENT_BACKGROUND = () -> new Rectangle(212, 61, 30, 84);
 
     DefaultAssetProvider() {
     }
@@ -110,8 +122,10 @@ public final class DefaultAssetProvider implements IAssetProvider {
             return assetType.castOrDefault(PROGRESS_BAR_FILL);
         if (assetType == AssetTypes.SLOT)
             return assetType.castOrDefault(SLOT);
-        if (assetType == AssetTypes.TANK)
-            return assetType.castOrDefault(TANK);
+        if (assetType == AssetTypes.TANK_NORMAL)
+            return assetType.castOrDefault(TANK_NORMAL);
+        if (assetType == AssetTypes.TANK_SMALL)
+            return assetType.castOrDefault(TANK_SMALL);
         if (assetType == AssetTypes.PROGRESS_BAR_BORDER_VERTICAL)
             return assetType.castOrDefault(PROGRESS_BAR_BORDER);
         if (assetType == AssetTypes.BUTTON_SIDENESS_DISABLED)
@@ -128,6 +142,8 @@ public final class DefaultAssetProvider implements IAssetProvider {
             return assetType.castOrDefault(PROGRESS_BAR_BACKGROUND_HORIZONTAL);
         if (assetType == AssetTypes.PROGRESS_BAR_HORIZONTAL)
             return assetType.castOrDefault(PROGRESS_BAR_HORIZONTAL);
+        if (assetType == AssetTypes.AUGMENT_BACKGROUND)
+            return assetType.castOrDefault(AUGMENT_BACKGROUND);
         return null;
     }
 }
