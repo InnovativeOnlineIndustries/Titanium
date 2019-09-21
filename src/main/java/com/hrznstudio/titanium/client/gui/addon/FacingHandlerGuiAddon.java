@@ -94,7 +94,7 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
         AbstractGui.fill(guiX + getPosX() + offset, guiY + getPosY() + offset, guiX + getPosX() + getXSize() - offset, guiY + getPosY() + getYSize() - offset, handler.getColor());
         GlStateManager.color4f(1, 1, 1, 1);
         if (isClicked()) {
-            //TODO draw the overlay for the slots
+            //draw the overlay for the slots
             screen.blit(guiX + backgroundInfo.getInventoryPosition().x - 1, guiY + backgroundInfo.getInventoryPosition().y - 1, 16, 213 + 18, 14, 14);
             screen.blit(guiX + backgroundInfo.getInventoryPosition().x - 1, guiY + backgroundInfo.getInventoryPosition().y - 1, 56, 185, 162, 54);
         }
