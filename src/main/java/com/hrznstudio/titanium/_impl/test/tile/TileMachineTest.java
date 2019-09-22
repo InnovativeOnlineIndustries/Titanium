@@ -10,8 +10,8 @@ package com.hrznstudio.titanium._impl.test.tile;
 import com.hrznstudio.titanium._impl.test.BlockMachine;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.filter.FilterSlot;
-import com.hrznstudio.titanium.api.filter.ItemstackFilter;
 import com.hrznstudio.titanium.block.tile.TileMachine;
+import com.hrznstudio.titanium.filter.ItemstackFilter;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 
