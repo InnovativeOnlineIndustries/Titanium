@@ -1,16 +1,21 @@
 package com.hrznstudio.titanium.api.filter;
 
+import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.function.Predicate;
 
-public interface IFilter<T extends Object> extends INBTSerializable<CompoundNBT> {
+public interface IFilter<T extends Object> extends INBTSerializable<CompoundNBT>, IGuiAddonProvider {
+
+    String getName();
 
     boolean acceptsAsFilter(ItemStack filter);
 
     void setFilter(int slot, ItemStack stack);
+
+    void setFilter(int slot, FilterSlot<T> filterSlot);
 
     FilterSlot<T>[] getFilter();
 

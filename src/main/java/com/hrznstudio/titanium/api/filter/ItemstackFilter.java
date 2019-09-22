@@ -1,9 +1,14 @@
 package com.hrznstudio.titanium.api.filter;
 
+import com.hrznstudio.titanium.api.IFactory;
+import com.hrznstudio.titanium.api.client.IGuiAddon;
+import com.hrznstudio.titanium.client.gui.addon.ItemstackFilterGuiAddon;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class ItemstackFilter implements IFilter<ItemStack> {
 
@@ -15,13 +20,21 @@ public class ItemstackFilter implements IFilter<ItemStack> {
     private static FilterAction<ItemStack> DURABILITY_MORE_50 = new FilterAction<>((itemStackIFilter, stack) -> Arrays.stream(itemStackIFilter.getFilter()).anyMatch(itemStackFilterSlot -> stack.isItemEqual(itemStackFilterSlot.getFilter())) && stack.getDamage() > stack.getMaxDamage() / 50);
     private static FilterAction<ItemStack>[] ACTIONS = new FilterAction[]{SIMPLE, IGNORE_DURABILITY, DURABILITY_LESS_50, DAMAGED, NOT_DAMAGED, DURABILITY_MORE_50};
     private final FilterSlot<ItemStack>[] filter;
+
     private Type type;
     private int pointer;
+    private String name;
 
-    public ItemstackFilter(int filterSize) {
+    public ItemstackFilter(String name, int filterSize) {
+        this.name = name;
         this.filter = new FilterSlot[filterSize];
         this.type = Type.WHITELIST;
         this.pointer = 0;
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     @Override
@@ -32,6 +45,11 @@ public class ItemstackFilter implements IFilter<ItemStack> {
     @Override
     public void setFilter(int slot, ItemStack stack) {
         filter[slot].setFilter(stack);
+    }
+
+    @Override
+    public void setFilter(int slot, FilterSlot<ItemStack> filterSlot) {
+        this.filter[slot] = filterSlot;
     }
 
     @Override
@@ -69,7 +87,8 @@ public class ItemstackFilter implements IFilter<ItemStack> {
         compoundNBT.putInt("Pointer", pointer);
         CompoundNBT filter = new CompoundNBT();
         for (FilterSlot<ItemStack> itemStackFilterSlot : this.filter) {
-            filter.put(itemStackFilterSlot.getFilterID() + "", itemStackFilterSlot.getFilter().serializeNBT());
+            if (itemStackFilterSlot != null && !itemStackFilterSlot.getFilter().isEmpty())
+                filter.put(itemStackFilterSlot.getFilterID() + "", itemStackFilterSlot.getFilter().serializeNBT());
         }
         compoundNBT.put("Filter", filter);
         compoundNBT.putString("Type", type.name());
@@ -80,9 +99,23 @@ public class ItemstackFilter implements IFilter<ItemStack> {
     public void deserializeNBT(CompoundNBT nbt) {
         pointer = nbt.getInt("Pointer");
         CompoundNBT filter = nbt.getCompound("Filter");
+        for (FilterSlot<ItemStack> filterSlot : this.filter) {
+            filterSlot.setFilter(ItemStack.EMPTY);
+        }
         for (String key : filter.keySet()) {
-            this.filter[Integer.getInteger(key)].setFilter(ItemStack.read(filter.getCompound(key)));
+            System.out.println(key);
+            System.out.println(filter.getCompound(key));
+            System.out.println(Integer.parseInt(key));
+            System.out.println(this.filter[Integer.parseInt(key)]);
+            this.filter[Integer.parseInt(key)].setFilter(ItemStack.read(filter.getCompound(key)));
         }
         this.type = Type.valueOf(nbt.getString("Type"));
+    }
+
+    @Override
+    public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
+        List<IFactory<? extends IGuiAddon>> list = new ArrayList<>();
+        list.add(() -> new ItemstackFilterGuiAddon(this));
+        return list;
     }
 }

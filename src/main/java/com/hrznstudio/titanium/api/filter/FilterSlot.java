@@ -25,4 +25,12 @@ public class FilterSlot<T extends Object> {
     public int getFilterID() {
         return filterID;
     }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
 }
