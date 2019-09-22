@@ -7,18 +7,22 @@
 
 package com.hrznstudio.titanium.api.filter;
 
+import net.minecraft.item.DyeColor;
+
 public class FilterSlot<T extends Object> {
 
     private int x;
     private int y;
     private T filter;
     private int filterID;
+    private int color;
 
     public FilterSlot(int x, int y, int filterID, T defaultFilter) {
         this.x = x;
         this.y = y;
         this.filterID = filterID;
         this.filter = defaultFilter;
+        setColor(DyeColor.WHITE);
     }
 
     public T getFilter() {
@@ -40,4 +44,17 @@ public class FilterSlot<T extends Object> {
     public int getY() {
         return y;
     }
+
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
+    }
+
+    public void setColor(DyeColor color) {
+        this.color = color.getFireworkColor();
+    }
+
 }

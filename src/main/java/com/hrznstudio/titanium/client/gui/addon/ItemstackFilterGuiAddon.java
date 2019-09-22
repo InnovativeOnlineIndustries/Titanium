@@ -23,6 +23,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 
+import java.awt.*;
 import java.util.Objects;
 
 public class ItemstackFilterGuiAddon extends BasicGuiAddon implements IClickable {
@@ -48,7 +49,11 @@ public class ItemstackFilterGuiAddon extends BasicGuiAddon implements IClickable
     public void drawGuiContainerBackgroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         for (FilterSlot<ItemStack> filterSlot : filter.getFilter()) {
             if (filterSlot != null) {
+                Color color = new Color(filterSlot.getColor());
                 AssetUtil.drawAsset(screen, Objects.requireNonNull(provider.getAsset(AssetTypes.SLOT)), guiX + filterSlot.getX(), guiY + filterSlot.getY());
+                AbstractGui.fill(guiX + filterSlot.getX() + 1, guiY + filterSlot.getY() + 1,
+                        guiX + filterSlot.getX() + 16, guiY + filterSlot.getY() + 16, new Color(color.getRed(), color.getGreen(), color.getBlue(), 256 / 2).getRGB());
+                GlStateManager.color4f(1, 1, 1, 1);
                 if (!filterSlot.getFilter().isEmpty()) {
                     RenderHelper.enableGUIStandardItemLighting();
                     Minecraft.getInstance().getItemRenderer().renderItemIntoGUI(filterSlot.getFilter(), filterSlot.getX() + guiX + 1, filterSlot.getY() + guiY + 1);

@@ -110,10 +110,6 @@ public class ItemstackFilter implements IFilter<ItemStack> {
             filterSlot.setFilter(ItemStack.EMPTY);
         }
         for (String key : filter.keySet()) {
-            System.out.println(key);
-            System.out.println(filter.getCompound(key));
-            System.out.println(Integer.parseInt(key));
-            System.out.println(this.filter[Integer.parseInt(key)]);
             this.filter[Integer.parseInt(key)].setFilter(ItemStack.read(filter.getCompound(key)));
         }
         this.type = Type.valueOf(nbt.getString("Type"));

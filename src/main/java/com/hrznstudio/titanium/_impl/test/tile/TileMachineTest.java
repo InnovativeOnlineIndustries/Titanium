@@ -12,6 +12,7 @@ import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.filter.FilterSlot;
 import com.hrznstudio.titanium.api.filter.ItemstackFilter;
 import com.hrznstudio.titanium.block.tile.TileMachine;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 
 public class TileMachineTest extends TileMachine {
@@ -25,7 +26,9 @@ public class TileMachineTest extends TileMachine {
         int pos = 0;
         for (int y = 0; y < 4; y++) {
             for (int x = 0; x < 3; x++) {
-                this.filter.setFilter(pos, new FilterSlot<>(20 + x * 18, 20 + y * 18, pos, ItemStack.EMPTY));
+                FilterSlot slot = new FilterSlot<>(20 + x * 18, 20 + y * 18, pos, ItemStack.EMPTY);
+                slot.setColor(DyeColor.CYAN);
+                this.filter.setFilter(pos, slot);
                 ++pos;
             }
         }
