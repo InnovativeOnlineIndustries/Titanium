@@ -52,7 +52,7 @@ public class ItemstackFilterGuiAddon extends BasicGuiAddon implements IClickable
                 Color color = new Color(filterSlot.getColor());
                 AssetUtil.drawAsset(screen, Objects.requireNonNull(provider.getAsset(AssetTypes.SLOT)), guiX + filterSlot.getX(), guiY + filterSlot.getY());
                 AbstractGui.fill(guiX + filterSlot.getX() + 1, guiY + filterSlot.getY() + 1,
-                        guiX + filterSlot.getX() + 16, guiY + filterSlot.getY() + 16, new Color(color.getRed(), color.getGreen(), color.getBlue(), 256 / 2).getRGB());
+                        guiX + filterSlot.getX() + 17, guiY + filterSlot.getY() + 17, new Color(color.getRed(), color.getGreen(), color.getBlue(), 256 / 2).getRGB());
                 GlStateManager.color4f(1, 1, 1, 1);
                 if (!filterSlot.getFilter().isEmpty()) {
                     RenderHelper.enableGUIStandardItemLighting();
