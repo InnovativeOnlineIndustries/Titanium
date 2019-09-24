@@ -24,7 +24,7 @@ public interface IFilter<T extends Object> extends INBTSerializable<CompoundNBT>
 
     void setFilter(int slot, FilterSlot<T> filterSlot);
 
-    FilterSlot<T>[] getFilter();
+    FilterSlot<T>[] getFilterSlots();
 
     Type getType();
 

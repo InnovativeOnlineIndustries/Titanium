@@ -31,23 +31,23 @@ public class ItemstackFilterGuiAddon extends BasicGuiAddon implements IClickable
     private final ItemstackFilter filter;
 
     public ItemstackFilterGuiAddon(ItemstackFilter filter) {
-        super(filter.getFilter()[0].getX(), filter.getFilter()[0].getY());
+        super(filter.getFilterSlots()[0].getX(), filter.getFilterSlots()[0].getY());
         this.filter = filter;
     }
 
     @Override
     public int getXSize() {
-        return filter.getFilter()[filter.getFilter().length - 1].getX() + 17;
+        return filter.getFilterSlots()[filter.getFilterSlots().length - 1].getX() + 17;
     }
 
     @Override
     public int getYSize() {
-        return filter.getFilter()[filter.getFilter().length - 1].getY() + 17;
+        return filter.getFilterSlots()[filter.getFilterSlots().length - 1].getY() + 17;
     }
 
     @Override
     public void drawGuiContainerBackgroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
-        for (FilterSlot<ItemStack> filterSlot : filter.getFilter()) {
+        for (FilterSlot<ItemStack> filterSlot : filter.getFilterSlots()) {
             if (filterSlot != null) {
                 Color color = new Color(filterSlot.getColor());
                 AssetUtil.drawAsset(screen, Objects.requireNonNull(provider.getAsset(AssetTypes.SLOT)), guiX + filterSlot.getX(), guiY + filterSlot.getY());
@@ -64,7 +64,7 @@ public class ItemstackFilterGuiAddon extends BasicGuiAddon implements IClickable
 
     @Override
     public void drawGuiContainerForegroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
-        for (FilterSlot<ItemStack> filterSlot : filter.getFilter()) {
+        for (FilterSlot<ItemStack> filterSlot : filter.getFilterSlots()) {
             if (filterSlot != null && mouseX > (guiX + filterSlot.getX() + 1) && mouseX < (guiX + filterSlot.getX() + 16) && mouseY > (guiY + filterSlot.getY() + 1) && mouseY < (guiY + filterSlot.getY() + 16)) {
                 GlStateManager.translated(0, 0, 200);
                 AbstractGui.fill(filterSlot.getX() + 1, filterSlot.getY() + 1, filterSlot.getX() + 17, filterSlot.getY() + 17, -2130706433);
@@ -80,7 +80,7 @@ public class ItemstackFilterGuiAddon extends BasicGuiAddon implements IClickable
     @Override
     public void handleClick(Screen screen, int guiX, int guiY, double mouseX, double mouseY, int button) {
         if (screen instanceof ContainerScreen && ((ContainerScreen) screen).getContainer() instanceof INetworkable) {
-            for (FilterSlot<ItemStack> filterSlot : filter.getFilter()) {
+            for (FilterSlot<ItemStack> filterSlot : filter.getFilterSlots()) {
                 if (filterSlot != null && mouseX > (guiX + filterSlot.getX() + 1) && mouseX < (guiX + filterSlot.getX() + 16) && mouseY > (guiY + filterSlot.getY() + 1) && mouseY < (guiY + filterSlot.getY() + 16)) {
                     INetworkable networkable = (INetworkable) ((ContainerScreen) screen).getContainer();
                     CompoundNBT compoundNBT = new CompoundNBT();
