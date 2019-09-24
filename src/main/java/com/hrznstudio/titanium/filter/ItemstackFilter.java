@@ -54,11 +54,15 @@ public class ItemstackFilter implements IFilter<ItemStack> {
 
     @Override
     public void setFilter(int slot, ItemStack stack) {
+        if (slot < 0 || slot >= filter.length)
+            throw new RuntimeException("Filter slot " + slot + " not in valid range - [0," + filter.length + ")");
         filter[slot].setFilter(stack);
     }
 
     @Override
     public void setFilter(int slot, FilterSlot<ItemStack> filterSlot) {
+        if (slot < 0 || slot >= filter.length)
+            throw new RuntimeException("Filter slot " + slot + " not in valid range - [0," + filter.length + ")");
         this.filter[slot] = filterSlot;
     }
 
