@@ -11,10 +11,12 @@ import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
+import com.hrznstudio.titanium.api.filter.IFilter;
 import com.hrznstudio.titanium.block.BlockRotation;
 import com.hrznstudio.titanium.block.BlockTileBase;
 import com.hrznstudio.titanium.block.tile.button.MultiButtonHandler;
 import com.hrznstudio.titanium.block.tile.button.PosButton;
+import com.hrznstudio.titanium.block.tile.filter.MultiFilterHandler;
 import com.hrznstudio.titanium.block.tile.fluid.MultiTankHandler;
 import com.hrznstudio.titanium.block.tile.fluid.PosFluidTank;
 import com.hrznstudio.titanium.block.tile.inventory.MultiInventoryHandler;
@@ -31,6 +33,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
@@ -57,6 +60,7 @@ public class TileActive extends TileBase implements IGuiAddonProvider, ITickable
     private MultiProgressBarHandler multiProgressBarHandler;
     private MultiTankHandler multiTankHandler;
     private MultiButtonHandler multiButtonHandler;
+    private MultiFilterHandler multiFilterHandler;
 
     private List<IFactory<? extends IGuiAddon>> guiAddons;
 
@@ -117,6 +121,11 @@ public class TileActive extends TileBase implements IGuiAddonProvider, ITickable
         multiButtonHandler.addButton(button);
     }
 
+    public void addFilter(IFilter filter) {
+        if (multiFilterHandler == null) multiFilterHandler = new MultiFilterHandler();
+        multiFilterHandler.add(filter);
+    }
+
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
@@ -148,6 +157,7 @@ public class TileActive extends TileBase implements IGuiAddonProvider, ITickable
         if (multiProgressBarHandler != null) addons.addAll(multiProgressBarHandler.getGuiAddons());
         if (multiTankHandler != null) addons.addAll(multiTankHandler.getGuiAddons());
         if (multiButtonHandler != null) addons.addAll(multiButtonHandler.getGuiAddons());
+        if (multiFilterHandler != null) addons.addAll(multiFilterHandler.getGuiAddons());
         return addons;
     }
 
@@ -209,6 +219,19 @@ public class TileActive extends TileBase implements IGuiAddonProvider, ITickable
     }
 
     public void handleButtonMessage(int id, PlayerEntity playerEntity, CompoundNBT compound) {
+        if (id == -2) {
+            String name = compound.getString("Name");
+            if (multiFilterHandler != null) {
+                for (IFilter filter : multiFilterHandler.getFilters()) {
+                    if (filter.getName().equals(name)) {
+                        int slot = compound.getInt("Slot");
+                        filter.setFilter(slot, ItemStack.read(compound.getCompound("Filter")));
+                        markForUpdate();
+                        break;
+                    }
+                }
+            }
+        }
         if (id == -1) {
             String name = compound.getString("Name");
             FacingUtil.Sideness facing = FacingUtil.Sideness.valueOf(compound.getString("Facing"));
