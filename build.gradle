@@ -15,8 +15,8 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 
-//def BUILD_NUMBER = System.getenv("COMMIT") ? "${project.api_version}-${System.getenv("COMMIT")}" : "${project.api_version}"
-version = "${minecraftVersion}-${project.api_version}"
+//def BUILD_NUMBER = System.getenv("COMMIT") ? "${project.api_version}-${System.getenv("COMMIT")}-SNAPSHOT" : "${project.api_version}"
+version = "${minecraftVersion}-${project.api_version}-SNAPSHOT"
 group = 'com.hrznstudio'
 archivesBaseName = 'titanium'
 
