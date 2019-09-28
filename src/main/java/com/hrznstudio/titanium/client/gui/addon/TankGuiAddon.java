@@ -19,6 +19,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.awt.*;
@@ -77,7 +78,7 @@ public class TankGuiAddon extends BasicGuiAddon {
 
     @Override
     public List<String> getTooltipLines() { ///TODO localize
-        return Arrays.asList(TextFormatting.GOLD + "Fluid: " + TextFormatting.WHITE + (tank.getFluid().isEmpty() ? "Empty" : tank.getFluid().getFluid().getAttributes().getTranslationKey(tank.getFluid())), TextFormatting.GOLD + "Amount: " + TextFormatting.WHITE + new DecimalFormat().format(tank.getFluidAmount()) + TextFormatting.GOLD + "/" + TextFormatting.WHITE + new DecimalFormat().format(tank.getCapacity()) + TextFormatting.DARK_AQUA + "mb");
+        return Arrays.asList(TextFormatting.GOLD + "Fluid: " + TextFormatting.WHITE + (tank.getFluid().isEmpty() ? "Empty" : new TranslationTextComponent(tank.getFluid().getFluid().getAttributes().getTranslationKey(tank.getFluid())).getFormattedText()), TextFormatting.GOLD + "Amount: " + TextFormatting.WHITE + new DecimalFormat().format(tank.getFluidAmount()) + TextFormatting.GOLD + "/" + TextFormatting.WHITE + new DecimalFormat().format(tank.getCapacity()) + TextFormatting.DARK_AQUA + "mb");
     }
 
     @Override
