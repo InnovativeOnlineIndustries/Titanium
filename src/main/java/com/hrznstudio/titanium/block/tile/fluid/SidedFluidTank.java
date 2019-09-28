@@ -9,6 +9,7 @@ package com.hrznstudio.titanium.block.tile.fluid;
 
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.AssetTypes;
+import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
 import com.hrznstudio.titanium.block.tile.sideness.IFacingHandler;
@@ -38,6 +39,7 @@ public class SidedFluidTank extends PosFluidTank implements IFacingHandler, IGui
     private int facingHandlerY = 84;
     private HashMap<FacingUtil.Sideness, FaceMode> facingModes;
     private int pos;
+    private boolean hasFacingAddon;
 
     public SidedFluidTank(String name, int amount, int posX, int posY, int pos) {
         super(name, amount, posX, posY);
@@ -47,6 +49,12 @@ public class SidedFluidTank extends PosFluidTank implements IFacingHandler, IGui
         for (FacingUtil.Sideness facing : FacingUtil.Sideness.values()) {
             this.facingModes.put(facing, FaceMode.ENABLED);
         }
+        this.hasFacingAddon = true;
+    }
+
+    public SidedFluidTank disableFacingAddon() {
+        this.hasFacingAddon = false;
+        return this;
     }
 
     @Override
@@ -70,8 +78,8 @@ public class SidedFluidTank extends PosFluidTank implements IFacingHandler, IGui
     }
 
     @Override
-    public Rectangle getRectangle() {
-        return new Rectangle(this.getPosX(), this.getPosY(), 18 - 1, 46 - 1);
+    public Rectangle getRectangle(IAsset asset) {
+        return new Rectangle(this.getPosX() - 2, this.getPosY() - 2, (int) asset.getArea().getWidth() + 3, (int) asset.getArea().getHeight() + 3);
     }
 
     @Override
@@ -83,7 +91,6 @@ public class SidedFluidTank extends PosFluidTank implements IFacingHandler, IGui
     public int getFacingHandlerY() {
         return this.facingHandlerY;
     }
-
 
 
     @Override
@@ -136,7 +143,8 @@ public class SidedFluidTank extends PosFluidTank implements IFacingHandler, IGui
     @Override
     public java.util.List<IFactory<? extends IGuiAddon>> getGuiAddons() {
         List<IFactory<? extends IGuiAddon>> addons = super.getGuiAddons();
-        addons.add(() -> new FacingHandlerGuiAddon(SidedHandlerManager.ofRight(getFacingHandlerX(), getFacingHandlerY(), pos, AssetTypes.BUTTON_SIDENESS_MANAGER, 4), this));
+        if (hasFacingAddon)
+            addons.add(() -> new FacingHandlerGuiAddon(SidedHandlerManager.ofRight(getFacingHandlerX(), getFacingHandlerY(), pos, AssetTypes.BUTTON_SIDENESS_MANAGER, 4), this, getTankType().getAssetType()));
         return addons;
     }
 

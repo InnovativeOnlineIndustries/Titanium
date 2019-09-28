@@ -15,8 +15,8 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 
-def BUILD_NUMBER = System.getenv("COMMIT") ? "${project.api_version}-${System.getenv("COMMIT")}" : "${project.api_version}"
-version = "${minecraftVersion}-${BUILD_NUMBER}"
+//def BUILD_NUMBER = System.getenv("COMMIT") ? "${project.api_version}-${System.getenv("COMMIT")}" : "${project.api_version}"
+version = "${minecraftVersion}-${project.api_version}"
 group = 'com.hrznstudio'
 archivesBaseName = 'titanium'
 
@@ -33,7 +33,7 @@ license {
 }
 
 minecraft {
-    mappings channel: 'snapshot', version: '20190829-1.14.3'
+    mappings channel: 'snapshot', version: '20190911-1.14.3'
     runs {
         client = {
             // recommended logging data for a userdev environment
@@ -51,6 +51,12 @@ minecraft {
             workingDirectory project.file('run').canonicalPath
             source sourceSets.main
         }
+        data {
+            workingDirectory project.file('run')
+            property 'forge.logging.console.level', 'info'
+            args '--mod', 'titanium', '--all', '--output', file('src/main/resources'), '--input', file('src/main/resources')
+            source sourceSets.main
+        }
     }
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 }
@@ -65,7 +71,7 @@ repositories {
     }
 }
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.14.4-28.0.75'
+    minecraft 'net.minecraftforge:forge:1.14.4-28.0.105'
 
     compileOnly fg.deobf("mezz.jei:jei-1.14.4:6.0.0.11:api")
         // at runtime, use the full JEI jar
@@ -121,11 +127,15 @@ publishing {
         }
     }
     repositories {
-        maven {
-            url "s3://cdn.hrzn.studio/maven"
-            authentication {
-                awsIm(AwsImAuthentication)
+        if(System.getenv("BRANCH") == "1.14") {
+            maven {
+                url "s3://cdn.hrzn.studio/maven"
+                authentication {
+                    awsIm(AwsImAuthentication)
+                }
             }
+        } else {
+            mavenLocal()
         }
     }
 }

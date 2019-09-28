@@ -8,20 +8,14 @@
 package com.hrznstudio.titanium.client.gui.addon;
 
 import com.hrznstudio.titanium.block.tile.button.PosButton;
-import com.hrznstudio.titanium.client.gui.ITileContainer;
 import com.hrznstudio.titanium.client.gui.addon.interfaces.IClickable;
 import com.hrznstudio.titanium.client.gui.addon.interfaces.INetworkable;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
-import com.hrznstudio.titanium.client.gui.container.GuiContainerBase;
-import com.hrznstudio.titanium.client.gui.container.GuiContainerTileBase;
-import com.hrznstudio.titanium.container.TitaniumContainerBase;
-import com.hrznstudio.titanium.container.impl.ContainerTileBase;
 import com.hrznstudio.titanium.network.NetworkHandler;
 import com.hrznstudio.titanium.network.locator.ILocatable;
 import com.hrznstudio.titanium.network.messages.ButtonClickNetworkMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
-import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.nbt.CompoundNBT;

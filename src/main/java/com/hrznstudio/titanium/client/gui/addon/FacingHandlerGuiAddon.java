@@ -8,6 +8,8 @@
 package com.hrznstudio.titanium.client.gui.addon;
 
 import com.hrznstudio.titanium.api.client.AssetTypes;
+import com.hrznstudio.titanium.api.client.IAsset;
+import com.hrznstudio.titanium.api.client.IAssetType;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.assets.types.IBackgroundAsset;
 import com.hrznstudio.titanium.block.tile.button.PosButton;
@@ -44,8 +46,9 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
     private boolean clicked;
     private Point inventoryPoint;
     private Point hotbarPoint;
+    private IAssetType assetType;
 
-    public FacingHandlerGuiAddon(SidedHandlerManager manager, IFacingHandler facingHandler) {
+    public FacingHandlerGuiAddon(SidedHandlerManager manager, IFacingHandler facingHandler, IAssetType assetType) {
         super(manager.getPosX(), manager.getPosY());
         this.manager = manager;
         this.handler = facingHandler;
@@ -53,6 +56,7 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
         this.xSize = 0;
         this.ySize = 0;
         this.clicked = false;
+        this.assetType = assetType;
     }
 
     public static Point getPointFromFacing(FacingUtil.Sideness sideness, Point inventory) {
@@ -90,7 +94,7 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
         AbstractGui.fill(guiX + getPosX() + offset, guiY + getPosY() + offset, guiX + getPosX() + getXSize() - offset, guiY + getPosY() + getYSize() - offset, handler.getColor());
         GlStateManager.color4f(1, 1, 1, 1);
         if (isClicked()) {
-            //TODO draw the overlay for the slots
+            //draw the overlay for the slots
             screen.blit(guiX + backgroundInfo.getInventoryPosition().x - 1, guiY + backgroundInfo.getInventoryPosition().y - 1, 16, 213 + 18, 14, 14);
             screen.blit(guiX + backgroundInfo.getInventoryPosition().x - 1, guiY + backgroundInfo.getInventoryPosition().y - 1, 56, 185, 162, 54);
         }
@@ -99,10 +103,12 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
     @Override
     public void drawGuiContainerForegroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
         if (isInside(screen, mouseX - guiX, mouseY - guiY) || isClicked()) {
-            AssetUtil.drawHorizontalLine(handler.getRectangle().x, handler.getRectangle().x + handler.getRectangle().width, handler.getRectangle().y, handler.getColor());
-            AssetUtil.drawHorizontalLine(handler.getRectangle().x, handler.getRectangle().x + handler.getRectangle().width, handler.getRectangle().y + handler.getRectangle().height, handler.getColor());
-            AssetUtil.drawVerticalLine(handler.getRectangle().x, handler.getRectangle().y, handler.getRectangle().y + handler.getRectangle().height, handler.getColor());
-            AssetUtil.drawVerticalLine(handler.getRectangle().x + handler.getRectangle().width, handler.getRectangle().y, handler.getRectangle().y + handler.getRectangle().height, handler.getColor());
+            IAsset asset = provider.getAsset(assetType);
+            Rectangle area = handler.getRectangle(asset);
+            AssetUtil.drawHorizontalLine(area.x, area.x + area.width, area.y, handler.getColor());
+            AssetUtil.drawHorizontalLine(area.x, area.x + area.width, area.y + area.height, handler.getColor());
+            AssetUtil.drawVerticalLine(area.x, area.y, area.y + area.height, handler.getColor());
+            AssetUtil.drawVerticalLine(area.x + area.width, area.y, area.y + area.height, handler.getColor());
         }
     }
 
@@ -127,7 +133,7 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
             for (IGuiAddon addon : new ArrayList<>(((IGuiAddonConsumer) screen).getAddons())) {
                 if (addon instanceof FacingHandlerGuiAddon && addon != this) {
                     ((FacingHandlerGuiAddon) addon).setClicked((GuiContainerTileBase) screen, false);
-                    ((GuiContainerTileBase)screen).getContainer().setDisabled(true);
+                    ((GuiContainerTileBase) screen).getContainer().setDisabled(true);
                 }
             }
             this.setClicked((GuiContainerTileBase) screen, !clicked);
@@ -189,5 +195,5 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
             information.getContainer().setDisabled(false);
         }
     }
-    
+
 }

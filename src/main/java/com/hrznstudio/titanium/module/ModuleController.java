@@ -11,16 +11,14 @@ import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.hrznstudio.titanium.annotation.config.ConfigFile;
 import com.hrznstudio.titanium.config.AnnotationConfigManager;
 import com.hrznstudio.titanium.event.handler.EventManager;
-import com.hrznstudio.titanium.recipe.generator.JsonDataGenerator;
 import com.hrznstudio.titanium.util.AnnotationUtil;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +28,6 @@ public abstract class ModuleController {
     private final Map<String, Module> moduleMap = new HashMap<>();
     private final Map<String, Module> disabledModuleMap = new HashMap<>();
     private final AnnotationConfigManager configManager = new AnnotationConfigManager();
-    private final List<JsonDataGenerator> jsonDataGenerators = new ArrayList<>();
 
     public ModuleController() {
         modid = ModLoadingContext.get().getActiveContainer().getModId();
@@ -74,8 +71,7 @@ public abstract class ModuleController {
         });
         EventManager.mod(ModConfig.Loading.class).process(ev -> configManager.inject()).subscribe();
         EventManager.mod(ModConfig.ConfigReloading.class).process(ev -> configManager.inject()).subscribe();
-        initJsonGenerators();
-        EventManager.mod(FMLLoadCompleteEvent.class).process(fmlLoadCompleteEvent -> jsonDataGenerators.forEach(JsonDataGenerator::generate)).subscribe();
+        EventManager.mod(GatherDataEvent.class).process(this::addDataProvider).subscribe();
     }
 
     private void addConfig(AnnotationConfigManager.Type type) {
@@ -95,11 +91,7 @@ public abstract class ModuleController {
         addModule(builder.build());
     }
 
-    public void addJsonDataGenerator(JsonDataGenerator generator) {
-        this.jsonDataGenerators.add(generator);
-    }
-
-    public void initJsonGenerators() {
+    public void addDataProvider(GatherDataEvent event) {
 
     }
 }

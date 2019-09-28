@@ -15,8 +15,8 @@ import com.hrznstudio.titanium.util.SidedHandler;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -77,13 +77,13 @@ public class Feature {
     }
 
     public <T extends IForgeRegistryEntry<T>> List<? extends T> getEntries(Class<T> tClass) {
-        return (List<T>) content.computeIfAbsent(tClass, aClass -> new ArrayList<>());
+        return (List<T>) content.computeIfAbsent(tClass, aClass -> new LinkedList<>());
     }
 
     public final static class Builder implements RegistryManager<Builder> {
         private final String id;
-        private final Map<Class<? extends IForgeRegistryEntry>, List<?>> content = new HashMap<>();
-        private final List<EventManager.FilteredEventManager> events = new ArrayList<>();
+        private final Map<Class<? extends IForgeRegistryEntry>, List<?>> content = new LinkedHashMap<>();
+        private final List<EventManager.FilteredEventManager> events = new LinkedList<>();
         private boolean forced;
         private boolean enabledByDefault = true;
         private String description;
@@ -125,7 +125,7 @@ public class Feature {
         }
 
         public <T extends IForgeRegistryEntry<T>> List<T> getList(Class<T> tClass) {
-            return (List<T>) content.computeIfAbsent(tClass, aClass -> new ArrayList<>());
+            return (List<T>) content.computeIfAbsent(tClass, aClass -> new LinkedList<>());
         }
 
         public Feature build() {

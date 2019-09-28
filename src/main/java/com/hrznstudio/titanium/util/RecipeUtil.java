@@ -7,6 +7,7 @@
 
 package com.hrznstudio.titanium.util;
 
+import net.minecraft.item.crafting.FurnaceRecipe;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.RecipeManager;
@@ -26,5 +27,9 @@ public class RecipeUtil {
             return (Collection<T>) recipes.get(recipeType).values();
         }
         return new ArrayList<>();
+    }
+
+    public static Collection<FurnaceRecipe> getCookingRecipes(World world) {
+        return getRecipes(world, IRecipeType.SMELTING);
     }
 }

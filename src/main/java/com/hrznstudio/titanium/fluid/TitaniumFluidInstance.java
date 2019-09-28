@@ -26,7 +26,7 @@ public class TitaniumFluidInstance extends net.minecraftforge.registries.ForgeRe
     private Item bucketFluid;
     private Block blockFluid;
 
-    public TitaniumFluidInstance(String modid, String fluid, FluidAttributes attributes, boolean hasBucket, ItemGroup group) {
+    public TitaniumFluidInstance(String modid, String fluid, FluidAttributes.Builder attributes, boolean hasBucket, ItemGroup group) {
         this.sourceFluid = (TitaniumFluid) new TitaniumFluid.Source(attributes).setRegistryName(modid, fluid);
         this.flowingFluid = (TitaniumFluid) new TitaniumFluid.Flowing(attributes).setRegistryName(modid, fluid + "_fluid");
         this.sourceFluid.setSourceFluid(sourceFluid).setFlowingFluid(flowingFluid);
