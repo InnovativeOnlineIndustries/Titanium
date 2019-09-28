@@ -32,9 +32,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
 
-    private int buttonX = 8;
-    private int buttonY = 84;
     private int color;
+    private int facingHandlerX = 8;
+    private int facingHandlerY = 84;
     private HashMap<FacingUtil.Sideness, FaceMode> facingModes;
     private HashMap<FacingUtil.Sideness, Integer> slotCache;
     private int position;
@@ -87,20 +87,14 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
         return new Rectangle(this.getXPos() - renderingOffset - 3, this.getYPos() - renderingOffset - 3, 18 * this.getXSize() + renderingOffset * 2 + 3, 18 * this.getYSize() + renderingOffset * 2 + 3);
     }
 
-    public SidedInvHandler setButtonCoords(int buttonX, int buttonY) {
-        this.buttonX = buttonX;
-        this.buttonY = buttonY;
-        return this;
+    @Override
+    public int getFacingHandlerX() {
+        return this.facingHandlerX;
     }
 
     @Override
-    public int getButtonX() {
-        return this.buttonX;
-    }
-
-    @Override
-    public int getButtonY() {
-        return this.buttonY;
+    public int getFacingHandlerY() {
+        return this.facingHandlerY;
     }
 
     @Override
@@ -135,6 +129,13 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
     }
 
     @Override
+    public SidedInvHandler setFacingHandlerPos(int x, int y) {
+        this.facingHandlerX = x;
+        this.facingHandlerY = y;
+        return this;
+    }
+
+    @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = super.serializeNBT();
         CompoundNBT compound = new CompoundNBT();
@@ -159,7 +160,7 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
     @Override
     public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
         List<IFactory<? extends IGuiAddon>> addons = super.getGuiAddons();
-        addons.add(() -> new FacingHandlerGuiAddon(SidedHandlerManager.ofRight(getButtonX(), getButtonY(), position, AssetTypes.BUTTON_SIDENESS_MANAGER, 4), this));
+        addons.add(() -> new FacingHandlerGuiAddon(SidedHandlerManager.ofRight(getFacingHandlerX(), getFacingHandlerY(), position, AssetTypes.BUTTON_SIDENESS_MANAGER, 4), this));
         return addons;
     }
 

@@ -21,7 +21,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.SlotItemHandler;
@@ -60,7 +59,7 @@ public class ContainerTileBase extends ContainerInventoryBase implements ILocata
                 int i = 0;
                 for (int y = 0; y < handler.getYSize(); ++y) {
                     for (int x = 0; x < handler.getXSize(); ++x) {
-                        addSlot(new SlotItemHandler(handler, i, handler.getXPos() + x * 18, handler.getYPos() + y * 18));
+                        addSlot(new SlotItemHandler(handler, i, handler.getXPos() + handler.getSlotPosition().apply(i).getLeft(), handler.getYPos() + handler.getSlotPosition().apply(i).getRight()));
                         ++i;
                     }
                 }
@@ -77,8 +76,8 @@ public class ContainerTileBase extends ContainerInventoryBase implements ILocata
                         for (Slot inventorySlot : this.inventorySlots) {
                             if (!(inventorySlot instanceof SlotItemHandler)) continue;
                             if (((SlotItemHandler) inventorySlot).getItemHandler().equals(handler) && i == inventorySlot.getSlotIndex()) {
-                                inventorySlot.xPos = handler.getXPos() + x * 18;
-                                inventorySlot.yPos = handler.getYPos() + y * 18;
+                                inventorySlot.xPos = handler.getXPos() + handler.getSlotPosition().apply(i).getLeft();
+                                inventorySlot.yPos = handler.getYPos() + handler.getSlotPosition().apply(i).getRight();
                                 break;
                             }
                         }

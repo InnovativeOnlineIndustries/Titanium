@@ -100,7 +100,7 @@ public class TestAssetProvider implements IAssetProvider {
         assetMap.put(AssetTypes.PROGRESS_BAR_VERTICAL, PROGRESS_BAR_FILL);
         assetMap.put(AssetTypes.PROGRESS_BAR_BORDER_VERTICAL, PROGRESS_BAR_EMPTY);
         assetMap.put(AssetTypes.PROGRESS_BAR_BACKGROUND_VERTICAL, PROGRESS_BAR_EMPTY);
-        assetMap.put(AssetTypes.TANK, TANK);
+        assetMap.put(AssetTypes.TANK_NORMAL, TANK);
     }
 
     @Nullable
