@@ -84,10 +84,10 @@ public class Titanium extends ModuleController {
         EventManager.forge(PlayerEvent.PlayerLoggedInEvent.class).process(this::onPlayerLoggedIn).subscribe();
         EventManager.forge(FMLServerStartingEvent.class).process(this::onServerStart).subscribe();
 
-        ResourceRegistry.getOrCreate(() -> "iron").addOverride(ResourceType.INGOT, Items.IRON_INGOT);
-        ResourceRegistry.getOrCreate(() -> "iron").addOverride(ResourceType.NUGGET, Items.IRON_NUGGET);
-        ResourceRegistry.getOrCreate(() -> "gold").addOverride(ResourceType.INGOT, Items.GOLD_INGOT);
-        ResourceRegistry.getOrCreate(() -> "gold").addOverride(ResourceType.NUGGET, Items.GOLD_NUGGET);
+        ResourceRegistry.getOrCreate("iron").addOverride(ResourceType.INGOT, Items.IRON_INGOT);
+        ResourceRegistry.getOrCreate("iron").addOverride(ResourceType.NUGGET, Items.IRON_NUGGET);
+        ResourceRegistry.getOrCreate("gold").addOverride(ResourceType.INGOT, Items.GOLD_INGOT);
+        ResourceRegistry.getOrCreate("gold").addOverride(ResourceType.NUGGET, Items.GOLD_NUGGET);
     }
 
     public static void openGui(TileActive tile, ServerPlayerEntity player) {

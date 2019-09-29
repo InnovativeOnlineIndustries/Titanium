@@ -7,17 +7,17 @@ import java.util.HashMap;
 
 public class ResourceMaterial {
 
-    private Type type;
+    private String type;
     private HashMap<String, IResourceType> generatorTypes;
     private HashMap<String, ForgeRegistryEntry> generatorOverrides;
 
-    ResourceMaterial(Type type) {
+    ResourceMaterial(String type) {
         this.type = type;
         this.generatorTypes = new HashMap<>();
         this.generatorOverrides = new HashMap<>();
     }
 
-    public Type getMaterialType() {
+    public String getMaterialType() {
         return type;
     }
 
@@ -31,9 +31,4 @@ public class ResourceMaterial {
         return this;
     }
 
-    public interface Type {
-
-        String getType();
-
-    }
 }
