@@ -1,5 +1,6 @@
 package com.hrznstudio.titanium.material;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 public class ResourceRegistry {
@@ -10,4 +11,7 @@ public class ResourceRegistry {
         return MATERIALS.computeIfAbsent(type, s -> new ResourceMaterial(type));
     }
 
+    public static Collection<ResourceMaterial> getMaterials() {
+        return MATERIALS.values();
+    }
 }

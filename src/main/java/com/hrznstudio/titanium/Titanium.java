@@ -63,6 +63,7 @@ import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -84,10 +85,6 @@ public class Titanium extends ModuleController {
         EventManager.forge(PlayerEvent.PlayerLoggedInEvent.class).process(this::onPlayerLoggedIn).subscribe();
         EventManager.forge(FMLServerStartingEvent.class).process(this::onServerStart).subscribe();
 
-        ResourceRegistry.getOrCreate("iron").addOverride(ResourceType.INGOT, Items.IRON_INGOT);
-        ResourceRegistry.getOrCreate("iron").addOverride(ResourceType.NUGGET, Items.IRON_NUGGET);
-        ResourceRegistry.getOrCreate("gold").addOverride(ResourceType.INGOT, Items.GOLD_INGOT);
-        ResourceRegistry.getOrCreate("gold").addOverride(ResourceType.NUGGET, Items.GOLD_NUGGET);
     }
 
     public static void openGui(TileActive tile, ServerPlayerEntity player) {
@@ -96,6 +93,11 @@ public class Titanium extends ModuleController {
 
     @Override
     protected void initModules() {
+        ResourceRegistry.getOrCreate("iron").addOverride(ResourceType.INGOT, Items.IRON_INGOT).addOverride(ResourceType.NUGGET, Items.IRON_NUGGET);
+        ResourceRegistry.getOrCreate("iron").add(ResourceType.PLATE);
+        ResourceRegistry.getOrCreate("gold").addOverride(ResourceType.INGOT, Items.GOLD_INGOT);
+        ResourceRegistry.getOrCreate("gold").addOverride(ResourceType.NUGGET, Items.GOLD_NUGGET);
+
         addModule(Module.builder("core").force()
                 .feature(Feature.builder("core").force()
                         .content(ContainerType.class, (ContainerType) IForgeContainerType.create(ContainerTileBase::new).setRegistryName(new ResourceLocation(Titanium.MODID, "tile_container")))));
@@ -138,6 +140,19 @@ public class Titanium extends ModuleController {
                 .feature(Feature.builder("blocks")
                         .description("Adds creative machine features")
                         .content(Block.class, BlockCreativeFEGenerator.INSTANCE)));
+        Module.Builder builder = Module.builder("resources");
+        ResourceRegistry.getMaterials().forEach(material -> {
+            if (material.getGeneratorTypes().size() > 0) {
+                Feature.Builder feature = Feature.builder(material.getMaterialType());
+                material.getGeneratorTypes().values().forEach(type -> {
+                    ForgeRegistryEntry entry = material.generate(type);
+                    if (entry != null)
+                        feature.content(entry.getRegistryType(), entry);
+                });
+                builder.feature(feature);
+            }
+        });
+        addModule(builder);
     }
 
     @Override

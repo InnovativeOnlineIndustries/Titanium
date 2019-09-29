@@ -13,4 +13,12 @@ public class ResourceTypeItem extends ItemBase {
         this.type = type;
     }
 
+    public ResourceMaterial getMaterial() {
+        return material;
+    }
+
+    public ResourceType getType() {
+        return type;
+    }
+
 }
