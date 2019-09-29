@@ -26,7 +26,6 @@ public abstract class TitaniumRecipeProvider extends RecipeProvider {
 
     public abstract void register(Consumer<IFinishedRecipe> consumer);
 
-
     @Override
     public String getName() {
         return "Titanium Recipe";

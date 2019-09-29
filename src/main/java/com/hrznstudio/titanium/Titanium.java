@@ -29,6 +29,7 @@ import com.hrznstudio.titanium.network.locator.LocatorTypes;
 import com.hrznstudio.titanium.network.messages.ButtonClickNetworkMessage;
 import com.hrznstudio.titanium.recipe.generator.titanium.DefaultLootTableProvider;
 import com.hrznstudio.titanium.recipe.generator.titanium.JsonRecipeSerializerProvider;
+import com.hrznstudio.titanium.recipe.generator.titanium.ResourceRegistryProvider;
 import com.hrznstudio.titanium.reward.Reward;
 import com.hrznstudio.titanium.reward.RewardManager;
 import com.hrznstudio.titanium.reward.RewardSyncMessage;
@@ -161,6 +162,7 @@ public class Titanium extends ModuleController {
     public void addDataProvider(GatherDataEvent event) {
         event.getGenerator().addProvider(new DefaultLootTableProvider(event.getGenerator(), MODID));
         event.getGenerator().addProvider(new JsonRecipeSerializerProvider(event.getGenerator(), MODID));
+        event.getGenerator().addProvider(new ResourceRegistryProvider(event.getGenerator()));
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
