@@ -23,6 +23,7 @@ import com.hrznstudio.titanium.module.Feature;
 import com.hrznstudio.titanium.module.Module;
 import com.hrznstudio.titanium.module.ModuleController;
 import com.hrznstudio.titanium.network.NetworkHandler;
+import com.hrznstudio.titanium.network.locator.LocatorTypes;
 import com.hrznstudio.titanium.network.messages.ButtonClickNetworkMessage;
 import com.hrznstudio.titanium.recipe.generator.titanium.DefaultLootTableProvider;
 import com.hrznstudio.titanium.recipe.generator.titanium.JsonRecipeSerializerProvider;
@@ -140,6 +141,7 @@ public class Titanium extends ModuleController {
 
     private void commonSetup(FMLCommonSetupEvent event) {
         RewardManager.get().getRewards().values().forEach(rewardGiver -> rewardGiver.getRewards().forEach(reward -> reward.register(Dist.DEDICATED_SERVER)));
+        LocatorTypes.register();
     }
 
     @OnlyIn(Dist.CLIENT)

@@ -20,4 +20,8 @@ public class TileUtil {
             return Optional.of(tileClass.cast(tile));
         return Optional.empty();
     }
+
+    public static Optional<TileEntity> getTileEntity(IBlockReader access, BlockPos blockPos) {
+        return Optional.ofNullable(access.getTileEntity(blockPos));
+    }
 }

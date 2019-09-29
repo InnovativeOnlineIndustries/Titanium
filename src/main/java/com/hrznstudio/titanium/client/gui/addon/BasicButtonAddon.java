@@ -11,6 +11,9 @@ import com.hrznstudio.titanium.block.tile.button.PosButton;
 import com.hrznstudio.titanium.client.gui.addon.interfaces.IClickable;
 import com.hrznstudio.titanium.client.gui.addon.interfaces.INetworkable;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
+import com.hrznstudio.titanium.network.NetworkHandler;
+import com.hrznstudio.titanium.network.locator.ILocatable;
+import com.hrznstudio.titanium.network.messages.ButtonClickNetworkMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.gui.screen.Screen;
@@ -49,9 +52,9 @@ public class BasicButtonAddon extends BasicGuiAddon implements IClickable {
     @Override
     public void handleClick(Screen screen, int guiX, int guiY, double mouseX, double mouseY, int button) {
         Minecraft.getInstance().getSoundHandler().play(new SimpleSound(SoundEvents.UI_BUTTON_CLICK, SoundCategory.PLAYERS, 1f, 1f, Minecraft.getInstance().player.getPosition()));
-        if (screen instanceof ContainerScreen && ((ContainerScreen) screen).getContainer() instanceof INetworkable) {
-            INetworkable networkable = (INetworkable) ((ContainerScreen) screen).getContainer();
-            networkable.sendMessage(getButton().getId(), new CompoundNBT());
+        if (screen instanceof ContainerScreen && ((ContainerScreen) screen).getContainer() instanceof ILocatable) {
+            ILocatable locatable = (ILocatable) ((ContainerScreen) screen).getContainer();
+            NetworkHandler.NETWORK.sendToServer(new ButtonClickNetworkMessage(locatable.getLocatorInstance(), button, new CompoundNBT()));
         }
     }
 

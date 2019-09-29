@@ -7,20 +7,23 @@
 
 package com.hrznstudio.titanium.network.messages;
 
-import com.hrznstudio.titanium.block.tile.TileActive;
+import com.hrznstudio.titanium.network.IButtonHandler;
 import com.hrznstudio.titanium.network.Message;
-import com.hrznstudio.titanium.util.TileUtil;
+import com.hrznstudio.titanium.network.locator.LocatorInstance;
+import com.hrznstudio.titanium.util.CastingUtil;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.network.NetworkEvent;
 
+import java.util.Optional;
+
 public class ButtonClickNetworkMessage extends Message {
-    private BlockPos pos;
+    private LocatorInstance locatorInstance;
     private int id;
     private CompoundNBT data;
 
-    public ButtonClickNetworkMessage(BlockPos pos, int id, CompoundNBT data) {
-        this.pos = pos;
+    public ButtonClickNetworkMessage(LocatorInstance locatorInstance, int id, CompoundNBT data) {
+        this.locatorInstance = locatorInstance;
         this.id = id;
         this.data = data;
     }
@@ -31,8 +34,9 @@ public class ButtonClickNetworkMessage extends Message {
 
     @Override
     protected void handleMessage(NetworkEvent.Context context) {
-        TileUtil.getTileEntity(context.getSender().world, pos, TileActive.class).ifPresent(tileActive -> {
-            tileActive.handleButtonMessage(id, context.getSender(), data);
-        });
+        Optional.ofNullable(context.getSender())
+                .flatMap(locatorInstance::locale)
+                .flatMap(CastingUtil.attemptCast(IButtonHandler.class))
+                .ifPresent(iButtonHandler -> iButtonHandler.handleButtonMessage(id, context.getSender(), data));
     }
 }
