@@ -95,8 +95,8 @@ public class Titanium extends ModuleController {
     protected void initModules() {
         ResourceRegistry.getOrCreate("iron").addOverride(ResourceType.INGOT, Items.IRON_INGOT).addOverride(ResourceType.NUGGET, Items.IRON_NUGGET);
         ResourceRegistry.getOrCreate("iron").add(ResourceType.PLATE);
-        ResourceRegistry.getOrCreate("gold").addOverride(ResourceType.INGOT, Items.GOLD_INGOT);
-        ResourceRegistry.getOrCreate("gold").addOverride(ResourceType.NUGGET, Items.GOLD_NUGGET);
+        ResourceRegistry.getOrCreate("gold").addOverride(ResourceType.INGOT, Items.GOLD_INGOT).addOverride(ResourceType.NUGGET, Items.GOLD_NUGGET);
+        ResourceRegistry.getOrCreate("gold").add(ResourceType.PLATE);
 
         addModule(Module.builder("core").force()
                 .feature(Feature.builder("core").force()
@@ -140,19 +140,21 @@ public class Titanium extends ModuleController {
                 .feature(Feature.builder("blocks")
                         .description("Adds creative machine features")
                         .content(Block.class, BlockCreativeFEGenerator.INSTANCE)));
-        Module.Builder builder = Module.builder("resources");
         ResourceRegistry.getMaterials().forEach(material -> {
+            Module.Builder builder = Module.builder("resources." + material.getMaterialType());
             if (material.getGeneratorTypes().size() > 0) {
-                Feature.Builder feature = Feature.builder(material.getMaterialType());
                 material.getGeneratorTypes().values().forEach(type -> {
                     ForgeRegistryEntry entry = material.generate(type);
-                    if (entry != null)
+                    if (entry != null) {
+                        Feature.Builder feature = Feature.builder(type.getTag());
                         feature.content(entry.getRegistryType(), entry);
+                        builder.feature(feature);
+                    }
                 });
-                builder.feature(feature);
             }
+            addModule(builder);
         });
-        addModule(builder);
+
     }
 
     @Override
