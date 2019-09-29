@@ -2,6 +2,8 @@ package com.hrznstudio.titanium.material;
 
 import com.google.gson.JsonObject;
 import com.hrznstudio.titanium.Titanium;
+import com.hrznstudio.titanium.api.material.IResourceHolder;
+import com.hrznstudio.titanium.api.material.IResourceType;
 import com.hrznstudio.titanium.item.ItemBase;
 import com.hrznstudio.titanium.recipe.generator.IJSONGenerator;
 import com.hrznstudio.titanium.recipe.generator.IJsonFile;
@@ -9,7 +11,7 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
 
-public class ResourceTypeItem extends ItemBase implements IJsonFile, IJSONGenerator {
+public class ResourceTypeItem extends ItemBase implements IJsonFile, IJSONGenerator, IResourceHolder {
 
     private final ResourceMaterial material;
     private final ResourceType type;
@@ -24,7 +26,7 @@ public class ResourceTypeItem extends ItemBase implements IJsonFile, IJSONGenera
         return material;
     }
 
-    public ResourceType getType() {
+    public IResourceType getType() {
         return type;
     }
 

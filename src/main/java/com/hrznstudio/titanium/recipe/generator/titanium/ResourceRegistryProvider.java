@@ -2,12 +2,18 @@ package com.hrznstudio.titanium.recipe.generator.titanium;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.hrznstudio.titanium.api.material.IResourceHolder;
+import com.hrznstudio.titanium.block.BlockBase;
+import com.hrznstudio.titanium.item.ItemBase;
 import com.hrznstudio.titanium.material.ResourceRegistry;
 import com.hrznstudio.titanium.recipe.generator.IJSONGenerator;
 import com.hrznstudio.titanium.recipe.generator.IJsonFile;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.DirectoryCache;
-import net.minecraft.data.IDataProvider;
+import net.minecraft.block.Block;
+import net.minecraft.data.*;
+import net.minecraft.item.Item;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.util.ResourceLocation;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -18,13 +24,45 @@ public class ResourceRegistryProvider implements IDataProvider {
 
     private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().create();
     private final DataGenerator generator;
+    private ItemTagsProvider itemTagsProvider;
+    private BlockTagsProvider blockTagsProvider;
 
     public ResourceRegistryProvider(DataGenerator generator) {
         this.generator = generator;
+        this.itemTagsProvider = new ItemTagsProvider(generator) {
+            @Override
+            protected void registerTags() {
+                ResourceRegistry.getMaterials().forEach(material -> {
+                    material.getGenerated().values().stream().filter(entry -> entry instanceof IResourceHolder).forEach(entry -> {
+                        if (entry instanceof BlockBase) {
+                            this.copy(new BlockTags.Wrapper(new ResourceLocation("forge", ((IResourceHolder) entry).getType().getTag() + "/" + ((IResourceHolder) entry).getMaterial().getMaterialType())),
+                                    new ItemTags.Wrapper(new ResourceLocation("forge", ((IResourceHolder) entry).getType().getTag() + "/" + ((IResourceHolder) entry).getMaterial().getMaterialType())));
+                        } else if (entry instanceof ItemBase) {
+                            this.getBuilder(new ItemTags.Wrapper(new ResourceLocation("forge", ((IResourceHolder) entry).getType().getTag() + "/" + ((IResourceHolder) entry).getMaterial().getMaterialType()))).add((Item) entry);
+                        }
+                    });
+                });
+            }
+        };
+
+        this.blockTagsProvider = new BlockTagsProvider(generator) {
+            @Override
+            protected void registerTags() {
+                ResourceRegistry.getMaterials().forEach(material -> {
+                    material.getGenerated().values().stream().filter(entry -> entry instanceof IResourceHolder).forEach(entry -> {
+                        if (entry instanceof BlockBase) {
+                            this.getBuilder(new BlockTags.Wrapper(new ResourceLocation("forge", ((IResourceHolder) entry).getType().getTag() + "/" + ((IResourceHolder) entry).getMaterial().getMaterialType()))).add((Block) entry);
+                        }
+                    });
+                });
+            }
+        };
     }
 
     @Override
     public void act(DirectoryCache cache) throws IOException {
+        this.itemTagsProvider.act(cache);
+        this.blockTagsProvider.act(cache);
         Path path = this.generator.getOutputFolder();
         ResourceRegistry.getMaterials().forEach(material -> {
             material.getGenerated().values().stream().filter(entry -> entry instanceof IJSONGenerator && entry instanceof IJsonFile).forEach(entry -> {
