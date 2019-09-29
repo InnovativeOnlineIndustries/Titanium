@@ -13,6 +13,7 @@ import com.hrznstudio.titanium._impl.test.BlockMachine;
 import com.hrznstudio.titanium._impl.test.BlockTest;
 import com.hrznstudio.titanium._impl.test.BlockTwentyFourTest;
 import com.hrznstudio.titanium._impl.test.recipe.TestSerializableRecipe;
+import com.hrznstudio.titanium.api.material.IHasColor;
 import com.hrznstudio.titanium.block.tile.TileActive;
 import com.hrznstudio.titanium.client.gui.container.GuiContainerTileBase;
 import com.hrznstudio.titanium.command.RewardCommand;
@@ -36,15 +37,18 @@ import com.hrznstudio.titanium.reward.RewardSyncMessage;
 import com.hrznstudio.titanium.reward.storage.RewardWorldStorage;
 import com.hrznstudio.titanium.util.SidedHandler;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.RecipeManager;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.dimension.DimensionType;
@@ -95,9 +99,9 @@ public class Titanium extends ModuleController {
     @Override
     protected void initModules() {
         ResourceRegistry.getOrCreate("iron").addOverride(ResourceType.INGOT, Items.IRON_INGOT).addOverride(ResourceType.NUGGET, Items.IRON_NUGGET);
-        ResourceRegistry.getOrCreate("iron").add(ResourceType.PLATE);
+        ResourceRegistry.getOrCreate("iron").setColor(0xd8d8d8).add(ResourceType.PLATE);
         ResourceRegistry.getOrCreate("gold").addOverride(ResourceType.INGOT, Items.GOLD_INGOT).addOverride(ResourceType.NUGGET, Items.GOLD_NUGGET);
-        ResourceRegistry.getOrCreate("gold").add(ResourceType.PLATE);
+        ResourceRegistry.getOrCreate("gold").setColor(0xfad64a).add(ResourceType.PLATE);
 
         addModule(Module.builder("core").force()
                 .feature(Feature.builder("core").force()
@@ -176,6 +180,25 @@ public class Titanium extends ModuleController {
         TitaniumClient.registerModelLoader();
         RewardManager.get().getRewards().values().forEach(rewardGiver -> rewardGiver.getRewards().forEach(reward -> reward.register(Dist.CLIENT)));
         ScreenManager.registerFactory(ContainerTileBase.TYPE, GuiContainerTileBase::new);
+        ResourceRegistry.getMaterials().forEach(material -> {
+            material.getGenerated().values().stream().filter(entry -> entry instanceof IHasColor).forEach(entry -> {
+                if (entry instanceof Block) {
+                    Minecraft.getInstance().getBlockColors().register((state, world, pos, tint) -> {
+                        if (tint == 0) {
+                            return ((IHasColor) entry).getColor();
+                        }
+                        return 0;
+                    }, (Block) entry);
+                } else if (entry instanceof Item) {
+                    Minecraft.getInstance().getItemColors().register((stack, tint) -> {
+                        if (tint == 0) {
+                            return ((IHasColor) entry).getColor();
+                        }
+                        return 0;
+                    }, (IItemProvider) entry);
+                }
+            });
+        });
     }
 
     private void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {

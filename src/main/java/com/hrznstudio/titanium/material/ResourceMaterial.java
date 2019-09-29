@@ -12,6 +12,7 @@ public class ResourceMaterial {
     private HashMap<String, IResourceType> generatorTypes;
     private HashMap<String, ForgeRegistryEntry> generatorOverrides;
     private HashMap<String, ForgeRegistryEntry> generated;
+    private int color;
 
     ResourceMaterial(String type) {
         this.type = type;
@@ -31,6 +32,15 @@ public class ResourceMaterial {
 
     public ResourceMaterial addOverride(IResourceType type, ForgeRegistryEntry entry) {
         generatorOverrides.put(type.getTag(), entry);
+        return this;
+    }
+
+    public int getColor() {
+        return color;
+    }
+
+    public ResourceMaterial setColor(int color) {
+        this.color = color;
         return this;
     }
 
