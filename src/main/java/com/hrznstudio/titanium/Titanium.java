@@ -19,6 +19,8 @@ import com.hrznstudio.titanium.command.RewardCommand;
 import com.hrznstudio.titanium.command.RewardGrantCommand;
 import com.hrznstudio.titanium.container.impl.ContainerTileBase;
 import com.hrznstudio.titanium.event.handler.EventManager;
+import com.hrznstudio.titanium.material.ResourceRegistry;
+import com.hrznstudio.titanium.material.ResourceType;
 import com.hrznstudio.titanium.module.Feature;
 import com.hrznstudio.titanium.module.Module;
 import com.hrznstudio.titanium.module.ModuleController;
@@ -81,6 +83,11 @@ public class Titanium extends ModuleController {
         EventManager.mod(FMLCommonSetupEvent.class).process(this::commonSetup).subscribe();
         EventManager.forge(PlayerEvent.PlayerLoggedInEvent.class).process(this::onPlayerLoggedIn).subscribe();
         EventManager.forge(FMLServerStartingEvent.class).process(this::onServerStart).subscribe();
+
+        ResourceRegistry.getOrCreate(() -> "iron").addOverride(ResourceType.INGOT, Items.IRON_INGOT);
+        ResourceRegistry.getOrCreate(() -> "iron").addOverride(ResourceType.NUGGET, Items.IRON_NUGGET);
+        ResourceRegistry.getOrCreate(() -> "gold").addOverride(ResourceType.INGOT, Items.GOLD_INGOT);
+        ResourceRegistry.getOrCreate(() -> "gold").addOverride(ResourceType.NUGGET, Items.GOLD_NUGGET);
     }
 
     public static void openGui(TileActive tile, ServerPlayerEntity player) {
