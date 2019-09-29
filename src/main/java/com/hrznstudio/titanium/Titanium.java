@@ -99,9 +99,9 @@ public class Titanium extends ModuleController {
     @Override
     protected void initModules() {
         ResourceRegistry.getOrCreate("iron").addOverride(ResourceType.INGOT, Items.IRON_INGOT).addOverride(ResourceType.NUGGET, Items.IRON_NUGGET);
-        ResourceRegistry.getOrCreate("iron").setColor(0xd8d8d8).add(ResourceType.PLATE);
+        ResourceRegistry.getOrCreate("iron").setColor(0xd8d8d8).addAll(ResourceType.values());
         ResourceRegistry.getOrCreate("gold").addOverride(ResourceType.INGOT, Items.GOLD_INGOT).addOverride(ResourceType.NUGGET, Items.GOLD_NUGGET);
-        ResourceRegistry.getOrCreate("gold").setColor(0xfad64a).add(ResourceType.PLATE);
+        ResourceRegistry.getOrCreate("gold").setColor(0xfad64a).addAll(ResourceType.values());
 
         addModule(Module.builder("core").force()
                 .feature(Feature.builder("core").force()

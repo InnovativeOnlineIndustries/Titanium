@@ -22,10 +22,9 @@ public class ResourceTypeItem extends ItemBase implements IJsonFile, IJSONGenera
     private final ResourceType type;
 
     public ResourceTypeItem(ResourceMaterial material, ResourceType type) {
-        super(material.getMaterialType() + "_" + type.getName(), new Properties());
+        super(material.getMaterialType() + "_" + type.getName(), new Properties().group(RESOURCES));
         this.material = material;
         this.type = type;
-        setItemGroup(RESOURCES);
         RESOURCES.addIconStack(new ItemStack(this));
     }
 

@@ -30,6 +30,13 @@ public class ResourceMaterial {
         return this;
     }
 
+    public ResourceMaterial addAll(IResourceType... type) {
+        for (IResourceType iResourceType : type) {
+            add(iResourceType);
+        }
+        return this;
+    }
+
     public ResourceMaterial addOverride(IResourceType type, ForgeRegistryEntry entry) {
         generatorOverrides.put(type.getTag(), entry);
         return this;
