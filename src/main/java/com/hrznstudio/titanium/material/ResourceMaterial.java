@@ -66,11 +66,14 @@ public class ResourceMaterial {
     @Nullable
     public ForgeRegistryEntry generate(IResourceType type) {
         if (generatorOverrides.containsKey(type.getTag())) {
-            generated.put(type.getTag(), generatorOverrides.get(type.getTag()));
+            ForgeRegistryEntry entry = generatorOverrides.get(type.getTag());
+            generated.put(type.getTag(), entry);
+            ResourceRegistry.injectField(this, type, entry);
             return null;
         }
         ForgeRegistryEntry entry = type.getInstanceFactory(this).create();
         generated.put(type.getTag(), entry);
+        ResourceRegistry.injectField(this, type, entry);
         return entry;
     }
 }
