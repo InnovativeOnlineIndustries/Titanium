@@ -184,19 +184,9 @@ public class Titanium extends ModuleController {
         ResourceRegistry.getMaterials().forEach(material -> {
             material.getGenerated().values().stream().filter(entry -> entry instanceof IHasColor).forEach(entry -> {
                 if (entry instanceof Block) {
-                    Minecraft.getInstance().getBlockColors().register((state, world, pos, tint) -> {
-                        if (tint == 0) {
-                            return ((IHasColor) entry).getColor();
-                        }
-                        return 0;
-                    }, (Block) entry);
+                    Minecraft.getInstance().getBlockColors().register((state, world, pos, tint) -> ((IHasColor) entry).getColor(tint), (Block) entry);
                 } else if (entry instanceof Item) {
-                    Minecraft.getInstance().getItemColors().register((stack, tint) -> {
-                        if (tint == 0) {
-                            return ((IHasColor) entry).getColor();
-                        }
-                        return 0;
-                    }, (IItemProvider) entry);
+                    Minecraft.getInstance().getItemColors().register((stack, tint) -> ((IHasColor) entry).getColor(tint), (IItemProvider) entry);
                 }
             });
         });

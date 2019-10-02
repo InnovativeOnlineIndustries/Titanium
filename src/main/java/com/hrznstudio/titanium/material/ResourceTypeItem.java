@@ -65,7 +65,7 @@ public class ResourceTypeItem extends ItemBase implements IJsonFile, IJSONGenera
     }
 
     @Override
-    public int getColor() {
+    public int getColor(int tintIndex) {
         return material.getColor();
     }
 }
