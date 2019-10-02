@@ -19,9 +19,9 @@ public class ResourceTypeItem extends ItemBase implements IJsonFile, IJSONGenera
     public static AdvancedTitaniumTab RESOURCES = new AdvancedTitaniumTab("resources", true);
 
     private final ResourceMaterial material;
-    private final ResourceType type;
+    private final IResourceType type;
 
-    public ResourceTypeItem(ResourceMaterial material, ResourceType type) {
+    public ResourceTypeItem(ResourceMaterial material, IResourceType type) {
         super(material.getMaterialType() + "_" + type.getName(), new Properties().group(RESOURCES));
         this.material = material;
         this.type = type;
