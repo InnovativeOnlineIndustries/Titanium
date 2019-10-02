@@ -23,6 +23,15 @@ public class ResourceRegistry {
                 if (!annotatedField.isAccessible()) {
                     annotatedField.setAccessible(true);
                 }
+                if (Modifier.isFinal(annotatedField.getModifiers())) {
+                    try {
+                        Field modifiersField = Field.class.getDeclaredField("modifiers");
+                        modifiersField.setAccessible(true);
+                        modifiersField.setInt(annotatedField, annotatedField.getModifiers() & ~Modifier.FINAL);
+                    } catch (NoSuchFieldException | IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                }
                 ANNOTATED_FIELDS.computeIfAbsent(reference.material(), s -> HashMultimap.create()).put(reference.type(), annotatedField);
             }
         }
@@ -42,8 +51,9 @@ public class ResourceRegistry {
 
     public static void injectField(ResourceMaterial material, IResourceType type, ForgeRegistryEntry entry) {
         if (ANNOTATED_FIELDS.containsKey(material.getMaterialType())) {
-            if (ANNOTATED_FIELDS.get(material.getMaterialType()).containsKey(type.getName())) {
-                ANNOTATED_FIELDS.get(material.getMaterialType()).get(type.getName()).stream().filter(field -> entry.getRegistryType().isAssignableFrom(field.getType())).forEach(field -> {
+            HashMultimap<String, Field> multimap = ANNOTATED_FIELDS.get(material.getMaterialType());
+            if (multimap.containsKey(type.getName())) {
+                multimap.get(type.getName()).stream().filter(field -> entry.getRegistryType().isAssignableFrom(field.getType())).forEach(field -> {
                     try {
                         field.set(null, entry);
                     } catch (IllegalAccessException e) {

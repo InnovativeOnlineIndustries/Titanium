@@ -61,11 +61,6 @@ public class AnnotationUtil {
             for (ModFileScanData.AnnotationData annotationData : allScanDatum.getAnnotations()) {
                 if (Objects.equals(annotationData.getAnnotationType(), type)) {
                     try {
-                        for (Field field : Class.forName(annotationData.getClassType().getClassName()).getFields()) {
-                            if (field.getName().equalsIgnoreCase(annotationData.getMemberName())) {
-                                fields.add(field);
-                            }
-                        }
                         for (Field field : Class.forName(annotationData.getClassType().getClassName()).getDeclaredFields()) {
                             if (field.getName().equalsIgnoreCase(annotationData.getMemberName())) {
                                 fields.add(field);
