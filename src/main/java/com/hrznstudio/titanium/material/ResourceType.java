@@ -35,19 +35,19 @@ public enum ResourceType implements IResourceType, IStringSerializable {
     METAL_BLOCK("storage_blocks") {
         @Override
         public IFactory<ForgeRegistryEntry> getInstanceFactory(ResourceMaterial material) {
-            return () -> new ResourceMaterialBlock(material, this, ResourceMaterialBlock.BlockResourceType.METAL_BLOCK);
+            return () -> new ResourceTypeBlock(material, this, ResourceTypeBlock.BlockResourceType.METAL_BLOCK);
         }
     },
     ORE {
         @Override
         public IFactory<ForgeRegistryEntry> getInstanceFactory(ResourceMaterial material) {
-            return () -> new ResourceMaterialBlock(material, this, ResourceMaterialBlock.BlockResourceType.ORE);
+            return () -> new ResourceTypeBlock(material, this, ResourceTypeBlock.BlockResourceType.ORE);
         }
     },
     GEM_BLOCK("storage_blocks") {
         @Override
         public IFactory<ForgeRegistryEntry> getInstanceFactory(ResourceMaterial material) {
-            return () -> new ResourceMaterialBlock(material, this, ResourceMaterialBlock.BlockResourceType.GEM_BLOCK);
+            return () -> new ResourceTypeBlock(material, this, ResourceTypeBlock.BlockResourceType.GEM_BLOCK);
         }
     };
 

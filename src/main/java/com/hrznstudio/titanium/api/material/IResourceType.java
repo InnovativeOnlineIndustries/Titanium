@@ -18,4 +18,7 @@ public interface IResourceType extends IStringSerializable {
 
     IFactory<ForgeRegistryEntry> getInstanceFactory(ResourceMaterial material);
 
+    default String getUnlocalizedName() {
+        return String.format("resource.titanium.type.%s", getName());
+    }
 }

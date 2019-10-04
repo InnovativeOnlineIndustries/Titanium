@@ -2,6 +2,7 @@ package com.hrznstudio.titanium.material;
 
 import com.google.gson.JsonObject;
 import com.hrznstudio.titanium.Titanium;
+import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.material.IHasColor;
 import com.hrznstudio.titanium.api.material.IResourceHolder;
 import com.hrznstudio.titanium.api.material.IResourceType;
@@ -9,19 +10,25 @@ import com.hrznstudio.titanium.block.BlockBase;
 import com.hrznstudio.titanium.recipe.generator.IJSONGenerator;
 import com.hrznstudio.titanium.recipe.generator.IJsonFile;
 import net.minecraft.block.Blocks;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nullable;
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
-public class ResourceMaterialBlock extends BlockBase implements IJsonFile, IJSONGenerator, IResourceHolder, IHasColor {
+public class ResourceTypeBlock extends BlockBase implements IJsonFile, IJSONGenerator, IResourceHolder, IHasColor {
 
     private final ResourceMaterial resourceMaterial;
     private final IResourceType resourceType;
     private final IBlockResourceType blockResourceType;
 
-    public ResourceMaterialBlock(ResourceMaterial material, IResourceType type, IBlockResourceType blockType) {
+    public ResourceTypeBlock(ResourceMaterial material, IResourceType type, IBlockResourceType blockType) {
         super(material.getMaterialType() + "_" + type.getName(), Properties.from(Blocks.STONE));
         this.resourceMaterial = material;
         this.resourceType = type;
@@ -58,6 +65,17 @@ public class ResourceMaterialBlock extends BlockBase implements IJsonFile, IJSON
     @Override
     public String getRecipeSubfolder() {
         return "assets/" + Titanium.MODID + "/models/block/";
+    }
+
+    @Override
+    public IFactory<BlockItem> getItemBlockFactory() {
+        return () -> (BlockItem) new BlockItem(this, new Item.Properties().group(this.getItemGroup())) {
+            @Override
+            public ITextComponent getDisplayName(ItemStack p_200295_1_) {
+                return new TranslationTextComponent(resourceType.getUnlocalizedName(), new TranslationTextComponent(resourceMaterial.getUnlocalizedName()));
+            }
+        }.setRegistryName(Objects.requireNonNull(getRegistryName()));
+
     }
 
     public enum BlockResourceType implements IBlockResourceType {

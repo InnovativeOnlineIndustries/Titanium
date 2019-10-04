@@ -17,6 +17,8 @@ import com.hrznstudio.titanium.recipe.generator.IJSONGenerator;
 import com.hrznstudio.titanium.recipe.generator.IJsonFile;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nullable;
 
@@ -64,5 +66,10 @@ public class ResourceTypeItem extends ItemBase implements IJsonFile, IJSONGenera
     @Override
     public int getColor(int tintIndex) {
         return material.getColor();
+    }
+
+    @Override
+    public ITextComponent getDisplayName(ItemStack p_200295_1_) {
+        return new TranslationTextComponent(type.getUnlocalizedName(), new TranslationTextComponent(material.getUnlocalizedName()));
     }
 }

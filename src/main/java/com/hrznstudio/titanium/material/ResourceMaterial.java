@@ -83,4 +83,8 @@ public class ResourceMaterial {
         ResourceRegistry.injectField(this, type, entry);
         return entry;
     }
+
+    public String getUnlocalizedName() {
+        return String.format("resource.titanium.material.%s", type);
+    }
 }
