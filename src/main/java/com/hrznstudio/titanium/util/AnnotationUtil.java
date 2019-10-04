@@ -68,7 +68,7 @@ public class AnnotationUtil {
                             }
                         }
                     } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
+                        Titanium.LOGGER.error(e);
                     }
                 }
             }
