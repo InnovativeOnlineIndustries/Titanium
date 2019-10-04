@@ -8,10 +8,14 @@
 package com.hrznstudio.titanium.material;
 
 import com.google.common.collect.HashMultimap;
+import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.annotation.MaterialReference;
 import com.hrznstudio.titanium.api.material.IResourceType;
+import com.hrznstudio.titanium.tab.AdvancedTitaniumTab;
 import com.hrznstudio.titanium.util.AnnotationUtil;
 import net.minecraftforge.registries.ForgeRegistryEntry;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -19,6 +23,9 @@ import java.util.Collection;
 import java.util.HashMap;
 
 public class ResourceRegistry {
+
+    public static AdvancedTitaniumTab RESOURCES = new AdvancedTitaniumTab("resources", true);
+    public static Logger LOGGER = LogManager.getLogger(Titanium.MODID + "-ResourceRegistry");
 
     private static HashMap<String, ResourceMaterial> MATERIALS = new HashMap<>();
     private static HashMap<String, HashMultimap<String, Field>> ANNOTATED_FIELDS = new HashMap<>();
@@ -36,7 +43,7 @@ public class ResourceRegistry {
                         modifiersField.setAccessible(true);
                         modifiersField.setInt(annotatedField, annotatedField.getModifiers() & ~Modifier.FINAL);
                     } catch (NoSuchFieldException | IllegalAccessException e) {
-                        e.printStackTrace();
+                        LOGGER.error(e);
                     }
                 }
                 ANNOTATED_FIELDS.computeIfAbsent(reference.material(), s -> HashMultimap.create()).put(reference.type(), annotatedField);
@@ -64,7 +71,7 @@ public class ResourceRegistry {
                     try {
                         field.set(null, entry);
                     } catch (IllegalAccessException e) {
-                        e.printStackTrace();
+                        LOGGER.error(e);
                     }
                 });
             }

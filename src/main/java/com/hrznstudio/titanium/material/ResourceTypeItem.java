@@ -15,7 +15,6 @@ import com.hrznstudio.titanium.api.material.IResourceType;
 import com.hrznstudio.titanium.item.ItemBase;
 import com.hrznstudio.titanium.recipe.generator.IJSONGenerator;
 import com.hrznstudio.titanium.recipe.generator.IJsonFile;
-import com.hrznstudio.titanium.tab.AdvancedTitaniumTab;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -23,16 +22,14 @@ import javax.annotation.Nullable;
 
 public class ResourceTypeItem extends ItemBase implements IJsonFile, IJSONGenerator, IResourceHolder, IHasColor {
 
-    public static AdvancedTitaniumTab RESOURCES = new AdvancedTitaniumTab("resources", true);
-
     private final ResourceMaterial material;
     private final IResourceType type;
 
     public ResourceTypeItem(ResourceMaterial material, IResourceType type) {
-        super(material.getMaterialType() + "_" + type.getName(), new Properties().group(RESOURCES));
+        super(material.getMaterialType() + "_" + type.getName(), new Properties().group(ResourceRegistry.RESOURCES));
         this.material = material;
         this.type = type;
-        RESOURCES.addIconStack(new ItemStack(this));
+        ResourceRegistry.RESOURCES.addIconStack(new ItemStack(this));
     }
 
     public ResourceMaterial getMaterial() {

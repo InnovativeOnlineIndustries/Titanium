@@ -100,9 +100,9 @@ public class Titanium extends ModuleController {
     public void onPreInit() {
         super.onPreInit();
         ResourceRegistry.scanForReferences();
-        ResourceRegistry.getOrCreate("iron").addOverride(ResourceType.INGOT, Items.IRON_INGOT).addOverride(ResourceType.NUGGET, Items.IRON_NUGGET);
+        ResourceRegistry.getOrCreate("iron").withOverride(ResourceType.INGOT, Items.IRON_INGOT).withOverride(ResourceType.NUGGET, Items.IRON_NUGGET);
         ResourceRegistry.getOrCreate("iron").setColor(0xd8d8d8).addAll(ResourceType.values());
-        ResourceRegistry.getOrCreate("gold").addOverride(ResourceType.INGOT, Items.GOLD_INGOT).addOverride(ResourceType.NUGGET, Items.GOLD_NUGGET);
+        ResourceRegistry.getOrCreate("gold").withOverride(ResourceType.INGOT, Items.GOLD_INGOT).withOverride(ResourceType.NUGGET, Items.GOLD_NUGGET);
         ResourceRegistry.getOrCreate("gold").setColor(0xfad64a).addAll(ResourceType.values());
     }
 

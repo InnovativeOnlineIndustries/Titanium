@@ -10,8 +10,6 @@ package com.hrznstudio.titanium.recipe.generator.titanium;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.hrznstudio.titanium.api.material.IResourceHolder;
-import com.hrznstudio.titanium.block.BlockBase;
-import com.hrznstudio.titanium.item.ItemBase;
 import com.hrznstudio.titanium.material.ResourceRegistry;
 import com.hrznstudio.titanium.recipe.generator.IJSONGenerator;
 import com.hrznstudio.titanium.recipe.generator.IJsonFile;
@@ -21,6 +19,8 @@ import net.minecraft.item.Item;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -30,6 +30,7 @@ import java.nio.file.Path;
 public class ResourceRegistryProvider implements IDataProvider {
 
     private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().create();
+    private static final Logger LOGGER = LogManager.getLogger();
     private final DataGenerator generator;
     private ItemTagsProvider itemTagsProvider;
     private BlockTagsProvider blockTagsProvider;
@@ -41,10 +42,10 @@ public class ResourceRegistryProvider implements IDataProvider {
             protected void registerTags() {
                 ResourceRegistry.getMaterials().forEach(material -> {
                     material.getGenerated().values().stream().filter(entry -> entry instanceof IResourceHolder).forEach(entry -> {
-                        if (entry instanceof BlockBase) {
+                        if (entry instanceof Block) {
                             this.copy(new BlockTags.Wrapper(new ResourceLocation("forge", ((IResourceHolder) entry).getType().getTag() + "/" + ((IResourceHolder) entry).getMaterial().getMaterialType())),
                                     new ItemTags.Wrapper(new ResourceLocation("forge", ((IResourceHolder) entry).getType().getTag() + "/" + ((IResourceHolder) entry).getMaterial().getMaterialType())));
-                        } else if (entry instanceof ItemBase) {
+                        } else if (entry instanceof Item) {
                             this.getBuilder(new ItemTags.Wrapper(new ResourceLocation("forge", ((IResourceHolder) entry).getType().getTag() + "/" + ((IResourceHolder) entry).getMaterial().getMaterialType()))).add((Item) entry);
                         }
                     });
@@ -56,7 +57,7 @@ public class ResourceRegistryProvider implements IDataProvider {
             protected void registerTags() {
                 ResourceRegistry.getMaterials().forEach(material -> {
                     material.getGenerated().values().stream().filter(entry -> entry instanceof IResourceHolder).forEach(entry -> {
-                        if (entry instanceof BlockBase) {
+                        if (entry instanceof Block) {
                             this.getBuilder(new BlockTags.Wrapper(new ResourceLocation("forge", ((IResourceHolder) entry).getType().getTag() + "/" + ((IResourceHolder) entry).getMaterial().getMaterialType()))).add((Block) entry);
                         }
                     });
@@ -79,7 +80,7 @@ public class ResourceRegistryProvider implements IDataProvider {
                         bufferedwriter.write(GSON.toJson(((IJSONGenerator) entry).generate()));
                     }
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    LOGGER.error(e);
                 }
             });
         });

@@ -24,4 +24,9 @@ public class TitaniumTab extends ItemGroup {
     public ItemStack createIcon() {
         return stackSupplier.get();
     }
+
+    @Override
+    public ItemStack getIcon() {
+        return stackSupplier.get();
+    }
 }

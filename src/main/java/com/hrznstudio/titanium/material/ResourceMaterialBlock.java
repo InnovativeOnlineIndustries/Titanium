@@ -26,7 +26,7 @@ public class ResourceMaterialBlock extends BlockBase implements IJsonFile, IJSON
         this.resourceMaterial = material;
         this.resourceType = type;
         this.blockResourceType = blockType;
-        setItemGroup(ResourceTypeItem.RESOURCES);
+        setItemGroup(ResourceRegistry.RESOURCES);
     }
 
     @Override

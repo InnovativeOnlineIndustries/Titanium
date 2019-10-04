@@ -7,6 +7,7 @@
 
 package com.hrznstudio.titanium.util;
 
+import com.hrznstudio.titanium.Titanium;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.forgespi.language.ModFileScanData;
 import org.objectweb.asm.Type;
@@ -28,7 +29,7 @@ public class AnnotationUtil {
                     try {
                         classList.add(Class.forName(allScanDatumAnnotation.getMemberName()));
                     } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
+                        Titanium.LOGGER.error(e);
                     }
                 }
             }
@@ -46,7 +47,7 @@ public class AnnotationUtil {
                     try {
                         classList.add(Class.forName(allScanDatumAnnotation.getMemberName()));
                     } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
+                        Titanium.LOGGER.error(e);
                     }
                 }
             }

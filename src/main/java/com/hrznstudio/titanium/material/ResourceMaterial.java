@@ -44,7 +44,7 @@ public class ResourceMaterial {
         return this;
     }
 
-    public ResourceMaterial addOverride(IResourceType type, ForgeRegistryEntry entry) {
+    public ResourceMaterial withOverride(IResourceType type, ForgeRegistryEntry entry) {
         generatorOverrides.put(type.getTag(), entry);
         return this;
     }
