@@ -31,7 +31,6 @@ public class ResourceTypeItem extends ItemBase implements IJsonFile, IJSONGenera
         super(material.getMaterialType() + "_" + type.getName(), new Properties().group(ResourceRegistry.RESOURCES));
         this.material = material;
         this.type = type;
-        ResourceRegistry.RESOURCES.addIconStack(new ItemStack(this));
     }
 
     public ResourceMaterial getMaterial() {
