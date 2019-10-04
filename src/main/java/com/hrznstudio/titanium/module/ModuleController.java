@@ -31,6 +31,23 @@ public abstract class ModuleController {
 
     public ModuleController() {
         modid = ModLoadingContext.get().getActiveContainer().getModId();
+        onPreInit();
+        onInit();
+        onPostInit();
+    }
+
+    private void addConfig(AnnotationConfigManager.Type type) {
+        for (Class configClass : type.getConfigClass()) {
+            if (configManager.isClassManaged(configClass)) return;
+        }
+        configManager.add(type);
+    }
+
+    public void onPreInit() {
+
+    }
+
+    public void onInit() {
         initModules();
         if (!moduleMap.isEmpty()) {
             File modulesConfig = new File("config/" + modid + "/modules.toml");
@@ -65,6 +82,9 @@ public abstract class ModuleController {
                     l.forEach(event.getRegistry()::register);
             });
         }).subscribe();
+    }
+
+    public void onPostInit() {
         AnnotationUtil.getFilteredAnnotatedClasses(ConfigFile.class, modid).forEach(aClass -> {
             ConfigFile annotation = (ConfigFile) aClass.getAnnotation(ConfigFile.class);
             addConfig(AnnotationConfigManager.Type.of(annotation.type(), aClass).setName(annotation.value()));
@@ -72,13 +92,6 @@ public abstract class ModuleController {
         EventManager.mod(ModConfig.Loading.class).process(ev -> configManager.inject()).subscribe();
         EventManager.mod(ModConfig.ConfigReloading.class).process(ev -> configManager.inject()).subscribe();
         EventManager.mod(GatherDataEvent.class).process(this::addDataProvider).subscribe();
-    }
-
-    private void addConfig(AnnotationConfigManager.Type type) {
-        for (Class configClass : type.getConfigClass()) {
-            if (configManager.isClassManaged(configClass)) return;
-        }
-        configManager.add(type);
     }
 
     protected abstract void initModules();
