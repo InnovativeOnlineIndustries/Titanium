@@ -29,8 +29,17 @@ public class ResourceRegistry {
 
     private static HashMap<String, ResourceMaterial> MATERIALS = new HashMap<>();
     private static HashMap<String, HashMultimap<String, Field>> ANNOTATED_FIELDS = new HashMap<>();
+    private static Field modifiersField;
 
     public static void scanForReferences() {
+        if (modifiersField == null) {
+            try {
+                modifiersField = Field.class.getDeclaredField("modifiers");
+                modifiersField.setAccessible(true);
+            } catch (NoSuchFieldException e) {
+                LOGGER.error(e);
+            }
+        }
         for (Field annotatedField : AnnotationUtil.getAnnotatedFields(MaterialReference.class)) {
             if (Modifier.isStatic(annotatedField.getModifiers())) {
                 MaterialReference reference = annotatedField.getAnnotation(MaterialReference.class);
@@ -39,10 +48,8 @@ public class ResourceRegistry {
                 }
                 if (Modifier.isFinal(annotatedField.getModifiers())) {
                     try {
-                        Field modifiersField = Field.class.getDeclaredField("modifiers");
-                        modifiersField.setAccessible(true);
                         modifiersField.setInt(annotatedField, annotatedField.getModifiers() & ~Modifier.FINAL);
-                    } catch (NoSuchFieldException | IllegalAccessException e) {
+                    } catch (IllegalAccessException e) {
                         LOGGER.error(e);
                     }
                 }
