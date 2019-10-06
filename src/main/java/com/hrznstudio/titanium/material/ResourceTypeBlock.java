@@ -82,7 +82,6 @@ public class ResourceTypeBlock extends BlockBase implements IJsonFile, IJSONGene
                 return new TranslationTextComponent(resourceType.getUnlocalizedName(), new TranslationTextComponent(resourceMaterial.getUnlocalizedName()));
             }
         }.setRegistryName(Objects.requireNonNull(getRegistryName()));
-
     }
 
     public enum BlockResourceType implements IBlockResourceType {
