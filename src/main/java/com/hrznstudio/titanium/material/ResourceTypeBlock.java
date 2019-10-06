@@ -96,7 +96,7 @@ public class ResourceTypeBlock extends BlockBase implements IJsonFile, IJSONGene
         }),
         ORE((material1, integer) -> integer == 0 ? material1.getColor() : 1, () -> {
             JsonObject object = new JsonObject();
-            object.addProperty("parent", Titanium.MODID + "block/ore");
+            object.addProperty("parent", Titanium.MODID + ":block/ore");
             JsonObject textures = new JsonObject();
             textures.addProperty("ore", new ResourceLocation(Titanium.MODID, "blocks/resource/ore_overlay").toString());
             object.add("textures", textures);
@@ -118,7 +118,6 @@ public class ResourceTypeBlock extends BlockBase implements IJsonFile, IJSONGene
             this.colorFunction = colorFunction;
             this.jsonObjectSupplier = jsonObjectSupplier;
         }
-
 
         @Override
         public int getColor(ResourceMaterial material, int tintIndex) {
