@@ -28,6 +28,7 @@ import com.hrznstudio.titanium.module.ModuleController;
 import com.hrznstudio.titanium.network.NetworkHandler;
 import com.hrznstudio.titanium.network.locator.LocatorTypes;
 import com.hrznstudio.titanium.network.messages.ButtonClickNetworkMessage;
+import com.hrznstudio.titanium.recipe.generator.BlockItemModelGeneratorProvider;
 import com.hrznstudio.titanium.recipe.generator.titanium.DefaultLootTableProvider;
 import com.hrznstudio.titanium.recipe.generator.titanium.JsonRecipeSerializerProvider;
 import com.hrznstudio.titanium.recipe.generator.titanium.ResourceRegistryProvider;
@@ -179,6 +180,7 @@ public class Titanium extends ModuleController {
 
     @Override
     public void addDataProvider(GatherDataEvent event) {
+        event.getGenerator().addProvider(new BlockItemModelGeneratorProvider(event.getGenerator(), MODID));
         event.getGenerator().addProvider(new DefaultLootTableProvider(event.getGenerator(), MODID));
         event.getGenerator().addProvider(new JsonRecipeSerializerProvider(event.getGenerator(), MODID));
         event.getGenerator().addProvider(new ResourceRegistryProvider(event.getGenerator()));
