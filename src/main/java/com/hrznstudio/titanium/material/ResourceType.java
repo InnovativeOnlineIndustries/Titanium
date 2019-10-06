@@ -24,6 +24,7 @@ public enum ResourceType implements IResourceType, IStringSerializable {
     PEBBLES,
     FLAKES,
     GRINDINGS,
+    GEM,
     SMALL_DUST("small_dust"),
     PLATE,
     DENSE_PLATE("plate_dense"),
@@ -42,6 +43,12 @@ public enum ResourceType implements IResourceType, IStringSerializable {
         @Override
         public IFactory<ForgeRegistryEntry> getInstanceFactory(ResourceMaterial material) {
             return () -> new ResourceTypeBlock(material, this, ResourceTypeBlock.BlockResourceType.ORE);
+        }
+    },
+    NETHER_ORE("ore/nether") {
+        @Override
+        public IFactory<ForgeRegistryEntry> getInstanceFactory(ResourceMaterial material) {
+            return () -> new ResourceTypeBlock(material, this, ResourceTypeBlock.BlockResourceType.NETHER_ORE);
         }
     },
     GEM_BLOCK("storage_blocks") {
