@@ -13,7 +13,6 @@ import com.hrznstudio.titanium._impl.test.BlockMachine;
 import com.hrznstudio.titanium._impl.test.BlockTest;
 import com.hrznstudio.titanium._impl.test.BlockTwentyFourTest;
 import com.hrznstudio.titanium._impl.test.recipe.TestSerializableRecipe;
-import com.hrznstudio.titanium.api.material.IHasColor;
 import com.hrznstudio.titanium.block.tile.TileActive;
 import com.hrznstudio.titanium.client.gui.container.GuiContainerTileBase;
 import com.hrznstudio.titanium.command.RewardCommand;
@@ -37,19 +36,15 @@ import com.hrznstudio.titanium.reward.RewardSyncMessage;
 import com.hrznstudio.titanium.reward.storage.RewardWorldStorage;
 import com.hrznstudio.titanium.util.SidedHandler;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.RecipeManager;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.dimension.DimensionType;
@@ -69,11 +64,9 @@ import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Collection;
 import java.util.Map;
 
 
@@ -101,7 +94,7 @@ public class Titanium extends ModuleController {
     @Override
     public void onPreInit() {
         super.onPreInit();
-        ResourceRegistry.init();
+        ResourceRegistry.onPreInit();
     }
 
     @Override
@@ -154,9 +147,7 @@ public class Titanium extends ModuleController {
     @Override
     public void onPostInit() {
         super.onPostInit();
-        ResourceRegistry.getMaterials().stream().map(material -> material.getGenerated().values()).flatMap(Collection::stream).
-                filter(forgeRegistryEntry -> forgeRegistryEntry instanceof IItemProvider && ForgeRegistries.ITEMS.containsKey(forgeRegistryEntry.getRegistryName())).
-                forEach(forgeRegistryEntry -> ResourceRegistry.RESOURCES.addIconStack(new ItemStack(((IItemProvider) forgeRegistryEntry).asItem())));
+        ResourceRegistry.onPostInit();
     }
 
     @Override
@@ -178,15 +169,6 @@ public class Titanium extends ModuleController {
         TitaniumClient.registerModelLoader();
         RewardManager.get().getRewards().values().forEach(rewardGiver -> rewardGiver.getRewards().forEach(reward -> reward.register(Dist.CLIENT)));
         ScreenManager.registerFactory(ContainerTileBase.TYPE, GuiContainerTileBase::new);
-        ResourceRegistry.getMaterials().forEach(material -> {
-            material.getGenerated().values().stream().filter(entry -> entry instanceof IHasColor).forEach(entry -> {
-                if (entry instanceof Block) {
-                    Minecraft.getInstance().getBlockColors().register((state, world, pos, tint) -> ((IHasColor) entry).getColor(tint), (Block) entry);
-                } else if (entry instanceof Item) {
-                    Minecraft.getInstance().getItemColors().register((stack, tint) -> ((IHasColor) entry).getColor(tint), (IItemProvider) entry);
-                }
-            });
-        });
     }
 
     private void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {

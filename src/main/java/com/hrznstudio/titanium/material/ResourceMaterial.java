@@ -14,6 +14,7 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
+import java.util.Map;
 
 public class ResourceMaterial {
 
@@ -66,15 +67,15 @@ public class ResourceMaterial {
         return this;
     }
 
-    public HashMap<String, IResourceType> getGeneratorTypes() {
+    public Map<String, IResourceType> getGeneratorTypes() {
         return generatorTypes;
     }
 
-    public HashMap<String, ForgeRegistryEntry> getGeneratorOverrides() {
+    public Map<String, ForgeRegistryEntry> getGeneratorOverrides() {
         return generatorOverrides;
     }
 
-    public HashMap<String, ForgeRegistryEntry> getGenerated() {
+    public Map<String, ForgeRegistryEntry> getGenerated() {
         return generated;
     }
 

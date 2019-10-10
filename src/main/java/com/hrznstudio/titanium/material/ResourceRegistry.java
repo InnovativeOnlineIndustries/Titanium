@@ -10,7 +10,9 @@ package com.hrznstudio.titanium.material;
 import com.google.common.collect.HashMultimap;
 import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.annotation.MaterialReference;
+import com.hrznstudio.titanium.api.material.IHasColor;
 import com.hrznstudio.titanium.api.material.IResourceType;
+import com.hrznstudio.titanium.event.handler.EventManager;
 import com.hrznstudio.titanium.module.Feature;
 import com.hrznstudio.titanium.module.Module;
 import com.hrznstudio.titanium.module.ModuleController;
@@ -19,7 +21,11 @@ import com.hrznstudio.titanium.util.AnnotationUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.util.IItemProvider;
+import net.minecraftforge.client.event.ColorHandlerEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,7 +44,7 @@ public class ResourceRegistry {
     private static HashMap<String, HashMultimap<String, Field>> ANNOTATED_FIELDS = new HashMap<>();
     private static Field modifiersField;
 
-    public static void init() {
+    public static void onPreInit() {
         scanForReferences();
         ResourceTypeProperties.DEFAULTS.put(Block.class, new ResourceTypeProperties(Block.Properties.from(Blocks.IRON_ORE)));
         ResourceTypeProperties.DEFAULTS.put(Item.class, new ResourceTypeProperties(new Item.Properties().group(RESOURCES)));
@@ -51,6 +57,17 @@ public class ResourceRegistry {
         getOrCreate("emerald").withOverride(ResourceType.ORE, Blocks.EMERALD_ORE).withOverride(ResourceType.GEM_BLOCK, Blocks.EMERALD_BLOCK).withOverride(ResourceType.GEM, Items.EMERALD);
         getOrCreate("nether_quartz").withOverride(ResourceType.NETHER_ORE, Blocks.NETHER_QUARTZ_ORE).withOverride(ResourceType.GEM_BLOCK, Blocks.QUARTZ_BLOCK).withOverride(ResourceType.GEM, Items.QUARTZ);
         getOrCreate("glowstone").withOverride(ResourceType.GEM_BLOCK, Blocks.GLOWSTONE).withOverride(ResourceType.DUST, Items.GLOWSTONE_DUST);
+        EventManager.forge(ColorHandlerEvent.Item.class).process(item -> {
+            ResourceRegistry.getMaterials().forEach(material -> {
+                material.getGenerated().values().stream().filter(entry -> entry instanceof IHasColor).forEach(entry -> {
+                    if (entry instanceof Block) {
+                        item.getBlockColors().register((state, world, pos, tint) -> ((IHasColor) entry).getColor(tint), (Block) entry);
+                    } else if (entry instanceof Item) {
+                        item.getItemColors().register((stack, tint) -> ((IHasColor) entry).getColor(tint), (IItemProvider) entry);
+                    }
+                });
+            });
+        }).subscribe();
     }
 
     private static void scanForReferences() {
@@ -95,6 +112,12 @@ public class ResourceRegistry {
             }
             controller.addModule(builder);
         });
+    }
+
+    public static void onPostInit() {
+        ResourceRegistry.getMaterials().stream().map(material -> material.getGenerated().values()).flatMap(Collection::stream).
+                filter(forgeRegistryEntry -> forgeRegistryEntry instanceof IItemProvider && ForgeRegistries.ITEMS.containsKey(forgeRegistryEntry.getRegistryName())).
+                forEach(forgeRegistryEntry -> ResourceRegistry.RESOURCES.addIconStack(new ItemStack(((IItemProvider) forgeRegistryEntry).asItem())));
     }
 
     public static ResourceMaterial getOrCreate(String type) {
