@@ -22,7 +22,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
@@ -79,7 +78,7 @@ public class ResourceTypeBlock extends BlockBase implements IJsonFile, IJSONGene
         return () -> (BlockItem) new BlockItem(this, new Item.Properties().group(this.getItemGroup())) {
             @Override
             public ITextComponent getDisplayName(ItemStack p_200295_1_) {
-                return new TranslationTextComponent(resourceType.getUnlocalizedName(), new TranslationTextComponent(resourceMaterial.getUnlocalizedName()));
+                return resourceType.getTextComponent(resourceMaterial.getTextComponent());
             }
         }.setRegistryName(Objects.requireNonNull(getRegistryName()));
     }

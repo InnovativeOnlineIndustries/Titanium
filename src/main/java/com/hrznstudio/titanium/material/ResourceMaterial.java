@@ -8,6 +8,8 @@
 package com.hrznstudio.titanium.material;
 
 import com.hrznstudio.titanium.api.material.IResourceType;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
@@ -84,7 +86,7 @@ public class ResourceMaterial {
         return entry;
     }
 
-    public String getUnlocalizedName() {
-        return String.format("resource.titanium.material.%s", type);
+    public ITextComponent getTextComponent() {
+        return new TranslationTextComponent(String.format("resource.titanium.material.%s", type));
     }
 }

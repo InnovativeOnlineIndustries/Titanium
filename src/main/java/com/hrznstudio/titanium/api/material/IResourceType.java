@@ -10,6 +10,8 @@ package com.hrznstudio.titanium.api.material;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.material.ResourceMaterial;
 import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 public interface IResourceType extends IStringSerializable {
@@ -18,7 +20,7 @@ public interface IResourceType extends IStringSerializable {
 
     IFactory<ForgeRegistryEntry> getInstanceFactory(ResourceMaterial material);
 
-    default String getUnlocalizedName() {
-        return String.format("resource.titanium.type.%s", getName());
+    default ITextComponent getTextComponent(ITextComponent material) {
+        return new TranslationTextComponent(String.format("resource.titanium.type.%s", getName()), material);
     }
 }
