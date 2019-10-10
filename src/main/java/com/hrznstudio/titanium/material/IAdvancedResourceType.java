@@ -7,10 +7,13 @@
 
 package com.hrznstudio.titanium.material;
 
-import com.hrznstudio.titanium.recipe.generator.IJSONGenerator;
+import com.google.gson.JsonObject;
+import com.hrznstudio.titanium.api.material.IResourceType;
 
-public interface IBlockResourceType extends IJSONGenerator {
+public interface IAdvancedResourceType {
 
     int getColor(ResourceMaterial material, int tintIndex);
+
+    JsonObject generate(IResourceType type);
 
 }

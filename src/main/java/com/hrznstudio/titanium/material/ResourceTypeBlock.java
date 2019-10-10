@@ -20,21 +20,18 @@ import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
-import java.util.function.BiFunction;
-import java.util.function.Supplier;
 
 public class ResourceTypeBlock extends BlockBase implements IJsonFile, IJSONGenerator, IResourceHolder, IHasColor {
 
     private final ResourceMaterial resourceMaterial;
     private final IResourceType resourceType;
-    private final IBlockResourceType blockResourceType;
+    private final IAdvancedResourceType blockResourceType;
 
-    public ResourceTypeBlock(ResourceMaterial material, IResourceType type, IBlockResourceType blockType, ResourceTypeProperties<Properties> properties) {
+    public ResourceTypeBlock(ResourceMaterial material, IResourceType type, IAdvancedResourceType blockType, ResourceTypeProperties<Properties> properties) {
         super(material.getMaterialType() + "_" + type.getName(), (properties == null ? ((ResourceTypeProperties<Properties>) ResourceTypeProperties.DEFAULTS.get(Block.class)).get() : properties.get()));
         this.resourceMaterial = material;
         this.resourceType = type;
@@ -59,7 +56,7 @@ public class ResourceTypeBlock extends BlockBase implements IJsonFile, IJSONGene
 
     @Override
     public JsonObject generate() {
-        return blockResourceType.generate();
+        return blockResourceType.generate(resourceType);
     }
 
     @Override
@@ -83,58 +80,4 @@ public class ResourceTypeBlock extends BlockBase implements IJsonFile, IJSONGene
         }.setRegistryName(Objects.requireNonNull(getRegistryName()));
     }
 
-    public enum BlockResourceType implements IBlockResourceType {
-        METAL_BLOCK((material1, integer) -> material1.getColor(), () -> {
-            JsonObject object = new JsonObject();
-            object.addProperty("parent", "block/cube_all");
-            JsonObject textures = new JsonObject();
-            textures.addProperty("all", new ResourceLocation(Titanium.MODID, "blocks/resource/metal_block").toString());
-            object.add("textures", textures);
-            return object;
-        }),
-        ORE((material1, integer) -> integer == 0 ? material1.getColor() : 1, () -> {
-            JsonObject object = new JsonObject();
-            object.addProperty("parent", Titanium.MODID + ":block/ore");
-            JsonObject textures = new JsonObject();
-            textures.addProperty("ore", new ResourceLocation(Titanium.MODID, "blocks/resource/ore_overlay").toString());
-            object.add("textures", textures);
-            return object;
-        }),
-        NETHER_ORE((material1, integer) -> integer == 0 ? material1.getColor() : 1, () -> {
-            JsonObject object = new JsonObject();
-            object.addProperty("parent", Titanium.MODID + ":block/ore");
-            JsonObject textures = new JsonObject();
-            textures.addProperty("ore", new ResourceLocation(Titanium.MODID, "blocks/resource/ore_overlay").toString());
-            textures.addProperty("particle", "blocks/netherrack");
-            textures.addProperty("texture", "blocks/netherrack");
-            object.add("textures", textures);
-            return object;
-        }),
-        GEM_BLOCK((material1, integer) -> material1.getColor(), () -> {
-            JsonObject object = new JsonObject();
-            object.addProperty("parent", "block/cube_all");
-            JsonObject textures = new JsonObject();
-            textures.addProperty("all", new ResourceLocation(Titanium.MODID, "blocks/resource/gem_block").toString());
-            object.add("textures", textures);
-            return object;
-        });
-
-        private final BiFunction<ResourceMaterial, Integer, Integer> colorFunction;
-        private final Supplier<JsonObject> jsonObjectSupplier;
-
-        BlockResourceType(BiFunction<ResourceMaterial, Integer, Integer> colorFunction, Supplier<JsonObject> jsonObjectSupplier) {
-            this.colorFunction = colorFunction;
-            this.jsonObjectSupplier = jsonObjectSupplier;
-        }
-
-        @Override
-        public int getColor(ResourceMaterial material, int tintIndex) {
-            return colorFunction.apply(material, tintIndex);
-        }
-
-        @Override
-        public JsonObject generate() {
-            return jsonObjectSupplier.get();
-        }
-    }
 }

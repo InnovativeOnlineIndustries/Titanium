@@ -17,7 +17,6 @@ import com.hrznstudio.titanium.recipe.generator.IJSONGenerator;
 import com.hrznstudio.titanium.recipe.generator.IJsonFile;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 import javax.annotation.Nullable;
@@ -26,11 +25,13 @@ public class ResourceTypeItem extends ItemBase implements IJsonFile, IJSONGenera
 
     private final ResourceMaterial material;
     private final IResourceType type;
+    private final IAdvancedResourceType advancedResourceType;
 
-    public ResourceTypeItem(ResourceMaterial material, IResourceType type, ResourceTypeProperties<Properties> properties) {
+    public ResourceTypeItem(ResourceMaterial material, IResourceType type, IAdvancedResourceType advancedResourceType, ResourceTypeProperties<Properties> properties) {
         super(material.getMaterialType() + "_" + type.getName(), (properties == null ? ((ResourceTypeProperties<Properties>) ResourceTypeProperties.DEFAULTS.get(Item.class)).get() : properties.get()));
         this.material = material;
         this.type = type;
+        this.advancedResourceType = advancedResourceType;
     }
 
     public ResourceMaterial getMaterial() {
@@ -43,12 +44,7 @@ public class ResourceTypeItem extends ItemBase implements IJsonFile, IJSONGenera
 
     @Override
     public JsonObject generate() {
-        JsonObject object = new JsonObject();
-        object.addProperty("parent", "item/generated");
-        JsonObject textures = new JsonObject();
-        textures.addProperty("layer0", new ResourceLocation(Titanium.MODID, "items/resource/" + type.getName()).toString());
-        object.add("textures", textures);
-        return object;
+        return advancedResourceType.generate(type);
     }
 
     @Override
@@ -64,7 +60,7 @@ public class ResourceTypeItem extends ItemBase implements IJsonFile, IJSONGenera
 
     @Override
     public int getColor(int tintIndex) {
-        return material.getColor();
+        return advancedResourceType.getColor(material, tintIndex);
     }
 
     @Override
