@@ -86,7 +86,7 @@ public class ResourceMaterial {
             ResourceRegistry.injectField(this, type, entry);
             return null;
         }
-        ForgeRegistryEntry entry = type.getInstanceFactory(this, typeProperties.getOrDefault(type.getName(), null)).create();
+        ForgeRegistryEntry entry = type.getInstanceFactory(this, typeProperties.get(type.getName())).create();
         generated.put(type.getTag(), entry);
         ResourceRegistry.injectField(this, type, entry);
         return entry;
