@@ -70,7 +70,6 @@ import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -149,20 +148,7 @@ public class Titanium extends ModuleController {
                 .feature(Feature.builder("blocks")
                         .description("Adds creative machine features")
                         .content(Block.class, BlockCreativeFEGenerator.INSTANCE)));
-        ResourceRegistry.getMaterials().forEach(material -> {
-            Module.Builder builder = Module.builder("resources." + material.getMaterialType());
-            if (material.getGeneratorTypes().size() > 0) {
-                material.getGeneratorTypes().values().forEach(type -> {
-                    ForgeRegistryEntry entry = material.generate(type);
-                    if (entry != null) {
-                        Feature.Builder feature = Feature.builder(type.getTag());
-                        feature.content(entry.getRegistryType(), entry);
-                        builder.feature(feature);
-                    }
-                });
-            }
-            addModule(builder);
-        });
+        ResourceRegistry.initModules(this);
     }
 
     @Override

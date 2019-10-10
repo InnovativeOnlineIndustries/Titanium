@@ -11,6 +11,9 @@ import com.google.common.collect.HashMultimap;
 import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.annotation.MaterialReference;
 import com.hrznstudio.titanium.api.material.IResourceType;
+import com.hrznstudio.titanium.module.Feature;
+import com.hrznstudio.titanium.module.Module;
+import com.hrznstudio.titanium.module.ModuleController;
 import com.hrznstudio.titanium.tab.AdvancedTitaniumTab;
 import com.hrznstudio.titanium.util.AnnotationUtil;
 import net.minecraft.block.Blocks;
@@ -71,6 +74,23 @@ public class ResourceRegistry {
                 ANNOTATED_FIELDS.computeIfAbsent(reference.material(), s -> HashMultimap.create()).put(reference.type(), annotatedField);
             }
         }
+    }
+
+    public static void initModules(ModuleController controller) {
+        ResourceRegistry.getMaterials().forEach(material -> {
+            Module.Builder builder = Module.builder("resources." + material.getMaterialType());
+            if (material.getGeneratorTypes().size() > 0) {
+                material.getGeneratorTypes().values().forEach(type -> {
+                    ForgeRegistryEntry entry = material.generate(type);
+                    if (entry != null) {
+                        Feature.Builder feature = Feature.builder(type.getTag());
+                        feature.content(entry.getRegistryType(), entry);
+                        builder.feature(feature);
+                    }
+                });
+            }
+            controller.addModule(builder);
+        });
     }
 
     public static ResourceMaterial getOrCreate(String type) {
