@@ -128,10 +128,6 @@ public class ResourceRegistry {
         return MATERIALS.values();
     }
 
-    public static HashMap<String, HashMultimap<String, Field>> getAnnotatedFields() {
-        return ANNOTATED_FIELDS;
-    }
-
     public static void injectField(ResourceMaterial material, IResourceType type, ForgeRegistryEntry entry) {
         if (ANNOTATED_FIELDS.containsKey(material.getMaterialType())) {
             HashMultimap<String, Field> multimap = ANNOTATED_FIELDS.get(material.getMaterialType());

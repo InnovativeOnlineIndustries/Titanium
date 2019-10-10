@@ -30,6 +30,7 @@ public class ResourceMaterial {
         this.generatorTypes = new HashMap<>();
         this.generatorOverrides = new HashMap<>();
         this.generated = new HashMap<>();
+        this.typeProperties = new HashMap<>();
     }
 
     public String getMaterialType() {
