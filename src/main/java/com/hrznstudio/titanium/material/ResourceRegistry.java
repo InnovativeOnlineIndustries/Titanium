@@ -16,7 +16,9 @@ import com.hrznstudio.titanium.module.Module;
 import com.hrznstudio.titanium.module.ModuleController;
 import com.hrznstudio.titanium.tab.AdvancedTitaniumTab;
 import com.hrznstudio.titanium.util.AnnotationUtil;
+import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import org.apache.logging.log4j.LogManager;
@@ -38,6 +40,8 @@ public class ResourceRegistry {
 
     public static void init() {
         scanForReferences();
+        ResourceTypeProperties.DEFAULTS.put(Block.class, new ResourceTypeProperties(Block.Properties.from(Blocks.IRON_ORE)));
+        ResourceTypeProperties.DEFAULTS.put(Item.class, new ResourceTypeProperties(new Item.Properties().group(RESOURCES)));
         getOrCreate("iron").withOverride(ResourceType.ORE, Blocks.IRON_ORE).withOverride(ResourceType.METAL_BLOCK, Blocks.IRON_BLOCK).withOverride(ResourceType.INGOT, Items.IRON_INGOT).withOverride(ResourceType.NUGGET, Items.IRON_NUGGET);
         getOrCreate("gold").withOverride(ResourceType.ORE, Blocks.GOLD_ORE).withOverride(ResourceType.METAL_BLOCK, Blocks.GOLD_BLOCK).withOverride(ResourceType.INGOT, Items.GOLD_INGOT).withOverride(ResourceType.NUGGET, Items.GOLD_NUGGET);
         getOrCreate("coal").withOverride(ResourceType.ORE, Blocks.COAL_ORE).withOverride(ResourceType.GEM_BLOCK, Blocks.COAL_BLOCK).withOverride(ResourceType.GEM, Items.COAL);

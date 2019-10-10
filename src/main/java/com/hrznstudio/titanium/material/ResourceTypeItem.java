@@ -15,6 +15,7 @@ import com.hrznstudio.titanium.api.material.IResourceType;
 import com.hrznstudio.titanium.item.ItemBase;
 import com.hrznstudio.titanium.recipe.generator.IJSONGenerator;
 import com.hrznstudio.titanium.recipe.generator.IJsonFile;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -26,8 +27,8 @@ public class ResourceTypeItem extends ItemBase implements IJsonFile, IJSONGenera
     private final ResourceMaterial material;
     private final IResourceType type;
 
-    public ResourceTypeItem(ResourceMaterial material, IResourceType type) {
-        super(material.getMaterialType() + "_" + type.getName(), new Properties().group(ResourceRegistry.RESOURCES));
+    public ResourceTypeItem(ResourceMaterial material, IResourceType type, ResourceTypeProperties<Properties> properties) {
+        super(material.getMaterialType() + "_" + type.getName(), (properties == null ? ((ResourceTypeProperties<Properties>) ResourceTypeProperties.DEFAULTS.get(Item.class)).get() : properties.get()));
         this.material = material;
         this.type = type;
     }

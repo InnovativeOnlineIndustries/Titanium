@@ -12,6 +12,8 @@ import com.hrznstudio.titanium.api.material.IResourceType;
 import net.minecraft.util.IStringSerializable;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
+import javax.annotation.Nullable;
+
 public enum ResourceType implements IResourceType, IStringSerializable {
     INGOT,
     DUST,
@@ -35,26 +37,26 @@ public enum ResourceType implements IResourceType, IStringSerializable {
     GEAR,
     METAL_BLOCK("storage_blocks") {
         @Override
-        public IFactory<ForgeRegistryEntry> getInstanceFactory(ResourceMaterial material) {
-            return () -> new ResourceTypeBlock(material, this, ResourceTypeBlock.BlockResourceType.METAL_BLOCK);
+        public IFactory<ForgeRegistryEntry> getInstanceFactory(ResourceMaterial material, @Nullable ResourceTypeProperties properties) {
+            return () -> new ResourceTypeBlock(material, this, ResourceTypeBlock.BlockResourceType.METAL_BLOCK, properties);
         }
     },
     ORE {
         @Override
-        public IFactory<ForgeRegistryEntry> getInstanceFactory(ResourceMaterial material) {
-            return () -> new ResourceTypeBlock(material, this, ResourceTypeBlock.BlockResourceType.ORE);
+        public IFactory<ForgeRegistryEntry> getInstanceFactory(ResourceMaterial material, @Nullable ResourceTypeProperties properties) {
+            return () -> new ResourceTypeBlock(material, this, ResourceTypeBlock.BlockResourceType.ORE, properties);
         }
     },
     NETHER_ORE("ore/nether") {
         @Override
-        public IFactory<ForgeRegistryEntry> getInstanceFactory(ResourceMaterial material) {
-            return () -> new ResourceTypeBlock(material, this, ResourceTypeBlock.BlockResourceType.NETHER_ORE);
+        public IFactory<ForgeRegistryEntry> getInstanceFactory(ResourceMaterial material, @Nullable ResourceTypeProperties properties) {
+            return () -> new ResourceTypeBlock(material, this, ResourceTypeBlock.BlockResourceType.NETHER_ORE, properties);
         }
     },
     GEM_BLOCK("storage_blocks") {
         @Override
-        public IFactory<ForgeRegistryEntry> getInstanceFactory(ResourceMaterial material) {
-            return () -> new ResourceTypeBlock(material, this, ResourceTypeBlock.BlockResourceType.GEM_BLOCK);
+        public IFactory<ForgeRegistryEntry> getInstanceFactory(ResourceMaterial material, @Nullable ResourceTypeProperties properties) {
+            return () -> new ResourceTypeBlock(material, this, ResourceTypeBlock.BlockResourceType.GEM_BLOCK, properties);
         }
     };
 
@@ -74,8 +76,8 @@ public enum ResourceType implements IResourceType, IStringSerializable {
     }
 
     @Override
-    public IFactory<ForgeRegistryEntry> getInstanceFactory(ResourceMaterial material) {
-        return () -> new ResourceTypeItem(material, this);
+    public IFactory<ForgeRegistryEntry> getInstanceFactory(ResourceMaterial material, @Nullable ResourceTypeProperties properties) {
+        return () -> new ResourceTypeItem(material, this, properties);
     }
 
     @Override

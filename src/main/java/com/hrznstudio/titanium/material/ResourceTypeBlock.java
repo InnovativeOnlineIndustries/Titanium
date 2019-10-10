@@ -16,7 +16,7 @@ import com.hrznstudio.titanium.api.material.IResourceType;
 import com.hrznstudio.titanium.block.BlockBase;
 import com.hrznstudio.titanium.recipe.generator.IJSONGenerator;
 import com.hrznstudio.titanium.recipe.generator.IJsonFile;
-import net.minecraft.block.Blocks;
+import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -34,8 +34,8 @@ public class ResourceTypeBlock extends BlockBase implements IJsonFile, IJSONGene
     private final IResourceType resourceType;
     private final IBlockResourceType blockResourceType;
 
-    public ResourceTypeBlock(ResourceMaterial material, IResourceType type, IBlockResourceType blockType) {
-        super(material.getMaterialType() + "_" + type.getName(), Properties.from(Blocks.STONE));
+    public ResourceTypeBlock(ResourceMaterial material, IResourceType type, IBlockResourceType blockType, ResourceTypeProperties<Properties> properties) {
+        super(material.getMaterialType() + "_" + type.getName(), (properties == null ? ((ResourceTypeProperties<Properties>) ResourceTypeProperties.DEFAULTS.get(Block.class)).get() : properties.get()));
         this.resourceMaterial = material;
         this.resourceType = type;
         this.blockResourceType = blockType;

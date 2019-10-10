@@ -21,6 +21,7 @@ public class ResourceMaterial {
     private HashMap<String, IResourceType> generatorTypes;
     private HashMap<String, ForgeRegistryEntry> generatorOverrides;
     private HashMap<String, ForgeRegistryEntry> generated;
+    private HashMap<String, ResourceTypeProperties> typeProperties;
     private int color;
 
     ResourceMaterial(String type) {
@@ -48,6 +49,11 @@ public class ResourceMaterial {
 
     public ResourceMaterial withOverride(IResourceType type, ForgeRegistryEntry entry) {
         generatorOverrides.put(type.getTag(), entry);
+        return this;
+    }
+
+    public ResourceMaterial withProperties(IResourceType type, ResourceTypeProperties properties) {
+        typeProperties.computeIfAbsent(type.getName(), s -> properties);
         return this;
     }
 
@@ -80,7 +86,7 @@ public class ResourceMaterial {
             ResourceRegistry.injectField(this, type, entry);
             return null;
         }
-        ForgeRegistryEntry entry = type.getInstanceFactory(this).create();
+        ForgeRegistryEntry entry = type.getInstanceFactory(this, typeProperties.getOrDefault(type.getName(), null)).create();
         generated.put(type.getTag(), entry);
         ResourceRegistry.injectField(this, type, entry);
         return entry;
