@@ -7,11 +7,13 @@
 
 package com.hrznstudio.titanium.util;
 
+import com.hrznstudio.titanium.Titanium;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.forgespi.language.ModFileScanData;
 import org.objectweb.asm.Type;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -27,7 +29,7 @@ public class AnnotationUtil {
                     try {
                         classList.add(Class.forName(allScanDatumAnnotation.getMemberName()));
                     } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
+                        Titanium.LOGGER.error(e);
                     }
                 }
             }
@@ -45,11 +47,32 @@ public class AnnotationUtil {
                     try {
                         classList.add(Class.forName(allScanDatumAnnotation.getMemberName()));
                     } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
+                        Titanium.LOGGER.error(e);
                     }
                 }
             }
         }
         return classList;
+    }
+
+    public static List<Field> getAnnotatedFields(Class<? extends Annotation> annotation) {
+        List<Field> fields = new ArrayList<>();
+        Type type = Type.getType(annotation);
+        for (ModFileScanData allScanDatum : ModList.get().getAllScanData()) {
+            for (ModFileScanData.AnnotationData annotationData : allScanDatum.getAnnotations()) {
+                if (Objects.equals(annotationData.getAnnotationType(), type)) {
+                    try {
+                        for (Field field : Class.forName(annotationData.getClassType().getClassName()).getDeclaredFields()) {
+                            if (field.getName().equalsIgnoreCase(annotationData.getMemberName())) {
+                                fields.add(field);
+                            }
+                        }
+                    } catch (ClassNotFoundException e) {
+                        Titanium.LOGGER.error(e);
+                    }
+                }
+            }
+        }
+        return fields;
     }
 }

@@ -19,6 +19,7 @@ import com.hrznstudio.titanium.command.RewardCommand;
 import com.hrznstudio.titanium.command.RewardGrantCommand;
 import com.hrznstudio.titanium.container.impl.ContainerTileBase;
 import com.hrznstudio.titanium.event.handler.EventManager;
+import com.hrznstudio.titanium.material.ResourceRegistry;
 import com.hrznstudio.titanium.module.Feature;
 import com.hrznstudio.titanium.module.Module;
 import com.hrznstudio.titanium.module.ModuleController;
@@ -28,6 +29,7 @@ import com.hrznstudio.titanium.network.messages.ButtonClickNetworkMessage;
 import com.hrznstudio.titanium.recipe.generator.BlockItemModelGeneratorProvider;
 import com.hrznstudio.titanium.recipe.generator.titanium.DefaultLootTableProvider;
 import com.hrznstudio.titanium.recipe.generator.titanium.JsonRecipeSerializerProvider;
+import com.hrznstudio.titanium.recipe.generator.titanium.ResourceRegistryProvider;
 import com.hrznstudio.titanium.reward.Reward;
 import com.hrznstudio.titanium.reward.RewardManager;
 import com.hrznstudio.titanium.reward.RewardSyncMessage;
@@ -82,10 +84,17 @@ public class Titanium extends ModuleController {
         EventManager.mod(FMLCommonSetupEvent.class).process(this::commonSetup).subscribe();
         EventManager.forge(PlayerEvent.PlayerLoggedInEvent.class).process(this::onPlayerLoggedIn).subscribe();
         EventManager.forge(FMLServerStartingEvent.class).process(this::onServerStart).subscribe();
+
     }
 
     public static void openGui(TileActive tile, ServerPlayerEntity player) {
         NetworkHooks.openGui(player, tile, tile.getPos());
+    }
+
+    @Override
+    public void onPreInit() {
+        super.onPreInit();
+        ResourceRegistry.onPreInit();
     }
 
     @Override
@@ -132,6 +141,13 @@ public class Titanium extends ModuleController {
                 .feature(Feature.builder("blocks")
                         .description("Adds creative machine features")
                         .content(Block.class, BlockCreativeFEGenerator.INSTANCE)));
+        ResourceRegistry.initModules(this);
+    }
+
+    @Override
+    public void onPostInit() {
+        super.onPostInit();
+        ResourceRegistry.onPostInit();
     }
 
     @Override
@@ -139,6 +155,7 @@ public class Titanium extends ModuleController {
         event.getGenerator().addProvider(new BlockItemModelGeneratorProvider(event.getGenerator(), MODID));
         event.getGenerator().addProvider(new DefaultLootTableProvider(event.getGenerator(), MODID));
         event.getGenerator().addProvider(new JsonRecipeSerializerProvider(event.getGenerator(), MODID));
+        event.getGenerator().addProvider(new ResourceRegistryProvider(event.getGenerator()));
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
