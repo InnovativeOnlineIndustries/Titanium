@@ -57,7 +57,7 @@ public class ResourceRegistry {
         getOrCreate("emerald").setColor(0x17dd62).withOverride(ResourceType.ORE, Blocks.EMERALD_ORE).withOverride(ResourceType.GEM_BLOCK, Blocks.EMERALD_BLOCK).withOverride(ResourceType.GEM, Items.EMERALD);
         getOrCreate("nether_quartz").setColor(0xddd4c6).withOverride(ResourceType.NETHER_ORE, Blocks.NETHER_QUARTZ_ORE).withOverride(ResourceType.GEM_BLOCK, Blocks.QUARTZ_BLOCK).withOverride(ResourceType.GEM, Items.QUARTZ);
         getOrCreate("glowstone").setColor(0xffbc5e).withOverride(ResourceType.GEM_BLOCK, Blocks.GLOWSTONE).withOverride(ResourceType.DUST, Items.GLOWSTONE_DUST);
-        EventManager.forge(ColorHandlerEvent.Item.class).process(item -> {
+        EventManager.mod(ColorHandlerEvent.Item.class).process(item -> {
             ResourceRegistry.getMaterials().forEach(material -> {
                 material.getGenerated().values().stream().filter(entry -> entry instanceof IHasColor).forEach(entry -> {
                     if (entry instanceof Block) {
