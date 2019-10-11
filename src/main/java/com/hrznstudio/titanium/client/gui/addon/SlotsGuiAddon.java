@@ -16,8 +16,10 @@ import com.hrznstudio.titanium.util.AssetUtil;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.awt.*;
+import java.util.function.Function;
 
 public class SlotsGuiAddon extends BasicGuiAddon {
 
@@ -38,38 +40,42 @@ public class SlotsGuiAddon extends BasicGuiAddon {
         return 0;
     }
 
-    @Override
-    public void drawGuiContainerBackgroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+    public static void drawAsset(Screen screen, IAssetProvider provider, int handlerPosX, int handlerPosY, int guiX, int guiY, int slots, Function<Integer, Pair<Integer, Integer>> positionFunction, boolean drawColor, int color) {
         IAsset slot = IAssetProvider.getAsset(provider, AssetTypes.SLOT);
         Rectangle area = slot.getArea();
         screen.getMinecraft().getTextureManager().bindTexture(slot.getResourceLocation());
         //Draw background
-        if (handler instanceof SidedInvHandler && ((SidedInvHandler) handler).isColorGuiEnabled()) {
-            for (int slotID = 0; slotID < handler.getSlots(); slotID++) {
-                int posX = handler.getSlotPosition().apply(slotID).getLeft();
-                int posY = handler.getSlotPosition().apply(slotID).getRight();
-                AbstractGui.fill(guiX + handler.getXPos() + posX - 2, guiY + handler.getYPos() + posY - 2,
-                        guiX + handler.getXPos() + posX + area.width, guiY + handler.getYPos() + posY + area.height, ((SidedInvHandler) handler).getColor());
+        if (drawColor) {
+            for (int slotID = 0; slotID < slots; slotID++) {
+                int posX = positionFunction.apply(slotID).getLeft();
+                int posY = positionFunction.apply(slotID).getRight();
+                AbstractGui.fill(guiX + handlerPosX + posX - 2, guiY + handlerPosY + posY - 2,
+                        guiX + handlerPosX + posX + area.width, guiY + handlerPosY + posY + area.height, new Color(color).getRGB());
                 GlStateManager.color4f(1, 1, 1, 1);
             }
         }
         //Draw slot
-        for (int slotID = 0; slotID < handler.getSlots(); slotID++) {
-            int posX = handler.getSlotPosition().apply(slotID).getLeft();
-            int posY = handler.getSlotPosition().apply(slotID).getRight();
-            AssetUtil.drawAsset(screen, slot, handler.getXPos() + posX + guiX - 1, handler.getYPos() + posY + guiY - 1);
+        for (int slotID = 0; slotID < slots; slotID++) {
+            int posX = positionFunction.apply(slotID).getLeft();
+            int posY = positionFunction.apply(slotID).getRight();
+            AssetUtil.drawAsset(screen, slot, handlerPosX + posX + guiX - 1, handlerPosY + posY + guiY - 1);
         }
         //Draw overlay
-        if (handler instanceof SidedInvHandler && ((SidedInvHandler) handler).isColorGuiEnabled()) {
-            for (int slotID = 0; slotID < handler.getSlots(); slotID++) {
-                int posX = handler.getSlotPosition().apply(slotID).getLeft();
-                int posY = handler.getSlotPosition().apply(slotID).getRight();
-                Color color = new Color(((SidedInvHandler) handler).getColor());
-                AbstractGui.fill(guiX + handler.getXPos() + posX, guiY + handler.getYPos() + posY,
-                        guiX + handler.getXPos() + posX + area.width - 2, guiY + handler.getYPos() + posY + area.height - 2, new Color(color.getRed(), color.getGreen(), color.getBlue(), 256 / 2).getRGB());
+        if (drawColor) {
+            for (int slotID = 0; slotID < slots; slotID++) {
+                int posX = positionFunction.apply(slotID).getLeft();
+                int posY = positionFunction.apply(slotID).getRight();
+                Color colored = new Color(color);
+                AbstractGui.fill(guiX + handlerPosX + posX, guiY + handlerPosY + posY,
+                        guiX + handlerPosX + posX + area.width - 2, guiY + handlerPosY + posY + area.height - 2, new Color(colored.getRed(), colored.getGreen(), colored.getBlue(), 256 / 2).getRGB());
                 GlStateManager.color4f(1, 1, 1, 1);
             }
         }
+    }
+
+    @Override
+    public void drawGuiContainerBackgroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+        drawAsset(screen, provider, guiX, guiY, getPosX(), getPosY(), handler.getSlots(), handler.getSlotPosition(), handler instanceof SidedInvHandler && ((SidedInvHandler) handler).isColorGuiEnabled(), handler instanceof SidedInvHandler ? ((SidedInvHandler) handler).getColor() : 0);
     }
 
     @Override

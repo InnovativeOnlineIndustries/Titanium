@@ -10,6 +10,7 @@ package com.hrznstudio.titanium.client.gui.addon;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
+import com.hrznstudio.titanium.util.AssetUtil;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -29,30 +30,26 @@ public class EnergyBarGuiAddon extends BasicGuiAddon {
         this.handler = handler;
     }
 
-    @Override
-    public void drawGuiContainerBackgroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
-        background = IAssetProvider.getAsset(provider, AssetTypes.ENERGY_BACKGROUND);
+    public static IAsset drawBackground(Screen screen, IAssetProvider provider, int handlerPosX, int handlerPosY, int guiX, int guiY) {
+        IAsset background = IAssetProvider.getAsset(provider, AssetTypes.ENERGY_BACKGROUND);
         Point offset = background.getOffset();
         Rectangle area = background.getArea();
-        screen.getMinecraft().getTextureManager().bindTexture(background.getResourceLocation());
-        screen.blit(guiX + getPosX() + offset.x, guiY + getPosY() + offset.y, area.x, area.y, area.width, area.height);
+        AssetUtil.drawAsset(screen, background, guiX + handlerPosX + offset.x, guiY + handlerPosY + offset.y);
+        return background;
     }
 
-    @Override
-    public void drawGuiContainerForegroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
+    public static void drawForeground(Screen screen, IAssetProvider provider, int handlerPosX, int handlerPosY, int guiX, int guiY, int stored, int capacity) {
         IAsset asset = IAssetProvider.getAsset(provider, AssetTypes.ENERGY_BAR);
         Point offset = asset.getOffset();
         Rectangle area = asset.getArea();
         screen.getMinecraft().getTextureManager().bindTexture(asset.getResourceLocation());
-        long stored = handler.getEnergyStored();
-        long capacity = handler.getMaxEnergyStored();
         int powerOffset = (int) (stored * area.height / capacity);
-        screen.blit(getPosX() + offset.x, getPosY() + offset.y + area.height - powerOffset, area.x, area.y + (area.height - powerOffset), area.width, powerOffset);
+        screen.blit(handlerPosX + offset.x, handlerPosY + offset.y + area.height - powerOffset, area.x, area.y + (area.height - powerOffset), area.width, powerOffset);
     }
 
-    @Override
-    public List<String> getTooltipLines() {
-        return Arrays.asList(TextFormatting.GOLD + "Power:", new DecimalFormat().format(handler.getEnergyStored()) + TextFormatting.GOLD + "/" + TextFormatting.WHITE + new DecimalFormat().format(handler.getMaxEnergyStored()) + TextFormatting.DARK_AQUA + " FE");
+    public static List<String> getTooltip(int stored, int capacity) {
+        return Arrays.asList(TextFormatting.GOLD + "Power:", new DecimalFormat().format(stored) + TextFormatting.GOLD + "/" + TextFormatting.WHITE + new DecimalFormat().format(capacity) + TextFormatting.DARK_AQUA + " FE");
+
     }
 
     @Override
@@ -63,5 +60,20 @@ public class EnergyBarGuiAddon extends BasicGuiAddon {
     @Override
     public int getYSize() {
         return background != null ? background.getArea().height : 0;
+    }
+
+    @Override
+    public void drawGuiContainerBackgroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+        drawBackground(screen, provider, getPosX(), getPosY(), guiX, guiY);
+    }
+
+    @Override
+    public void drawGuiContainerForegroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
+        drawForeground(screen, provider, getPosX(), getPosY(), guiX, guiY, handler.getEnergyStored(), handler.getMaxEnergyStored());
+    }
+
+    @Override
+    public List<String> getTooltipLines() {
+        return getTooltip(handler.getEnergyStored(), handler.getMaxEnergyStored());
     }
 }
