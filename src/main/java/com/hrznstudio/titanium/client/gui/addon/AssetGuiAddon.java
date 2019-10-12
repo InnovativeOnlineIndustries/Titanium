@@ -29,12 +29,12 @@ public class AssetGuiAddon extends BasicGuiAddon {
 
     @Override
     public int getXSize() {
-        return area.width;
+        return area != null ? area.width : 0;
     }
 
     @Override
     public int getYSize() {
-        return area.height;
+        return area != null ? area.height : 0;
     }
 
     @Override
