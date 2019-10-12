@@ -49,7 +49,6 @@ public class EnergyBarGuiAddon extends BasicGuiAddon {
 
     public static List<String> getTooltip(int stored, int capacity) {
         return Arrays.asList(TextFormatting.GOLD + "Power:", new DecimalFormat().format(stored) + TextFormatting.GOLD + "/" + TextFormatting.WHITE + new DecimalFormat().format(capacity) + TextFormatting.DARK_AQUA + " FE");
-
     }
 
     @Override
@@ -64,7 +63,7 @@ public class EnergyBarGuiAddon extends BasicGuiAddon {
 
     @Override
     public void drawGuiContainerBackgroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
-        drawBackground(screen, provider, getPosX(), getPosY(), guiX, guiY);
+        background = drawBackground(screen, provider, getPosX(), getPosY(), guiX, guiY);
     }
 
     @Override
