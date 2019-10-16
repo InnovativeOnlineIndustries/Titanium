@@ -51,7 +51,7 @@ public abstract class TitaniumLootTableProvider extends LootTableProvider {
     }
 
     private void write(DirectoryCache cache, ResourceLocation resourceLocation, LootTable table) {
-        Path output = this.generator.getOutputFolder().resolve("data/" + resourceLocation.getNamespace() + "/loot_tables/" + resourceLocation.getPath() + ".json");
+        Path output = this.generator.getOutputFolder().resolve("data/" + resourceLocation.getNamespace() + "/loot_tables/blocks/" + resourceLocation.getPath() + ".json");
         try {
             IDataProvider.save(GSON, cache, LootTableManager.toJson(table), output);
         } catch (IOException e) {
