@@ -138,6 +138,7 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
             }
             this.setClicked((GuiContainerTileBase) screen, !clicked);
             if (clicked) {
+                ((GuiContainerTileBase) screen).getContainer().setDisabled(true);
                 for (FacingUtil.Sideness facing : FacingUtil.Sideness.values()) {
                     if (!handler.getFacingModes().containsKey(facing)) continue;
                     Point point = getPointFromFacing(facing, inventoryPoint);
@@ -180,7 +181,6 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
                 }
             }
         }
-
     }
 
     public boolean isClicked() {
