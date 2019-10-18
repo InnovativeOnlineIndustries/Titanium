@@ -182,7 +182,10 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
 
     private boolean transfer(FacingUtil.Sideness sideness, IItemHandler from, IItemHandler to, int workAmount) {
         int slot = slotCache.getOrDefault(sideness, getNextSlot(from, 0));
-        if (from.getSlots() < slot) slot = 0;
+        if (from.getSlots() < slot) {
+            slot = 0;
+            return false;
+        }
         ItemStack extracted = from.extractItem(slot, workAmount, true);
         if (!extracted.isEmpty()) {
             ItemStack returned = ItemHandlerHelper.insertItemStacked(to, extracted, false);
