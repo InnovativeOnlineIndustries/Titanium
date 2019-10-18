@@ -13,8 +13,6 @@ import com.hrznstudio.titanium.annotation.MaterialReference;
 import com.hrznstudio.titanium.api.material.IHasColor;
 import com.hrznstudio.titanium.api.material.IResourceType;
 import com.hrznstudio.titanium.event.handler.EventManager;
-import com.hrznstudio.titanium.module.Feature;
-import com.hrznstudio.titanium.module.Module;
 import com.hrznstudio.titanium.module.ModuleController;
 import com.hrznstudio.titanium.tab.AdvancedTitaniumTab;
 import com.hrznstudio.titanium.util.AnnotationUtil;
@@ -27,6 +25,7 @@ import net.minecraft.item.Items;
 import net.minecraft.util.IItemProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ColorHandlerEvent;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import org.apache.logging.log4j.LogManager;
@@ -72,6 +71,9 @@ public class ResourceRegistry {
                 });
             }).subscribe();
         });
+        EventManager.mod(RegistryEvent.Register.class).process(event -> {
+            MATERIALS.values().stream().forEach(material -> material.getGenerated().values().stream().filter(entry -> entry.getRegistryName().getNamespace().equals(Titanium.MODID) && ((Class) event.getGenericType()).isAssignableFrom(entry.getRegistryType())).forEach(entry -> event.getRegistry().register(entry)));
+        }).subscribe();
     }
 
     private static void scanForReferences() {
@@ -101,24 +103,32 @@ public class ResourceRegistry {
         }
     }
 
+
     public static void initModules(ModuleController controller) {
-        ResourceRegistry.getMaterials().forEach(material -> {
-            Module.Builder builder = Module.builder("resources." + material.getMaterialType());
-            if (material.getGeneratorTypes().size() > 0) {
-                material.getGeneratorTypes().values().forEach(type -> {
-                    ForgeRegistryEntry entry = material.generate(type);
-                    if (entry != null) {
-                        Feature.Builder feature = Feature.builder(type.getTag());
-                        feature.content(entry.getRegistryType(), entry);
-                        builder.feature(feature);
-                    }
-                });
-            }
-            controller.addModule(builder);
-        });
+        //ResourceRegistry.getMaterials().forEach(material -> {
+        //    Module.Builder builder = Module.builder("resources." + material.getMaterialType());
+        //    if (material.getGeneratorTypes().size() > 0) {
+        //        material.getGeneratorTypes().values().forEach(type -> {
+        //            ForgeRegistryEntry entry = material.generate(type);
+        //            if (entry != null) {
+        //                Feature.Builder feature = Feature.builder(type.getTag());
+        //                feature.content(entry.getRegistryType(), entry);
+        //                builder.feature(feature);
+        //            }
+        //        });
+        //    }
+        //    controller.addModule(builder);
+        //});
     }
 
     public static void onPostInit() {
+        ResourceRegistry.getMaterials().forEach(material -> {
+            if (material.getGeneratorTypes().size() > 0) {
+                material.getGeneratorTypes().values().forEach(type -> {
+                    ForgeRegistryEntry entry = material.generate(type);
+                });
+            }
+        });
         ResourceRegistry.getMaterials().stream().map(material -> material.getGenerated().values()).flatMap(Collection::stream).
                 filter(forgeRegistryEntry -> forgeRegistryEntry instanceof IItemProvider && ForgeRegistries.ITEMS.containsKey(forgeRegistryEntry.getRegistryName())).
                 forEach(forgeRegistryEntry -> ResourceRegistry.RESOURCES.addIconStack(new ItemStack(((IItemProvider) forgeRegistryEntry).asItem())));
