@@ -108,13 +108,34 @@ public class PosFluidTank extends FluidTank implements IGuiAddonProvider {
     @Nonnull
     @Override
     public FluidStack drain(FluidStack resource, FluidAction action) {
-        return getTankAction().canDrain() ? super.drain(resource, action) : FluidStack.EMPTY;
+        return getTankAction().canDrain() ? drainInternal(resource, action) : FluidStack.EMPTY;
+    }
+
+    private FluidStack drainInternal(FluidStack resource, FluidAction action) {
+        if (resource.isEmpty() || !resource.isFluidEqual(fluid)) {
+            return FluidStack.EMPTY;
+        }
+        return drain(resource.getAmount(), action);
     }
 
     @Nonnull
     @Override
     public FluidStack drain(int maxDrain, FluidAction action) {
-        return getTankAction().canDrain() ? super.drain(maxDrain, action) : FluidStack.EMPTY;
+        return getTankAction().canDrain() ? drainInternal(maxDrain, action) : FluidStack.EMPTY;
+    }
+
+    @Nonnull
+    private FluidStack drainInternal(int maxDrain, FluidAction action) {
+        int drained = maxDrain;
+        if (fluid.getAmount() < drained) {
+            drained = fluid.getAmount();
+        }
+        FluidStack stack = new FluidStack(fluid, drained);
+        if (action.execute() && drained > 0) {
+            fluid.shrink(drained);
+            onContentsChanged();
+        }
+        return stack;
     }
 
     public int fillForced(FluidStack resource, FluidAction action) {
@@ -131,7 +152,7 @@ public class PosFluidTank extends FluidTank implements IGuiAddonProvider {
 
     @Nonnull
     public FluidStack drainForced(int maxDrain, FluidAction action) {
-        return super.drain(maxDrain, action);
+        return drainInternal(maxDrain, action);
     }
 
     @Override
