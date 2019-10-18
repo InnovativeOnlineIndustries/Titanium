@@ -132,7 +132,7 @@ public class SidedFluidTank extends PosFluidTank implements IFacingHandler, IGui
     }
 
     private boolean transfer(FacingUtil.Sideness sideness, IFluidHandler from, IFluidHandler to, int workAmount) {
-        FluidStack stack = from.drain(workAmount * 10, FluidAction.SIMULATE);
+        FluidStack stack = from.drain(workAmount * 100, FluidAction.SIMULATE);
         if (!stack.isEmpty()) {
             stack = from.drain(to.fill(stack, FluidAction.EXECUTE), FluidAction.EXECUTE);
             return !stack.isEmpty();
