@@ -28,14 +28,14 @@ public abstract class TileGenerator extends TilePowered {
         this.addGuiAddonFactory(() -> new EnergyBarGuiAddon(10, 20, getEnergyStorage()));
         this.addProgressBar(progressBar = getProgressBar()
                 .setTile(this)
-                .setCanIncrease(tileEntity -> true)
+                .setCanIncrease(tileEntity -> !isSmart() || this.getEnergyCapacity() - this.getEnergyStorage().getEnergyStored() >= getEnergyProducedEveryTick())
                 .setIncreaseType(false)
                 .setOnStart(() -> {
                     progressBar.setMaxProgress(consumeFuel());
                     progressBar.setProgress(progressBar.getMaxProgress());
                     markForUpdate();
                 })
-                .setCanReset(tileEntity -> canStart())
+                .setCanReset(tileEntity -> canStart() && progressBar.getProgress() == 0)
                 .setOnTickWork(() -> this.getEnergyStorage().receiveEnergyForced(getEnergyProducedEveryTick()))
         );
     }
@@ -85,6 +85,15 @@ public abstract class TileGenerator extends TilePowered {
      */
     public abstract int getExtractingEnergy();
 
+    /**
+     * Defines is the generator wastes power when generating or not
+     *
+     * @return true is if it efficient, false if not
+     */
+    public boolean isSmart() {
+        return true;
+    }
+
 
     @Override
     public void tick() {
@@ -102,6 +111,5 @@ public abstract class TileGenerator extends TilePowered {
                 });
             }
         }
-
     }
 }
