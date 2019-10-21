@@ -7,7 +7,6 @@
 
 package com.hrznstudio.titanium.network;
 
-import com.hrznstudio.titanium.Titanium;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -21,16 +20,26 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 import java.lang.reflect.InvocationTargetException;
 
 public class NetworkHandler {
-    public static SimpleChannel NETWORK = NetworkRegistry.newSimpleChannel(
-            new ResourceLocation(Titanium.MODID, "network"),
-            () -> "1.0",
-            s -> true,
-            s -> true
-    );
-    private static int i = 0;
 
-    public static <REQ extends Message> void registerMessage(Class<REQ> message) {
-        NETWORK.registerMessage(i++, message, Message::toBytes,
+    private SimpleChannel network;
+    private int i;
+
+    public NetworkHandler(String modid) {
+        i = 0;
+        network = NetworkRegistry.newSimpleChannel(
+                new ResourceLocation(modid, "network"),
+                () -> "1.0",
+                s -> true,
+                s -> true
+        );
+    }
+
+    public SimpleChannel get() {
+        return network;
+    }
+
+    public <REQ extends Message> void registerMessage(Class<REQ> message) {
+        network.registerMessage(i++, message, Message::toBytes,
                 buffer -> {
                     try {
                         REQ req = message.getConstructor().newInstance();
@@ -47,9 +56,9 @@ public class NetworkHandler {
                 });
     }
 
-    public static void sendToNearby(World world, BlockPos pos, int distance, Message message) {
+    public void sendToNearby(World world, BlockPos pos, int distance, Message message) {
         world.getEntitiesWithinAABB(ServerPlayerEntity.class, new AxisAlignedBB(pos).grow(distance)).forEach(playerEntity -> {
-            NETWORK.sendTo(message, playerEntity.connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
+            network.sendTo(message, playerEntity.connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
         });
     }
 }

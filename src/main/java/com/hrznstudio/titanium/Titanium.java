@@ -75,16 +75,15 @@ public class Titanium extends ModuleController {
 
     public static final String MODID = "titanium";
     public static final Logger LOGGER = LogManager.getLogger(MODID);
+    public static NetworkHandler NETWORK = new NetworkHandler(MODID);
 
     public Titanium() {
-        NetworkHandler.registerMessage(ButtonClickNetworkMessage.class);
-        NetworkHandler.registerMessage(RewardSyncMessage.class);
-
+        NETWORK.registerMessage(ButtonClickNetworkMessage.class);
+        NETWORK.registerMessage(RewardSyncMessage.class);
         SidedHandler.runOn(Dist.CLIENT, () -> () -> EventManager.mod(FMLClientSetupEvent.class).process(this::clientSetup).subscribe());
         EventManager.mod(FMLCommonSetupEvent.class).process(this::commonSetup).subscribe();
         EventManager.forge(PlayerEvent.PlayerLoggedInEvent.class).process(this::onPlayerLoggedIn).subscribe();
         EventManager.forge(FMLServerStartingEvent.class).process(this::onServerStart).subscribe();
-
     }
 
     public static void openGui(TileActive tile, ServerPlayerEntity player) {
@@ -183,7 +182,7 @@ public class Titanium extends ModuleController {
                 storage.markDirty();
             }
             CompoundNBT nbt = storage.serializeSimple();
-            event.getPlayer().getServer().getPlayerList().getPlayers().forEach(serverPlayerEntity -> NetworkHandler.NETWORK.sendTo(new RewardSyncMessage(nbt), serverPlayerEntity.connection.netManager, NetworkDirection.PLAY_TO_CLIENT));
+            event.getPlayer().getServer().getPlayerList().getPlayers().forEach(serverPlayerEntity -> Titanium.NETWORK.get().sendTo(new RewardSyncMessage(nbt), serverPlayerEntity.connection.netManager, NetworkDirection.PLAY_TO_CLIENT));
         });
     }
 

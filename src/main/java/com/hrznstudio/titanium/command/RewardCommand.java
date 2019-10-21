@@ -7,7 +7,7 @@
 
 package com.hrznstudio.titanium.command;
 
-import com.hrznstudio.titanium.network.NetworkHandler;
+import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.reward.RewardManager;
 import com.hrznstudio.titanium.reward.RewardSyncMessage;
 import com.hrznstudio.titanium.reward.storage.RewardWorldStorage;
@@ -58,7 +58,7 @@ public class RewardCommand {
         if (changed) {
             context.getSource().getServer().execute(() -> {
                 CompoundNBT nbt = RewardWorldStorage.get(context.getSource().getServer().getWorld(DimensionType.OVERWORLD)).serializeSimple();
-                context.getSource().getServer().getPlayerList().getPlayers().forEach(serverPlayerEntity -> NetworkHandler.NETWORK.sendTo(new RewardSyncMessage(nbt), serverPlayerEntity.connection.netManager, NetworkDirection.PLAY_TO_CLIENT));
+                context.getSource().getServer().getPlayerList().getPlayers().forEach(serverPlayerEntity -> Titanium.NETWORK.get().sendTo(new RewardSyncMessage(nbt), serverPlayerEntity.connection.netManager, NetworkDirection.PLAY_TO_CLIENT));
             });
         }
     }

@@ -7,6 +7,7 @@
 
 package com.hrznstudio.titanium.client.gui.addon;
 
+import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.api.client.IAssetType;
@@ -19,7 +20,6 @@ import com.hrznstudio.titanium.client.gui.IGuiAddonConsumer;
 import com.hrznstudio.titanium.client.gui.addon.interfaces.IClickable;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.client.gui.container.GuiContainerTileBase;
-import com.hrznstudio.titanium.network.NetworkHandler;
 import com.hrznstudio.titanium.network.messages.ButtonClickNetworkMessage;
 import com.hrznstudio.titanium.util.AssetUtil;
 import com.hrznstudio.titanium.util.FacingUtil;
@@ -159,7 +159,7 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
                                 if (faceMode < 0) faceMode = IFacingHandler.FaceMode.values().length - 1;
                                 compound.putInt("Next", faceMode);
                                 compound.putString("Name", handler.getName());
-                                NetworkHandler.NETWORK.sendToServer(new ButtonClickNetworkMessage(((GuiContainerTileBase) gui).getContainer().getLocatorInstance(), -1, compound));
+                                Titanium.NETWORK.get().sendToServer(new ButtonClickNetworkMessage(((GuiContainerTileBase) gui).getContainer().getLocatorInstance(), -1, compound));
                                 handler.getFacingModes().put(facing, IFacingHandler.FaceMode.values()[faceMode]);
                                 ((GuiContainerTileBase) gui).getContainer().getTile().updateNeigh();
                             }
