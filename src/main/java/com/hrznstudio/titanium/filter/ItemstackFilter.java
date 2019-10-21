@@ -57,6 +57,7 @@ public class ItemstackFilter implements IFilter<ItemStack> {
         if (slot < 0 || slot >= filter.length)
             throw new RuntimeException("Filter slot " + slot + " not in valid range - [0," + filter.length + ")");
         filter[slot].setFilter(stack);
+        onContentChanged();
     }
 
     @Override
@@ -127,5 +128,9 @@ public class ItemstackFilter implements IFilter<ItemStack> {
         List<IFactory<? extends IGuiAddon>> list = new ArrayList<>();
         list.add(() -> new ItemstackFilterGuiAddon(this));
         return list;
+    }
+
+    public void onContentChanged() {
+
     }
 }

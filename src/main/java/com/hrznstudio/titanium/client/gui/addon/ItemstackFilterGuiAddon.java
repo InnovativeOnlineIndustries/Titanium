@@ -7,12 +7,14 @@
 
 package com.hrznstudio.titanium.client.gui.addon;
 
+import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.filter.FilterSlot;
 import com.hrznstudio.titanium.client.gui.addon.interfaces.IClickable;
-import com.hrznstudio.titanium.client.gui.addon.interfaces.INetworkable;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.filter.ItemstackFilter;
+import com.hrznstudio.titanium.network.locator.ILocatable;
+import com.hrznstudio.titanium.network.messages.ButtonClickNetworkMessage;
 import com.hrznstudio.titanium.util.AssetUtil;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
@@ -79,15 +81,15 @@ public class ItemstackFilterGuiAddon extends BasicGuiAddon implements IClickable
 
     @Override
     public void handleClick(Screen screen, int guiX, int guiY, double mouseX, double mouseY, int button) {
-        if (screen instanceof ContainerScreen && ((ContainerScreen) screen).getContainer() instanceof INetworkable) {
+        if (screen instanceof ContainerScreen && ((ContainerScreen) screen).getContainer() instanceof ILocatable) {
+            ILocatable locatable = (ILocatable) ((ContainerScreen) screen).getContainer();
             for (FilterSlot<ItemStack> filterSlot : filter.getFilterSlots()) {
                 if (filterSlot != null && mouseX > (guiX + filterSlot.getX() + 1) && mouseX < (guiX + filterSlot.getX() + 16) && mouseY > (guiY + filterSlot.getY() + 1) && mouseY < (guiY + filterSlot.getY() + 16)) {
-                    INetworkable networkable = (INetworkable) ((ContainerScreen) screen).getContainer();
                     CompoundNBT compoundNBT = new CompoundNBT();
                     compoundNBT.putString("Name", filter.getName());
                     compoundNBT.putInt("Slot", filterSlot.getFilterID());
                     compoundNBT.put("Filter", Minecraft.getInstance().player.inventory.getItemStack().serializeNBT());
-                    networkable.sendMessage(-2, compoundNBT);
+                    Titanium.NETWORK.get().sendToServer(new ButtonClickNetworkMessage(locatable.getLocatorInstance(), -2, compoundNBT));
                 }
             }
 
