@@ -127,7 +127,7 @@ publishing {
         }
     }
     repositories {
-        if(System.getenv("BRANCH") == "1.14") {
+        if(System.getenv("BRANCH") == "release") {
             maven {
                 url "s3://cdn.hrzn.studio/maven"
                 authentication {
