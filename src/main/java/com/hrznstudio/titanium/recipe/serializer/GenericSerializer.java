@@ -77,7 +77,7 @@ public class GenericSerializer<T extends SerializableRecipe> extends ForgeRegist
         try {
             T recipe = recipeClass.getConstructor(ResourceLocation.class).newInstance(recipeId);
             for (Field field : recipeClass.getFields()) {
-                if (CompoundSerializableDataHandler.acceptField(field, recipeClass)) {
+                if (CompoundSerializableDataHandler.acceptField(field, field.getType())) {
                     CompoundSerializableDataHandler.readField(field, field.getType(), buffer, recipe);
                 }
             }
@@ -92,7 +92,7 @@ public class GenericSerializer<T extends SerializableRecipe> extends ForgeRegist
     @Override
     public void write(PacketBuffer buffer, T recipe) {
         for (Field field : recipeClass.getFields()) {
-            if (CompoundSerializableDataHandler.acceptField(field, recipeClass)) {
+            if (CompoundSerializableDataHandler.acceptField(field, field.getType())) {
                 try {
                     CompoundSerializableDataHandler.writeField(field, field.getType(), buffer, recipe);
                 } catch (IllegalAccessException e) {
