@@ -67,7 +67,7 @@ public class CompoundSerializableDataHandler {
         map(Ingredient.IItemList.class, CollectionItemList::new, CollectionItemList::serializeBuffer);
         map(Ingredient.class, Ingredient::read, (buf, ingredient) -> ingredient.write(buf));
         map(Block.class, buf -> ForgeRegistries.BLOCKS.getValue(buf.readResourceLocation()), (buf, block) -> buf.writeResourceLocation(block.getRegistryName()));
-        map(Ingredient.IItemList[].class, CompoundSerializableDataHandler::readIItemListArray, CompoundSerializableDataHandler::writeIITemListArray);
+        map(Ingredient.IItemList[].class, CompoundSerializableDataHandler::readIItemListArray, CompoundSerializableDataHandler::writeIItemListArray);
     }
 
     public static <T> void map(Class<T> type, Reader<T> reader, Writer<T> writer) {
@@ -106,7 +106,7 @@ public class CompoundSerializableDataHandler {
         return list;
     }
 
-    private static void writeIITemListArray(PacketBuffer buf, Ingredient.IItemList[] list) {
+    private static void writeIItemListArray(PacketBuffer buf, Ingredient.IItemList[] list) {
         buf.writeInt(list.length);
         for (Ingredient.IItemList iItemList : list) {
             CollectionItemList.serializeBuffer(buf, iItemList);
