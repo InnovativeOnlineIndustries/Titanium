@@ -50,6 +50,11 @@ public abstract class BlockBase extends Block implements IAlternativeEntries, IR
     private ItemGroup itemGroup = ItemGroup.SEARCH;
     private BlockItem item;
 
+    public BlockBase(Properties properties) {
+        super(properties);
+        BLOCKS.add(this);
+    }
+
     public BlockBase(String name, Properties properties) {
         super(properties);
         setRegistryName(name);
