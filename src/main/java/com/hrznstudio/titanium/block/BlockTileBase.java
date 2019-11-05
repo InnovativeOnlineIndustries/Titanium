@@ -31,6 +31,11 @@ public abstract class BlockTileBase<T extends TileBase> extends BlockBase implem
     private final Class<T> tileClass;
     private TileEntityType tileEntityType;
 
+    public BlockTileBase(Properties properties, Class<T> tileClass) {
+        super(properties);
+        this.tileClass = tileClass;
+    }
+
     public BlockTileBase(String name, Properties properties, Class<T> tileClass) {
         super(name, properties);
         this.tileClass = tileClass;
