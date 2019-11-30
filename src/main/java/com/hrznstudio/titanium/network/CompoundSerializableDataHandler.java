@@ -7,23 +7,25 @@
 
 package com.hrznstudio.titanium.network;
 
+import com.google.gson.JsonObject;
 import com.hrznstudio.titanium.network.locator.LocatorFactory;
 import com.hrznstudio.titanium.network.locator.LocatorInstance;
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.*;
 
 public class CompoundSerializableDataHandler {
 
@@ -62,6 +64,10 @@ public class CompoundSerializableDataHandler {
         map(UUID.class, PacketBuffer::readUniqueId, PacketBuffer::writeUniqueId);
         map(SUpdateTileEntityPacket.class, CompoundSerializableDataHandler::readUpdatePacket, CompoundSerializableDataHandler::writeUpdatePacket);
         map(LocatorInstance.class, LocatorFactory::readPacketBuffer, LocatorFactory::writePacketBuffer);
+        map(Ingredient.IItemList.class, CollectionItemList::new, CollectionItemList::serializeBuffer);
+        map(Ingredient.class, Ingredient::read, (buf, ingredient) -> ingredient.write(buf));
+        map(Block.class, buf -> ForgeRegistries.BLOCKS.getValue(buf.readResourceLocation()), (buf, block) -> buf.writeResourceLocation(block.getRegistryName()));
+        map(Ingredient.IItemList[].class, CompoundSerializableDataHandler::readIItemListArray, CompoundSerializableDataHandler::writeIItemListArray);
     }
 
     public static <T> void map(Class<T> type, Reader<T> reader, Writer<T> writer) {
@@ -92,6 +98,21 @@ public class CompoundSerializableDataHandler {
         }
     }
 
+    private static Ingredient.IItemList[] readIItemListArray(PacketBuffer buf) {
+        Ingredient.IItemList[] list = new Ingredient.IItemList[buf.readInt()];
+        for (int i = 0; i < list.length; i++) {
+            list[i] = new CollectionItemList(buf);
+        }
+        return list;
+    }
+
+    private static void writeIItemListArray(PacketBuffer buf, Ingredient.IItemList[] list) {
+        buf.writeInt(list.length);
+        for (Ingredient.IItemList iItemList : list) {
+            CollectionItemList.serializeBuffer(buf, iItemList);
+        }
+    }
+
     private static SUpdateTileEntityPacket readUpdatePacket(PacketBuffer buf) {
         SUpdateTileEntityPacket packet = new SUpdateTileEntityPacket();
         try {
@@ -102,7 +123,7 @@ public class CompoundSerializableDataHandler {
         return packet;
     }
 
-    private static Pair<Reader, Writer> getHandler(Class<?> clazz) {
+    public static Pair<Reader, Writer> getHandler(Class<?> clazz) {
         Pair<Reader, Writer> pair = FIELD_SERIALIZER.get(clazz);
         if (pair == null)
             throw new RuntimeException("No R/W handler for  " + clazz);
@@ -121,7 +142,7 @@ public class CompoundSerializableDataHandler {
 
     public static boolean acceptField(Field f, Class<?> type) {
         int mods = f.getModifiers();
-        return !Modifier.isFinal(mods) && !Modifier.isStatic(mods) && !Modifier.isTransient(mods) && FIELD_SERIALIZER.containsKey(type);
+        return !Modifier.isFinal(mods) && !Modifier.isStatic(mods) && !Modifier.isTransient(mods) && getHandler(type) != null;
     }
 
     public interface Writer<T> {
@@ -130,5 +151,34 @@ public class CompoundSerializableDataHandler {
 
     public interface Reader<T> {
         T read(PacketBuffer buf) throws IOException;
+    }
+
+    public static class CollectionItemList implements Ingredient.IItemList {
+
+        private List<ItemStack> stackList;
+
+        public CollectionItemList(PacketBuffer buffer) {
+            this.stackList = new ArrayList<>();
+            int amount = buffer.readInt();
+            for (int i = 0; i < amount; i++) {
+                stackList.add(buffer.readItemStack());
+            }
+        }
+
+        public static void serializeBuffer(PacketBuffer buffer, Ingredient.IItemList list) {
+            buffer.writeInt(list.getStacks().size());
+            list.getStacks().forEach(buffer::writeItemStack);
+        }
+
+        @Override
+        public Collection<ItemStack> getStacks() {
+            return stackList;
+        }
+
+        @Override
+        public JsonObject serialize() {
+            return new JsonObject();
+        }
+
     }
 }

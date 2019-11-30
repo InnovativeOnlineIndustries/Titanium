@@ -103,6 +103,11 @@ public final class DefaultAssetProvider implements IAssetProvider {
     private final IAsset PROGRESS_BAR_HORIZONTAL = () -> new Rectangle(177, 77, 22, 16);
     private final IAsset PROGRESS_BAR_BACKGROUND_HORIZONTAL = () -> new Rectangle(177, 61, 22, 15);
     private final IAsset AUGMENT_BACKGROUND = () -> new Rectangle(212, 61, 30, 84);
+    private final IAsset BUTTON_ARROW_UP = () -> new Rectangle(177, 151, 14, 14);
+    private final IAsset BUTTON_ARROW_RIGHT = () -> new Rectangle(192, 151, 14, 14);
+    private final IAsset BUTTON_ARROW_DOWN = () -> new Rectangle(207, 151, 14, 14);
+    private final IAsset BUTTON_ARROW_LEFT = () -> new Rectangle(222, 151, 14, 14);
+    private final IAsset ITEM_BACKGROUND = () -> new Rectangle(177, 166, 18, 18);
 
     DefaultAssetProvider() {
     }
@@ -144,6 +149,16 @@ public final class DefaultAssetProvider implements IAssetProvider {
             return assetType.castOrDefault(PROGRESS_BAR_HORIZONTAL);
         if (assetType == AssetTypes.AUGMENT_BACKGROUND)
             return assetType.castOrDefault(AUGMENT_BACKGROUND);
+        if (assetType == AssetTypes.BUTTON_ARROW_LEFT)
+            return assetType.castOrDefault(BUTTON_ARROW_LEFT);
+        if (assetType == AssetTypes.BUTTON_ARROW_RIGHT)
+            return assetType.castOrDefault(BUTTON_ARROW_RIGHT);
+        if (assetType == AssetTypes.BUTTON_ARROW_UP)
+            return assetType.castOrDefault(BUTTON_ARROW_UP);
+        if (assetType == AssetTypes.BUTTON_ARROW_DOWN)
+            return assetType.castOrDefault(BUTTON_ARROW_DOWN);
+        if (assetType == AssetTypes.ITEM_BACKGROUND)
+            return assetType.castOrDefault(ITEM_BACKGROUND);
         return null;
     }
 }

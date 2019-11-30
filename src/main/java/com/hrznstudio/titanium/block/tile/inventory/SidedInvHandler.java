@@ -92,7 +92,22 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
     @Override
     public Rectangle getRectangle(IAsset asset) {
         int renderingOffset = 1;
-        return new Rectangle(this.getXPos() - renderingOffset - 3, this.getYPos() - renderingOffset - 3, (int) asset.getArea().getWidth() * this.getXSize() + renderingOffset * 2 + 3, (int) asset.getArea().getHeight() * this.getYSize() + renderingOffset * 2 + 3);
+        Rectangle rectangle = new Rectangle(getSlotPosition().apply(0).getLeft() - 1, getSlotPosition().apply(0).getRight() - 1, (int) asset.getArea().getWidth() + getSlotPosition().apply(0).getLeft(), (int) asset.getArea().getHeight() + getSlotPosition().apply(0).getRight());
+        for (int i = 0; i < getSlots(); i++) {
+            if (getSlotPosition().apply(i).getLeft() < rectangle.getX()) {
+                rectangle.setLocation(getSlotPosition().apply(i).getLeft(), rectangle.y);
+            }
+            if (getSlotPosition().apply(i).getRight() < rectangle.getY()) {
+                rectangle.setLocation(rectangle.x, getSlotPosition().apply(i).getRight());
+            }
+            if (getSlotPosition().apply(i).getLeft() + asset.getArea().getWidth() > rectangle.width) {
+                rectangle.setSize(getSlotPosition().apply(i).getLeft() + asset.getArea().width, rectangle.height);
+            }
+            if (getSlotPosition().apply(i).getRight() + asset.getArea().getHeight() > rectangle.height) {
+                rectangle.setSize(rectangle.width, getSlotPosition().apply(i).getRight() + asset.getArea().height);
+            }
+        }
+        return new Rectangle(this.getXPos() - renderingOffset - 2 + rectangle.x, this.getYPos() - renderingOffset - 2 + rectangle.y, rectangle.width + renderingOffset * 2 + 3, rectangle.height + renderingOffset * 2 + 3);
     }
 
     @Override
@@ -181,9 +196,9 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
     }
 
     private boolean transfer(FacingUtil.Sideness sideness, IItemHandler from, IItemHandler to, int workAmount) {
-        if (from.getSlots() <= 0) return false;
+        if (from.getSlots() < 0) return false;
         int slot = slotCache.getOrDefault(sideness, getNextSlot(from, 0));
-        if (from.getSlots() < slot) slot = 0;
+        if (slot >= from.getSlots()) slot = 0;
         ItemStack extracted = from.extractItem(slot, workAmount, true);
         if (!extracted.isEmpty()) {
             ItemStack returned = ItemHandlerHelper.insertItemStacked(to, extracted, false);
