@@ -101,20 +101,20 @@ public class ResourceRegistry {
 
 
     public static void initModules(ModuleController controller) {
+        Module.Builder builder = Module.builder("resources").useCustomFile();
         ResourceRegistry.getMaterials().forEach(material -> {
             if (material.getGeneratorTypes().size() > 0) {
-                Module.Builder builder = Module.builder("resources." + material.getMaterialType());
                 material.getGeneratorTypes().values().forEach(type -> {
+                    Feature.Builder feature = Feature.builder(material.getMaterialType() + "." + type.getName());
                     ForgeRegistryEntry entry = material.generate(type);
                     if (entry != null) {
-                        Feature.Builder feature = Feature.builder(type.getName());
                         feature.content(entry.getRegistryType(), entry);
                         builder.feature(feature);
                     }
                 });
-                controller.addModule(builder);
             }
         });
+        controller.addModule(builder);
     }
 
     public static void onPostInit() {

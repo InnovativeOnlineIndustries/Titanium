@@ -57,18 +57,31 @@ public abstract class ModuleController {
             CommentedFileConfig config = CommentedFileConfig.of(modulesConfig);
             config.load();
             new HashMap<>(moduleMap).forEach((id, m) -> {
+                CommentedFileConfig tempFile = config;
+                if (m.useCustomeFile()) {
+                    File temp = new File("config/" + modid + "/" + id + ".toml");
+                    if (!temp.exists()) {
+                        temp.getParentFile().mkdirs();
+                    }
+                    tempFile = CommentedFileConfig.of(temp);
+                    tempFile.load();
+                }
                 if (!m.isForced()) {
                     String cm = "modules." + id;
                     String c = cm + ".enabled";
-                    config.setComment(cm, m.getDescription());
-                    boolean active = config.add(c, m.isEnabledByDefault()) ? m.isEnabledByDefault() : config.getOrElse(c, m.isEnabledByDefault());
+                    tempFile.setComment(cm, m.getDescription());
+                    boolean active = tempFile.add(c, m.isEnabledByDefault()) ? m.isEnabledByDefault() : config.getOrElse(c, m.isEnabledByDefault());
                     if (active) {
-                        m.initConfig(config);
+                        m.initConfig(tempFile);
                     } else {
                         disabledModuleMap.put(id, moduleMap.remove(id));
                     }
                 } else {
-                    m.initConfig(config);
+                    m.initConfig(tempFile);
+                }
+                if (m.useCustomeFile()) {
+                    tempFile.save();
+                    tempFile.close();
                 }
             });
             config.save();
