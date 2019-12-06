@@ -12,20 +12,21 @@ import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.annotation.MaterialReference;
 import com.hrznstudio.titanium.api.material.IHasColor;
 import com.hrznstudio.titanium.api.material.IResourceType;
+import com.hrznstudio.titanium.event.custom.ResourceRegistrationEvent;
 import com.hrznstudio.titanium.event.handler.EventManager;
+import com.hrznstudio.titanium.module.Feature;
+import com.hrznstudio.titanium.module.Module;
 import com.hrznstudio.titanium.module.ModuleController;
 import com.hrznstudio.titanium.tab.AdvancedTitaniumTab;
 import com.hrznstudio.titanium.util.AnnotationUtil;
 import com.hrznstudio.titanium.util.SidedHandler;
 import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.util.IItemProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ColorHandlerEvent;
-import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.ModLoader;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import org.apache.logging.log4j.LogManager;
@@ -45,19 +46,9 @@ public class ResourceRegistry {
     private static HashMap<String, HashMultimap<String, Field>> ANNOTATED_FIELDS = new HashMap<>();
     private static Field modifiersField;
 
-    public static void onPreInit() {
+    public static void onInit() {
         scanForReferences();
-        ResourceTypeProperties.DEFAULTS.put(Block.class, new ResourceTypeProperties(Block.Properties.from(Blocks.IRON_ORE)));
-        ResourceTypeProperties.DEFAULTS.put(Item.class, new ResourceTypeProperties(new Item.Properties().group(RESOURCES)));
-        getOrCreate("iron").setColor(0xd8d8d8).withOverride(ResourceType.ORE, Blocks.IRON_ORE).withOverride(ResourceType.METAL_BLOCK, Blocks.IRON_BLOCK).withOverride(ResourceType.INGOT, Items.IRON_INGOT).withOverride(ResourceType.NUGGET, Items.IRON_NUGGET);
-        getOrCreate("gold").setColor(0xfad64a).withOverride(ResourceType.ORE, Blocks.GOLD_ORE).withOverride(ResourceType.METAL_BLOCK, Blocks.GOLD_BLOCK).withOverride(ResourceType.INGOT, Items.GOLD_INGOT).withOverride(ResourceType.NUGGET, Items.GOLD_NUGGET);
-        getOrCreate("coal").setColor(0x363636).withOverride(ResourceType.ORE, Blocks.COAL_ORE).withOverride(ResourceType.GEM_BLOCK, Blocks.COAL_BLOCK).withOverride(ResourceType.GEM, Items.COAL);
-        getOrCreate("lapis_lazuli").setColor(0x345ec3).withOverride(ResourceType.ORE, Blocks.LAPIS_ORE).withOverride(ResourceType.GEM_BLOCK, Blocks.LAPIS_BLOCK).withOverride(ResourceType.GEM, Items.LAPIS_LAZULI);
-        getOrCreate("diamond").setColor(0x4aedd9).withOverride(ResourceType.ORE, Blocks.DIAMOND_ORE).withOverride(ResourceType.GEM_BLOCK, Blocks.DIAMOND_BLOCK).withOverride(ResourceType.GEM, Items.DIAMOND);
-        getOrCreate("redstone").setColor(0xaa0f01).withOverride(ResourceType.ORE, Blocks.REDSTONE_ORE).withOverride(ResourceType.GEM_BLOCK, Blocks.REDSTONE_BLOCK).withOverride(ResourceType.DUST, Items.REDSTONE);
-        getOrCreate("emerald").setColor(0x17dd62).withOverride(ResourceType.ORE, Blocks.EMERALD_ORE).withOverride(ResourceType.GEM_BLOCK, Blocks.EMERALD_BLOCK).withOverride(ResourceType.GEM, Items.EMERALD);
-        getOrCreate("nether_quartz").setColor(0xddd4c6).withOverride(ResourceType.NETHER_ORE, Blocks.NETHER_QUARTZ_ORE).withOverride(ResourceType.GEM_BLOCK, Blocks.QUARTZ_BLOCK).withOverride(ResourceType.GEM, Items.QUARTZ);
-        getOrCreate("glowstone").setColor(0xffbc5e).withOverride(ResourceType.GEM_BLOCK, Blocks.GLOWSTONE).withOverride(ResourceType.DUST, Items.GLOWSTONE_DUST);
+        ModLoader.get().postEvent(new ResourceRegistrationEvent());
         SidedHandler.runOn(Dist.CLIENT, () -> () -> {
             EventManager.mod(ColorHandlerEvent.Item.class).process(item -> {
                 ResourceRegistry.getMaterials().forEach(material -> {
@@ -71,9 +62,14 @@ public class ResourceRegistry {
                 });
             }).subscribe();
         });
-        EventManager.mod(RegistryEvent.Register.class).process(event -> {
-            MATERIALS.values().stream().forEach(material -> material.getGenerated().values().stream().filter(entry -> entry.getRegistryName().getNamespace().equals(Titanium.MODID) && ((Class) event.getGenericType()).isAssignableFrom(entry.getRegistryType())).forEach(entry -> event.getRegistry().register(entry)));
-        }).subscribe();
+        //EventManager.mod(RegistryEvent.Register.class).process(event -> {
+        //    MATERIALS.values().stream().forEach(material -> material.getGenerated().values().stream().filter(entry -> entry.getRegistryName().getNamespace().equals(Titanium.MODID) && ((Class) event.getGenericType()).isAssignableFrom(entry.getRegistryType())).forEach(entry -> event.getRegistry().register(entry)));
+        //    MATERIALS.values().stream().forEach(material -> material.getGenerated().values().stream().filter(entry -> entry instanceof BlockBase && entry.getRegistryName().getNamespace().equals(Titanium.MODID) && ((Class) event.getGenericType()).isAssignableFrom(Item.class)).forEach(entry -> {
+        //        BlockItem item = ((BlockBase)entry).getItemBlockFactory().create();
+        //        event.getRegistry().register(item);
+        //        ((BlockBase)entry).setItem(item);
+        //    }));
+        //<}).subscribe();
     }
 
     private static void scanForReferences() {
@@ -105,30 +101,30 @@ public class ResourceRegistry {
 
 
     public static void initModules(ModuleController controller) {
-        //ResourceRegistry.getMaterials().forEach(material -> {
-        //    Module.Builder builder = Module.builder("resources." + material.getMaterialType());
-        //    if (material.getGeneratorTypes().size() > 0) {
-        //        material.getGeneratorTypes().values().forEach(type -> {
-        //            ForgeRegistryEntry entry = material.generate(type);
-        //            if (entry != null) {
-        //                Feature.Builder feature = Feature.builder(type.getTag());
-        //                feature.content(entry.getRegistryType(), entry);
-        //                builder.feature(feature);
-        //            }
-        //        });
-        //    }
-        //    controller.addModule(builder);
-        //});
+        ResourceRegistry.getMaterials().forEach(material -> {
+            if (material.getGeneratorTypes().size() > 0) {
+                Module.Builder builder = Module.builder("resources." + material.getMaterialType());
+                material.getGeneratorTypes().values().forEach(type -> {
+                    ForgeRegistryEntry entry = material.generate(type);
+                    if (entry != null) {
+                        Feature.Builder feature = Feature.builder(type.getName());
+                        feature.content(entry.getRegistryType(), entry);
+                        builder.feature(feature);
+                    }
+                });
+                controller.addModule(builder);
+            }
+        });
     }
 
     public static void onPostInit() {
-        ResourceRegistry.getMaterials().forEach(material -> {
-            if (material.getGeneratorTypes().size() > 0) {
-                material.getGeneratorTypes().values().forEach(type -> {
-                    ForgeRegistryEntry entry = material.generate(type);
-                });
-            }
-        });
+        //ResourceRegistry.getMaterials().forEach(material -> {
+        //    if (material.getGeneratorTypes().size() > 0) {
+        //        material.getGeneratorTypes().values().forEach(type -> {
+        //            ForgeRegistryEntry entry = material.generate(type);
+        //        });
+        //    }
+        //});
         ResourceRegistry.getMaterials().stream().map(material -> material.getGenerated().values()).flatMap(Collection::stream).
                 filter(forgeRegistryEntry -> forgeRegistryEntry instanceof IItemProvider && ForgeRegistries.ITEMS.containsKey(forgeRegistryEntry.getRegistryName())).
                 forEach(forgeRegistryEntry -> ResourceRegistry.RESOURCES.addIconStack(new ItemStack(((IItemProvider) forgeRegistryEntry).asItem())));
