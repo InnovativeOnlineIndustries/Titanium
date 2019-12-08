@@ -208,13 +208,17 @@ public class TileActive extends TileBase implements IGuiAddonProvider, ITickable
     }
 
     public IFacingHandler getHandlerFromName(String string) {
-        for (PosInvHandler handler : multiInventoryHandler.getInventoryHandlers()) {
-            if (handler instanceof IFacingHandler && handler.getName().equalsIgnoreCase(string))
-                return (IFacingHandler) handler;
+        if (multiInventoryHandler != null) {
+            for (PosInvHandler handler : multiInventoryHandler.getInventoryHandlers()) {
+                if (handler instanceof IFacingHandler && handler.getName().equalsIgnoreCase(string))
+                    return (IFacingHandler) handler;
+            }
         }
-        for (PosFluidTank posFluidTank : multiTankHandler.getTanks()) {
-            if (posFluidTank instanceof IFacingHandler && posFluidTank.getName().equalsIgnoreCase(string))
-                return (IFacingHandler) posFluidTank;
+        if (multiTankHandler != null) {
+            for (PosFluidTank posFluidTank : multiTankHandler.getTanks()) {
+                if (posFluidTank instanceof IFacingHandler && posFluidTank.getName().equalsIgnoreCase(string))
+                    return (IFacingHandler) posFluidTank;
+            }
         }
         return null;
     }
