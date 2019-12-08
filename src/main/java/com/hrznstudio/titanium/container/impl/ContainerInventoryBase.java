@@ -12,6 +12,7 @@ import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.container.TitaniumContainerBase;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.network.PacketBuffer;
 
 import java.awt.*;
@@ -34,7 +35,12 @@ public class ContainerInventoryBase extends TitaniumContainerBase {
     public ContainerInventoryBase(ContainerType type, PlayerInventory inventory, int id, IAssetProvider assetProvider) {
         super(type, id, assetProvider);
         this.inventory = inventory;
+    }
+
+    public void initInventory() {
+        addExtraSlots();
         addPlayerChestInventory();
+        addHotbarSlots();
     }
 
     public void addPlayerChestInventory() {
@@ -46,6 +52,13 @@ public class ContainerInventoryBase extends TitaniumContainerBase {
             }
         }
         hasPlayerInventory = true;
+    }
+
+    public void addHotbarSlots() {
+        Point hotbarPos = IAssetProvider.getAsset(getAssetProvider(), AssetTypes.BACKGROUND).getHotbarPosition();
+        for (int k = 0; k < 9; k++) {
+            addSlot(new Slot(getPlayerInventory(), k, hotbarPos.x + k * 18, hotbarPos.y));
+        }
     }
 
     public PlayerInventory getPlayerInventory() {

@@ -22,14 +22,16 @@ public final class Module {
     private final boolean forced;
     private final boolean enabledByDefault;
     private final String description;
+    private boolean customFile;
 
-    private Module(String id, Map<String, Feature> featureMap, boolean forced, boolean enabledByDefault, String description) {
+    private Module(String id, Map<String, Feature> featureMap, boolean forced, boolean enabledByDefault, String description, boolean customFile) {
         this.id = id;
         this.featureMap = featureMap;
         this.forced = forced;
         this.enabledByDefault = enabledByDefault;
         this.description = description;
         this.featureMap.values().forEach(f -> f.setModule(this));
+        this.customFile = customFile;
     }
 
     public static Builder builder(String id) {
@@ -58,6 +60,10 @@ public final class Module {
         return id;
     }
 
+    public boolean useCustomeFile() {
+        return customFile;
+    }
+
     void initConfig(CommentedFileConfig config) {
         new HashMap<>(featureMap).forEach((id, f) -> {
             String cm = "modules." + this.id + "." + id;
@@ -84,6 +90,7 @@ public final class Module {
         private boolean forced;
         private boolean enabledByDefault = true;
         private String description;
+        private boolean customFile = false;
 
         private Builder(String id) {
             this.id = id;
@@ -113,8 +120,13 @@ public final class Module {
             return feature(feature.build());
         }
 
+        public Builder useCustomFile() {
+            this.customFile = true;
+            return this;
+        }
+
         Module build() {
-            return new Module(id, featureMap, forced, enabledByDefault, description);
+            return new Module(id, featureMap, forced, enabledByDefault, description, customFile);
         }
     }
 

@@ -117,6 +117,10 @@ public abstract class BlockBase extends Block implements IAlternativeEntries, IR
         return item;
     }
 
+    public void setItem(BlockItem item) {
+        this.item = item;
+    }
+
     public List<VoxelShape> getBoundingBoxes(BlockState state, IBlockReader source, BlockPos pos) {
         return Collections.emptyList();
     }
