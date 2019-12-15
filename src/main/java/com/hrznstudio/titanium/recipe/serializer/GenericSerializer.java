@@ -9,6 +9,8 @@ package com.hrznstudio.titanium.recipe.serializer;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.network.CompoundSerializableDataHandler;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
@@ -16,6 +18,8 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -28,19 +32,23 @@ import java.util.Map;
  * @param <T>
  */
 public class GenericSerializer<T extends SerializableRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T>, IRecipeSerializerReversed<T> {
-
     private final Class<T> recipeClass;
-    private IRecipeType<T> recipeType;
+    private final IRecipeType<T> recipeType;
+
+    public GenericSerializer(IRecipeType<T> recipeType, Class<T> recipeClass) {
+        this.recipeType = recipeType;
+        this.recipeClass = recipeClass;
+    }
 
     public GenericSerializer(ResourceLocation resourceLocation, Class<T> recipeClass) {
-        this.recipeClass = recipeClass;
-        this.recipeType = IRecipeType.register(resourceLocation.toString());
+        this(IRecipeType.register(resourceLocation.toString()), recipeClass);
         this.setRegistryName(resourceLocation);
     }
 
     // Reading the recipe from the json file
     @Override
-    public T read(ResourceLocation recipeId, JsonObject json) {
+    @Nonnull
+    public T read(@Nonnull ResourceLocation recipeId, JsonObject json) {
         try {
             T recipe = recipeClass.getConstructor(ResourceLocation.class).newInstance(recipeId);
             for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
@@ -50,9 +58,8 @@ public class GenericSerializer<T extends SerializableRecipe> extends ForgeRegist
             }
             return recipe;
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | NoSuchFieldException e) {
-            e.printStackTrace();
+            throw new JsonParseException(e);
         }
-        return null;
     }
 
     // Writes a json object from a recipe object
@@ -64,7 +71,7 @@ public class GenericSerializer<T extends SerializableRecipe> extends ForgeRegist
                 try {
                     object.add(field.getName(), JSONSerializableDataHandler.write(field.getType(), field.get(recipe)));
                 } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+                    Titanium.LOGGER.catching(e);
                 }
             }
         }
@@ -73,6 +80,7 @@ public class GenericSerializer<T extends SerializableRecipe> extends ForgeRegist
 
     // Reading from a packet buffer
     @Override
+    @ParametersAreNonnullByDefault
     public T read(ResourceLocation recipeId, PacketBuffer buffer) {
         try {
             T recipe = recipeClass.getConstructor(ResourceLocation.class).newInstance(recipeId);
@@ -83,20 +91,21 @@ public class GenericSerializer<T extends SerializableRecipe> extends ForgeRegist
             }
             return recipe;
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | IOException e) {
-            e.printStackTrace();
+            Titanium.LOGGER.catching(e);
         }
         return null;
     }
 
     // Writes a recipe to a buffer
     @Override
+    @ParametersAreNonnullByDefault
     public void write(PacketBuffer buffer, T recipe) {
         for (Field field : recipeClass.getFields()) {
             if (CompoundSerializableDataHandler.acceptField(field, field.getType())) {
                 try {
                     CompoundSerializableDataHandler.writeField(field, field.getType(), buffer, recipe);
                 } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+                    Titanium.LOGGER.catching(e);
                 }
             }
         }

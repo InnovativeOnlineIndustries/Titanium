@@ -12,6 +12,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import com.hrznstudio.titanium.Titanium;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.block.Block;
@@ -96,10 +97,10 @@ public class JSONSerializableDataHandler {
         JsonObject object = new JsonObject();
         object.addProperty("item", stack.getItem().getRegistryName().toString());
         object.addProperty("count", stack.getCount());
-        if (stack.hasTag()) object.addProperty("nbt", stack.getTag().toString());
+        if (stack.hasTag()) {
+            object.addProperty("nbt", stack.getTag().toString());
+        }
         return object;
-        //throw new UnsupportedOperationException("ItemStacks with nbt aren't implemented yet. Please do.");
-        //net.minecraftforge.common.crafting.CraftingHelper.getItemStack
     }
 
     public static JsonElement writeFluidStack(FluidStack fluidStack) {
@@ -110,7 +111,7 @@ public class JSONSerializableDataHandler {
         try {
             return FluidStack.loadFluidStackFromNBT(JsonToNBT.getTagFromJson(object.getAsString()));
         } catch (CommandSyntaxException e) {
-            e.printStackTrace();
+            Titanium.LOGGER.catching(e);
         }
         return FluidStack.EMPTY;
     }
@@ -121,7 +122,7 @@ public class JSONSerializableDataHandler {
             try {
                 stack.setTag(JsonToNBT.getTagFromJson(object.get("nbt").getAsString()));
             } catch (CommandSyntaxException e) {
-                e.printStackTrace();
+                Titanium.LOGGER.catching(e);
             }
         }
         return stack;
