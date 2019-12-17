@@ -43,7 +43,7 @@ public class TitaniumClient {
                     event.setCanceled(true);
                     GlStateManager.enableBlend();
                     GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-                    GlStateManager.lineWidth(Math.max(2.5F, (float) Minecraft.getInstance().mainWindow.getFramebufferWidth() / 1920.0F * 2.5F));
+                    GlStateManager.lineWidth(Math.max(2.5F, (float) Minecraft.getInstance().func_228018_at_().getFramebufferWidth() / 1920.0F * 2.5F)); //MainWindow
                     GlStateManager.disableTexture();
                     GlStateManager.depthMask(false);
                     GlStateManager.matrixMode(5889);

@@ -142,7 +142,7 @@ public class TeleportationUtils {
         PlayerList playerList = server.getPlayerList();
 
         player.dimension = destination;
-        player.connection.sendPacket(new SRespawnPacket(destination, sourceInfo.getGenerator(), player.interactionManager.getGameType()));
+        player.connection.sendPacket(new SRespawnPacket(destination,0, sourceInfo.getGenerator(), player.interactionManager.getGameType()));
         player.connection.sendPacket(new SServerDifficultyPacket(sourceInfo.getDifficulty(), sourceInfo.isDifficultyLocked()));
         playerList.updatePermissionLevel(player);
         sourceWorld.removeEntity(player, true);
@@ -182,9 +182,9 @@ public class TeleportationUtils {
         public PassengerHelper(Entity entity) {
             this.entity = entity;
             if (entity.isPassenger()) {
-                offsetX = entity.posX - entity.getRidingEntity().posX;
-                offsetY = entity.posY - entity.getRidingEntity().posY;
-                offsetZ = entity.posZ - entity.getRidingEntity().posZ;
+                offsetX = entity.getPosition().getX() - entity.getRidingEntity().getPosition().getX();
+                offsetY = entity.getPosition().getY() - entity.getRidingEntity().getPosition().getY();
+                offsetZ = entity.getPosition().getZ() - entity.getRidingEntity().getPosition().getZ();
             }
             for (Entity passenger : entity.getPassengers()) {
                 passengers.add(new PassengerHelper(passenger));
@@ -216,7 +216,7 @@ public class TeleportationUtils {
          */
         public void remountRiders() {
             if (entity.isPassenger()) {
-                entity.setLocationAndAngles(entity.posX + offsetX, entity.posY + offsetY, entity.posZ + offsetZ, entity.rotationYaw, entity.rotationPitch);
+                entity.setLocationAndAngles(entity.getPosition().getX() + offsetX, entity.getPosition().getY() + offsetY, entity.getPosition().getZ()+ offsetZ, entity.rotationYaw, entity.rotationPitch);
             }
             for (PassengerHelper passenger : passengers) {
                 passenger.entity.startRiding(entity, true);

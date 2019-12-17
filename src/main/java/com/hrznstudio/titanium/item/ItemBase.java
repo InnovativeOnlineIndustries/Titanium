@@ -91,7 +91,7 @@ public class ItemBase extends Item {
 
         public boolean isDown() {
             for (int key : keys)
-                if (GLFW.glfwGetKey(Minecraft.getInstance().mainWindow.getHandle(), key) == GLFW.GLFW_PRESS)
+                if (GLFW.glfwGetKey(Minecraft.getInstance().func_228018_at_().getHandle(), key) == GLFW.GLFW_PRESS) //Main windows
                     return true;
             return false;
         }

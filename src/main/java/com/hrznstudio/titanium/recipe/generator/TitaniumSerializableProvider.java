@@ -67,7 +67,7 @@ public abstract class TitaniumSerializableProvider implements IDataProvider {
                     bufferedwriter.write(s);
                 }
             }
-            cache.func_208316_a(output, s1);
+            cache.recordHash(output, s1);
         } catch (IOException ioexception) {
             LOGGER.error("Couldn't save recipe {}", output, ioexception);
         }
