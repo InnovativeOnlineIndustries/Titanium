@@ -9,13 +9,13 @@ package com.hrznstudio.titanium._impl.test;
 
 import com.hrznstudio.titanium._impl.test.tile.TileAssetTest;
 import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.block.BlockRotation;
+import com.hrznstudio.titanium.block.RotatableBlock;
 import com.hrznstudio.titanium.recipe.generator.TitaniumLootTableProvider;
 import net.minecraft.block.material.Material;
 
 import javax.annotation.Nonnull;
 
-public class BlockAssetTest extends BlockRotation<TileAssetTest> {
+public class BlockAssetTest extends RotatableBlock<BlockAssetTest, TileAssetTest> {
 
     public static BlockAssetTest TEST;
 

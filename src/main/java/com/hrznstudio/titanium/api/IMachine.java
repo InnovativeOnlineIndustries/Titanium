@@ -13,7 +13,6 @@ import com.hrznstudio.titanium.api.augment.IAugmentType;
 import java.util.List;
 
 public interface IMachine {
-
     boolean isActive();
 
     boolean isPaused();

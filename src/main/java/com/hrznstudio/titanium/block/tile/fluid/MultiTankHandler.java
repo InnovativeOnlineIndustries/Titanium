@@ -8,8 +8,8 @@
 package com.hrznstudio.titanium.block.tile.fluid;
 
 import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.api.client.IGuiAddon;
-import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
+import com.hrznstudio.titanium.api.client.IScreenAddon;
+import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.block.tile.sideness.ICapabilityHolder;
 import com.hrznstudio.titanium.block.tile.sideness.IFacingHandler;
 import com.hrznstudio.titanium.util.FacingUtil;
@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-public class MultiTankHandler implements IGuiAddonProvider, ICapabilityHolder<PosFluidTank, MultiTankHandler.MultiTankCapabilityHandler> {
+public class MultiTankHandler implements IScreenAddonProvider, ICapabilityHolder<PosFluidTank, MultiTankHandler.MultiTankCapabilityHandler> {
 
     private final LinkedHashSet<PosFluidTank> tanks;
     private final HashMap<FacingUtil.Sideness, LazyOptional<MultiTankCapabilityHandler>> lazyOptionals;
@@ -36,7 +36,7 @@ public class MultiTankHandler implements IGuiAddonProvider, ICapabilityHolder<Po
     }
 
     @Override
-    public void add(PosFluidTank tank) {
+    public void add(@Nonnull PosFluidTank tank) {
         this.tanks.add(tank);
         rebuildCapability(new FacingUtil.Sideness[]{null});
         rebuildCapability(FacingUtil.Sideness.values());
@@ -89,10 +89,10 @@ public class MultiTankHandler implements IGuiAddonProvider, ICapabilityHolder<Po
     }
 
     @Override
-    public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
-        List<IFactory<? extends IGuiAddon>> addons = new ArrayList<>();
+    public List<IFactory<? extends IScreenAddon>> getAddons() {
+        List<IFactory<? extends IScreenAddon>> addons = new ArrayList<>();
         for (PosFluidTank tank : tanks) {
-            addons.addAll(tank.getGuiAddons());
+            addons.addAll(tank.getAddons());
         }
         return addons;
     }

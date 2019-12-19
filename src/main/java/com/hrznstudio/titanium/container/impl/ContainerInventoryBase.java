@@ -8,7 +8,7 @@
 package com.hrznstudio.titanium.container.impl;
 
 import com.hrznstudio.titanium.api.client.AssetTypes;
-import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
+import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.container.TitaniumContainerBase;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;

@@ -10,10 +10,10 @@ package com.hrznstudio.titanium.block.tile.fluid;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAssetType;
-import com.hrznstudio.titanium.api.client.IGuiAddon;
-import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
-import com.hrznstudio.titanium.block.tile.TileBase;
-import com.hrznstudio.titanium.client.gui.addon.TankGuiAddon;
+import com.hrznstudio.titanium.api.client.IScreenAddon;
+import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
+import com.hrznstudio.titanium.block.tile.BasicTile;
+import com.hrznstudio.titanium.client.screen.addon.TankScreenAddon;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -22,8 +22,7 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PosFluidTank extends FluidTank implements IGuiAddonProvider {
-
+public class PosFluidTank extends FluidTank implements IScreenAddonProvider {
     private final int posX;
     private final int posY;
     private String name;
@@ -57,8 +56,8 @@ public class PosFluidTank extends FluidTank implements IGuiAddonProvider {
     @Override
     protected void onContentsChanged() {
         super.onContentsChanged();
-        if (tile instanceof TileBase) {
-            ((TileBase) tile).markForUpdate();
+        if (tile instanceof BasicTile) {
+            ((BasicTile) tile).markForUpdate();
         } else {
             tile.markDirty();
         }
@@ -156,9 +155,9 @@ public class PosFluidTank extends FluidTank implements IGuiAddonProvider {
     }
 
     @Override
-    public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
-        List<IFactory<? extends IGuiAddon>> addons = new ArrayList<>();
-        addons.add(() -> new TankGuiAddon(this));
+    public List<IFactory<? extends IScreenAddon>> getAddons() {
+        List<IFactory<? extends IScreenAddon>> addons = new ArrayList<>();
+        addons.add(() -> new TankScreenAddon(this));
         return addons;
     }
 

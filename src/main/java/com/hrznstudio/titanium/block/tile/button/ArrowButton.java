@@ -8,8 +8,8 @@
 package com.hrznstudio.titanium.block.tile.button;
 
 import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.api.client.IGuiAddon;
-import com.hrznstudio.titanium.client.gui.addon.ArrowButtonGuiAddon;
+import com.hrznstudio.titanium.api.client.IScreenAddon;
+import com.hrznstudio.titanium.client.screen.addon.ArrowButtonScreenAddon;
 import com.hrznstudio.titanium.util.FacingUtil;
 
 import java.util.Collections;
@@ -25,8 +25,8 @@ public class ArrowButton extends PosButton {
     }
 
     @Override
-    public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
-        return Collections.singletonList(() -> new ArrowButtonGuiAddon(this));
+    public List<IFactory<? extends IScreenAddon>> getAddons() {
+        return Collections.singletonList(() -> new ArrowButtonScreenAddon(this));
     }
 
     public FacingUtil.Sideness getDirection() {

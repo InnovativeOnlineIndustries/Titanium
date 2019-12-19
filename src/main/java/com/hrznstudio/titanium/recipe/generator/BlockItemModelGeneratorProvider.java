@@ -10,7 +10,7 @@ package com.hrznstudio.titanium.recipe.generator;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import com.hrznstudio.titanium.block.BlockBase;
+import com.hrznstudio.titanium.block.BasicBlock;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DirectoryCache;
@@ -46,7 +46,7 @@ public class BlockItemModelGeneratorProvider implements IDataProvider {
         Path path = this.generator.getOutputFolder();
         Path output = path.resolve("assets/" + modid + "/models/item/");
         Files.createDirectories(output);
-        BlockBase.BLOCKS.stream().filter(blockBase -> blockBase.getRegistryName().getNamespace().equals(modid)).forEach(blockBase -> {
+        BasicBlock.BLOCKS.stream().filter(blockBase -> blockBase.getRegistryName().getNamespace().equals(modid)).forEach(blockBase -> {
             try {
                 try (BufferedWriter bufferedwriter = Files.newBufferedWriter(output.resolve(blockBase.getRegistryName().getPath() + ".json"))) {
                     bufferedwriter.write(GSON.toJson(createModel(blockBase)));

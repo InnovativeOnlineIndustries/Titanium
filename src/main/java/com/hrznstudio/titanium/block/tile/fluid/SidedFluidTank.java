@@ -10,11 +10,11 @@ package com.hrznstudio.titanium.block.tile.fluid;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
-import com.hrznstudio.titanium.api.client.IGuiAddon;
-import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
+import com.hrznstudio.titanium.api.client.IScreenAddon;
+import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.block.tile.sideness.IFacingHandler;
 import com.hrznstudio.titanium.block.tile.sideness.SidedHandlerManager;
-import com.hrznstudio.titanium.client.gui.addon.FacingHandlerGuiAddon;
+import com.hrznstudio.titanium.client.screen.addon.FacingHandlerScreenAddon;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.item.DyeColor;
 import net.minecraft.nbt.CompoundNBT;
@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class SidedFluidTank extends PosFluidTank implements IFacingHandler, IGuiAddonProvider {
+public class SidedFluidTank extends PosFluidTank implements IFacingHandler, IScreenAddonProvider {
 
     private int color;
     private int facingHandlerX = 8;
@@ -141,10 +141,10 @@ public class SidedFluidTank extends PosFluidTank implements IFacingHandler, IGui
     }
 
     @Override
-    public java.util.List<IFactory<? extends IGuiAddon>> getGuiAddons() {
-        List<IFactory<? extends IGuiAddon>> addons = super.getGuiAddons();
+    public java.util.List<IFactory<? extends IScreenAddon>> getAddons() {
+        List<IFactory<? extends IScreenAddon>> addons = super.getAddons();
         if (hasFacingAddon)
-            addons.add(() -> new FacingHandlerGuiAddon(SidedHandlerManager.ofRight(getFacingHandlerX(), getFacingHandlerY(), pos, AssetTypes.BUTTON_SIDENESS_MANAGER, 4), this, getTankType().getAssetType()));
+            addons.add(() -> new FacingHandlerScreenAddon(SidedHandlerManager.ofRight(getFacingHandlerX(), getFacingHandlerY(), pos, AssetTypes.BUTTON_SIDENESS_MANAGER, 4), this, getTankType().getAssetType()));
         return addons;
     }
 

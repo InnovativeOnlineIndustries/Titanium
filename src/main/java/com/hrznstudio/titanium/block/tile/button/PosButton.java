@@ -8,9 +8,9 @@
 package com.hrznstudio.titanium.block.tile.button;
 
 import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.api.client.IGuiAddon;
-import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
-import com.hrznstudio.titanium.client.gui.addon.BasicButtonAddon;
+import com.hrznstudio.titanium.api.client.IScreenAddon;
+import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
+import com.hrznstudio.titanium.client.screen.addon.BasicButtonAddon;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 
@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-public class PosButton implements IGuiAddonProvider {
+public class PosButton implements IScreenAddonProvider {
 
     private final int posX;
     private final int posY;
@@ -75,7 +75,7 @@ public class PosButton implements IGuiAddonProvider {
     }
 
     @Override
-    public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
+    public List<IFactory<? extends IScreenAddon>> getAddons() {
         return Collections.singletonList(() -> new BasicButtonAddon(this));
     }
 }

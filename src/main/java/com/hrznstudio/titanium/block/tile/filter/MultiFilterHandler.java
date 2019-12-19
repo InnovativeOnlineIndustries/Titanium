@@ -8,14 +8,14 @@
 package com.hrznstudio.titanium.block.tile.filter;
 
 import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.api.client.IGuiAddon;
-import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
+import com.hrznstudio.titanium.api.client.IScreenAddon;
+import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.api.filter.IFilter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MultiFilterHandler implements IGuiAddonProvider {
+public class MultiFilterHandler implements IScreenAddonProvider {
 
     public final List<IFilter> filters;
 
@@ -32,9 +32,9 @@ public class MultiFilterHandler implements IGuiAddonProvider {
     }
 
     @Override
-    public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
-        List<IFactory<? extends IGuiAddon>> addons = new ArrayList<>();
-        filters.forEach(filter -> addons.addAll(filter.getGuiAddons()));
+    public List<IFactory<? extends IScreenAddon>> getAddons() {
+        List<IFactory<? extends IScreenAddon>> addons = new ArrayList<>();
+        filters.forEach(filter -> addons.addAll(filter.getAddons()));
         return addons;
     }
 }

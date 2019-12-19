@@ -10,17 +10,15 @@ package com.hrznstudio.titanium.block.tile.progress;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
-import com.hrznstudio.titanium.api.client.IGuiAddon;
-import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
-import com.hrznstudio.titanium.block.tile.TileBase;
-import com.hrznstudio.titanium.client.gui.addon.ProgressBarGuiAddon;
-import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
+import com.hrznstudio.titanium.api.client.IScreenAddon;
+import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
+import com.hrznstudio.titanium.client.screen.addon.ProgressBarScreenAddon;
+import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.util.AssetUtil;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.DyeColor;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -30,20 +28,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class PosProgressBar implements INBTSerializable<CompoundNBT>, IGuiAddonProvider {
+public class PosProgressBar<T extends IProgressing> implements INBTSerializable<CompoundNBT>, IScreenAddonProvider {
 
     private int posX;
     private int posY;
     private int progress;
     private int maxProgress;
     private int progressIncrease;
-    private Predicate<TileEntity> canIncrease;
-    private Predicate<TileEntity> canReset;
+    private Predicate<T> canIncrease;
+    private Predicate<T> canReset;
     private int tickingTime;
     private Runnable onFinishWork;
     private Runnable onTickWork;
     private Runnable onStart;
-    private TileBase tileBase;
+    private T progressible;
     private BarDirection barDirection;
     private DyeColor color;
     private boolean increaseType;
@@ -54,8 +52,8 @@ public class PosProgressBar implements INBTSerializable<CompoundNBT>, IGuiAddonP
         this.progress = 0;
         this.maxProgress = maxProgress;
         this.progressIncrease = 1;
-        this.canIncrease = tileEntity -> false;
-        this.canReset = tileEntity -> true;
+        this.canIncrease = object -> false;
+        this.canReset = object -> true;
         this.tickingTime = 1;
         this.onFinishWork = () -> {
         };
@@ -79,7 +77,7 @@ public class PosProgressBar implements INBTSerializable<CompoundNBT>, IGuiAddonP
      * @param runnable The runnable
      * @return Self
      */
-    public PosProgressBar setOnFinishWork(Runnable runnable) {
+    public PosProgressBar<T> setOnFinishWork(Runnable runnable) {
         this.onFinishWork = runnable;
         return this;
     }
@@ -90,7 +88,7 @@ public class PosProgressBar implements INBTSerializable<CompoundNBT>, IGuiAddonP
      * @param runnable The runnable
      * @return Self
      */
-    public PosProgressBar setOnTickWork(Runnable runnable) {
+    public PosProgressBar<T> setOnTickWork(Runnable runnable) {
         this.onTickWork = runnable;
         return this;
     }
@@ -101,7 +99,7 @@ public class PosProgressBar implements INBTSerializable<CompoundNBT>, IGuiAddonP
      * @param runnable The runnable
      * @return Self
      */
-    public PosProgressBar setOnStart(Runnable runnable) {
+    public PosProgressBar<T> setOnStart(Runnable runnable) {
         this.onStart = runnable;
         return this;
     }
@@ -109,29 +107,29 @@ public class PosProgressBar implements INBTSerializable<CompoundNBT>, IGuiAddonP
     /**
      * Sets the tile where this bar is running
      *
-     * @param tileBase The tile
+     * @param progressing The object associated with the bar
      * @return Self
      */
-    public PosProgressBar setTile(TileBase tileBase) {
-        this.tileBase = tileBase;
+    public PosProgressBar<T> setProgressing(T progressing) {
+        this.progressible = progressing;
         return this;
     }
 
     /**
-     * Gets the tile where this bar is running
+     * Gets bar's associated object
      *
-     * @return The tile
+     * @return The associated object
      */
-    public TileBase getTileBase() {
-        return tileBase;
+    public T getProgressible() {
+        return progressible;
     }
 
     /**
      * Gets if the bar can reset
      *
-     * @return True if the bar can be reseted
+     * @return True if the bar can be reset
      */
-    public Predicate<TileEntity> getCanReset() {
+    public Predicate<T> getCanReset() {
         return canReset;
     }
 
@@ -141,7 +139,7 @@ public class PosProgressBar implements INBTSerializable<CompoundNBT>, IGuiAddonP
      * @param canReset A Predicate
      * @return Self
      */
-    public PosProgressBar setCanReset(Predicate<TileEntity> canReset) {
+    public PosProgressBar<T> setCanReset(Predicate<T> canReset) {
         this.canReset = canReset;
         return this;
     }
@@ -156,7 +154,7 @@ public class PosProgressBar implements INBTSerializable<CompoundNBT>, IGuiAddonP
      * @param increaseType True if the progress bar increases when working, false if the progress bar decreases when working
      * @return itself
      */
-    public PosProgressBar setIncreaseType(boolean increaseType) {
+    public PosProgressBar<T> setIncreaseType(boolean increaseType) {
         this.increaseType = increaseType;
         return this;
     }
@@ -165,7 +163,7 @@ public class PosProgressBar implements INBTSerializable<CompoundNBT>, IGuiAddonP
      * Ticks the bar so it can increase if possible, managed by {@link MultiProgressBarHandler#update()}
      */
     public void tickBar() {
-        if (tileBase != null && tileBase.getWorld().getGameTime() % tickingTime == 0) {
+        if (progressible != null && progressible.getWorld().getGameTime() % tickingTime == 0) {
             if (increaseType && progress < maxProgress) {
                 setProgress(this.progress + progressIncrease);
                 this.onTickWork.run();
@@ -175,11 +173,11 @@ public class PosProgressBar implements INBTSerializable<CompoundNBT>, IGuiAddonP
                 this.onTickWork.run();
             }
         }
-        if (increaseType && progress >= maxProgress && canReset.test(tileBase)) {
+        if (increaseType && progress >= maxProgress && canReset.test(progressible)) {
             setProgress(0);
             this.onFinishWork.run();
         }
-        if (!increaseType && progress <= 0 && canReset.test(tileBase)) {
+        if (!increaseType && progress <= 0 && canReset.test(progressible)) {
             setProgress(maxProgress);
             this.onFinishWork.run();
         }
@@ -208,7 +206,7 @@ public class PosProgressBar implements INBTSerializable<CompoundNBT>, IGuiAddonP
      *
      * @return A predicate
      */
-    public Predicate<TileEntity> getCanIncrease() {
+    public Predicate<T> getCanIncrease() {
         return canIncrease;
     }
 
@@ -218,7 +216,7 @@ public class PosProgressBar implements INBTSerializable<CompoundNBT>, IGuiAddonP
      * @param canIncrease A predicate
      * @return Self
      */
-    public PosProgressBar setCanIncrease(Predicate<TileEntity> canIncrease) {
+    public PosProgressBar<T> setCanIncrease(Predicate<T> canIncrease) {
         this.canIncrease = canIncrease;
         return this;
     }
@@ -239,7 +237,9 @@ public class PosProgressBar implements INBTSerializable<CompoundNBT>, IGuiAddonP
      */
     public void setProgress(int progress) {
         this.progress = progress;
-        if (tileBase != null) tileBase.markForUpdate();
+        if (progressible != null) {
+            progressible.markForUpdate();
+        }
     }
 
     /**
@@ -257,7 +257,7 @@ public class PosProgressBar implements INBTSerializable<CompoundNBT>, IGuiAddonP
      * @param maxProgress The max progress
      * @return Self
      */
-    public PosProgressBar setMaxProgress(int maxProgress) {
+    public PosProgressBar<T> setMaxProgress(int maxProgress) {
         this.maxProgress = maxProgress;
         return this;
     }
@@ -277,7 +277,7 @@ public class PosProgressBar implements INBTSerializable<CompoundNBT>, IGuiAddonP
      * @param tickingTime The ticking time
      * @return Self
      */
-    public PosProgressBar setTickingTime(int tickingTime) {
+    public PosProgressBar<T> setTickingTime(int tickingTime) {
         this.tickingTime = tickingTime;
         return this;
     }
@@ -297,7 +297,7 @@ public class PosProgressBar implements INBTSerializable<CompoundNBT>, IGuiAddonP
      * @param progressIncrease The increase amount
      * @return Self
      */
-    public PosProgressBar setProgressIncrease(int progressIncrease) {
+    public PosProgressBar<T> setProgressIncrease(int progressIncrease) {
         this.progressIncrease = progressIncrease;
         return this;
     }
@@ -317,7 +317,7 @@ public class PosProgressBar implements INBTSerializable<CompoundNBT>, IGuiAddonP
      * @param direction The bar direction
      * @return Self
      */
-    public PosProgressBar setBarDirection(BarDirection direction) {
+    public PosProgressBar<T> setBarDirection(BarDirection direction) {
         this.barDirection = direction;
         return this;
     }
@@ -337,7 +337,7 @@ public class PosProgressBar implements INBTSerializable<CompoundNBT>, IGuiAddonP
      * @param color the color
      * @return Self
      */
-    public PosProgressBar setColor(DyeColor color) {
+    public PosProgressBar<T> setColor(DyeColor color) {
         this.color = color;
         return this;
     }
@@ -348,8 +348,8 @@ public class PosProgressBar implements INBTSerializable<CompoundNBT>, IGuiAddonP
      * @return A list of GUI addon factories
      */
     @Override
-    public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
-        return Collections.singletonList(() -> new ProgressBarGuiAddon(posX, posY, this));
+    public List<IFactory<? extends IScreenAddon>> getAddons() {
+        return Collections.singletonList(() -> new ProgressBarScreenAddon(posX, posY, this));
     }
 
     @Override
@@ -373,7 +373,7 @@ public class PosProgressBar implements INBTSerializable<CompoundNBT>, IGuiAddonP
     public enum BarDirection {
         VERTICAL_UP {
             @Override
-            public void render(Screen screen, int guiX, int guiY, IAssetProvider provider, ProgressBarGuiAddon addon) {
+            public void render(Screen screen, int guiX, int guiY, IAssetProvider provider, ProgressBarScreenAddon addon) {
                 IAsset assetBorder = IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_BORDER_VERTICAL);
                 Point offset = assetBorder.getOffset();
                 Rectangle area = assetBorder.getArea();
@@ -413,7 +413,7 @@ public class PosProgressBar implements INBTSerializable<CompoundNBT>, IGuiAddonP
         },
         HORIZONTAL_RIGHT {
             @Override
-            public void render(Screen screen, int guiX, int guiY, IAssetProvider provider, ProgressBarGuiAddon addon) {
+            public void render(Screen screen, int guiX, int guiY, IAssetProvider provider, ProgressBarScreenAddon addon) {
                 AssetUtil.drawAsset(screen, IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_BACKGROUND_HORIZONTAL), addon.getPosX() + guiX, addon.getPosY() + guiY);
                 IAsset asset = IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_HORIZONTAL);
                 Point offset = asset.getOffset();
@@ -439,7 +439,7 @@ public class PosProgressBar implements INBTSerializable<CompoundNBT>, IGuiAddonP
         };
 
         @OnlyIn(Dist.CLIENT)
-        public abstract void render(Screen screen, int guiX, int guiY, IAssetProvider provider, ProgressBarGuiAddon addon);
+        public abstract void render(Screen screen, int guiX, int guiY, IAssetProvider provider, ProgressBarScreenAddon addon);
 
         @OnlyIn(Dist.CLIENT)
         public abstract int getXSize(IAssetProvider provider);

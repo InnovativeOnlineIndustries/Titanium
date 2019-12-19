@@ -8,27 +8,27 @@
 package com.hrznstudio.titanium.block.tile.progress;
 
 import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.api.client.IGuiAddon;
-import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
+import com.hrznstudio.titanium.api.client.IScreenAddon;
+import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MultiProgressBarHandler implements IGuiAddonProvider {
+public class MultiProgressBarHandler<T extends IProgressing> implements IScreenAddonProvider {
 
-    private final List<PosProgressBar> posWorkBars;
+    private final List<PosProgressBar<T>> posWorkBars;
 
     public MultiProgressBarHandler() {
         posWorkBars = new ArrayList<>();
     }
 
-    public void addBar(PosProgressBar bar) {
+    public void addBar(PosProgressBar<T> bar) {
         this.posWorkBars.add(bar);
     }
 
     public void update() {
-        for (PosProgressBar posWorkBar : posWorkBars) {
-            if (posWorkBar.getCanIncrease().test(posWorkBar.getTileBase())) {
+        for (PosProgressBar<T> posWorkBar : posWorkBars) {
+            if (posWorkBar.getCanIncrease().test(posWorkBar.getProgressible())) {
                 if (posWorkBar.getIncreaseType() && posWorkBar.getProgress() == 0) {
                     posWorkBar.onStart();
                 }
@@ -36,17 +36,17 @@ public class MultiProgressBarHandler implements IGuiAddonProvider {
                     posWorkBar.onStart();
                 }
                 posWorkBar.tickBar();
-            } else if (posWorkBar.getCanReset().test(posWorkBar.getTileBase())) {
+            } else if (posWorkBar.getCanReset().test(posWorkBar.getProgressible())) {
                 posWorkBar.setProgress(posWorkBar.getIncreaseType() ? 0 : posWorkBar.getMaxProgress());
             }
         }
     }
 
     @Override
-    public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
-        List<IFactory<? extends IGuiAddon>> list = new ArrayList<>();
-        for (PosProgressBar posWorkBar : posWorkBars) {
-            list.addAll(posWorkBar.getGuiAddons());
+    public List<IFactory<? extends IScreenAddon>> getAddons() {
+        List<IFactory<? extends IScreenAddon>> list = new ArrayList<>();
+        for (PosProgressBar<T> posWorkBar : posWorkBars) {
+            list.addAll(posWorkBar.getAddons());
         }
         return list;
     }

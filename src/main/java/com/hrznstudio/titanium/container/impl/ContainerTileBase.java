@@ -7,7 +7,7 @@
 
 package com.hrznstudio.titanium.container.impl;
 
-import com.hrznstudio.titanium.block.tile.TileActive;
+import com.hrznstudio.titanium.block.tile.ActiveTile;
 import com.hrznstudio.titanium.block.tile.inventory.PosInvHandler;
 import com.hrznstudio.titanium.network.locator.ILocatable;
 import com.hrznstudio.titanium.network.locator.LocatorInstance;
@@ -20,19 +20,21 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.registries.ObjectHolder;
 
-public class ContainerTileBase extends ContainerInventoryBase implements ILocatable {
+import javax.annotation.Nonnull;
+
+public class ContainerTileBase<T extends ActiveTile<?, T>> extends ContainerInventoryBase implements ILocatable {
 
     @ObjectHolder("titanium:tile_container")
-    public static ContainerType<ContainerTileBase> TYPE;
+    public static ContainerType<ContainerTileBase<?>> TYPE;
 
-    private TileActive tile;
+    private T tile;
     private boolean hasPlayerInventory;
 
     public ContainerTileBase(int id, PlayerInventory player, PacketBuffer buffer) {
-        this((TileActive) player.player.getEntityWorld().getTileEntity(buffer.readBlockPos()), player, id);
+        this((T) player.player.getEntityWorld().getTileEntity(buffer.readBlockPos()), player, id);
     }
 
-    public ContainerTileBase(TileActive tile, PlayerInventory inventory, int id) {
+    public ContainerTileBase(T tile, PlayerInventory inventory, int id) {
         super(TYPE, inventory, id, tile.getAssetProvider());
         this.tile = tile;
         initInventory();
@@ -52,6 +54,7 @@ public class ContainerTileBase extends ContainerInventoryBase implements ILocata
         }
     }
 
+    //TODO Figure out slot moving
     public void updateSlotPosition() {
         if (tile.getMultiInventoryHandler() != null) {
             for (PosInvHandler handler : tile.getMultiInventoryHandler().getInventoryHandlers()) {
@@ -74,11 +77,11 @@ public class ContainerTileBase extends ContainerInventoryBase implements ILocata
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity playerIn) {
+    public boolean canInteractWith(@Nonnull PlayerEntity player) {
         return true;
     }
 
-    public TileActive getTile() {
+    public T getTile() {
         return tile;
     }
 

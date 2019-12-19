@@ -7,7 +7,7 @@
 
 package com.hrznstudio.titanium.recipe.generator.titanium;
 
-import com.hrznstudio.titanium.block.BlockBase;
+import com.hrznstudio.titanium.block.BasicBlock;
 import com.hrznstudio.titanium.recipe.generator.TitaniumLootTableProvider;
 import net.minecraft.data.DataGenerator;
 
@@ -22,6 +22,6 @@ public class DefaultLootTableProvider extends TitaniumLootTableProvider {
 
     @Override
     public void add() {
-        BlockBase.BLOCKS.stream().filter(blockBase -> blockBase.getRegistryName().getNamespace().equals(modid)).forEach(blockBase -> blockBase.createLootTable(this));
+        BasicBlock.BLOCKS.stream().filter(blockBase -> blockBase.getRegistryName().getNamespace().equals(modid)).forEach(blockBase -> blockBase.createLootTable(this));
     }
 }

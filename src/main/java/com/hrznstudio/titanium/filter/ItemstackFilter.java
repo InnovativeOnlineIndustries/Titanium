@@ -8,11 +8,11 @@
 package com.hrznstudio.titanium.filter;
 
 import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.api.client.IGuiAddon;
+import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.api.filter.FilterAction;
 import com.hrznstudio.titanium.api.filter.FilterSlot;
 import com.hrznstudio.titanium.api.filter.IFilter;
-import com.hrznstudio.titanium.client.gui.addon.ItemstackFilterGuiAddon;
+import com.hrznstudio.titanium.client.screen.addon.ItemstackFilterScreenAddon;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 
@@ -124,9 +124,9 @@ public class ItemstackFilter implements IFilter<ItemStack> {
     }
 
     @Override
-    public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
-        List<IFactory<? extends IGuiAddon>> list = new ArrayList<>();
-        list.add(() -> new ItemstackFilterGuiAddon(this));
+    public List<IFactory<? extends IScreenAddon>> getAddons() {
+        List<IFactory<? extends IScreenAddon>> list = new ArrayList<>();
+        list.add(() -> new ItemstackFilterScreenAddon(this));
         return list;
     }
 

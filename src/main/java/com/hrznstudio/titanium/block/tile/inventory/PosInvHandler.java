@@ -8,9 +8,9 @@
 package com.hrznstudio.titanium.block.tile.inventory;
 
 import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.api.client.IGuiAddon;
-import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
-import com.hrznstudio.titanium.client.gui.addon.SlotsGuiAddon;
+import com.hrznstudio.titanium.api.client.IScreenAddon;
+import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
+import com.hrznstudio.titanium.client.screen.addon.SlotsScreenAddon;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -25,7 +25,7 @@ import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 
-public class PosInvHandler extends ItemStackHandler implements IGuiAddonProvider {
+public class PosInvHandler extends ItemStackHandler implements IScreenAddonProvider {
 
     private final String name;
     private int xPos;
@@ -241,9 +241,9 @@ public class PosInvHandler extends ItemStackHandler implements IGuiAddonProvider
     }
 
     @Override
-    public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
-        List<IFactory<? extends IGuiAddon>> addons = new ArrayList<>();
-        addons.add(() -> new SlotsGuiAddon(this));
+    public List<IFactory<? extends IScreenAddon>> getAddons() {
+        List<IFactory<? extends IScreenAddon>> addons = new ArrayList<>();
+        addons.add(() -> new SlotsScreenAddon(this));
         return addons;
     }
 }

@@ -11,12 +11,13 @@ import com.hrznstudio.titanium._impl.test.BlockAssetTest;
 import com.hrznstudio.titanium._impl.test.assetsystem.NewAssetProviderTest;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.IItemStackQuery;
-import com.hrznstudio.titanium.block.tile.TilePowered;
+import com.hrznstudio.titanium.block.tile.PoweredTile;
 import com.hrznstudio.titanium.block.tile.fluid.SidedFluidTank;
 import com.hrznstudio.titanium.block.tile.inventory.PosInvHandler;
 import com.hrznstudio.titanium.block.tile.inventory.SidedInvHandler;
+import com.hrznstudio.titanium.block.tile.progress.IProgressing;
 import com.hrznstudio.titanium.block.tile.progress.PosProgressBar;
-import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
+import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -24,7 +25,9 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 
-public class TileAssetTest extends TilePowered implements ITickableTileEntity {
+import javax.annotation.ParametersAreNonnullByDefault;
+
+public class TileAssetTest extends PoweredTile<BlockAssetTest, TileAssetTest> implements ITickableTileEntity, IProgressing {
     @Save
     private SidedInvHandler inventory;
     @Save
@@ -38,7 +41,7 @@ public class TileAssetTest extends TilePowered implements ITickableTileEntity {
     @Save
     private SidedInvHandler fluidInput;
     @Save
-    private PosProgressBar progressBar;
+    private PosProgressBar<TileAssetTest> progressBar;
     @Save
     private SidedFluidTank fluidTank;
 
@@ -50,7 +53,7 @@ public class TileAssetTest extends TilePowered implements ITickableTileEntity {
         this.addInventory(realOutput = (SidedInvHandler) new SidedInvHandler("real_output", 120, 56, 1, 0).setFacingHandlerPos(-15, 16).setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
         this.addInventory(randomSlot = new PosInvHandler("random_slot", 83, 20, 1).setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
         this.addInventory(fluidInput = (SidedInvHandler) new SidedInvHandler("fluid_input", 119, 20, 1, 0).setFacingHandlerPos(-15, 31).setSlotLimit(1).setTile(this));
-        this.addProgressBar(progressBar = new PosProgressBar(98, 50, 500).setCanIncrease(tileEntity -> true).setBarDirection(PosProgressBar.BarDirection.VERTICAL_UP));
+        this.addProgressBar(progressBar = new PosProgressBar<TileAssetTest>(98, 50, 500).setCanIncrease(tileEntity -> true).setBarDirection(PosProgressBar.BarDirection.VERTICAL_UP));
         this.addTank(fluidTank = (SidedFluidTank) new SidedFluidTank("fluid", 16000, 150, 17, 0).setFacingHandlerPos(-15, 46).setTile(this));
         inventory.setColor(DyeColor.CYAN);
         realOutput.setColor(DyeColor.RED);
@@ -64,9 +67,10 @@ public class TileAssetTest extends TilePowered implements ITickableTileEntity {
     }
 
     @Override
-    public ActionResultType onActivated(PlayerEntity playerIn, Hand hand, Direction facing, double hitX, double hitY, double hitZ) {
-        if (super.onActivated(playerIn, hand, facing, hitX, hitY, hitZ) == ActionResultType.PASS) {
-            openGui(playerIn);
+    @ParametersAreNonnullByDefault
+    public ActionResultType onActivated(PlayerEntity player, Hand hand, Direction facing, double hitX, double hitY, double hitZ) {
+        if (super.onActivated(player, hand, facing, hitX, hitY, hitZ) == ActionResultType.PASS) {
+            openGui(player);
             return ActionResultType.SUCCESS;
         }
         return ActionResultType.PASS;
