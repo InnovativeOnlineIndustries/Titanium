@@ -15,7 +15,7 @@ import com.hrznstudio.titanium.client.gui.addon.interfaces.ICanMouseDrag;
 import com.hrznstudio.titanium.client.gui.addon.interfaces.IClickable;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.util.AssetUtil;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.text.StringTextComponent;
@@ -54,18 +54,18 @@ public abstract class GuiAddonScreen extends Screen implements IGuiAddonConsumer
 
     @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
-        GlStateManager.pushMatrix();
+        RenderSystem.pushMatrix();
         renderBackground(mouseX, mouseY, partialTicks);
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
         super.render(mouseX, mouseY, partialTicks);
-        GlStateManager.pushMatrix();
+        RenderSystem.pushMatrix();
         renderForeground(mouseX, mouseY, partialTicks);
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     public void renderBackground(int mouseX, int mouseY, float partialTicks) {
         this.checkForMouseDrag(mouseX, mouseY);
-        GlStateManager.color4f(1, 1, 1, 1);
+        RenderSystem.color4f(1, 1, 1, 1);
         if (drawBackground) {
             this.renderBackground();
             AssetUtil.drawAsset(this, assetProvider.getAsset(AssetTypes.BACKGROUND), x, y);

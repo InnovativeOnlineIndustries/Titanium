@@ -8,7 +8,7 @@
 package com.hrznstudio.titanium.util;
 
 import com.hrznstudio.titanium.api.client.IAsset;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
 
@@ -30,11 +30,11 @@ public class AssetUtil {
     }
 
     public static void drawSelectingOverlay(int x, int y, int width, int height) {
-        GlStateManager.disableLighting();
-        GlStateManager.disableDepthTest();
+        RenderSystem.disableLighting();
+        RenderSystem.disableDepthTest();
         AbstractGui.fill(x, y, width, height, -2130706433);
-        GlStateManager.enableLighting();
-        GlStateManager.disableDepthTest();
+        RenderSystem.enableLighting();
+        RenderSystem.disableDepthTest();
     }
 
     public static void drawHorizontalLine(int startX, int endX, int y, int color) {

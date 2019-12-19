@@ -15,7 +15,7 @@ import com.hrznstudio.titanium.client.gui.addon.AssetGuiAddon;
 import com.hrznstudio.titanium.client.gui.addon.interfaces.ICanMouseDrag;
 import com.hrznstudio.titanium.client.gui.addon.interfaces.IClickable;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
@@ -67,7 +67,7 @@ public class GuiContainerBase<T extends Container> extends ContainerScreen<T> im
         xCenter = (width - xSize) / 2;
         yCenter = (height - ySize) / 2;
         //BG RENDERING
-        GlStateManager.color4f(1, 1, 1, 1);
+        RenderSystem.color4f(1, 1, 1, 1);
         getMinecraft().getTextureManager().bindTexture(IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND).getResourceLocation());
         blit(xCenter, yCenter, 0, 0, xSize, ySize);
         String name = TextFormatting.GRAY + title.getFormattedText();
@@ -107,7 +107,7 @@ public class GuiContainerBase<T extends Container> extends ContainerScreen<T> im
     }
 
     private void checkForMouseDrag(int mouseX, int mouseY) {
-        if (GLFW.glfwGetMouseButton(Minecraft.getInstance().mainWindow.getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS) {
+        if (GLFW.glfwGetMouseButton(Minecraft.getInstance().func_228018_at_().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS) { //Main Windows
             for (IGuiAddon iGuiAddon : this.addons) {
                 if (iGuiAddon instanceof ICanMouseDrag /*&& iGuiAddon.isInside(null, mouseX - x, mouseY - y)*/) {
                     ((ICanMouseDrag) iGuiAddon).drag(mouseX - dragX, mouseY - dragY);

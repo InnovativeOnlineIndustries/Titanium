@@ -13,7 +13,7 @@ import com.hrznstudio.titanium.block.tile.inventory.PosInvHandler;
 import com.hrznstudio.titanium.block.tile.inventory.SidedInvHandler;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.util.AssetUtil;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
 import org.apache.commons.lang3.tuple.Pair;
@@ -51,7 +51,7 @@ public class SlotsGuiAddon extends BasicGuiAddon {
                 int posY = positionFunction.apply(slotID).getRight();
                 AbstractGui.fill(guiX + handlerPosX + posX - 2, guiY + handlerPosY + posY - 2,
                         guiX + handlerPosX + posX + area.width, guiY + handlerPosY + posY + area.height, new Color(color).getRGB());
-                GlStateManager.color4f(1, 1, 1, 1);
+                RenderSystem.color4f(1, 1, 1, 1);
             }
         }
         //Draw slot
@@ -68,7 +68,7 @@ public class SlotsGuiAddon extends BasicGuiAddon {
                 Color colored = new Color(color);
                 AbstractGui.fill(guiX + handlerPosX + posX, guiY + handlerPosY + posY,
                         guiX + handlerPosX + posX + area.width - 2, guiY + handlerPosY + posY + area.height - 2, new Color(colored.getRed(), colored.getGreen(), colored.getBlue(), 256 / 2).getRGB());
-                GlStateManager.color4f(1, 1, 1, 1);
+                RenderSystem.color4f(1, 1, 1, 1);
             }
         }
     }

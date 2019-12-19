@@ -16,7 +16,7 @@ import com.hrznstudio.titanium.block.tile.TileBase;
 import com.hrznstudio.titanium.client.gui.addon.ProgressBarGuiAddon;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.util.AssetUtil;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.DyeColor;
 import net.minecraft.nbt.CompoundNBT;
@@ -379,7 +379,7 @@ public class PosProgressBar implements INBTSerializable<CompoundNBT>, IGuiAddonP
                 Rectangle area = assetBorder.getArea();
                 screen.getMinecraft().getTextureManager().bindTexture(assetBorder.getResourceLocation());
                 screen.blit(guiX + addon.getPosX() + offset.x, guiY + addon.getPosY() + offset.y, area.x, area.y, area.width, area.height);
-                GlStateManager.color4f(addon.getProgressBar().getColor().getColorComponentValues()[0], addon.getProgressBar().getColor().getColorComponentValues()[1], addon.getProgressBar().getColor().getColorComponentValues()[2], 1);
+                RenderSystem.color4f(addon.getProgressBar().getColor().getColorComponentValues()[0], addon.getProgressBar().getColor().getColorComponentValues()[1], addon.getProgressBar().getColor().getColorComponentValues()[2], 1);
                 IAsset assetBar = IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_BACKGROUND_VERTICAL);
                 offset = assetBar.getOffset();
                 area = assetBar.getArea();
@@ -398,7 +398,7 @@ public class PosProgressBar implements INBTSerializable<CompoundNBT>, IGuiAddonP
                         area.y + (area.height - progressOffset),
                         area.width,
                         progressOffset);
-                GlStateManager.color4f(1, 1, 1, 1);
+                RenderSystem.color4f(1, 1, 1, 1);
             }
 
             @Override
@@ -422,9 +422,9 @@ public class PosProgressBar implements INBTSerializable<CompoundNBT>, IGuiAddonP
                 int progress = addon.getProgressBar().getProgress();
                 int maxProgress = addon.getProgressBar().getMaxProgress();
                 int progressOffset = progress * area.width / maxProgress;
-                GlStateManager.color4f(addon.getProgressBar().getColor().getColorComponentValues()[0], addon.getProgressBar().getColor().getColorComponentValues()[1], addon.getProgressBar().getColor().getColorComponentValues()[2], 1);
+                RenderSystem.color4f(addon.getProgressBar().getColor().getColorComponentValues()[0], addon.getProgressBar().getColor().getColorComponentValues()[1], addon.getProgressBar().getColor().getColorComponentValues()[2], 1);
                 screen.blit(addon.getPosX() + offset.x + guiX, addon.getPosY() + offset.y + guiY, area.x, area.y, progressOffset, area.height);
-                GlStateManager.color4f(1, 1, 1, 1);
+                RenderSystem.color4f(1, 1, 1, 1);
             }
 
             @Override

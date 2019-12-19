@@ -10,7 +10,7 @@ package com.hrznstudio.titanium.client.gui.addon;
 import com.hrznstudio.titanium.block.tile.button.PosButton;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.util.AssetUtil;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.Screen;
 
 import java.util.Arrays;
@@ -31,7 +31,7 @@ public abstract class StateButtonAddon extends BasicButtonAddon {
     public void drawGuiContainerBackgroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         StateButtonInfo buttonInfo = getStateInfo();
         if (buttonInfo != null) {
-            GlStateManager.color4f(1, 1, 1, 1);
+            RenderSystem.color4f(1, 1, 1, 1);
             AssetUtil.drawAsset(screen, provider.getAsset(buttonInfo.getAsset()), this.getPosX() + guiX, this.getPosY() + guiY);
         }
     }
