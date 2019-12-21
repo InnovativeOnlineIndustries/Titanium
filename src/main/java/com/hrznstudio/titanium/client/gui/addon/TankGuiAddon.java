@@ -14,7 +14,6 @@ import com.hrznstudio.titanium.util.AssetUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.texture.MissingTextureSprite;
 import net.minecraft.client.renderer.texture.Texture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Direction;
@@ -50,22 +49,24 @@ public class TankGuiAddon extends BasicGuiAddon {
             int offset = (stored * (area.height - topBottomPadding) / capacity);
             ResourceLocation flowing = stack.getFluid().getAttributes().getStillTexture(stack);
             if (flowing != null) {
-                Texture texture = screen.getMinecraft().getTextureManager().func_229267_b_(flowing); //getAtlasSprite
-                if (!(texture instanceof AtlasTexture)) return;
-                TextureAtlasSprite sprite = ((AtlasTexture) texture).getSprite(flowing);
-                if (sprite == null) return;//sprite = MissingTextureSprite.func_217790_a();
-                screen.getMinecraft().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-                Color color = new Color(stack.getFluid().getAttributes().getColor());
-                RenderSystem.color4f(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
-                RenderSystem.enableBlend();
-                screen.blit(this.getPosX() + guiX + asset.getFluidRenderPadding(Direction.WEST),
-                        (int) (this.getPosY() + guiY + asset.getFluidRenderPadding(Direction.UP) + (stack.getFluid().getAttributes().isGaseous() ? area.height - topBottomPadding : (area.height - topBottomPadding) - offset)),
-                        0,
-                        (int) (area.getWidth() - asset.getFluidRenderPadding(Direction.EAST) - asset.getFluidRenderPadding(Direction.WEST)),
-                        offset,
-                        sprite);
-                RenderSystem.disableBlend();
-                RenderSystem.color4f(1, 1, 1, 1);
+                Texture texture = screen.getMinecraft().getTextureManager().func_229267_b_(AtlasTexture.LOCATION_BLOCKS_TEXTURE); //getAtlasSprite
+                if (texture instanceof AtlasTexture) {
+                    TextureAtlasSprite sprite = ((AtlasTexture) texture).getSprite(flowing);
+                    if (sprite != null) {
+                        screen.getMinecraft().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+                        Color color = new Color(stack.getFluid().getAttributes().getColor());
+                        RenderSystem.color4f(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
+                        RenderSystem.enableBlend();
+                        screen.blit(this.getPosX() + guiX + asset.getFluidRenderPadding(Direction.WEST),
+                                (int) (this.getPosY() + guiY + asset.getFluidRenderPadding(Direction.UP) + (stack.getFluid().getAttributes().isGaseous() ? area.height - topBottomPadding : (area.height - topBottomPadding) - offset)),
+                                0,
+                                (int) (area.getWidth() - asset.getFluidRenderPadding(Direction.EAST) - asset.getFluidRenderPadding(Direction.WEST)),
+                                offset,
+                                sprite);
+                        RenderSystem.disableBlend();
+                        RenderSystem.color4f(1, 1, 1, 1);
+                    }
+                }
             }
         }
         RenderSystem.color4f(1, 1, 1, 1);
