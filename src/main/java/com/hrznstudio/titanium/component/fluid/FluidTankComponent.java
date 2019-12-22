@@ -158,7 +158,7 @@ public class FluidTankComponent<T extends IComponentHarness> extends FluidTank i
     @Override
     public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
         List<IFactory<? extends IGuiAddon>> addons = new ArrayList<>();
-        addons.add(() -> new TankGuiAddon(this));
+        addons.add(() -> new TankGuiAddon<>(this));
         return addons;
     }
 
