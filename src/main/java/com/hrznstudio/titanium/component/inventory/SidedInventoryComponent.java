@@ -5,15 +5,16 @@
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
 
-package com.hrznstudio.titanium.block.tile.inventory;
+package com.hrznstudio.titanium.component.inventory;
 
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
-import com.hrznstudio.titanium.block.tile.sideness.IFacingHandler;
-import com.hrznstudio.titanium.block.tile.sideness.SidedHandlerManager;
+import com.hrznstudio.titanium.component.sideness.IFacingComponent;
+import com.hrznstudio.titanium.component.sideness.SidedComponentManager;
 import com.hrznstudio.titanium.client.gui.addon.FacingHandlerGuiAddon;
+import com.hrznstudio.titanium.component.IComponentHarness;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
@@ -29,9 +30,8 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
-public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
+public class SidedInventoryComponent<T extends IComponentHarness> extends InventoryComponent<T> implements IFacingComponent {
 
     private int color;
     private int facingHandlerX = 8;
@@ -42,7 +42,7 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
     private boolean colorGuiEnabled;
     private boolean hasFacingAddon;
 
-    public SidedInvHandler(String name, int xPos, int yPos, int size, int position) {
+    public SidedInventoryComponent(String name, int xPos, int yPos, int size, int position) {
         super(name, xPos, yPos, size);
         this.color = DyeColor.WHITE.getFireworkColor();
         this.facingModes = new HashMap<>();
@@ -55,7 +55,7 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
         this.hasFacingAddon = true;
     }
 
-    public SidedInvHandler disableFacingAddon() {
+    public SidedInventoryComponent<T> disableFacingAddon() {
         this.hasFacingAddon = false;
         return this;
     }
@@ -70,12 +70,12 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
         return new Color(color).getRGB();
     }
 
-    public SidedInvHandler setColor(int color) {
+    public SidedInventoryComponent<T> setColor(int color) {
         this.color = color;
         return this;
     }
 
-    public SidedInvHandler setColor(DyeColor color) {
+    public SidedInventoryComponent<T> setColor(DyeColor color) {
         this.color = color.getFireworkColor();
         return this;
     }
@@ -84,7 +84,7 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
         return colorGuiEnabled;
     }
 
-    public SidedInvHandler setColorGuiEnabled(boolean colorGuiEnabled) {
+    public SidedInventoryComponent<T> setColorGuiEnabled(boolean colorGuiEnabled) {
         this.colorGuiEnabled = colorGuiEnabled;
         return this;
     }
@@ -126,12 +126,13 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
             if (facingModes.get(sideness).equals(FaceMode.PUSH)) {
                 Direction real = FacingUtil.getFacingFromSide(blockFacing, sideness);
                 TileEntity entity = world.getTileEntity(pos.offset(real));
-                AtomicBoolean hasWorked = new AtomicBoolean(false);
                 if (entity != null) {
-                    entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, real.getOpposite()).ifPresent(iItemHandler -> {
-                        hasWorked.set(transfer(sideness, this, iItemHandler, workAmount));
-                    });
-                    if (hasWorked.get()) return true;
+                    boolean hasWorked = entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, real.getOpposite())
+                            .map(iItemHandler -> transfer(sideness, this, iItemHandler, workAmount))
+                            .orElse(false);
+                    if (hasWorked) {
+                        return true;
+                    }
                 }
             }
         }
@@ -139,12 +140,13 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
             if (facingModes.get(sideness).equals(FaceMode.PULL)) {
                 Direction real = FacingUtil.getFacingFromSide(blockFacing, sideness);
                 TileEntity entity = world.getTileEntity(pos.offset(real));
-                AtomicBoolean hasWorked = new AtomicBoolean(false);
                 if (entity != null) {
-                    entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, real.getOpposite()).ifPresent(iItemHandler -> {
-                        hasWorked.set(transfer(sideness, iItemHandler, this, workAmount));
-                    });
-                    if (hasWorked.get()) return true;
+                    boolean hasWorked = entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, real.getOpposite())
+                            .map(iItemHandler -> transfer(sideness, iItemHandler, this, workAmount))
+                            .orElse(false);
+                    if (hasWorked) {
+                        return true;
+                    }
                 }
             }
         }
@@ -152,7 +154,7 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
     }
 
     @Override
-    public SidedInvHandler setFacingHandlerPos(int x, int y) {
+    public SidedInventoryComponent<T> setFacingHandlerPos(int x, int y) {
         this.facingHandlerX = x;
         this.facingHandlerY = y;
         return this;
@@ -184,7 +186,7 @@ public class SidedInvHandler extends PosInvHandler implements IFacingHandler {
     public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
         List<IFactory<? extends IGuiAddon>> addons = super.getGuiAddons();
         if (hasFacingAddon)
-            addons.add(() -> new FacingHandlerGuiAddon(SidedHandlerManager.ofRight(getFacingHandlerX(), getFacingHandlerY(), position, AssetTypes.BUTTON_SIDENESS_MANAGER, 4), this, AssetTypes.SLOT));
+            addons.add(() -> new FacingHandlerGuiAddon(SidedComponentManager.ofRight(getFacingHandlerX(), getFacingHandlerY(), position, AssetTypes.BUTTON_SIDENESS_MANAGER, 4), this, AssetTypes.SLOT));
         return addons;
     }
 

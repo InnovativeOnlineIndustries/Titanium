@@ -14,8 +14,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.function.Predicate;
 
-public interface IFilter<T extends Object> extends INBTSerializable<CompoundNBT>, IGuiAddonProvider {
-
+public interface IFilter<T> extends INBTSerializable<CompoundNBT>, IGuiAddonProvider {
     String getName();
 
     boolean acceptsAsFilter(ItemStack filter);
@@ -38,7 +37,7 @@ public interface IFilter<T extends Object> extends INBTSerializable<CompoundNBT>
         return getType().getFilter().test(getAction().getFilterCheck().test(this, object));
     }
 
-    public enum Type {
+    enum Type {
         WHITELIST(filter -> filter),
         BLACKLIST(filter -> !filter);
 

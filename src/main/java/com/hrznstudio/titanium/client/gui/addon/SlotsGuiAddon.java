@@ -9,8 +9,9 @@ package com.hrznstudio.titanium.client.gui.addon;
 
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
-import com.hrznstudio.titanium.block.tile.inventory.PosInvHandler;
-import com.hrznstudio.titanium.block.tile.inventory.SidedInvHandler;
+import com.hrznstudio.titanium.component.IComponentHarness;
+import com.hrznstudio.titanium.component.inventory.InventoryComponent;
+import com.hrznstudio.titanium.component.inventory.SidedInventoryComponent;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.util.AssetUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -21,11 +22,11 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.awt.*;
 import java.util.function.Function;
 
-public class SlotsGuiAddon extends BasicGuiAddon {
+public class SlotsGuiAddon<T extends IComponentHarness> extends BasicGuiAddon {
 
-    private final PosInvHandler handler;
+    private final InventoryComponent<T> handler;
 
-    public SlotsGuiAddon(PosInvHandler handler) {
+    public SlotsGuiAddon(InventoryComponent<T> handler) {
         super(handler.getXPos(), handler.getYPos());
         this.handler = handler;
     }
@@ -75,7 +76,7 @@ public class SlotsGuiAddon extends BasicGuiAddon {
 
     @Override
     public void drawGuiContainerBackgroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
-        drawAsset(screen, provider, guiX, guiY, getPosX(), getPosY(), handler.getSlots(), handler.getSlotPosition(), handler instanceof SidedInvHandler && ((SidedInvHandler) handler).isColorGuiEnabled(), handler instanceof SidedInvHandler ? ((SidedInvHandler) handler).getColor() : 0);
+        drawAsset(screen, provider, guiX, guiY, getPosX(), getPosY(), handler.getSlots(), handler.getSlotPosition(), handler instanceof SidedInventoryComponent && ((SidedInventoryComponent<T>) handler).isColorGuiEnabled(), handler instanceof SidedInventoryComponent ? ((SidedInventoryComponent<T>) handler).getColor() : 0);
     }
 
     @Override

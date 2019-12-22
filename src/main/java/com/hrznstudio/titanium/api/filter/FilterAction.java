@@ -9,7 +9,7 @@ package com.hrznstudio.titanium.api.filter;
 
 import java.util.function.BiPredicate;
 
-public class FilterAction<T extends Object> {
+public class FilterAction<T> {
 
     private final BiPredicate<IFilter<T>, T> filterCheck;
 

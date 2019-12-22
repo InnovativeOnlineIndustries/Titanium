@@ -7,7 +7,7 @@
 
 package com.hrznstudio.titanium.client.gui.addon;
 
-import com.hrznstudio.titanium.block.tile.button.PosButton;
+import com.hrznstudio.titanium.component.button.ButtonComponent;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.util.AssetUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -20,8 +20,8 @@ public abstract class StateButtonAddon extends BasicButtonAddon {
 
     private StateButtonInfo[] buttonInfos;
 
-    public StateButtonAddon(PosButton posButton, StateButtonInfo... buttonInfos) {
-        super(posButton);
+    public StateButtonAddon(ButtonComponent buttonComponent, StateButtonInfo... buttonInfos) {
+        super(buttonComponent);
         this.buttonInfos = new StateButtonInfo[]{};
         if (buttonInfos != null) this.buttonInfos = buttonInfos;
     }

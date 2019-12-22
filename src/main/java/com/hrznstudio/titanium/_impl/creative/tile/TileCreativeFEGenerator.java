@@ -18,7 +18,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraftforge.energy.CapabilityEnergy;
 
-public class TileCreativeFEGenerator extends TilePowered {
+public class TileCreativeFEGenerator extends TilePowered<TileCreativeFEGenerator> {
 
     public TileCreativeFEGenerator() {
         super(BlockCreativeFEGenerator.INSTANCE);
@@ -41,6 +41,11 @@ public class TileCreativeFEGenerator extends TilePowered {
             }
             markForUpdate();
         }
+    }
+
+    @Override
+    public TileCreativeFEGenerator getSelf() {
+        return this;
     }
 
     @Override

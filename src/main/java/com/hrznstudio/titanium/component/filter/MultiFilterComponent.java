@@ -5,7 +5,7 @@
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
 
-package com.hrznstudio.titanium.block.tile.filter;
+package com.hrznstudio.titanium.component.filter;
 
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
@@ -15,11 +15,10 @@ import com.hrznstudio.titanium.api.filter.IFilter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MultiFilterHandler implements IGuiAddonProvider {
-
+public class MultiFilterComponent implements IGuiAddonProvider {
     public final List<IFilter> filters;
 
-    public MultiFilterHandler() {
+    public MultiFilterComponent() {
         filters = new ArrayList<>();
     }
 

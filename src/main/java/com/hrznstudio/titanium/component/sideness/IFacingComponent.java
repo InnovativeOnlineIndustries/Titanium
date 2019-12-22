@@ -5,7 +5,7 @@
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
 
-package com.hrznstudio.titanium.block.tile.sideness;
+package com.hrznstudio.titanium.component.sideness;
 
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
@@ -18,11 +18,10 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
 import java.awt.*;
-import java.util.HashMap;
+import java.util.Map;
 
-public interface IFacingHandler {
-
-    HashMap<FacingUtil.Sideness, FaceMode> getFacingModes();
+public interface IFacingComponent {
+    Map<FacingUtil.Sideness, FaceMode> getFacingModes();
 
     int getColor();
 
@@ -36,7 +35,7 @@ public interface IFacingHandler {
 
     boolean work(World world, BlockPos pos, Direction blockFacing, int workAmount);
 
-    IFacingHandler setFacingHandlerPos(int x, int y);
+    IFacingComponent setFacingHandlerPos(int x, int y);
 
     enum FaceMode {
         NONE(false, 0, AssetTypes.BUTTON_SIDENESS_DISABLED, TextFormatting.RED),
@@ -46,10 +45,10 @@ public interface IFacingHandler {
 
         private final boolean allowsConnection;
         private final int index;
-        private final IAssetType assetType;
+        private final IAssetType<?> assetType;
         private final TextFormatting color;
 
-        FaceMode(boolean allowsConnection, int index, IAssetType assetType, TextFormatting color) {
+        FaceMode(boolean allowsConnection, int index, IAssetType<?> assetType, TextFormatting color) {
             this.allowsConnection = allowsConnection;
             this.index = index;
             this.assetType = assetType;

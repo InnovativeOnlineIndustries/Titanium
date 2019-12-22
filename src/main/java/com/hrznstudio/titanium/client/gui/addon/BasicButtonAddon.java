@@ -8,7 +8,7 @@
 package com.hrznstudio.titanium.client.gui.addon;
 
 import com.hrznstudio.titanium.Titanium;
-import com.hrznstudio.titanium.block.tile.button.PosButton;
+import com.hrznstudio.titanium.component.button.ButtonComponent;
 import com.hrznstudio.titanium.client.gui.addon.interfaces.IClickable;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.network.locator.ILocatable;
@@ -26,11 +26,11 @@ import java.util.List;
 
 public class BasicButtonAddon extends BasicGuiAddon implements IClickable {
 
-    private PosButton button;
+    private ButtonComponent button;
 
-    public BasicButtonAddon(PosButton posButton) {
-        super(posButton.getPosX(), posButton.getPosY());
-        this.button = posButton;
+    public BasicButtonAddon(ButtonComponent buttonComponent) {
+        super(buttonComponent.getPosX(), buttonComponent.getPosY());
+        this.button = buttonComponent;
     }
 
     @Override
@@ -67,7 +67,7 @@ public class BasicButtonAddon extends BasicGuiAddon implements IClickable {
         return button.getSizeY();
     }
 
-    public PosButton getButton() {
+    public ButtonComponent getButton() {
         return button;
     }
 }

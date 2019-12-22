@@ -14,10 +14,10 @@ import com.hrznstudio.titanium.api.IItemStackQuery;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.block.tile.TilePowered;
-import com.hrznstudio.titanium.block.tile.button.PosButton;
-import com.hrznstudio.titanium.block.tile.fluid.PosFluidTank;
-import com.hrznstudio.titanium.block.tile.inventory.SidedInvHandler;
-import com.hrznstudio.titanium.block.tile.progress.PosProgressBar;
+import com.hrznstudio.titanium.component.button.ButtonComponent;
+import com.hrznstudio.titanium.component.fluid.FluidTankComponent;
+import com.hrznstudio.titanium.component.inventory.SidedInventoryComponent;
+import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
 import com.hrznstudio.titanium.client.gui.addon.EnergyBarGuiAddon;
 import com.hrznstudio.titanium.client.gui.addon.StateButtonAddon;
 import com.hrznstudio.titanium.client.gui.addon.StateButtonInfo;
@@ -27,32 +27,43 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
-public class TileTest extends TilePowered {
+public class TileTest extends TilePowered<TileTest> {
 
     @Save
-    private PosProgressBar bar;
+    private ProgressBarComponent<TileTest> bar;
     @Save
-    private SidedInvHandler first;
+    private SidedInventoryComponent<TileTest> first;
     @Save
-    private SidedInvHandler second;
+    private SidedInventoryComponent<TileTest> second;
     @Save
-    private PosFluidTank third;
+    private FluidTankComponent<TileTest> third;
 
-    private PosButton button;
+    private ButtonComponent button;
     @Save
     private int state;
 
     public TileTest() {
         super(BlockTest.TEST);
-        this.addInventory(first = (SidedInvHandler) new SidedInvHandler("test", 80, 60, 1, 0).setTile(this).setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
-        this.addInventory(second = (SidedInvHandler) new SidedInvHandler("test2", 80, 30, 1, 1).setTile(this).setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
+        this.addInventory(first = (SidedInventoryComponent<TileTest>) new SidedInventoryComponent<TileTest>("test", 80, 60, 1, 0)
+                .setComponentHarness(this)
+                .setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
+        this.addInventory(second = (SidedInventoryComponent<TileTest>) new SidedInventoryComponent<TileTest>("test2", 80, 30, 1, 1)
+                .setComponentHarness(this)
+                .setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
         this.addGuiAddonFactory(() -> new EnergyBarGuiAddon(4, 10, getEnergyStorage()));
-        this.addProgressBar(bar = new PosProgressBar(40, 20, 500).setCanIncrease(tileEntity -> true).setOnFinishWork(() -> System.out.println("WOWOOW")).setBarDirection(PosProgressBar.BarDirection.HORIZONTAL_RIGHT).setColor(DyeColor.LIME));
-        this.addTank(third = new PosFluidTank("testTank", 8000, 130, 30));
-        this.addButton(button = new PosButton(-13, 1, 14, 14) {
+        this.addProgressBar(bar = new ProgressBarComponent<TileTest>(40, 20, 500)
+                .setCanIncrease(tileEntity -> true)
+                .setOnFinishWork(() -> System.out.println("WOWOOW"))
+                .setBarDirection(ProgressBarComponent.BarDirection.HORIZONTAL_RIGHT)
+                .setColor(DyeColor.LIME));
+        this.addTank(third = new FluidTankComponent<>("testTank", 8000, 130, 30));
+        this.addButton(button = new ButtonComponent(-13, 1, 14, 14) {
             @Override
             public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
                 return Collections.singletonList(() -> new StateButtonAddon(button, new StateButtonInfo(0, AssetTypes.BUTTON_SIDENESS_DISABLED), new StateButtonInfo(1, AssetTypes.BUTTON_SIDENESS_ENABLED), new StateButtonInfo(2, AssetTypes.BUTTON_SIDENESS_PULL), new StateButtonInfo(3, AssetTypes.BUTTON_SIDENESS_PUSH)) {
@@ -75,15 +86,22 @@ public class TileTest extends TilePowered {
     @Override
     public void tick() {
         bar.tickBar();
-        if (getWorld().isRaining()) {
+        if (Objects.requireNonNull(getWorld()).isRaining()) {
             getWorld().getWorldInfo().setRaining(false);
         }
     }
 
     @Override
-    public ActionResultType onActivated(PlayerEntity playerIn, Hand hand, Direction facing, double hitX, double hitY, double hitZ) {
-        if (super.onActivated(playerIn, hand, facing, hitX, hitY, hitZ) == ActionResultType.PASS) {
-            openGui(playerIn);
+    @Nonnull
+    public TileTest getSelf() {
+        return this;
+    }
+
+    @Override
+    @ParametersAreNonnullByDefault
+    public ActionResultType onActivated(PlayerEntity player, Hand hand, Direction facing, double hitX, double hitY, double hitZ) {
+        if (super.onActivated(player, hand, facing, hitX, hitY, hitZ) == ActionResultType.PASS) {
+            openGui(player);
             return ActionResultType.SUCCESS;
         }
         return ActionResultType.PASS;

@@ -22,8 +22,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Set;
 
-public class TilePowered extends TileActive {
-
+public abstract class TilePowered<T extends TilePowered<T>> extends TileActive<T> {
     @Save
     private NBTEnergyHandler energyHandler;
     private LazyOptional<IEnergyStorage> energyCap;
@@ -49,7 +48,7 @@ public class TilePowered extends TileActive {
 
     @Nonnull
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+    public <U> LazyOptional<U> getCapability(@Nonnull Capability<U> cap, @Nullable Direction side) {
         if (cap == CapabilityEnergy.ENERGY)
             return energyCap.cast();
         return super.getCapability(cap, side);

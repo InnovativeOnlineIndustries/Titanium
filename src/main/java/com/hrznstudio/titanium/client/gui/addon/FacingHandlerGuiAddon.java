@@ -13,13 +13,15 @@ import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.api.client.IAssetType;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.assets.types.IBackgroundAsset;
-import com.hrznstudio.titanium.block.tile.button.PosButton;
-import com.hrznstudio.titanium.block.tile.sideness.IFacingHandler;
-import com.hrznstudio.titanium.block.tile.sideness.SidedHandlerManager;
+import com.hrznstudio.titanium.block.tile.TileActive;
+import com.hrznstudio.titanium.component.button.ButtonComponent;
+import com.hrznstudio.titanium.component.sideness.IFacingComponent;
+import com.hrznstudio.titanium.component.sideness.SidedComponentManager;
 import com.hrznstudio.titanium.client.gui.IGuiAddonConsumer;
 import com.hrznstudio.titanium.client.gui.addon.interfaces.IClickable;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.client.gui.container.GuiContainerTileBase;
+import com.hrznstudio.titanium.container.impl.ContainerTileBase;
 import com.hrznstudio.titanium.network.messages.ButtonClickNetworkMessage;
 import com.hrznstudio.titanium.util.AssetUtil;
 import com.hrznstudio.titanium.util.FacingUtil;
@@ -38,8 +40,8 @@ import java.util.List;
 
 public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
 
-    private final IFacingHandler handler;
-    private final SidedHandlerManager manager;
+    private final IFacingComponent handler;
+    private final SidedComponentManager manager;
     private List<StateButtonAddon> buttonAddons;
     private int xSize;
     private int ySize;
@@ -48,7 +50,7 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
     private Point hotbarPoint;
     private IAssetType assetType;
 
-    public FacingHandlerGuiAddon(SidedHandlerManager manager, IFacingHandler facingHandler, IAssetType assetType) {
+    public FacingHandlerGuiAddon(SidedComponentManager manager, IFacingComponent facingHandler, IAssetType assetType) {
         super(manager.getPosX(), manager.getPosY());
         this.manager = manager;
         this.handler = facingHandler;
@@ -142,11 +144,14 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
                 for (FacingUtil.Sideness facing : FacingUtil.Sideness.values()) {
                     if (!handler.getFacingModes().containsKey(facing)) continue;
                     Point point = getPointFromFacing(facing, inventoryPoint);
-                    StateButtonAddon addon = new StateButtonAddon(new PosButton(point.x, point.y, 14, 14), IFacingHandler.FaceMode.NONE.getInfo(), IFacingHandler.FaceMode.ENABLED.getInfo(), IFacingHandler.FaceMode.PULL.getInfo(), IFacingHandler.FaceMode.PUSH.getInfo()) {
+                    StateButtonAddon addon = new StateButtonAddon(new ButtonComponent(point.x, point.y, 14, 14), IFacingComponent.FaceMode.NONE.getInfo(), IFacingComponent.FaceMode.ENABLED.getInfo(), IFacingComponent.FaceMode.PULL.getInfo(), IFacingComponent.FaceMode.PUSH.getInfo()) {
                         @Override
                         public int getState() {
-                            IFacingHandler handler = ((GuiContainerTileBase) screen).getContainer().getTile().getHandlerFromName(FacingHandlerGuiAddon.this.handler.getName());
-                            return handler != null && handler.getFacingModes().containsKey(facing) ? handler.getFacingModes().get(facing).getIndex() : 0;
+                            IFacingComponent handler = ((GuiContainerTileBase) screen).getContainer()
+                                    .getTile()
+                                    .getHandlerFromName(FacingHandlerGuiAddon.this.handler.getName());
+                            return handler != null && handler.getFacingModes().containsKey(facing) ?
+                                    handler.getFacingModes().get(facing).getIndex() : 0;
                         }
 
                         @Override
@@ -155,12 +160,12 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
                             if (info != null && gui instanceof GuiContainerTileBase) {
                                 CompoundNBT compound = new CompoundNBT();
                                 compound.putString("Facing", facing.name());
-                                int faceMode = (getState() + (mouse == 0 ? 1 : -1)) % IFacingHandler.FaceMode.values().length;
-                                if (faceMode < 0) faceMode = IFacingHandler.FaceMode.values().length - 1;
+                                int faceMode = (getState() + (mouse == 0 ? 1 : -1)) % IFacingComponent.FaceMode.values().length;
+                                if (faceMode < 0) faceMode = IFacingComponent.FaceMode.values().length - 1;
                                 compound.putInt("Next", faceMode);
                                 compound.putString("Name", handler.getName());
                                 Titanium.NETWORK.get().sendToServer(new ButtonClickNetworkMessage(((GuiContainerTileBase) gui).getContainer().getLocatorInstance(), -1, compound));
-                                handler.getFacingModes().put(facing, IFacingHandler.FaceMode.values()[faceMode]);
+                                handler.getFacingModes().put(facing, IFacingComponent.FaceMode.values()[faceMode]);
                                 ((GuiContainerTileBase) gui).getContainer().getTile().updateNeigh();
                             }
                         }
@@ -168,7 +173,7 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
                         @Override
                         public List<String> getTooltipLines() {
                             List<String> strings = new ArrayList<>();
-                            IFacingHandler.FaceMode mode = IFacingHandler.FaceMode.values()[getState()];
+                            IFacingComponent.FaceMode mode = IFacingComponent.FaceMode.values()[getState()];
                             strings.add(TextFormatting.GOLD + LangUtil.get("tooltip.titanium.facing_handler.direction") +
                                     TextFormatting.RESET + LangUtil.get("tooltip.titanium.facing_handler." + facing.name().toLowerCase()));
                             strings.add(TextFormatting.GOLD + LangUtil.get("tooltip.titanium.facing_handler.action") +
@@ -190,6 +195,7 @@ public class FacingHandlerGuiAddon extends BasicGuiAddon implements IClickable {
     public void setClicked(GuiContainerTileBase information, boolean clicked) {
         this.clicked = clicked;
         if (!clicked) {
+            //noinspection SuspiciousMethodCalls
             information.getAddons().removeIf(iGuiAddon -> buttonAddons.contains(iGuiAddon));
             buttonAddons.clear();
             information.getContainer().setDisabled(false);

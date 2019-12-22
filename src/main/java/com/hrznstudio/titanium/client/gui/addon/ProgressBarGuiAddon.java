@@ -7,7 +7,8 @@
 
 package com.hrznstudio.titanium.client.gui.addon;
 
-import com.hrznstudio.titanium.block.tile.progress.PosProgressBar;
+import com.hrznstudio.titanium.component.IComponentHarness;
+import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.text.TextFormatting;
@@ -16,14 +17,14 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProgressBarGuiAddon extends BasicGuiAddon {
+public class ProgressBarGuiAddon<T extends IComponentHarness> extends BasicGuiAddon {
 
-    private PosProgressBar progressBar;
+    private ProgressBarComponent<T> progressBar;
     private IAssetProvider provider;
 
-    public ProgressBarGuiAddon(int posX, int posY, PosProgressBar posProgressBar) {
+    public ProgressBarGuiAddon(int posX, int posY, ProgressBarComponent<T> progressBarComponent) {
         super(posX, posY);
-        this.progressBar = posProgressBar;
+        this.progressBar = progressBarComponent;
     }
 
     @Override
@@ -48,7 +49,7 @@ public class ProgressBarGuiAddon extends BasicGuiAddon {
 
     }
 
-    public PosProgressBar getProgressBar() {
+    public ProgressBarComponent<T> getProgressBar() {
         return progressBar;
     }
 
