@@ -76,7 +76,7 @@ public class JSONSerializableDataHandler {
         });
     }
 
-    private static <T> void map(Class<T> type, Writer<T> writer, Reader<T> reader) {
+    public static <T> void map(Class<T> type, Writer<T> writer, Reader<T> reader) {
         FIELD_SERIALIZER.put(type, Pair.of(writer, reader));
     }
 
