@@ -88,4 +88,8 @@ public abstract class BlockTileBase<T extends TileBase> extends BlockBase implem
     public TileEntityType getTileEntityType() {
         return tileEntityType;
     }
+
+    public Class<T> getTileClass() {
+        return tileClass;
+    }
 }

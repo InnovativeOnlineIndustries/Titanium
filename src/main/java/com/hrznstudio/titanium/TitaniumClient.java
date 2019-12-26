@@ -8,7 +8,6 @@
 package com.hrznstudio.titanium;
 
 import com.hrznstudio.titanium.block.BlockBase;
-import com.hrznstudio.titanium.client.TitaniumModelLoader;
 import com.hrznstudio.titanium.util.RayTraceUtils;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -16,14 +15,12 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.DrawHighlightEvent;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
 
 public class TitaniumClient {
     public static void registerModelLoader() {
