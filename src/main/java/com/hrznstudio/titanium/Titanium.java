@@ -187,7 +187,7 @@ public class Titanium extends ModuleController {
 
     @OnlyIn(Dist.CLIENT)
     private void clientSetup(FMLClientSetupEvent event) {
-        EventManager.forge(DrawHighlightEvent.class).process(TitaniumClient::blockOverlayEvent).subscribe();
+        EventManager.forge(DrawHighlightEvent.HighlightBlock.class).process(TitaniumClient::blockOverlayEvent).subscribe();
         TitaniumClient.registerModelLoader();
         RewardManager.get().getRewards().values().forEach(rewardGiver -> rewardGiver.getRewards().forEach(reward -> reward.register(Dist.CLIENT)));
         ScreenManager.registerFactory(ContainerTileBase.TYPE, GuiContainerTileBase::new);
