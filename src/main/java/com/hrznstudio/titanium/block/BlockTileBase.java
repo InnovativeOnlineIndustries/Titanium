@@ -1,6 +1,6 @@
 /*
  * This file is part of Titanium
- * Copyright (C) 2019, Horizon Studio <contact@hrznstudio.com>.
+ * Copyright (C) 2020, Horizon Studio <contact@hrznstudio.com>.
  *
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
@@ -87,5 +87,9 @@ public abstract class BlockTileBase<T extends TileBase> extends BlockBase implem
 
     public TileEntityType getTileEntityType() {
         return tileEntityType;
+    }
+
+    public Class<T> getTileClass() {
+        return tileClass;
     }
 }

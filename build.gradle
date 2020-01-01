@@ -33,7 +33,7 @@ license {
 }
 
 minecraft {
-    mappings channel: 'snapshot', version: '20191217-1.14.3'
+    mappings channel: 'snapshot', version: '20191230-1.14.3'
     runs {
         client = {
             // recommended logging data for a userdev environment
@@ -64,10 +64,15 @@ minecraft {
 repositories {
     mavenCentral()
     jcenter()
+    //maven {
+    //    // location of the maven that hosts JEI files
+    //    name = "Progwml6 maven"
+    //    url = "https://dvs1.progwml6.com/files/maven/"
+    //}
     maven {
-        // location of the maven that hosts JEI files
-        name = "Progwml6 maven"
-        url = "https://dvs1.progwml6.com/files/maven/"
+        // location of a maven mirror for JEI files, as a fallback
+        name = "ModMaven"
+        url = "https://modmaven.k-4u.nl"
     }
 }
 dependencies {
@@ -127,7 +132,7 @@ publishing {
         }
     }
     repositories {
-        if(System.getenv("BRANCH") == "release") {
+        if(System.getenv("BRANCH") == "release" || System.getenv("BRANCH") == "release-1.15") {
             maven {
                 url "s3://cdn.hrzn.studio/maven"
                 authentication {
