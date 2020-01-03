@@ -70,6 +70,7 @@ public class CompoundSerializableDataHandler {
         map(Ingredient.class, Ingredient::read, (buf, ingredient) -> ingredient.write(buf));
         map(Block.class, buf -> ForgeRegistries.BLOCKS.getValue(buf.readResourceLocation()), (buf, block) -> buf.writeResourceLocation(block.getRegistryName()));
         map(Ingredient.IItemList[].class, CompoundSerializableDataHandler::readIItemListArray, CompoundSerializableDataHandler::writeIItemListArray);
+        map(Ingredient[].class, CompoundSerializableDataHandler::readIngredientArray, CompoundSerializableDataHandler::writeIngredientArray);
         map(Biome.class, CompoundSerializableDataHandler::readBiome, CompoundSerializableDataHandler::writeBiome);
         map(Biome[].class, CompoundSerializableDataHandler::readBiomeArray, CompoundSerializableDataHandler::writeBiomeArray);
 
@@ -138,6 +139,21 @@ public class CompoundSerializableDataHandler {
         buffer.writeInt(biomes.length);
         for (Biome biome : biomes) {
             buffer.writeString(biome.getRegistryName().toString());
+        }
+    }
+
+    public static Ingredient[] readIngredientArray(PacketBuffer buffer) {
+        Ingredient[] ingredients = new Ingredient[buffer.readInt()];
+        for (int i = 0; i < ingredients.length; i++) {
+            ingredients[i] = Ingredient.read(buffer);
+        }
+        return ingredients;
+    }
+
+    public static void writeIngredientArray(PacketBuffer buffer, Ingredient[] ingredients) {
+        buffer.writeInt(ingredients.length);
+        for (Ingredient ingredient : ingredients) {
+            ingredient.write(buffer);
         }
     }
 

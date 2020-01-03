@@ -43,7 +43,6 @@ public class JSONSerializableDataHandler {
         map(double.class, JsonPrimitive::new, JsonElement::getAsDouble);
         map(boolean.class, JsonPrimitive::new, JsonElement::getAsBoolean);
         map(char.class, JsonPrimitive::new, JsonElement::getAsCharacter);
-
         map(Byte.class, JsonPrimitive::new, JsonElement::getAsByte);
         map(Short.class, JsonPrimitive::new, JsonElement::getAsShort);
         map(Integer.class, JsonPrimitive::new, JsonElement::getAsInt);
@@ -52,14 +51,14 @@ public class JSONSerializableDataHandler {
         map(Double.class, JsonPrimitive::new, JsonElement::getAsDouble);
         map(Boolean.class, JsonPrimitive::new, JsonElement::getAsBoolean);
         map(Character.class, JsonPrimitive::new, JsonElement::getAsCharacter);
-
         map(String.class, JsonPrimitive::new, JsonElement::getAsString);
 
-        map(Ingredient.class, Ingredient::serialize, Ingredient::deserialize);
+
         map(ItemStack.class, JSONSerializableDataHandler::writeItemStack, element -> readItemStack(element.getAsJsonObject()));
         map(ResourceLocation.class, type -> new JsonPrimitive(type.toString()), element -> new ResourceLocation(element.getAsString()));
         map(Block.class, type -> new JsonPrimitive(type.getRegistryName().toString()), element -> ForgeRegistries.BLOCKS.getValue(new ResourceLocation(element.getAsString())));
         map(FluidStack.class, JSONSerializableDataHandler::writeFluidStack, JSONSerializableDataHandler::readFluidStack);
+
         map(Biome.class, JSONSerializableDataHandler::writeBiomeType, JSONSerializableDataHandler::readBiomeType);
         map(Biome[].class, (biomes) -> {
             JsonArray array = new JsonArray();
@@ -75,6 +74,22 @@ public class JSONSerializableDataHandler {
                 biomes[i] = ForgeRegistries.BIOMES.getValue(new ResourceLocation(jsonElement.getAsString()));
             }
             return biomes;
+        });
+        map(Ingredient.class, Ingredient::serialize, Ingredient::deserialize);
+        map(Ingredient[].class, (type) -> {
+            JsonArray array = new JsonArray();
+            for (Ingredient ingredient : type) {
+                array.add(ingredient.serialize());
+            }
+            return array;
+        }, (element) -> {
+            Ingredient[] ingredients = new Ingredient[element.getAsJsonArray().size()];
+            int i = 0;
+            for (Iterator<JsonElement> iterator = element.getAsJsonArray().iterator(); iterator.hasNext(); i++) {
+                JsonElement jsonElement = iterator.next();
+                ingredients[i] = Ingredient.deserialize(jsonElement);
+            }
+            return ingredients;
         });
         map(Ingredient.IItemList.class, Ingredient.IItemList::serialize, element -> Ingredient.deserializeItemList(element.getAsJsonObject()));
         map(Ingredient.IItemList[].class, type -> {
