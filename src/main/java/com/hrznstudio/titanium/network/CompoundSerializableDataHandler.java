@@ -16,8 +16,10 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
@@ -68,6 +70,9 @@ public class CompoundSerializableDataHandler {
         map(Ingredient.class, Ingredient::read, (buf, ingredient) -> ingredient.write(buf));
         map(Block.class, buf -> ForgeRegistries.BLOCKS.getValue(buf.readResourceLocation()), (buf, block) -> buf.writeResourceLocation(block.getRegistryName()));
         map(Ingredient.IItemList[].class, CompoundSerializableDataHandler::readIItemListArray, CompoundSerializableDataHandler::writeIItemListArray);
+        map(Biome.class, CompoundSerializableDataHandler::readBiome, CompoundSerializableDataHandler::writeBiome);
+        map(Biome[].class, CompoundSerializableDataHandler::readBiomeArray, CompoundSerializableDataHandler::writeBiomeArray);
+
     }
 
     public static <T> void map(Class<T> type, Reader<T> reader, Writer<T> writer) {
@@ -90,6 +95,14 @@ public class CompoundSerializableDataHandler {
         buf.writeCompoundTag(stack.writeToNBT(new CompoundNBT()));
     }
 
+    public static Biome readBiome(PacketBuffer buffer) {
+        return ForgeRegistries.BIOMES.getValue(new ResourceLocation(buffer.readString()));
+    }
+
+    public static void writeBiome(PacketBuffer buffer, Biome biome) {
+        buffer.writeString(biome.getRegistryName().toString());
+    }
+
     private static void writeUpdatePacket(PacketBuffer buf, SUpdateTileEntityPacket packet) {
         try {
             packet.writePacketData(buf);
@@ -110,6 +123,21 @@ public class CompoundSerializableDataHandler {
         buf.writeInt(list.length);
         for (Ingredient.IItemList iItemList : list) {
             CollectionItemList.serializeBuffer(buf, iItemList);
+        }
+    }
+
+    public static Biome[] readBiomeArray(PacketBuffer buffer) {
+        Biome[] biomes = new Biome[buffer.readInt()];
+        for (int i = 0; i < biomes.length; i++) {
+            biomes[i] = ForgeRegistries.BIOMES.getValue(new ResourceLocation(buffer.readString()));
+        }
+        return biomes;
+    }
+
+    public static void writeBiomeArray(PacketBuffer buffer, Biome[] biomes) {
+        buffer.writeInt(biomes.length);
+        for (Biome biome : biomes) {
+            buffer.writeString(biome.getRegistryName().toString());
         }
     }
 
