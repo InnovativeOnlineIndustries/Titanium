@@ -217,7 +217,7 @@ public abstract class TileActive<T extends TileActive<T>> extends TileBase imple
     }
 
     public Direction getFacingDirection() {
-        return this.world.getBlockState(pos).has(BlockRotation.FACING) ? this.world.getBlockState(pos).get(BlockRotation.FACING) : Direction.NORTH;
+        return this.world.getBlockState(pos).has(BlockRotation.FACING_ALL) ? this.world.getBlockState(pos).get(BlockRotation.FACING_ALL) : Direction.NORTH;
     }
 
     public IFacingComponent getHandlerFromName(String string) {
