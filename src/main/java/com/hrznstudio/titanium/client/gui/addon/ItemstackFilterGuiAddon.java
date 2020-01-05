@@ -12,7 +12,7 @@ import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.filter.FilterSlot;
 import com.hrznstudio.titanium.client.gui.addon.interfaces.IClickable;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
-import com.hrznstudio.titanium.filter.ItemstackFilter;
+import com.hrznstudio.titanium.filter.ItemStackFilter;
 import com.hrznstudio.titanium.network.locator.ILocatable;
 import com.hrznstudio.titanium.network.messages.ButtonClickNetworkMessage;
 import com.hrznstudio.titanium.util.AssetUtil;
@@ -30,9 +30,9 @@ import java.util.Objects;
 
 public class ItemstackFilterGuiAddon extends BasicGuiAddon implements IClickable {
 
-    private final ItemstackFilter filter;
+    private final ItemStackFilter filter;
 
-    public ItemstackFilterGuiAddon(ItemstackFilter filter) {
+    public ItemstackFilterGuiAddon(ItemStackFilter filter) {
         super(filter.getFilterSlots()[0].getX(), filter.getFilterSlots()[0].getY());
         this.filter = filter;
     }

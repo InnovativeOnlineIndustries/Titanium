@@ -5,12 +5,13 @@
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
 
-package com.hrznstudio.titanium.block.tile.inventory;
+package com.hrznstudio.titanium.component.inventory;
 
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
 import com.hrznstudio.titanium.client.gui.addon.SlotsGuiAddon;
+import com.hrznstudio.titanium.component.IComponentHarness;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -21,26 +22,27 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 
-public class PosInvHandler extends ItemStackHandler implements IGuiAddonProvider {
+public class InventoryComponent<T extends IComponentHarness> extends ItemStackHandler implements IGuiAddonProvider {
 
     private final String name;
     private int xPos;
     private int yPos;
     private int xSize;
     private int ySize;
-    private TileEntity tileEntity;
+    private T componentHarness;
     private BiPredicate<ItemStack, Integer> insertPredicate;
     private BiPredicate<ItemStack, Integer> extractPredicate;
     private BiConsumer<ItemStack, Integer> onSlotChanged;
-    private HashMap<Integer, Integer> slotAmountFilter;
+    private Map<Integer, Integer> slotAmountFilter;
     private int slotLimit;
     private Function<Integer, Pair<Integer, Integer>> slotPosition;
 
-    public PosInvHandler(String name, int xPos, int yPos, int size) {
+    public InventoryComponent(String name, int xPos, int yPos, int size) {
         this.name = name;
         this.xPos = xPos;
         this.yPos = yPos;
@@ -62,7 +64,7 @@ public class PosInvHandler extends ItemStackHandler implements IGuiAddonProvider
      * @param y How many slots there are vertically
      * @return itself
      */
-    public PosInvHandler setRange(int x, int y) {
+    public InventoryComponent<T> setRange(int x, int y) {
         this.xSize = x;
         this.ySize = y;
         return this;
@@ -71,11 +73,11 @@ public class PosInvHandler extends ItemStackHandler implements IGuiAddonProvider
     /**
      * Sets the tile where the inventory is to allow markForUpdate automatically
      *
-     * @param tile The tile to mark
+     * @param componentHarness the object which owns this component
      * @return itself
      */
-    public PosInvHandler setTile(TileEntity tile) {
-        this.tileEntity = tile;
+    public InventoryComponent<T> setComponentHarness(T componentHarness) {
+        this.componentHarness = componentHarness;
         return this;
     }
 
@@ -85,7 +87,7 @@ public class PosInvHandler extends ItemStackHandler implements IGuiAddonProvider
      * @param predicate A bi predicate where the itemstack is the item trying to be inserted and the slot where is trying to be inserted to
      * @return itself
      */
-    public PosInvHandler setInputFilter(BiPredicate<ItemStack, Integer> predicate) {
+    public InventoryComponent<T> setInputFilter(BiPredicate<ItemStack, Integer> predicate) {
         this.insertPredicate = predicate;
         return this;
     }
@@ -96,7 +98,7 @@ public class PosInvHandler extends ItemStackHandler implements IGuiAddonProvider
      * @param predicate A bi predicate where the itemstack is the item trying to be extracted and the slot where is trying to be extracted
      * @return itself
      */
-    public PosInvHandler setOutputFilter(BiPredicate<ItemStack, Integer> predicate) {
+    public InventoryComponent<T> setOutputFilter(BiPredicate<ItemStack, Integer> predicate) {
         this.extractPredicate = predicate;
         return this;
     }
@@ -139,7 +141,9 @@ public class PosInvHandler extends ItemStackHandler implements IGuiAddonProvider
 
     @Override
     protected void onContentsChanged(int slot) {
-        if (this.tileEntity != null) tileEntity.markDirty();
+        if (this.componentHarness != null) {
+            componentHarness.markDirty();
+        }
         onSlotChanged.accept(getStackInSlot(slot), slot);
     }
 
@@ -171,8 +175,8 @@ public class PosInvHandler extends ItemStackHandler implements IGuiAddonProvider
         return ySize;
     }
 
-    public TileEntity getTileEntity() {
-        return tileEntity;
+    public T getComponentHarness() {
+        return componentHarness;
     }
 
     public BiPredicate<ItemStack, Integer> getInsertPredicate() {
@@ -193,7 +197,7 @@ public class PosInvHandler extends ItemStackHandler implements IGuiAddonProvider
      * @param onSlotChanged A bi predicate where the itemstack and slot changed
      * @return itself
      */
-    public PosInvHandler setOnSlotChanged(BiConsumer<ItemStack, Integer> onSlotChanged) {
+    public InventoryComponent<T> setOnSlotChanged(BiConsumer<ItemStack, Integer> onSlotChanged) {
         this.onSlotChanged = onSlotChanged;
         return this;
     }
@@ -205,7 +209,7 @@ public class PosInvHandler extends ItemStackHandler implements IGuiAddonProvider
      * @param limit The limit for the slot
      * @return itself
      */
-    public PosInvHandler setSlotLimit(int slot, int limit) {
+    public InventoryComponent<T> setSlotLimit(int slot, int limit) {
         this.slotAmountFilter.put(slot, limit);
         return this;
     }
@@ -216,7 +220,7 @@ public class PosInvHandler extends ItemStackHandler implements IGuiAddonProvider
      * @param limit The default limit for all the slot that don't have specific limit
      * @return itself
      */
-    public PosInvHandler setSlotLimit(int limit) {
+    public InventoryComponent<T> setSlotLimit(int limit) {
         this.slotLimit = limit;
         return this;
     }
@@ -230,7 +234,7 @@ public class PosInvHandler extends ItemStackHandler implements IGuiAddonProvider
         return slotPosition;
     }
 
-    public PosInvHandler setSlotPosition(Function<Integer, Pair<Integer, Integer>> slotPosition) {
+    public InventoryComponent<T> setSlotPosition(Function<Integer, Pair<Integer, Integer>> slotPosition) {
         this.slotPosition = slotPosition;
         return this;
     }

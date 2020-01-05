@@ -5,13 +5,14 @@
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
 
-package com.hrznstudio.titanium.block.tile.fluid;
+package com.hrznstudio.titanium.component.fluid;
 
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
-import com.hrznstudio.titanium.block.tile.sideness.ICapabilityHolder;
-import com.hrznstudio.titanium.block.tile.sideness.IFacingHandler;
+import com.hrznstudio.titanium.component.IComponentHarness;
+import com.hrznstudio.titanium.component.sideness.ICapabilityHolder;
+import com.hrznstudio.titanium.component.sideness.IFacingComponent;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -21,12 +22,13 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-public class MultiTankHandler implements IGuiAddonProvider, ICapabilityHolder<PosFluidTank, MultiTankHandler.MultiTankCapabilityHandler> {
+public class MultiTankComponent<T extends IComponentHarness> implements IGuiAddonProvider,
+        ICapabilityHolder<FluidTankComponent<T>, MultiTankComponent.MultiTankCapabilityHandler<T>> {
 
-    private final LinkedHashSet<PosFluidTank> tanks;
-    private final HashMap<FacingUtil.Sideness, LazyOptional<MultiTankCapabilityHandler>> lazyOptionals;
+    private final LinkedHashSet<FluidTankComponent<T>> tanks;
+    private final HashMap<FacingUtil.Sideness, LazyOptional<MultiTankCapabilityHandler<T>>> lazyOptionals;
 
-    public MultiTankHandler() {
+    public MultiTankComponent() {
         tanks = new LinkedHashSet<>();
         this.lazyOptionals = new HashMap<>();
         lazyOptionals.put(null, LazyOptional.empty());
@@ -36,7 +38,7 @@ public class MultiTankHandler implements IGuiAddonProvider, ICapabilityHolder<Po
     }
 
     @Override
-    public void add(PosFluidTank tank) {
+    public void add(@Nonnull FluidTankComponent<T> tank) {
         this.tanks.add(tank);
         rebuildCapability(new FacingUtil.Sideness[]{null});
         rebuildCapability(FacingUtil.Sideness.values());
@@ -45,18 +47,19 @@ public class MultiTankHandler implements IGuiAddonProvider, ICapabilityHolder<Po
     private void rebuildCapability(FacingUtil.Sideness[] sides) {
         for (FacingUtil.Sideness side : sides) {
             lazyOptionals.get(side).invalidate();
-            lazyOptionals.put(side, LazyOptional.of(() -> new MultiTankCapabilityHandler(getHandlersForSide(side))));
+            lazyOptionals.put(side, LazyOptional.of(() -> new MultiTankCapabilityHandler<>(getHandlersForSide(side))));
         }
     }
 
-    private List<PosFluidTank> getHandlersForSide(FacingUtil.Sideness sideness) {
+    private List<FluidTankComponent<T>> getHandlersForSide(FacingUtil.Sideness sideness) {
         if (sideness == null) {
             return new ArrayList<>(tanks);
         }
-        List<PosFluidTank> handlers = new ArrayList<>();
-        for (PosFluidTank tankHandler : tanks) {
-            if (tankHandler instanceof IFacingHandler) {
-                if (((IFacingHandler) tankHandler).getFacingModes().containsKey(sideness) && ((IFacingHandler) tankHandler).getFacingModes().get(sideness).allowsConnection()) {
+        List<FluidTankComponent<T>> handlers = new ArrayList<>();
+        for (FluidTankComponent<T> tankHandler : tanks) {
+            if (tankHandler instanceof IFacingComponent) {
+                if (((IFacingComponent) tankHandler).getFacingModes().containsKey(sideness) &&
+                        ((IFacingComponent) tankHandler).getFacingModes().get(sideness).allowsConnection()) {
                     handlers.add(tankHandler);
                 }
             } else {
@@ -68,15 +71,15 @@ public class MultiTankHandler implements IGuiAddonProvider, ICapabilityHolder<Po
 
     @Nonnull
     @Override
-    public LazyOptional<MultiTankCapabilityHandler> getCapabilityForSide(@Nullable FacingUtil.Sideness sideness) {
+    public LazyOptional<MultiTankCapabilityHandler<T>> getCapabilityForSide(@Nullable FacingUtil.Sideness sideness) {
         return lazyOptionals.get(sideness);
     }
 
     @Override
-    public boolean handleFacingChange(String handlerName, FacingUtil.Sideness facing, IFacingHandler.FaceMode mode) {
-        for (PosFluidTank tankHandler : tanks) {
-            if (tankHandler.getName().equals(handlerName) && tankHandler instanceof IFacingHandler) {
-                ((IFacingHandler) tankHandler).getFacingModes().put(facing, mode);
+    public boolean handleFacingChange(String handlerName, FacingUtil.Sideness facing, IFacingComponent.FaceMode mode) {
+        for (FluidTankComponent<T> tankHandler : tanks) {
+            if (tankHandler.getName().equals(handlerName) && tankHandler instanceof IFacingComponent) {
+                ((IFacingComponent) tankHandler).getFacingModes().put(facing, mode);
                 rebuildCapability(new FacingUtil.Sideness[]{facing});
                 return true;
             }
@@ -84,24 +87,24 @@ public class MultiTankHandler implements IGuiAddonProvider, ICapabilityHolder<Po
         return false;
     }
 
-    public HashSet<PosFluidTank> getTanks() {
+    public HashSet<FluidTankComponent<T>> getTanks() {
         return tanks;
     }
 
     @Override
     public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
         List<IFactory<? extends IGuiAddon>> addons = new ArrayList<>();
-        for (PosFluidTank tank : tanks) {
+        for (FluidTankComponent<T> tank : tanks) {
             addons.addAll(tank.getGuiAddons());
         }
         return addons;
     }
 
-    public static class MultiTankCapabilityHandler implements IFluidHandler {
+    public static class MultiTankCapabilityHandler<T extends IComponentHarness> implements IFluidHandler {
 
-        private final List<PosFluidTank> tanks;
+        private final List<FluidTankComponent<T>> tanks;
 
-        public MultiTankCapabilityHandler(List<PosFluidTank> tanks) {
+        public MultiTankCapabilityHandler(List<FluidTankComponent<T>> tanks) {
             this.tanks = tanks;
         }
 
@@ -132,9 +135,10 @@ public class MultiTankHandler implements IGuiAddonProvider, ICapabilityHolder<Po
 
         @Override
         public int fill(FluidStack resource, FluidAction action) {
-            for (PosFluidTank tank : tanks) {
-                if (tank.fill(resource, FluidAction.SIMULATE) != 0)
+            for (FluidTankComponent<T> tank : tanks) {
+                if (tank.fill(resource, FluidAction.SIMULATE) != 0) {
                     return tank.fill(resource, action);
+                }
             }
             return 0;
         }
@@ -142,9 +146,10 @@ public class MultiTankHandler implements IGuiAddonProvider, ICapabilityHolder<Po
         @Nonnull
         @Override
         public FluidStack drain(FluidStack resource, FluidAction action) {
-            for (PosFluidTank tank : tanks) {
-                if (!tank.drain(resource, FluidAction.SIMULATE).isEmpty())
+            for (FluidTankComponent<T> tank : tanks) {
+                if (!tank.drain(resource, FluidAction.SIMULATE).isEmpty()) {
                     return tank.drain(resource, action);
+                }
             }
             return FluidStack.EMPTY;
         }
@@ -152,9 +157,10 @@ public class MultiTankHandler implements IGuiAddonProvider, ICapabilityHolder<Po
         @Nonnull
         @Override
         public FluidStack drain(int maxDrain, FluidAction action) {
-            for (PosFluidTank tank : tanks) {
-                if (!tank.drain(maxDrain, FluidAction.SIMULATE).isEmpty())
+            for (FluidTankComponent<T> tank : tanks) {
+                if (!tank.drain(maxDrain, FluidAction.SIMULATE).isEmpty()) {
                     return tank.drain(maxDrain, action);
+                }
             }
             return FluidStack.EMPTY;
         }

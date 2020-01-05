@@ -11,18 +11,19 @@ import com.hrznstudio.titanium._impl.test.BlockMachine;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.filter.FilterSlot;
 import com.hrznstudio.titanium.block.tile.TileMachine;
-import com.hrznstudio.titanium.filter.ItemstackFilter;
+import com.hrznstudio.titanium.filter.ItemStackFilter;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 
-public class TileMachineTest extends TileMachine {
+import javax.annotation.Nonnull;
 
+public class TileMachineTest extends TileMachine<TileMachineTest> {
     @Save
-    private ItemstackFilter filter;
+    private ItemStackFilter filter;
 
     public TileMachineTest() {
         super(BlockMachine.TEST);
-        addFilter(this.filter = new ItemstackFilter("filter", 12));
+        addFilter(this.filter = new ItemStackFilter("filter", 12));
         int pos = 0;
         for (int y = 0; y < 4; y++) {
             for (int x = 0; x < 3; x++) {
@@ -32,5 +33,11 @@ public class TileMachineTest extends TileMachine {
                 ++pos;
             }
         }
+    }
+
+    @Nonnull
+    @Override
+    public TileMachineTest getSelf() {
+        return this;
     }
 }
