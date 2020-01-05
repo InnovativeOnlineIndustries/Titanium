@@ -36,6 +36,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,19 +44,19 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-public abstract class BlockBase extends Block implements IAlternativeEntries, IRecipeProvider {
+public abstract class BasicBlock extends Block implements IAlternativeEntries, IRecipeProvider {
 
-    public static List<BlockBase> BLOCKS = new ArrayList<>();
+    public static List<BasicBlock> BLOCKS = new ArrayList<>();
 
     private ItemGroup itemGroup = ItemGroup.SEARCH;
     private BlockItem item;
 
-    public BlockBase(Properties properties) {
+    public BasicBlock(Properties properties) {
         super(properties);
         BLOCKS.add(this);
     }
 
-    public BlockBase(String name, Properties properties) {
+    public BasicBlock(String name, Properties properties) {
         super(properties);
         setRegistryName(name);
         BLOCKS.add(this);
@@ -63,10 +64,10 @@ public abstract class BlockBase extends Block implements IAlternativeEntries, IR
 
     @Nullable
     protected static DistanceRayTraceResult rayTraceBox(BlockPos pos, Vec3d start, Vec3d end, VoxelShape shape) {
-        RayTraceResult bbResult = shape.rayTrace(start, end, pos);
+        BlockRayTraceResult bbResult = shape.rayTrace(start, end, pos);
         if (bbResult != null) {
             Vec3d hitVec = bbResult.getHitVec();
-            Direction sideHit = ((BlockRayTraceResult) bbResult).getFace();
+            Direction sideHit = bbResult.getFace();
             double dist = start.distanceTo(hitVec);
             return new DistanceRayTraceResult(hitVec, sideHit, pos, shape, dist);
         }
@@ -74,6 +75,7 @@ public abstract class BlockBase extends Block implements IAlternativeEntries, IR
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public float getBlockHardness(BlockState blockState, IBlockReader worldIn, BlockPos pos) {
         return 1.5F;
     }
@@ -88,19 +90,17 @@ public abstract class BlockBase extends Block implements IAlternativeEntries, IR
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext selectionContext) {
-        if (hasCustomBoxes(state, worldIn, pos)) {
-            VoxelShape shape = null;
-            for (VoxelShape shape1 : getBoundingBoxes(state, worldIn, pos)) {
-                if (shape == null) {
-                    shape = shape1;
-                } else {
-                    shape = VoxelShapes.combineAndSimplify(shape, shape1, IBooleanFunction.OR);
-                }
+    @Nonnull
+    @SuppressWarnings("deprecation")
+    public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext selectionContext) {
+        if (hasCustomBoxes(state, world, pos)) {
+            VoxelShape shape = VoxelShapes.empty();
+            for (VoxelShape shape1 : getBoundingBoxes(state, world, pos)) {
+                shape = VoxelShapes.combineAndSimplify(shape, shape1, IBooleanFunction.OR);
             }
             return shape;
         }
-        return super.getCollisionShape(state, worldIn, pos, selectionContext);
+        return super.getCollisionShape(state, world, pos, selectionContext);
     }
 
     public IFactory<BlockItem> getItemBlockFactory() {
@@ -108,11 +108,12 @@ public abstract class BlockBase extends Block implements IAlternativeEntries, IR
     }
 
     @Override
-    public void addAlternatives(RegistryManager registry) {
+    public void addAlternatives(RegistryManager<?> registry) {
         registry.content(Item.class, item = getItemBlockFactory().create());
     }
 
     @Override
+    @Nonnull
     public Item asItem() {
         return item;
     }
@@ -162,6 +163,7 @@ public abstract class BlockBase extends Block implements IAlternativeEntries, IR
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
         if (state.getBlock() != newState.getBlock()) {
             InventoryHelper.dropItems(worldIn, pos, getDynamicDrops(state, worldIn, pos, newState, isMoving));
@@ -187,7 +189,7 @@ public abstract class BlockBase extends Block implements IAlternativeEntries, IR
         return false;
     }
 
-    public void createLootTable(TitaniumLootTableProvider provider) {
+    public void createLootTable(@Nonnull TitaniumLootTableProvider provider) {
         provider.createSimple(this);
     }
 

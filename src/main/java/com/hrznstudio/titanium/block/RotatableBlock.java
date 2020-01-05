@@ -7,7 +7,7 @@
 
 package com.hrznstudio.titanium.block;
 
-import com.hrznstudio.titanium.block.tile.TileBase;
+import com.hrznstudio.titanium.block.tile.BasicTile;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItemUseContext;
@@ -18,11 +18,15 @@ import net.minecraft.util.Direction;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public abstract class BlockRotation<T extends TileBase> extends BlockTileBase<T> {
+public abstract class RotatableBlock<T extends BasicTile<T>> extends BasicTileBlock<T> {
     public static final DirectionProperty FACING_ALL = DirectionProperty.create("facing", Direction.values());
     public static final DirectionProperty FACING_HORIZONTAL = DirectionProperty.create("subfacing", Direction.Plane.HORIZONTAL);
 
-    public BlockRotation(String name, Properties properties, Class<T> tileClass) {
+    public RotatableBlock(Properties properties, Class<T> tileClass) {
+        super(properties, tileClass);
+    }
+
+    public RotatableBlock(String name, Properties properties, Class<T> tileClass) {
         super(name, properties, tileClass);
     }
 

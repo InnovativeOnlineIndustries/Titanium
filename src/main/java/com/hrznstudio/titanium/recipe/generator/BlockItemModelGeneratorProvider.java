@@ -10,7 +10,7 @@ package com.hrznstudio.titanium.recipe.generator;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import com.hrznstudio.titanium.block.BlockBase;
+import com.hrznstudio.titanium.block.BasicBlock;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DirectoryCache;
@@ -18,6 +18,7 @@ import net.minecraft.data.IDataProvider;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nonnull;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -42,11 +43,11 @@ public class BlockItemModelGeneratorProvider implements IDataProvider {
     }
 
     @Override
-    public void act(DirectoryCache cache) throws IOException {
+    public void act(@Nonnull DirectoryCache cache) throws IOException {
         Path path = this.generator.getOutputFolder();
         Path output = path.resolve("assets/" + modid + "/models/item/");
         Files.createDirectories(output);
-        BlockBase.BLOCKS.stream().filter(blockBase -> blockBase.getRegistryName().getNamespace().equals(modid)).forEach(blockBase -> {
+        BasicBlock.BLOCKS.stream().filter(basicBlock -> basicBlock.getRegistryName().getNamespace().equals(modid)).forEach(blockBase -> {
             try {
                 try (BufferedWriter bufferedwriter = Files.newBufferedWriter(output.resolve(blockBase.getRegistryName().getPath() + ".json"))) {
                     bufferedwriter.write(GSON.toJson(createModel(blockBase)));
@@ -58,6 +59,7 @@ public class BlockItemModelGeneratorProvider implements IDataProvider {
     }
 
     @Override
+    @Nonnull
     public String getName() {
         return "Block Model Item Generator (" + modid + ")";
     }

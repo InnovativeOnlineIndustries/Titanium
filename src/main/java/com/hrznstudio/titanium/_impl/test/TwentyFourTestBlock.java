@@ -7,37 +7,31 @@
 
 package com.hrznstudio.titanium._impl.test;
 
-import com.hrznstudio.titanium._impl.test.tile.TileTest;
-import com.hrznstudio.titanium.annotation.config.ConfigFile;
-import com.hrznstudio.titanium.annotation.config.ConfigVal;
+import com.hrznstudio.titanium._impl.test.tile.TwentyFourTestTile;
 import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.block.BlockRotation;
+import com.hrznstudio.titanium.block.RotatableBlock;
 import com.hrznstudio.titanium.recipe.generator.TitaniumLootTableProvider;
 import net.minecraft.block.material.Material;
 
 import javax.annotation.Nonnull;
 
-@ConfigFile.Child(TitaniumConfig.class)
-public class BlockTest extends BlockRotation<TileTest> {
+public class TwentyFourTestBlock extends RotatableBlock<TwentyFourTestTile> {
 
-    @ConfigVal
-    public static int DUMB_VALUE = 135;
+    public static TwentyFourTestBlock TEST;
 
-    public static BlockTest TEST;
-
-    public BlockTest() {
-        super("block_test", Properties.create(Material.ROCK), TileTest.class);
+    public TwentyFourTestBlock() {
+        super("block_twenty_four_test", Properties.create(Material.ROCK), TwentyFourTestTile.class);
     }
 
     @Override
-    public IFactory<TileTest> getTileEntityFactory() {
-        return TileTest::new;
+    public IFactory<TwentyFourTestTile> getTileEntityFactory() {
+        return TwentyFourTestTile::new;
     }
 
     @Nonnull
     @Override
     public RotationType getRotationType() {
-        return RotationType.FOUR_WAY;
+        return RotationType.TWENTY_FOUR_WAY;
     }
 
     @Override

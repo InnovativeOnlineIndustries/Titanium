@@ -10,7 +10,7 @@ package com.hrznstudio.titanium.item;
 import com.hrznstudio.titanium.api.augment.IAugment;
 import com.hrznstudio.titanium.api.augment.IAugmentType;
 
-public abstract class ItemAugment extends ItemBase implements IAugment {
+public abstract class ItemAugment extends BasicItem implements IAugment {
     private IAugmentType type;
 
     public ItemAugment(String name, Properties properties, IAugmentType type) {

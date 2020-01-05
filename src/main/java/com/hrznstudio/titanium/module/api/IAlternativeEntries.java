@@ -8,6 +8,6 @@
 package com.hrznstudio.titanium.module.api;
 
 public interface IAlternativeEntries {
-    void addAlternatives(RegistryManager registry);
+    void addAlternatives(RegistryManager<?> registry);
 
 }

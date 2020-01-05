@@ -7,22 +7,22 @@
 
 package com.hrznstudio.titanium._impl.test.tile;
 
-import com.hrznstudio.titanium._impl.test.BlockMachine;
+import com.hrznstudio.titanium._impl.test.MachineTestBlock;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.filter.FilterSlot;
-import com.hrznstudio.titanium.block.tile.TileMachine;
+import com.hrznstudio.titanium.block.tile.MachineTile;
 import com.hrznstudio.titanium.filter.ItemStackFilter;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
-public class TileMachineTest extends TileMachine<TileMachineTest> {
+public class MachineTestTile extends MachineTile<MachineTestTile> {
     @Save
     private ItemStackFilter filter;
 
-    public TileMachineTest() {
-        super(BlockMachine.TEST);
+    public MachineTestTile() {
+        super(MachineTestBlock.TEST);
         addFilter(this.filter = new ItemStackFilter("filter", 12));
         int pos = 0;
         for (int y = 0; y < 4; y++) {
@@ -37,7 +37,7 @@ public class TileMachineTest extends TileMachine<TileMachineTest> {
 
     @Nonnull
     @Override
-    public TileMachineTest getSelf() {
+    public MachineTestTile getSelf() {
         return this;
     }
 }

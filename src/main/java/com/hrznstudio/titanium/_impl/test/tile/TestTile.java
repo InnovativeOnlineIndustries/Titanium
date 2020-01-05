@@ -7,13 +7,13 @@
 
 package com.hrznstudio.titanium._impl.test.tile;
 
-import com.hrznstudio.titanium._impl.test.BlockTest;
+import com.hrznstudio.titanium._impl.test.TestBlock;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.IItemStackQuery;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
-import com.hrznstudio.titanium.block.tile.TilePowered;
+import com.hrznstudio.titanium.block.tile.PoweredTile;
 import com.hrznstudio.titanium.component.button.ButtonComponent;
 import com.hrznstudio.titanium.component.fluid.FluidTankComponent;
 import com.hrznstudio.titanium.component.inventory.SidedInventoryComponent;
@@ -33,31 +33,31 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public class TileTest extends TilePowered<TileTest> {
+public class TestTile extends PoweredTile<TestTile> {
 
     @Save
-    private ProgressBarComponent<TileTest> bar;
+    private ProgressBarComponent<TestTile> bar;
     @Save
-    private SidedInventoryComponent<TileTest> first;
+    private SidedInventoryComponent<TestTile> first;
     @Save
-    private SidedInventoryComponent<TileTest> second;
+    private SidedInventoryComponent<TestTile> second;
     @Save
-    private FluidTankComponent<TileTest> third;
+    private FluidTankComponent<TestTile> third;
 
     private ButtonComponent button;
     @Save
     private int state;
 
-    public TileTest() {
-        super(BlockTest.TEST);
-        this.addInventory(first = (SidedInventoryComponent<TileTest>) new SidedInventoryComponent<TileTest>("test", 80, 60, 1, 0)
+    public TestTile() {
+        super(TestBlock.TEST);
+        this.addInventory(first = (SidedInventoryComponent<TestTile>) new SidedInventoryComponent<TestTile>("test", 80, 60, 1, 0)
                 .setComponentHarness(this)
                 .setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
-        this.addInventory(second = (SidedInventoryComponent<TileTest>) new SidedInventoryComponent<TileTest>("test2", 80, 30, 1, 1)
+        this.addInventory(second = (SidedInventoryComponent<TestTile>) new SidedInventoryComponent<TestTile>("test2", 80, 30, 1, 1)
                 .setComponentHarness(this)
                 .setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
         this.addGuiAddonFactory(() -> new EnergyBarGuiAddon(4, 10, getEnergyStorage()));
-        this.addProgressBar(bar = new ProgressBarComponent<TileTest>(40, 20, 500)
+        this.addProgressBar(bar = new ProgressBarComponent<TestTile>(40, 20, 500)
                 .setCanIncrease(tileEntity -> true)
                 .setOnFinishWork(() -> System.out.println("WOWOOW"))
                 .setBarDirection(ProgressBarComponent.BarDirection.HORIZONTAL_RIGHT)
@@ -93,7 +93,7 @@ public class TileTest extends TilePowered<TileTest> {
 
     @Override
     @Nonnull
-    public TileTest getSelf() {
+    public TestTile getSelf() {
         return this;
     }
 
