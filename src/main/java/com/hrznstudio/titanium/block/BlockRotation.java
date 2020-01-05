@@ -19,8 +19,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public abstract class BlockRotation<T extends TileBase> extends BlockTileBase<T> {
-    public static final DirectionProperty FACING = DirectionProperty.create("facing", Direction.values());
-    public static final DirectionProperty SUB_FACING = DirectionProperty.create("subfacing", Direction.Plane.HORIZONTAL);
+    public static final DirectionProperty FACING_ALL = DirectionProperty.create("facing", Direction.values());
+    public static final DirectionProperty FACING_HORIZONTAL = DirectionProperty.create("subfacing", Direction.Plane.HORIZONTAL);
 
     public BlockRotation(String name, Properties properties, Class<T> tileClass) {
         super(name, properties, tileClass);
@@ -45,12 +45,12 @@ public abstract class BlockRotation<T extends TileBase> extends BlockTileBase<T>
 
     public enum RotationType {
         NONE((block, context) -> block.getDefaultState()),
-        FOUR_WAY(((block, context) -> block.getDefaultState().with(FACING, context.getPlacementHorizontalFacing().getOpposite())), FACING),
-        SIX_WAY((block, context) -> block.getDefaultState().with(FACING, context.getNearestLookingDirection().getOpposite()), FACING),
+        FOUR_WAY(((block, context) -> block.getDefaultState().with(FACING_HORIZONTAL, context.getPlacementHorizontalFacing().getOpposite())), FACING_HORIZONTAL),
+        SIX_WAY((block, context) -> block.getDefaultState().with(FACING_ALL, context.getNearestLookingDirection().getOpposite()), FACING_ALL),
         TWENTY_FOUR_WAY((block, context) -> {
             //TODO: Sub facing
-            return block.getDefaultState().with(FACING, context.getNearestLookingDirection());
-        }, FACING, SUB_FACING);
+            return block.getDefaultState().with(FACING_ALL, context.getNearestLookingDirection());
+        }, FACING_ALL, FACING_HORIZONTAL);
 
         private final RotationHandler handler;
         private final DirectionProperty[] properties;
