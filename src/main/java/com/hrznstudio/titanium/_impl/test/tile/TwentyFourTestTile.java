@@ -7,11 +7,10 @@
 
 package com.hrznstudio.titanium._impl.test.tile;
 
-import com.hrznstudio.titanium._impl.test.BlockTwentyFourTest;
+import com.hrznstudio.titanium._impl.test.TwentyFourTestBlock;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.IItemStackQuery;
-import com.hrznstudio.titanium.block.tile.TileActive;
-import com.hrznstudio.titanium.block.tile.TilePowered;
+import com.hrznstudio.titanium.block.tile.PoweredTile;
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
 import com.hrznstudio.titanium.client.gui.addon.EnergyBarGuiAddon;
@@ -23,31 +22,31 @@ import net.minecraft.util.Hand;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-public class TileTwentyFourTest extends TilePowered<TileTwentyFourTest> implements ITickableTileEntity {
+public class TwentyFourTestTile extends PoweredTile<TwentyFourTestTile> implements ITickableTileEntity {
 
     @Save
-    private ProgressBarComponent<TileTwentyFourTest> bar;
+    private ProgressBarComponent<TwentyFourTestTile> bar;
     @Save
-    private InventoryComponent<TileTwentyFourTest> first;
+    private InventoryComponent<TwentyFourTestTile> first;
     @Save
-    private InventoryComponent<TileTwentyFourTest> second;
+    private InventoryComponent<TwentyFourTestTile> second;
     @Save
-    private InventoryComponent<TileTwentyFourTest> third;
+    private InventoryComponent<TwentyFourTestTile> third;
 
-    public TileTwentyFourTest() {
-        super(BlockTwentyFourTest.TEST);
+    public TwentyFourTestTile() {
+        super(TwentyFourTestBlock.TEST);
 
-        this.addInventory(first = new InventoryComponent<TileTwentyFourTest>("test", -120, 20, 1)
+        this.addInventory(first = new InventoryComponent<TwentyFourTestTile>("test", -120, 20, 1)
                 .setComponentHarness(this)
                 .setInputFilter(IItemStackQuery.ANYTHING.toSlotFilter()));
-        this.addInventory(second = new InventoryComponent<TileTwentyFourTest>("test2", 80, 30, 1)
+        this.addInventory(second = new InventoryComponent<TwentyFourTestTile>("test2", 80, 30, 1)
                 .setComponentHarness(this)
                 .setInputFilter(IItemStackQuery.ANYTHING.toSlotFilter()));
         this.addGuiAddonFactory(() -> new EnergyBarGuiAddon(4, 10, getEnergyStorage()));
-        this.addProgressBar(bar = new ProgressBarComponent<TileTwentyFourTest>(20, 20, 500)
+        this.addProgressBar(bar = new ProgressBarComponent<TwentyFourTestTile>(20, 20, 500)
                 .setCanIncrease(componentHarness -> true)
                 .setOnFinishWork(() -> System.out.println("WOWOOW")));
-        this.addInventory(third = new InventoryComponent<TileTwentyFourTest>("test3", 180, 30, 1)
+        this.addInventory(third = new InventoryComponent<TwentyFourTestTile>("test3", 180, 30, 1)
                 .setComponentHarness(this)
                 .setInputFilter(IItemStackQuery.ANYTHING.toSlotFilter()));
     }
@@ -69,7 +68,7 @@ public class TileTwentyFourTest extends TilePowered<TileTwentyFourTest> implemen
     }
 
     @Override
-    public TileTwentyFourTest getSelf() {
+    public TwentyFourTestTile getSelf() {
         return this;
     }
 }

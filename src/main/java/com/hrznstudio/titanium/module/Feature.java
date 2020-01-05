@@ -23,14 +23,16 @@ import java.util.function.Supplier;
 
 public class Feature {
     private final String id;
-    private final Map<Class<? extends IForgeRegistryEntry>, List<?>> content;
-    private final List<EventManager.FilteredEventManager> events;
+    private final Map<Class<? extends IForgeRegistryEntry<?>>, List<?>> content;
+    private final List<EventManager.FilteredEventManager<?>> events;
     private final boolean forced;
     private final boolean enabledByDefault;
     private final String description;
     private Module module;
 
-    private Feature(String id, Map<Class<? extends IForgeRegistryEntry>, List<?>> content, List<EventManager.FilteredEventManager> events, boolean forced, boolean enabledByDefault, String description) {
+    private Feature(String id, Map<Class<? extends IForgeRegistryEntry<?>>, List<?>> content,
+                    List<EventManager.FilteredEventManager<?>> events, boolean forced, boolean enabledByDefault,
+                    String description) {
         this.id = id;
         this.content = content;
         this.events = events;
@@ -82,8 +84,8 @@ public class Feature {
 
     public final static class Builder implements RegistryManager<Builder> {
         private final String id;
-        private final Map<Class<? extends IForgeRegistryEntry>, List<?>> content = new LinkedHashMap<>();
-        private final List<EventManager.FilteredEventManager> events = new LinkedList<>();
+        private final Map<Class<? extends IForgeRegistryEntry<?>>, List<?>> content = new LinkedHashMap<>();
+        private final List<EventManager.FilteredEventManager<?>> events = new LinkedList<>();
         private boolean forced;
         private boolean enabledByDefault = true;
         private String description;
@@ -99,12 +101,12 @@ public class Feature {
             return this;
         }
 
-        public Builder event(EventManager.FilteredEventManager manager) {
+        public Builder event(EventManager.FilteredEventManager<?> manager) {
             events.add(manager);
             return this;
         }
 
-        public Builder eventClient(Supplier<Supplier<EventManager.FilteredEventManager>> managerSupplier) {
+        public Builder eventClient(Supplier<Supplier<EventManager.FilteredEventManager<?>>> managerSupplier) {
             SidedHandler.runOn(Dist.CLIENT, () -> () -> events.add(managerSupplier.get().get()));
             return this;
         }

@@ -24,19 +24,19 @@ import java.util.List;
 
 //import net.minecraft.util.text.TextFormatting;
 
-public class ItemEnergy extends ItemBase {
+public class EnergyItem extends BasicItem {
     private final int capacity;
     private final int input;
     private final int output;
 
-    public ItemEnergy(String name, int capacity, int input, int output, Properties properties) {
+    public EnergyItem(String name, int capacity, int input, int output, Properties properties) {
         super(name, properties.maxStackSize(1));
         this.capacity = capacity;
         this.input = input;
         this.output = output;
     }
 
-    public ItemEnergy(String name, Properties properties, int capacity, int throughput) {
+    public EnergyItem(String name, Properties properties, int capacity, int throughput) {
         this(name, capacity, throughput, throughput, properties);
     }
 
@@ -58,7 +58,7 @@ public class ItemEnergy extends ItemBase {
     }
 
     @Override
-    public void addTooltipDetails(@Nullable Key key, ItemStack stack, List<ITextComponent> tooltip, boolean advanced) {
+    public void addTooltipDetails(@Nullable Key key, @Nonnull ItemStack stack, @Nonnull List<ITextComponent> tooltip, boolean advanced) {
         super.addTooltipDetails(key, stack, tooltip, advanced);
         if (key == Key.SHIFT) {
             //getEnergyStorage(stack).ifPresent(storage -> tooltip.add(new TextComponentString(TextFormatting.YELLOW + "Energy: " + TextFormatting.RED + storage.getEnergyStored() + TextFormatting.YELLOW + "/" + TextFormatting.RED + storage.getMaxEnergyStored() + TextFormatting.RESET))); TODO

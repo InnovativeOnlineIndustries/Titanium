@@ -25,14 +25,16 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
-//import net.minecraft.util.text.TextFormatting;
-
 @ParametersAreNonnullByDefault
-public class ItemBase extends Item {
+public class BasicItem extends Item {
 
     private ItemGroup itemGroup = ItemGroup.SEARCH;
 
-    public ItemBase(String name, Properties properties) {
+    public BasicItem(Properties properties) {
+        super(properties);
+    }
+
+    public BasicItem(String name, Properties properties) {
         super(properties);
         setRegistryName(name);
     }

@@ -7,7 +7,7 @@
 
 package com.hrznstudio.titanium.container.impl;
 
-import com.hrznstudio.titanium.block.tile.TileActive;
+import com.hrznstudio.titanium.block.tile.ActiveTile;
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.hrznstudio.titanium.network.locator.ILocatable;
 import com.hrznstudio.titanium.network.locator.LocatorInstance;
@@ -22,7 +22,7 @@ import net.minecraftforge.registries.ObjectHolder;
 
 import javax.annotation.Nonnull;
 
-public class ContainerTileBase<T extends TileActive<T>> extends ContainerInventoryBase implements ILocatable {
+public class ContainerTileBase<T extends ActiveTile<T>> extends ContainerInventoryBase implements ILocatable {
 
     @ObjectHolder("titanium:tile_container")
     public static ContainerType<ContainerTileBase<?>> TYPE;

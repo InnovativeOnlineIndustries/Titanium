@@ -13,10 +13,8 @@ import com.hrznstudio.titanium.api.client.IAssetType;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
 import com.hrznstudio.titanium.api.client.assets.types.ITankAsset;
-import com.hrznstudio.titanium.block.tile.TileBase;
 import com.hrznstudio.titanium.client.gui.addon.TankGuiAddon;
 import com.hrznstudio.titanium.component.IComponentHarness;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 

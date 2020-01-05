@@ -7,13 +7,13 @@
 
 package com.hrznstudio.titanium;
 
-import com.hrznstudio.titanium._impl.creative.BlockCreativeFEGenerator;
-import com.hrznstudio.titanium._impl.test.BlockAssetTest;
-import com.hrznstudio.titanium._impl.test.BlockMachine;
-import com.hrznstudio.titanium._impl.test.BlockTest;
-import com.hrznstudio.titanium._impl.test.BlockTwentyFourTest;
+import com.hrznstudio.titanium._impl.creative.CreativeFEGeneratorBlock;
+import com.hrznstudio.titanium._impl.test.AssetTestBlock;
+import com.hrznstudio.titanium._impl.test.MachineTestBlock;
+import com.hrznstudio.titanium._impl.test.TestBlock;
+import com.hrznstudio.titanium._impl.test.TwentyFourTestBlock;
 import com.hrznstudio.titanium._impl.test.recipe.TestSerializableRecipe;
-import com.hrznstudio.titanium.block.tile.TileActive;
+import com.hrznstudio.titanium.block.tile.ActiveTile;
 import com.hrznstudio.titanium.client.gui.container.GuiContainerTileBase;
 import com.hrznstudio.titanium.command.RewardCommand;
 import com.hrznstudio.titanium.command.RewardGrantCommand;
@@ -91,7 +91,7 @@ public class Titanium extends ModuleController {
         EventManager.forge(FMLServerStartingEvent.class).process(this::onServerStart).subscribe();
     }
 
-    public static void openGui(TileActive tile, ServerPlayerEntity player) {
+    public static void openGui(ActiveTile tile, ServerPlayerEntity player) {
         NetworkHooks.openGui(player, tile, tile.getPos());
     }
 
@@ -129,10 +129,10 @@ public class Titanium extends ModuleController {
                 .description("Test module for titanium features")
                 .feature(Feature.builder("blocks")
                         .description("Adds test titanium blocks")
-                        .content(Block.class, BlockTest.TEST = new BlockTest())
-                        .content(Block.class, BlockTwentyFourTest.TEST = new BlockTwentyFourTest())
-                        .content(Block.class, BlockAssetTest.TEST = new BlockAssetTest())
-                        .content(Block.class, BlockMachine.TEST = new BlockMachine())
+                        .content(Block.class, TestBlock.TEST = new TestBlock())
+                        .content(Block.class, TwentyFourTestBlock.TEST = new TwentyFourTestBlock())
+                        .content(Block.class, AssetTestBlock.TEST = new AssetTestBlock())
+                        .content(Block.class, MachineTestBlock.TEST = new MachineTestBlock())
                 )
                 .feature(Feature.builder("events")
                         .description("Adds test titanium events")
@@ -162,7 +162,7 @@ public class Titanium extends ModuleController {
                 .description("Creative features")
                 .feature(Feature.builder("blocks")
                         .description("Adds creative machine features")
-                        .content(Block.class, BlockCreativeFEGenerator.INSTANCE)));
+                        .content(Block.class, CreativeFEGeneratorBlock.INSTANCE)));
         ResourceRegistry.initModules(this);
     }
 

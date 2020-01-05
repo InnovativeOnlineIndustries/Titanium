@@ -12,8 +12,8 @@ import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
 import com.hrznstudio.titanium.api.filter.IFilter;
-import com.hrznstudio.titanium.block.BlockRotation;
-import com.hrznstudio.titanium.block.BlockTileBase;
+import com.hrznstudio.titanium.block.RotatableBlock;
+import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.component.button.MultiButtonComponent;
 import com.hrznstudio.titanium.component.button.ButtonComponent;
 import com.hrznstudio.titanium.component.filter.MultiFilterComponent;
@@ -58,7 +58,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class TileActive<T extends TileActive<T>> extends TileBase implements IGuiAddonProvider, ITickableTileEntity, INamedContainerProvider,
+public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> implements IGuiAddonProvider, ITickableTileEntity, INamedContainerProvider,
         IButtonHandler, IComponentHarness {
 
     private MultiInventoryComponent<T> multiInventoryComponent;
@@ -69,7 +69,7 @@ public abstract class TileActive<T extends TileActive<T>> extends TileBase imple
 
     private List<IFactory<? extends IGuiAddon>> guiAddons;
 
-    public TileActive(BlockTileBase base) {
+    public ActiveTile(BasicTileBlock<T> base) {
         super(base);
         this.guiAddons = new ArrayList<>();
     }
@@ -103,7 +103,7 @@ public abstract class TileActive<T extends TileActive<T>> extends TileBase imple
     @Override
     @Nonnull
     public ITextComponent getDisplayName() {
-        return new TranslationTextComponent(getBlockTileBase().getTranslationKey()).setStyle(new Style().setColor(TextFormatting.DARK_GRAY));
+        return new TranslationTextComponent(getBasicTileBlock().getTranslationKey()).setStyle(new Style().setColor(TextFormatting.DARK_GRAY));
     }
 
     /*
@@ -142,7 +142,7 @@ public abstract class TileActive<T extends TileActive<T>> extends TileBase imple
 
     @Nonnull
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+    public <U> LazyOptional<U> getCapability(@Nonnull Capability<U> cap, @Nullable Direction side) {
         if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && multiInventoryComponent != null) {
             return multiInventoryComponent.getCapabilityForSide(FacingUtil.getFacingRelative(this.getFacingDirection(), side)).cast();
         }
@@ -217,7 +217,7 @@ public abstract class TileActive<T extends TileActive<T>> extends TileBase imple
     }
 
     public Direction getFacingDirection() {
-        return this.world.getBlockState(pos).has(BlockRotation.FACING_ALL) ? this.world.getBlockState(pos).get(BlockRotation.FACING_ALL) : Direction.NORTH;
+        return this.world.getBlockState(pos).has(RotatableBlock.FACING_ALL) ? this.world.getBlockState(pos).get(RotatableBlock.FACING_ALL) : Direction.NORTH;
     }
 
     public IFacingComponent getHandlerFromName(String string) {

@@ -7,11 +7,11 @@
 
 package com.hrznstudio.titanium._impl.test.tile;
 
-import com.hrznstudio.titanium._impl.test.BlockAssetTest;
+import com.hrznstudio.titanium._impl.test.AssetTestBlock;
 import com.hrznstudio.titanium._impl.test.assetsystem.NewAssetProviderTest;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.IItemStackQuery;
-import com.hrznstudio.titanium.block.tile.TilePowered;
+import com.hrznstudio.titanium.block.tile.PoweredTile;
 import com.hrznstudio.titanium.component.fluid.SidedFluidTankComponent;
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.hrznstudio.titanium.component.inventory.SidedInventoryComponent;
@@ -27,49 +27,49 @@ import net.minecraft.util.Hand;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-public class TileAssetTest extends TilePowered<TileAssetTest> implements ITickableTileEntity {
+public class AssetTestTile extends PoweredTile<AssetTestTile> implements ITickableTileEntity {
     @Save
-    private SidedInventoryComponent<TileAssetTest> inventory;
+    private SidedInventoryComponent<AssetTestTile> inventory;
     @Save
-    private InventoryComponent<TileAssetTest> recipe;
+    private InventoryComponent<AssetTestTile> recipe;
     @Save
-    private InventoryComponent<TileAssetTest> fakeOutput;
+    private InventoryComponent<AssetTestTile> fakeOutput;
     @Save
-    private SidedInventoryComponent<TileAssetTest> realOutput;
+    private SidedInventoryComponent<AssetTestTile> realOutput;
     @Save
-    private InventoryComponent<TileAssetTest> randomSlot;
+    private InventoryComponent<AssetTestTile> randomSlot;
     @Save
-    private SidedInventoryComponent<TileAssetTest> fluidInput;
+    private SidedInventoryComponent<AssetTestTile> fluidInput;
     @Save
-    private ProgressBarComponent<TileAssetTest> progressBar;
+    private ProgressBarComponent<AssetTestTile> progressBar;
     @Save
-    private SidedFluidTankComponent<TileAssetTest> fluidTank;
+    private SidedFluidTankComponent<AssetTestTile> fluidTank;
 
-    public TileAssetTest() {
-        super(BlockAssetTest.TEST);
-        this.addInventory(inventory = (SidedInventoryComponent<TileAssetTest>) new SidedInventoryComponent<TileAssetTest>("inventory", 8, 88, 18, 0)
+    public AssetTestTile() {
+        super(AssetTestBlock.TEST);
+        this.addInventory(inventory = (SidedInventoryComponent<AssetTestTile>) new SidedInventoryComponent<AssetTestTile>("inventory", 8, 88, 18, 0)
                 .setFacingHandlerPos(-15, 1).setRange(9, 2)
                 .setComponentHarness(this)
                 .setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
-        this.addInventory(recipe = new InventoryComponent<TileAssetTest>("recipe", 10, 20, 9)
+        this.addInventory(recipe = new InventoryComponent<AssetTestTile>("recipe", 10, 20, 9)
                 .setRange(3, 3)
                 .setComponentHarness(this)
                 .setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
-        this.addInventory(fakeOutput = new InventoryComponent<TileAssetTest>("fake_output", 80, 51, 1)
+        this.addInventory(fakeOutput = new InventoryComponent<AssetTestTile>("fake_output", 80, 51, 1)
                 .setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
-        this.addInventory(realOutput = (SidedInventoryComponent<TileAssetTest>) new SidedInventoryComponent<TileAssetTest>("real_output", 120, 56, 1, 0)
+        this.addInventory(realOutput = (SidedInventoryComponent<AssetTestTile>) new SidedInventoryComponent<AssetTestTile>("real_output", 120, 56, 1, 0)
                 .setFacingHandlerPos(-15, 16)
                 .setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
-        this.addInventory(randomSlot = new InventoryComponent<TileAssetTest>("random_slot", 83, 20, 1)
+        this.addInventory(randomSlot = new InventoryComponent<AssetTestTile>("random_slot", 83, 20, 1)
                 .setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
-        this.addInventory(fluidInput = (SidedInventoryComponent<TileAssetTest>) new SidedInventoryComponent<TileAssetTest>("fluid_input", 119, 20, 1, 0)
+        this.addInventory(fluidInput = (SidedInventoryComponent<AssetTestTile>) new SidedInventoryComponent<AssetTestTile>("fluid_input", 119, 20, 1, 0)
                 .setFacingHandlerPos(-15, 31)
                 .setSlotLimit(1)
                 .setComponentHarness(this));
-        this.addProgressBar(progressBar = new ProgressBarComponent<TileAssetTest>(98, 50, 500)
+        this.addProgressBar(progressBar = new ProgressBarComponent<AssetTestTile>(98, 50, 500)
                 .setCanIncrease(tileEntity -> true)
                 .setBarDirection(ProgressBarComponent.BarDirection.VERTICAL_UP));
-        this.addTank(fluidTank = (SidedFluidTankComponent<TileAssetTest>) new SidedFluidTankComponent<TileAssetTest>("fluid", 16000, 150, 17, 0)
+        this.addTank(fluidTank = (SidedFluidTankComponent<AssetTestTile>) new SidedFluidTankComponent<AssetTestTile>("fluid", 16000, 150, 17, 0)
                 .setFacingHandlerPos(-15, 46)
                 .setComponentHarness(this));
         inventory.setColor(DyeColor.CYAN);
@@ -85,7 +85,7 @@ public class TileAssetTest extends TilePowered<TileAssetTest> implements ITickab
 
     @Override
     @Nonnull
-    public TileAssetTest getSelf() {
+    public AssetTestTile getSelf() {
         return this;
     }
 

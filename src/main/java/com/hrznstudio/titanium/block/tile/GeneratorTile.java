@@ -9,7 +9,7 @@ package com.hrznstudio.titanium.block.tile;
 
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.block.BlockTileBase;
+import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
 import com.hrznstudio.titanium.client.gui.addon.EnergyBarGuiAddon;
 import com.hrznstudio.titanium.energy.NBTEnergyHandler;
@@ -18,13 +18,13 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.energy.CapabilityEnergy;
 
-public abstract class TileGenerator<T extends TileGenerator<T>> extends TilePowered<T> {
+public abstract class GeneratorTile<T extends GeneratorTile<T>> extends PoweredTile<T> {
 
     @Save
     private ProgressBarComponent<T> progressBar;
 
-    public TileGenerator(BlockTileBase blockTileBase) {
-        super(blockTileBase);
+    public GeneratorTile(BasicTileBlock<T> basicTileBlock) {
+        super(basicTileBlock);
         this.addGuiAddonFactory(() -> new EnergyBarGuiAddon(10, 20, getEnergyStorage()));
         this.addProgressBar(progressBar = getProgressBar()
                 .setComponentHarness(this.getSelf())

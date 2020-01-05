@@ -14,7 +14,7 @@ import com.hrznstudio.titanium.api.augment.IAugment;
 import com.hrznstudio.titanium.api.augment.IAugmentType;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
-import com.hrznstudio.titanium.block.BlockTileBase;
+import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.client.gui.addon.AssetGuiAddon;
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.hrznstudio.titanium.component.inventory.SidedInventoryComponent;
@@ -31,12 +31,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class TileMachine<T extends TileMachine<T>> extends TilePowered<T> implements IMachine {
+public abstract class MachineTile<T extends MachineTile<T>> extends PoweredTile<T> implements IMachine {
     @Save
     private SidedInventoryComponent<T> augmentInventory;
 
-    public TileMachine(BlockTileBase blockTileBase) {
-        super(blockTileBase);
+    public MachineTile(BasicTileBlock<T> basicTileBlock) {
+        super(basicTileBlock);
         addInventory(this.augmentInventory = (SidedInventoryComponent<T>) getAugmentFactory()
                 .create()
                 .setComponentHarness(this.getSelf())

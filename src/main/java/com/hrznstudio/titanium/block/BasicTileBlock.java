@@ -8,7 +8,7 @@
 package com.hrznstudio.titanium.block;
 
 import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.block.tile.TileBase;
+import com.hrznstudio.titanium.block.tile.BasicTile;
 import com.hrznstudio.titanium.module.api.RegistryManager;
 import com.hrznstudio.titanium.nbthandler.NBTManager;
 import com.hrznstudio.titanium.util.TileUtil;
@@ -25,25 +25,26 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Optional;
 
-public abstract class BlockTileBase<T extends TileBase> extends BlockBase implements ITileEntityProvider {
+public abstract class BasicTileBlock<T extends BasicTile<T>> extends BasicBlock implements ITileEntityProvider {
     private final Class<T> tileClass;
     private TileEntityType tileEntityType;
 
-    public BlockTileBase(Properties properties, Class<T> tileClass) {
+    public BasicTileBlock(Properties properties, Class<T> tileClass) {
         super(properties);
         this.tileClass = tileClass;
     }
 
-    public BlockTileBase(String name, Properties properties, Class<T> tileClass) {
+    public BasicTileBlock(String name, Properties properties, Class<T> tileClass) {
         super(name, properties);
         this.tileClass = tileClass;
     }
 
     @Override
-    public void addAlternatives(RegistryManager registry) {
+    public void addAlternatives(RegistryManager<?> registry) {
         super.addAlternatives(registry);
         NBTManager.getInstance().scanTileClassForAnnotations(tileClass);
         tileEntityType = TileEntityType.Builder.create(getTileEntityFactory()::create, this).build(null);
@@ -59,14 +60,19 @@ public abstract class BlockTileBase<T extends TileBase> extends BlockBase implem
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean p_220069_6_) {
         getTile(worldIn, pos).ifPresent(tile -> tile.onNeighborChanged(blockIn, fromPos));
     }
 
     //On Activated
     @Override
+    @Nonnull
+    @SuppressWarnings("deprecation")
     public ActionResultType func_225533_a_(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult ray) {
-        return getTile(worldIn, pos).map(tile -> tile.onActivated(player, hand, ray.getFace(), ray.getHitVec().x, ray.getHitVec().y, ray.getHitVec().z)).orElseGet(() -> super.func_225533_a_(state, worldIn, pos, player, hand, ray));
+        return getTile(worldIn, pos)
+                .map(tile -> tile.onActivated(player, hand, ray.getFace(), ray.getHitVec().x, ray.getHitVec().y, ray.getHitVec().z))
+                .orElseGet(() -> super.func_225533_a_(state, worldIn, pos, player, hand, ray));
     }
 
     @Nullable

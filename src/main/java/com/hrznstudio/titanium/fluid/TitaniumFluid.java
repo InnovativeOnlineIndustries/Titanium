@@ -24,6 +24,9 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraftforge.fluids.FluidAttributes;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 public class TitaniumFluid extends FlowingFluid {
 
     private final FluidAttributes.Builder fluidAttributes;
@@ -37,16 +40,19 @@ public class TitaniumFluid extends FlowingFluid {
     }
 
     @Override
+    @Nonnull
     public Fluid getFlowingFluid() {
         return flowingFluid;
     }
 
+    @Nonnull
     public TitaniumFluid setFlowingFluid(Fluid flowingFluid) {
         this.flowingFluid = flowingFluid;
         return this;
     }
 
     @Override
+    @Nonnull
     public Fluid getStillFluid() {
         return sourceFluid;
     }
@@ -57,34 +63,37 @@ public class TitaniumFluid extends FlowingFluid {
     }
 
     @Override
+    @ParametersAreNonnullByDefault
     protected void beforeReplacingBlock(IWorld worldIn, BlockPos pos, BlockState state) {
         // copied from the WaterFluid implementation
-        TileEntity tileentity = state.getBlock().hasTileEntity() ? worldIn.getTileEntity(pos) : null;
+        TileEntity tileentity = state.getBlock().hasTileEntity(state) ? worldIn.getTileEntity(pos) : null;
         Block.spawnDrops(state, worldIn.getWorld(), pos, tileentity);
     }
 
     @Override
-    protected int getSlopeFindDistance(IWorldReader worldIn) {
+    protected int getSlopeFindDistance(@Nonnull IWorldReader world) {
         return 4;
     }
 
     @Override
-    protected int getLevelDecreasePerBlock(IWorldReader worldIn) {
+    protected int getLevelDecreasePerBlock(@Nonnull IWorldReader world) {
         return 1;
     }
 
     @Override
+    @Nonnull
     public Item getFilledBucket() {
         return bucketFluid;
     }
 
     @Override
+    @ParametersAreNonnullByDefault
     protected boolean canDisplace(IFluidState p_215665_1_, IBlockReader p_215665_2_, BlockPos p_215665_3_, Fluid p_215665_4_, Direction p_215665_5_) {
         return p_215665_5_ == Direction.DOWN && !p_215665_4_.isIn(FluidTags.WATER);
     }
 
     @Override
-    public int getTickRate(IWorldReader p_205569_1_) {
+    public int getTickRate(@Nonnull IWorldReader p_205569_1_) {
         return 5;
     }
 
@@ -94,17 +103,18 @@ public class TitaniumFluid extends FlowingFluid {
     }
 
     @Override
-    protected BlockState getBlockState(IFluidState state) {
+    @Nonnull
+    protected BlockState getBlockState(@Nonnull IFluidState state) {
         return blockFluid.getDefaultState().with(FlowingFluidBlock.LEVEL, getLevelFromState(state));
     }
 
     @Override
-    public boolean isSource(IFluidState state) {
+    public boolean isSource(@Nonnull IFluidState state) {
         return false;
     }
 
     @Override
-    public int getLevel(IFluidState p_207192_1_) {
+    public int getLevel(@Nonnull IFluidState p_207192_1_) {
         return 0;
     }
 
@@ -118,6 +128,7 @@ public class TitaniumFluid extends FlowingFluid {
         return this;
     }
 
+    @Nonnull
     public TitaniumFluid setBucketFluid(Item bucketFluid) {
         this.bucketFluid = bucketFluid;
         return this;
@@ -129,6 +140,7 @@ public class TitaniumFluid extends FlowingFluid {
     }
 
     @Override
+    @Nonnull
     protected FluidAttributes createAttributes() {
         return fluidAttributes.build(this);
     }
@@ -149,12 +161,12 @@ public class TitaniumFluid extends FlowingFluid {
         }
 
         @Override
-        public int getLevel(IFluidState p_207192_1_) {
+        public int getLevel(@Nonnull IFluidState p_207192_1_) {
             return p_207192_1_.get(LEVEL_1_8);
         }
 
         @Override
-        public boolean isSource(IFluidState state) {
+        public boolean isSource(@Nonnull IFluidState state) {
             return false;
         }
     }
@@ -166,12 +178,12 @@ public class TitaniumFluid extends FlowingFluid {
         }
 
         @Override
-        public int getLevel(IFluidState p_207192_1_) {
+        public int getLevel(@Nonnull IFluidState p_207192_1_) {
             return 8;
         }
 
         @Override
-        public boolean isSource(IFluidState state) {
+        public boolean isSource(@Nonnull IFluidState state) {
             return true;
         }
     }
