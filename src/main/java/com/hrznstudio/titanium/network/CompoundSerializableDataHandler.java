@@ -97,11 +97,11 @@ public class CompoundSerializableDataHandler {
     }
 
     public static Biome readBiome(PacketBuffer buffer) {
-        return ForgeRegistries.BIOMES.getValue(new ResourceLocation(buffer.readString()));
+        return ForgeRegistries.BIOMES.getValue(buffer.readResourceLocation());
     }
 
     public static void writeBiome(PacketBuffer buffer, Biome biome) {
-        buffer.writeString(biome.getRegistryName().toString());
+        buffer.writeResourceLocation(biome.getRegistryName());
     }
 
     private static void writeUpdatePacket(PacketBuffer buf, SUpdateTileEntityPacket packet) {
@@ -130,7 +130,7 @@ public class CompoundSerializableDataHandler {
     public static Biome[] readBiomeArray(PacketBuffer buffer) {
         Biome[] biomes = new Biome[buffer.readInt()];
         for (int i = 0; i < biomes.length; i++) {
-            biomes[i] = ForgeRegistries.BIOMES.getValue(new ResourceLocation(buffer.readString()));
+            biomes[i] = ForgeRegistries.BIOMES.getValue(buffer.readResourceLocation());
         }
         return biomes;
     }
@@ -138,7 +138,7 @@ public class CompoundSerializableDataHandler {
     public static void writeBiomeArray(PacketBuffer buffer, Biome[] biomes) {
         buffer.writeInt(biomes.length);
         for (Biome biome : biomes) {
-            buffer.writeString(biome.getRegistryName().toString());
+            buffer.writeResourceLocation(biome.getRegistryName());
         }
     }
 
