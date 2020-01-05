@@ -12,23 +12,27 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
 import javax.annotation.Nonnull;
+import java.util.function.BooleanSupplier;
 
 public class DisableableItemHandlerSlot extends SlotItemHandler {
+    private final BooleanSupplier isDisabled;
 
-    private ContainerInventoryBase containerInventoryBase;
+    public DisableableItemHandlerSlot(IItemHandler itemHandler, int index, int xPosition, int yPosition, BasicInventoryContainer basicInventoryContainer) {
+        this(itemHandler, index, xPosition, yPosition, basicInventoryContainer::isDisabled);
+    }
 
-    public DisableableItemHandlerSlot(IItemHandler itemHandler, int index, int xPosition, int yPosition, ContainerInventoryBase containerInventoryBase) {
+    public DisableableItemHandlerSlot(IItemHandler itemHandler, int index, int xPosition, int yPosition, BooleanSupplier isDisabled) {
         super(itemHandler, index, xPosition, yPosition);
-        this.containerInventoryBase = containerInventoryBase;
+        this.isDisabled = isDisabled;
     }
 
     @Override
     public boolean isEnabled() {
-        return !containerInventoryBase.isDisabled();
+        return !isDisabled.getAsBoolean();
     }
 
     @Override
     public boolean isItemValid(@Nonnull ItemStack stack) {
-        return !containerInventoryBase.isDisabled();
+        return !isDisabled.getAsBoolean();
     }
 }

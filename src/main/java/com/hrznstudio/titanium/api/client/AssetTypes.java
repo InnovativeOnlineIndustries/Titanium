@@ -9,7 +9,7 @@ package com.hrznstudio.titanium.api.client;
 
 import com.hrznstudio.titanium.api.client.assets.types.IBackgroundAsset;
 import com.hrznstudio.titanium.api.client.assets.types.ITankAsset;
-import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
+import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 
 public class AssetTypes {
     public static final IAssetType<IAsset> BUTTON_SIDENESS_DISABLED = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);

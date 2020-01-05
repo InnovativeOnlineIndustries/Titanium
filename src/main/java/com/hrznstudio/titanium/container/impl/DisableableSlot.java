@@ -11,22 +11,27 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
+import java.util.function.BooleanSupplier;
+
 public class DisableableSlot extends Slot {
+    private final BooleanSupplier isDisabled;
 
-    private ContainerInventoryBase containerInventoryBase;
+    public DisableableSlot(IInventory inventoryIn, int index, int xPosition, int yPosition, BasicInventoryContainer basicInventoryContainer) {
+        this(inventoryIn, index, xPosition, yPosition, basicInventoryContainer::isDisabled);
+    }
 
-    public DisableableSlot(IInventory inventoryIn, int index, int xPosition, int yPosition, ContainerInventoryBase containerInventoryBase) {
+    public DisableableSlot(IInventory inventoryIn, int index, int xPosition, int yPosition, BooleanSupplier isDisabled) {
         super(inventoryIn, index, xPosition, yPosition);
-        this.containerInventoryBase = containerInventoryBase;
+        this.isDisabled = isDisabled;
     }
 
     @Override
     public boolean isEnabled() {
-        return !containerInventoryBase.isDisabled();
+        return !isDisabled.getAsBoolean();
     }
 
     @Override
     public boolean isItemValid(ItemStack stack) {
-        return !containerInventoryBase.isDisabled();
+        return !isDisabled.getAsBoolean();
     }
 }
