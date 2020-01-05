@@ -10,12 +10,12 @@ package com.hrznstudio.titanium.component.fluid;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
-import com.hrznstudio.titanium.api.client.IGuiAddon;
-import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
+import com.hrznstudio.titanium.api.client.IScreenAddon;
+import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.component.IComponentHarness;
 import com.hrznstudio.titanium.component.sideness.IFacingComponent;
 import com.hrznstudio.titanium.component.sideness.SidedComponentManager;
-import com.hrznstudio.titanium.client.gui.addon.FacingHandlerGuiAddon;
+import com.hrznstudio.titanium.client.screen.addon.FacingHandlerScreenAddon;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.item.DyeColor;
 import net.minecraft.nbt.CompoundNBT;
@@ -32,7 +32,7 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.List;
 
-public class SidedFluidTankComponent<T extends IComponentHarness> extends FluidTankComponent<T> implements IFacingComponent, IGuiAddonProvider {
+public class SidedFluidTankComponent<T extends IComponentHarness> extends FluidTankComponent<T> implements IFacingComponent, IScreenAddonProvider {
 
     private int color;
     private int facingHandlerX = 8;
@@ -143,10 +143,10 @@ public class SidedFluidTankComponent<T extends IComponentHarness> extends FluidT
     }
 
     @Override
-    public java.util.List<IFactory<? extends IGuiAddon>> getGuiAddons() {
-        List<IFactory<? extends IGuiAddon>> addons = super.getGuiAddons();
+    public java.util.List<IFactory<? extends IScreenAddon>> getScreenAddons() {
+        List<IFactory<? extends IScreenAddon>> addons = super.getScreenAddons();
         if (hasFacingAddon)
-            addons.add(() -> new FacingHandlerGuiAddon(SidedComponentManager.ofRight(getFacingHandlerX(), getFacingHandlerY(), pos, AssetTypes.BUTTON_SIDENESS_MANAGER, 4), this, getTankType().getAssetType()));
+            addons.add(() -> new FacingHandlerScreenAddon(SidedComponentManager.ofRight(getFacingHandlerX(), getFacingHandlerY(), pos, AssetTypes.BUTTON_SIDENESS_MANAGER, 4), this, getTankType().getAssetType()));
         return addons;
     }
 

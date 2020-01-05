@@ -13,7 +13,7 @@ import com.hrznstudio.titanium.api.IItemStackQuery;
 import com.hrznstudio.titanium.block.tile.PoweredTile;
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
-import com.hrznstudio.titanium.client.gui.addon.EnergyBarGuiAddon;
+import com.hrznstudio.titanium.client.screen.addon.EnergyBarScreenAddon;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.ActionResultType;
@@ -42,7 +42,7 @@ public class TwentyFourTestTile extends PoweredTile<TwentyFourTestTile> implemen
         this.addInventory(second = new InventoryComponent<TwentyFourTestTile>("test2", 80, 30, 1)
                 .setComponentHarness(this)
                 .setInputFilter(IItemStackQuery.ANYTHING.toSlotFilter()));
-        this.addGuiAddonFactory(() -> new EnergyBarGuiAddon(4, 10, getEnergyStorage()));
+        this.addGuiAddonFactory(() -> new EnergyBarScreenAddon(4, 10, getEnergyStorage()));
         this.addProgressBar(bar = new ProgressBarComponent<TwentyFourTestTile>(20, 20, 500)
                 .setCanIncrease(componentHarness -> true)
                 .setOnFinishWork(() -> System.out.println("WOWOOW")));

@@ -9,8 +9,8 @@ package com.hrznstudio.titanium.block.tile;
 
 import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.api.client.IGuiAddon;
-import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
+import com.hrznstudio.titanium.api.client.IScreenAddon;
+import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.api.filter.IFilter;
 import com.hrznstudio.titanium.block.RotatableBlock;
 import com.hrznstudio.titanium.block.BasicTileBlock;
@@ -18,7 +18,7 @@ import com.hrznstudio.titanium.component.button.MultiButtonComponent;
 import com.hrznstudio.titanium.component.button.ButtonComponent;
 import com.hrznstudio.titanium.component.filter.MultiFilterComponent;
 import com.hrznstudio.titanium.component.sideness.IFacingComponent;
-import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
+import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.component.IComponentHarness;
 import com.hrznstudio.titanium.component.fluid.MultiTankComponent;
 import com.hrznstudio.titanium.component.fluid.FluidTankComponent;
@@ -26,7 +26,7 @@ import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.hrznstudio.titanium.component.inventory.MultiInventoryComponent;
 import com.hrznstudio.titanium.component.progress.MultiProgressBarHandler;
 import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
-import com.hrznstudio.titanium.container.impl.ContainerTileBase;
+import com.hrznstudio.titanium.container.impl.BasicTileContainer;
 import com.hrznstudio.titanium.network.IButtonHandler;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.block.Block;
@@ -58,7 +58,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> implements IGuiAddonProvider, ITickableTileEntity, INamedContainerProvider,
+public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> implements IScreenAddonProvider, ITickableTileEntity, INamedContainerProvider,
         IButtonHandler, IComponentHarness {
 
     private MultiInventoryComponent<T> multiInventoryComponent;
@@ -67,7 +67,7 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
     private MultiButtonComponent multiButtonComponent;
     private MultiFilterComponent multiFilterComponent;
 
-    private List<IFactory<? extends IGuiAddon>> guiAddons;
+    private List<IFactory<? extends IScreenAddon>> guiAddons;
 
     public ActiveTile(BasicTileBlock<T> base) {
         super(base);
@@ -97,7 +97,7 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
     @Nullable
     @Override
     public Container createMenu(int menu, PlayerInventory inventoryPlayer, PlayerEntity entityPlayer) {
-        return new ContainerTileBase(this, inventoryPlayer, menu);
+        return new BasicTileContainer(this, inventoryPlayer, menu);
     }
 
     @Override
@@ -160,18 +160,18 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
         Client
      */
 
-    public void addGuiAddonFactory(IFactory<? extends IGuiAddon> factory) {
+    public void addGuiAddonFactory(IFactory<? extends IScreenAddon> factory) {
         this.guiAddons.add(factory);
     }
 
     @Override
-    public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
-        List<IFactory<? extends IGuiAddon>> addons = new ArrayList<>(guiAddons);
-        if (multiInventoryComponent != null) addons.addAll(multiInventoryComponent.getGuiAddons());
-        if (multiProgressBarHandler != null) addons.addAll(multiProgressBarHandler.getGuiAddons());
-        if (multiTankComponent != null) addons.addAll(multiTankComponent.getGuiAddons());
-        if (multiButtonComponent != null) addons.addAll(multiButtonComponent.getGuiAddons());
-        if (multiFilterComponent != null) addons.addAll(multiFilterComponent.getGuiAddons());
+    public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
+        List<IFactory<? extends IScreenAddon>> addons = new ArrayList<>(guiAddons);
+        if (multiInventoryComponent != null) addons.addAll(multiInventoryComponent.getScreenAddons());
+        if (multiProgressBarHandler != null) addons.addAll(multiProgressBarHandler.getScreenAddons());
+        if (multiTankComponent != null) addons.addAll(multiTankComponent.getScreenAddons());
+        if (multiButtonComponent != null) addons.addAll(multiButtonComponent.getScreenAddons());
+        if (multiFilterComponent != null) addons.addAll(multiFilterComponent.getScreenAddons());
         return addons;
     }
 
