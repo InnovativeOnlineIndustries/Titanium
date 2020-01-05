@@ -25,8 +25,6 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
-//import net.minecraft.util.text.TextFormatting;
-
 @ParametersAreNonnullByDefault
 public class BasicItem extends Item {
 
