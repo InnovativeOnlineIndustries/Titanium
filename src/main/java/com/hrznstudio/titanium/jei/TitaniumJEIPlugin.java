@@ -14,9 +14,12 @@ import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nonnull;
+
 @JeiPlugin
 public class TitaniumJEIPlugin implements IModPlugin {
     @Override
+    @Nonnull
     public ResourceLocation getPluginUid() {
         return new ResourceLocation(Titanium.MODID, "default");
     }

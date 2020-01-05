@@ -16,11 +16,11 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BasicContainerScreenHandler implements IGuiContainerHandler<BasicContainerScreen<?>> {
+public class BasicContainerScreenHandler implements IGuiContainerHandler<BasicContainerScreen> {
 
     @Override
     @Nonnull
-    public List<Rectangle2d> getGuiExtraAreas(BasicContainerScreen<?> containerScreen) {
+    public List<Rectangle2d> getGuiExtraAreas(BasicContainerScreen containerScreen) {
         List<Rectangle2d> rectangles = new ArrayList<>();
         for (Object o : containerScreen.getAddons()) {
             if (o instanceof BasicScreenAddon) {
