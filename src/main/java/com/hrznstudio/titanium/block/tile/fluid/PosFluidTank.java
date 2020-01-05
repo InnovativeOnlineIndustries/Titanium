@@ -59,7 +59,7 @@ public class PosFluidTank extends FluidTank implements IGuiAddonProvider {
         super.onContentsChanged();
         if (tile instanceof TileBase) {
             ((TileBase) tile).markForUpdate();
-        } else {
+        } else if (tile != null) {
             tile.markDirty();
         }
         onContentChange.run();
