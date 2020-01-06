@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ItemstackFilter implements IFilter<ItemStack> {
-
+@SuppressWarnings("unchecked")
+public class ItemStackFilter implements IFilter<ItemStack> {
     private static FilterAction<ItemStack> SIMPLE = new FilterAction<>((itemStackIFilter, stack) -> Arrays.stream(itemStackIFilter.getFilterSlots()).anyMatch(itemStackFilterSlot -> stack.isItemEqual(itemStackFilterSlot.getFilter())));
     private static FilterAction<ItemStack> IGNORE_DURABILITY = new FilterAction<>((itemStackIFilter, stack) -> Arrays.stream(itemStackIFilter.getFilterSlots()).anyMatch(itemStackFilterSlot -> stack.isItemEqualIgnoreDurability(itemStackFilterSlot.getFilter())));
     private static FilterAction<ItemStack> DURABILITY_LESS_50 = new FilterAction<>((itemStackIFilter, stack) -> Arrays.stream(itemStackIFilter.getFilterSlots()).anyMatch(itemStackFilterSlot -> stack.isItemEqual(itemStackFilterSlot.getFilter())) && stack.getDamage() < stack.getMaxDamage() / 50);
@@ -35,7 +35,7 @@ public class ItemstackFilter implements IFilter<ItemStack> {
     private int pointer;
     private String name;
 
-    public ItemstackFilter(String name, int filterSize) {
+    public ItemStackFilter(String name, int filterSize) {
         this.name = name;
         this.filter = new FilterSlot[filterSize];
         this.type = Type.WHITELIST;
@@ -54,16 +54,18 @@ public class ItemstackFilter implements IFilter<ItemStack> {
 
     @Override
     public void setFilter(int slot, ItemStack stack) {
-        if (slot < 0 || slot >= filter.length)
+        if (slot < 0 || slot >= filter.length) {
             throw new RuntimeException("Filter slot " + slot + " not in valid range - [0," + filter.length + ")");
+        }
         filter[slot].setFilter(stack);
         onContentChanged();
     }
 
     @Override
     public void setFilter(int slot, FilterSlot<ItemStack> filterSlot) {
-        if (slot < 0 || slot >= filter.length)
+        if (slot < 0 || slot >= filter.length) {
             throw new RuntimeException("Filter slot " + slot + " not in valid range - [0," + filter.length + ")");
+        }
         this.filter[slot] = filterSlot;
     }
 

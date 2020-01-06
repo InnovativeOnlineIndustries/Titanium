@@ -5,15 +5,17 @@
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
 
-package com.hrznstudio.titanium.block.tile.fluid;
+package com.hrznstudio.titanium.component.fluid;
 
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAssetType;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
+import com.hrznstudio.titanium.api.client.assets.types.ITankAsset;
 import com.hrznstudio.titanium.block.tile.TileBase;
 import com.hrznstudio.titanium.client.gui.addon.TankGuiAddon;
+import com.hrznstudio.titanium.component.IComponentHarness;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -22,17 +24,17 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PosFluidTank extends FluidTank implements IGuiAddonProvider {
+public class FluidTankComponent<T extends IComponentHarness> extends FluidTank implements IGuiAddonProvider {
 
     private final int posX;
     private final int posY;
     private String name;
-    private TileEntity tile;
+    private T componentHarness;
     private Type tankType;
     private Action tankAction;
     private Runnable onContentChange;
 
-    public PosFluidTank(String name, int amount, int posX, int posY) {
+    public FluidTankComponent(String name, int amount, int posX, int posY) {
         super(amount);
         this.posX = posX;
         this.posY = posY;
@@ -46,21 +48,19 @@ public class PosFluidTank extends FluidTank implements IGuiAddonProvider {
     /**
      * Sets the tile to be automatically marked dirty when the contents change
      *
-     * @param tile The tile where the tank is
+     * @param componentHarness The tile where the tank is
      * @return itself
      */
-    public PosFluidTank setTile(TileEntity tile) {
-        this.tile = tile;
+    public FluidTankComponent<T> setComponentHarness(T componentHarness) {
+        this.componentHarness = componentHarness;
         return this;
     }
 
     @Override
     protected void onContentsChanged() {
         super.onContentsChanged();
-        if (tile instanceof TileBase) {
-            ((TileBase) tile).markForUpdate();
-        } else {
-            tile.markDirty();
+        if (componentHarness != null) {
+            componentHarness.markForUpdate();
         }
         onContentChange.run();
     }
@@ -81,12 +81,12 @@ public class PosFluidTank extends FluidTank implements IGuiAddonProvider {
         return tankType;
     }
 
-    public PosFluidTank setTankType(Type tankType) {
+    public FluidTankComponent<T> setTankType(Type tankType) {
         this.tankType = tankType;
         return this;
     }
 
-    public PosFluidTank setOnContentChange(Runnable onContentChange) {
+    public FluidTankComponent<T> setOnContentChange(Runnable onContentChange) {
         this.onContentChange = onContentChange;
         return this;
     }
@@ -95,7 +95,7 @@ public class PosFluidTank extends FluidTank implements IGuiAddonProvider {
         return tankAction;
     }
 
-    public PosFluidTank setTankAction(Action tankAction) {
+    public FluidTankComponent<T> setTankAction(Action tankAction) {
         this.tankAction = tankAction;
         return this;
     }
@@ -158,7 +158,7 @@ public class PosFluidTank extends FluidTank implements IGuiAddonProvider {
     @Override
     public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
         List<IFactory<? extends IGuiAddon>> addons = new ArrayList<>();
-        addons.add(() -> new TankGuiAddon(this));
+        addons.add(() -> new TankGuiAddon<>(this));
         return addons;
     }
 
@@ -166,13 +166,13 @@ public class PosFluidTank extends FluidTank implements IGuiAddonProvider {
         NORMAL(AssetTypes.TANK_NORMAL),
         SMALL(AssetTypes.TANK_SMALL);
 
-        private final IAssetType assetType;
+        private final IAssetType<ITankAsset> assetType;
 
-        Type(IAssetType assetType) {
+        Type(IAssetType<ITankAsset> assetType) {
             this.assetType = assetType;
         }
 
-        public IAssetType getAssetType() {
+        public IAssetType<ITankAsset> getAssetType() {
             return assetType;
         }
     }

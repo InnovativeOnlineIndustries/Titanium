@@ -5,30 +5,31 @@
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
 
-package com.hrznstudio.titanium.block.tile.progress;
+package com.hrznstudio.titanium.component.progress;
 
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
+import com.hrznstudio.titanium.component.IComponentHarness;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MultiProgressBarHandler implements IGuiAddonProvider {
+public class MultiProgressBarHandler<T extends IComponentHarness> implements IGuiAddonProvider {
 
-    private final List<PosProgressBar> posWorkBars;
+    private final List<ProgressBarComponent<T>> posWorkBars;
 
     public MultiProgressBarHandler() {
         posWorkBars = new ArrayList<>();
     }
 
-    public void addBar(PosProgressBar bar) {
+    public void addBar(ProgressBarComponent<T> bar) {
         this.posWorkBars.add(bar);
     }
 
     public void update() {
-        for (PosProgressBar posWorkBar : posWorkBars) {
-            if (posWorkBar.getCanIncrease().test(posWorkBar.getTileBase())) {
+        for (ProgressBarComponent<T> posWorkBar : posWorkBars) {
+            if (posWorkBar.getCanIncrease().test(posWorkBar.getComponentHarness())) {
                 if (posWorkBar.getIncreaseType() && posWorkBar.getProgress() == 0) {
                     posWorkBar.onStart();
                 }
@@ -36,7 +37,7 @@ public class MultiProgressBarHandler implements IGuiAddonProvider {
                     posWorkBar.onStart();
                 }
                 posWorkBar.tickBar();
-            } else if (posWorkBar.getCanReset().test(posWorkBar.getTileBase())) {
+            } else if (posWorkBar.getCanReset().test(posWorkBar.getComponentHarness())) {
                 posWorkBar.setProgress(posWorkBar.getIncreaseType() ? 0 : posWorkBar.getMaxProgress());
             }
         }
@@ -45,7 +46,7 @@ public class MultiProgressBarHandler implements IGuiAddonProvider {
     @Override
     public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
         List<IFactory<? extends IGuiAddon>> list = new ArrayList<>();
-        for (PosProgressBar posWorkBar : posWorkBars) {
+        for (ProgressBarComponent<T> posWorkBar : posWorkBars) {
             list.addAll(posWorkBar.getGuiAddons());
         }
         return list;

@@ -5,7 +5,7 @@
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
 
-package com.hrznstudio.titanium.block.tile.button;
+package com.hrznstudio.titanium.component.button;
 
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-public class PosButton implements IGuiAddonProvider {
+public class ButtonComponent implements IGuiAddonProvider {
 
     private final int posX;
     private final int posY;
@@ -27,7 +27,7 @@ public class PosButton implements IGuiAddonProvider {
     private int id;
     private BiConsumer<PlayerEntity, CompoundNBT> serverPredicate;
 
-    public PosButton(int posX, int posY, int sizeX, int sizeY) {
+    public ButtonComponent(int posX, int posY, int sizeX, int sizeY) {
         this.posX = posX;
         this.posY = posY;
         this.sizeX = sizeX;
@@ -40,13 +40,15 @@ public class PosButton implements IGuiAddonProvider {
      * @param serverPredicate A predicate that has a NBTTagCompound with client information
      * @return itself
      */
-    public PosButton setPredicate(BiConsumer<PlayerEntity, CompoundNBT> serverPredicate) {
+    public ButtonComponent setPredicate(BiConsumer<PlayerEntity, CompoundNBT> serverPredicate) {
         this.serverPredicate = serverPredicate;
         return this;
     }
 
     public void onButtonClicked(PlayerEntity entity, CompoundNBT information) {
-        if (serverPredicate != null) serverPredicate.accept(entity, information);
+        if (serverPredicate != null) {
+            serverPredicate.accept(entity, information);
+        }
     }
 
     public int getPosX() {
@@ -69,7 +71,7 @@ public class PosButton implements IGuiAddonProvider {
         return id;
     }
 
-    public PosButton setId(int id) {
+    public ButtonComponent setId(int id) {
         this.id = id;
         return this;
     }

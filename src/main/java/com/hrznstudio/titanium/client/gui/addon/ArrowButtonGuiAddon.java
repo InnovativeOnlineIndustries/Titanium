@@ -10,7 +10,7 @@ package com.hrznstudio.titanium.client.gui.addon;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.api.client.IAssetType;
-import com.hrznstudio.titanium.block.tile.button.ArrowButton;
+import com.hrznstudio.titanium.component.button.ArrowButtonComponent;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.util.AssetUtil;
 import com.hrznstudio.titanium.util.FacingUtil;
@@ -18,10 +18,10 @@ import net.minecraft.client.gui.screen.Screen;
 
 public class ArrowButtonGuiAddon extends BasicButtonAddon {
 
-    private ArrowButton button;
+    private ArrowButtonComponent button;
     private IAsset asset;
 
-    public ArrowButtonGuiAddon(ArrowButton button) {
+    public ArrowButtonGuiAddon(ArrowButtonComponent button) {
         super(button);
         this.button = button;
     }

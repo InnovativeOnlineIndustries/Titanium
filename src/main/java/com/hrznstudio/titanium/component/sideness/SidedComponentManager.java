@@ -5,24 +5,23 @@
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
 
-package com.hrznstudio.titanium.block.tile.sideness;
+package com.hrznstudio.titanium.component.sideness;
 
 import com.hrznstudio.titanium.api.client.IAssetType;
 
-public class SidedHandlerManager {
-
+public class SidedComponentManager {
     private final int posX;
     private final int posY;
-    private final IAssetType assetType;
+    private final IAssetType<?> assetType;
 
-    public SidedHandlerManager(int posX, int posY, IAssetType assetType) {
+    public SidedComponentManager(int posX, int posY, IAssetType<?> assetType) {
         this.posX = posX;
         this.posY = posY;
         this.assetType = assetType;
     }
 
-    public static SidedHandlerManager ofRight(int x, int y, int position, IAssetType managerIconType, int padding) {
-        return new SidedHandlerManager(x + (managerIconType.getDefaultAsset().getArea().width + padding) * position, y, managerIconType);
+    public static SidedComponentManager ofRight(int x, int y, int position, IAssetType<?> managerIconType, int padding) {
+        return new SidedComponentManager(x + (managerIconType.getDefaultAsset().getArea().width + padding) * position, y, managerIconType);
     }
 
     public int getPosX() {
@@ -33,7 +32,7 @@ public class SidedHandlerManager {
         return posY;
     }
 
-    public IAssetType getAssetType() {
+    public IAssetType<?> getAssetType() {
         return assetType;
     }
 }

@@ -15,10 +15,10 @@ import com.hrznstudio.titanium.api.augment.IAugmentType;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.block.BlockTileBase;
-import com.hrznstudio.titanium.block.tile.inventory.PosInvHandler;
-import com.hrznstudio.titanium.block.tile.inventory.SidedInvHandler;
-import com.hrznstudio.titanium.block.tile.sideness.IFacingHandler;
 import com.hrznstudio.titanium.client.gui.addon.AssetGuiAddon;
+import com.hrznstudio.titanium.component.inventory.InventoryComponent;
+import com.hrznstudio.titanium.component.inventory.SidedInventoryComponent;
+import com.hrznstudio.titanium.component.sideness.IFacingComponent;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
@@ -31,17 +31,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class TileMachine extends TilePowered implements IMachine {
-
+public abstract class TileMachine<T extends TileMachine<T>> extends TilePowered<T> implements IMachine {
     @Save
-    private SidedInvHandler augmentInventory;
+    private SidedInventoryComponent<T> augmentInventory;
 
     public TileMachine(BlockTileBase blockTileBase) {
         super(blockTileBase);
-        addInventory(this.augmentInventory = (SidedInvHandler) getAugmentFactory().create().setTile(this).setInputFilter((stack, integer) -> stack.getItem() instanceof IAugment && canAcceptAugment((IAugment) stack.getItem())));
+        addInventory(this.augmentInventory = (SidedInventoryComponent<T>) getAugmentFactory()
+                .create()
+                .setComponentHarness(this.getSelf())
+                .setInputFilter((stack, integer) -> stack.getItem() instanceof IAugment && canAcceptAugment((IAugment) stack.getItem())));
         addGuiAddonFactory(getAugmentBackground());
         for (FacingUtil.Sideness value : FacingUtil.Sideness.values()) {
-            augmentInventory.getFacingModes().put(value, IFacingHandler.FaceMode.NONE);
+            augmentInventory.getFacingModes().put(value, IFacingComponent.FaceMode.NONE);
         }
     }
 
@@ -75,8 +77,11 @@ public class TileMachine extends TilePowered implements IMachine {
         return getInstalledAugments(augmentType).size() > 0;
     }
 
-    public IFactory<PosInvHandler> getAugmentFactory() {
-        return () -> new SidedInvHandler("augments", 180, 11, 4, 0).disableFacingAddon().setColor(DyeColor.PURPLE).setRange(1, 4);
+    public IFactory<InventoryComponent<T>> getAugmentFactory() {
+        return () -> new SidedInventoryComponent<T>("augments", 180, 11, 4, 0)
+                .disableFacingAddon()
+                .setColor(DyeColor.PURPLE)
+                .setRange(1, 4);
     }
 
     public IFactory<? extends IGuiAddon> getAugmentBackground() {
@@ -93,7 +98,9 @@ public class TileMachine extends TilePowered implements IMachine {
 
     @Override
     public ActionResultType onActivated(PlayerEntity playerIn, Hand hand, Direction facing, double hitX, double hitY, double hitZ) {
-        if (super.onActivated(playerIn, hand, facing, hitX, hitY, hitZ) == ActionResultType.SUCCESS) return ActionResultType.SUCCESS;
+        if (super.onActivated(playerIn, hand, facing, hitX, hitY, hitZ) == ActionResultType.SUCCESS) {
+            return ActionResultType.SUCCESS;
+        }
         openGui(playerIn);
         return ActionResultType.SUCCESS;
     }

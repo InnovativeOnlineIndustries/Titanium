@@ -21,12 +21,14 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
+import java.util.Iterator;
 
 public class JSONSerializableDataHandler {
 
@@ -41,7 +43,6 @@ public class JSONSerializableDataHandler {
         map(double.class, JsonPrimitive::new, JsonElement::getAsDouble);
         map(boolean.class, JsonPrimitive::new, JsonElement::getAsBoolean);
         map(char.class, JsonPrimitive::new, JsonElement::getAsCharacter);
-
         map(Byte.class, JsonPrimitive::new, JsonElement::getAsByte);
         map(Short.class, JsonPrimitive::new, JsonElement::getAsShort);
         map(Integer.class, JsonPrimitive::new, JsonElement::getAsInt);
@@ -50,14 +51,46 @@ public class JSONSerializableDataHandler {
         map(Double.class, JsonPrimitive::new, JsonElement::getAsDouble);
         map(Boolean.class, JsonPrimitive::new, JsonElement::getAsBoolean);
         map(Character.class, JsonPrimitive::new, JsonElement::getAsCharacter);
-
         map(String.class, JsonPrimitive::new, JsonElement::getAsString);
 
-        map(Ingredient.class, Ingredient::serialize, Ingredient::deserialize);
+
         map(ItemStack.class, JSONSerializableDataHandler::writeItemStack, element -> readItemStack(element.getAsJsonObject()));
         map(ResourceLocation.class, type -> new JsonPrimitive(type.toString()), element -> new ResourceLocation(element.getAsString()));
         map(Block.class, type -> new JsonPrimitive(type.getRegistryName().toString()), element -> ForgeRegistries.BLOCKS.getValue(new ResourceLocation(element.getAsString())));
         map(FluidStack.class, JSONSerializableDataHandler::writeFluidStack, JSONSerializableDataHandler::readFluidStack);
+
+        map(Biome.class, JSONSerializableDataHandler::writeBiomeType, JSONSerializableDataHandler::readBiomeType);
+        map(Biome[].class, (biomes) -> {
+            JsonArray array = new JsonArray();
+            for (Biome biome : biomes) {
+                array.add(biome.getRegistryName().toString());
+            }
+            return array;
+        }, element -> {
+            Biome[] biomes = new Biome[element.getAsJsonArray().size()];
+            int i = 0;
+            for (Iterator<JsonElement> iterator = element.getAsJsonArray().iterator(); iterator.hasNext(); i++) {
+                JsonElement jsonElement = iterator.next();
+                biomes[i] = ForgeRegistries.BIOMES.getValue(new ResourceLocation(jsonElement.getAsString()));
+            }
+            return biomes;
+        });
+        map(Ingredient.class, Ingredient::serialize, Ingredient::deserialize);
+        map(Ingredient[].class, (type) -> {
+            JsonArray array = new JsonArray();
+            for (Ingredient ingredient : type) {
+                array.add(ingredient.serialize());
+            }
+            return array;
+        }, (element) -> {
+            Ingredient[] ingredients = new Ingredient[element.getAsJsonArray().size()];
+            int i = 0;
+            for (Iterator<JsonElement> iterator = element.getAsJsonArray().iterator(); iterator.hasNext(); i++) {
+                JsonElement jsonElement = iterator.next();
+                ingredients[i] = Ingredient.deserialize(jsonElement);
+            }
+            return ingredients;
+        });
         map(Ingredient.IItemList.class, Ingredient.IItemList::serialize, element -> Ingredient.deserializeItemList(element.getAsJsonObject()));
         map(Ingredient.IItemList[].class, type -> {
             JsonArray array = new JsonArray();
@@ -126,6 +159,16 @@ public class JSONSerializableDataHandler {
             }
         }
         return stack;
+    }
+
+    public static JsonObject writeBiomeType(Biome biome) {
+        JsonObject object = new JsonObject();
+        object.addProperty("biome", biome.getRegistryName().toString());
+        return object;
+    }
+
+    public static Biome readBiomeType(JsonElement element) {
+        return ForgeRegistries.BIOMES.getValue(new ResourceLocation(element.getAsString()));
     }
 
     public interface Writer<T> {

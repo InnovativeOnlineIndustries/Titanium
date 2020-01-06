@@ -10,7 +10,7 @@ package com.hrznstudio.titanium.block.tile;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.block.BlockTileBase;
-import com.hrznstudio.titanium.block.tile.progress.PosProgressBar;
+import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
 import com.hrznstudio.titanium.client.gui.addon.EnergyBarGuiAddon;
 import com.hrznstudio.titanium.energy.NBTEnergyHandler;
 import net.minecraft.tileentity.TileEntity;
@@ -18,16 +18,16 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.energy.CapabilityEnergy;
 
-public abstract class TileGenerator extends TilePowered {
+public abstract class TileGenerator<T extends TileGenerator<T>> extends TilePowered<T> {
 
     @Save
-    private PosProgressBar progressBar;
+    private ProgressBarComponent<T> progressBar;
 
     public TileGenerator(BlockTileBase blockTileBase) {
         super(blockTileBase);
         this.addGuiAddonFactory(() -> new EnergyBarGuiAddon(10, 20, getEnergyStorage()));
         this.addProgressBar(progressBar = getProgressBar()
-                .setTile(this)
+                .setComponentHarness(this.getSelf())
                 .setCanIncrease(tileEntity -> !isSmart() || this.getEnergyCapacity() - this.getEnergyStorage().getEnergyStored() >= getEnergyProducedEveryTick())
                 .setIncreaseType(false)
                 .setOnStart(() -> {
@@ -69,7 +69,7 @@ public abstract class TileGenerator extends TilePowered {
      *
      * @return The progress bar
      */
-    public abstract PosProgressBar getProgressBar();
+    public abstract ProgressBarComponent<T> getProgressBar();
 
     /**
      * Gets how big the energy buffer on the generator is
@@ -106,7 +106,6 @@ public abstract class TileGenerator extends TilePowered {
                     int energy = storage.receiveEnergy(Math.min(this.getEnergyStorage().getEnergyStored(), getExtractingEnergy()), false);
                     if (energy > 0) {
                         this.getEnergyStorage().extractEnergy(energy, false);
-                        return;
                     }
                 });
             }

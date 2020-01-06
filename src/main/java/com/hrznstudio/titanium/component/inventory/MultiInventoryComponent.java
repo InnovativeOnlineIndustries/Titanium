@@ -5,13 +5,14 @@
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
 
-package com.hrznstudio.titanium.block.tile.inventory;
+package com.hrznstudio.titanium.component.inventory;
 
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
-import com.hrznstudio.titanium.block.tile.sideness.ICapabilityHolder;
-import com.hrznstudio.titanium.block.tile.sideness.IFacingHandler;
+import com.hrznstudio.titanium.component.sideness.ICapabilityHolder;
+import com.hrznstudio.titanium.component.sideness.IFacingComponent;
+import com.hrznstudio.titanium.component.IComponentHarness;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
@@ -21,12 +22,13 @@ import javax.annotation.Nonnull;
 import java.util.*;
 
 
-public class MultiInventoryHandler implements IGuiAddonProvider, ICapabilityHolder<PosInvHandler, MultiInventoryHandler.MultiInvCapabilityHandler> {
+public class MultiInventoryComponent<T extends IComponentHarness> implements IGuiAddonProvider,
+        ICapabilityHolder<InventoryComponent<T>, MultiInventoryComponent.MultiInvCapabilityHandler<T>> {
 
-    private final LinkedHashSet<PosInvHandler> inventoryHandlers;
-    private final HashMap<FacingUtil.Sideness, LazyOptional<MultiInvCapabilityHandler>> lazyOptionals;
+    private final LinkedHashSet<InventoryComponent<T>> inventoryHandlers;
+    private final Map<FacingUtil.Sideness, LazyOptional<MultiInvCapabilityHandler<T>>> lazyOptionals;
 
-    public MultiInventoryHandler() {
+    public MultiInventoryComponent() {
         this.inventoryHandlers = new LinkedHashSet<>();
         this.lazyOptionals = new HashMap<>();
         lazyOptionals.put(null, LazyOptional.empty());
@@ -36,8 +38,8 @@ public class MultiInventoryHandler implements IGuiAddonProvider, ICapabilityHold
     }
 
     @Override
-    public void add(PosInvHandler invHandler) {
-        this.inventoryHandlers.add(invHandler);
+    public void add(@Nonnull InventoryComponent<T> inventoryComponent) {
+        this.inventoryHandlers.add(inventoryComponent);
         rebuildCapability(new FacingUtil.Sideness[]{null});
         rebuildCapability(FacingUtil.Sideness.values());
     }
@@ -45,18 +47,19 @@ public class MultiInventoryHandler implements IGuiAddonProvider, ICapabilityHold
     private void rebuildCapability(FacingUtil.Sideness[] sides) {
         for (FacingUtil.Sideness side : sides) {
             lazyOptionals.get(side).invalidate();
-            lazyOptionals.put(side, LazyOptional.of(() -> new MultiInvCapabilityHandler(getHandlersForSide(side))));
+            lazyOptionals.put(side, LazyOptional.of(() -> new MultiInvCapabilityHandler<>(getHandlersForSide(side))));
         }
     }
 
-    private List<PosInvHandler> getHandlersForSide(FacingUtil.Sideness sideness) {
+    private List<InventoryComponent<T>> getHandlersForSide(FacingUtil.Sideness sideness) {
         if (sideness == null) {
             return new ArrayList<>(inventoryHandlers);
         }
-        List<PosInvHandler> handlers = new ArrayList<>();
-        for (PosInvHandler inventoryHandler : inventoryHandlers) {
-            if (inventoryHandler instanceof IFacingHandler) {
-                if (((IFacingHandler) inventoryHandler).getFacingModes().containsKey(sideness) && ((IFacingHandler) inventoryHandler).getFacingModes().get(sideness).allowsConnection()) {
+        List<InventoryComponent<T>> handlers = new ArrayList<>();
+        for (InventoryComponent<T> inventoryHandler : inventoryHandlers) {
+            if (inventoryHandler instanceof IFacingComponent) {
+                if (((IFacingComponent) inventoryHandler).getFacingModes().containsKey(sideness) &&
+                        ((IFacingComponent) inventoryHandler).getFacingModes().get(sideness).allowsConnection()) {
                     handlers.add(inventoryHandler);
                 }
             } else {
@@ -68,15 +71,15 @@ public class MultiInventoryHandler implements IGuiAddonProvider, ICapabilityHold
 
     @Nonnull
     @Override
-    public LazyOptional<MultiInvCapabilityHandler> getCapabilityForSide(FacingUtil.Sideness sideness) {
+    public LazyOptional<MultiInvCapabilityHandler<T>> getCapabilityForSide(FacingUtil.Sideness sideness) {
         return lazyOptionals.get(sideness);
     }
 
     @Override
-    public boolean handleFacingChange(String handlerName, FacingUtil.Sideness facing, IFacingHandler.FaceMode mode) {
-        for (PosInvHandler inventoryHandler : inventoryHandlers) {
-            if (inventoryHandler.getName().equals(handlerName) && inventoryHandler instanceof IFacingHandler) {
-                ((IFacingHandler) inventoryHandler).getFacingModes().put(facing, mode);
+    public boolean handleFacingChange(String handlerName, FacingUtil.Sideness facing, IFacingComponent.FaceMode mode) {
+        for (InventoryComponent<T> inventoryHandler : inventoryHandlers) {
+            if (inventoryHandler.getName().equals(handlerName) && inventoryHandler instanceof IFacingComponent) {
+                ((IFacingComponent) inventoryHandler).getFacingModes().put(facing, mode);
                 rebuildCapability(new FacingUtil.Sideness[]{facing});
                 return true;
             }
@@ -84,7 +87,7 @@ public class MultiInventoryHandler implements IGuiAddonProvider, ICapabilityHold
         return false;
     }
 
-    public HashSet<PosInvHandler> getInventoryHandlers() {
+    public HashSet<InventoryComponent<T>> getInventoryHandlers() {
         return inventoryHandlers;
     }
 
@@ -95,15 +98,15 @@ public class MultiInventoryHandler implements IGuiAddonProvider, ICapabilityHold
         return addons;
     }
 
-    public static class MultiInvCapabilityHandler extends ItemStackHandler {
+    public static class MultiInvCapabilityHandler<T extends IComponentHarness> extends ItemStackHandler {
 
-        private final List<PosInvHandler> inventoryHandlers;
+        private final List<InventoryComponent<T>> inventoryHandlers;
         private int slotAmount;
 
-        public MultiInvCapabilityHandler(List<PosInvHandler> inventoryHandlers) {
+        public MultiInvCapabilityHandler(List<InventoryComponent<T>> inventoryHandlers) {
             this.inventoryHandlers = inventoryHandlers;
             this.slotAmount = 0;
-            for (PosInvHandler inventoryHandler : this.inventoryHandlers) {
+            for (InventoryComponent<T> inventoryHandler : this.inventoryHandlers) {
                 slotAmount += inventoryHandler.getSlots();
             }
         }
@@ -116,7 +119,7 @@ public class MultiInventoryHandler implements IGuiAddonProvider, ICapabilityHold
         @Nonnull
         @Override
         public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            PosInvHandler handler = getFromSlot(slot);
+            InventoryComponent<T> handler = getFromSlot(slot);
             if (handler != null) {
                 if (handler.getInsertPredicate().test(stack, slot)) {
                     return handler.insertItem(getRelativeSlot(handler, slot), stack, simulate);
@@ -130,7 +133,7 @@ public class MultiInventoryHandler implements IGuiAddonProvider, ICapabilityHold
         @Nonnull
         @Override
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            PosInvHandler handler = getFromSlot(slot);
+            InventoryComponent<T> handler = getFromSlot(slot);
             if (handler != null) {
                 int relativeSlot = getRelativeSlot(handler, slot);
                 if (!handler.getExtractPredicate().test(handler.getStackInSlot(relativeSlot), relativeSlot))
@@ -143,7 +146,7 @@ public class MultiInventoryHandler implements IGuiAddonProvider, ICapabilityHold
         @Nonnull
         @Override
         public ItemStack getStackInSlot(int slot) {
-            PosInvHandler handler = getFromSlot(slot);
+            InventoryComponent<T> handler = getFromSlot(slot);
             if (handler != null) {
                 return handler.getStackInSlot(getRelativeSlot(handler, slot));
             }
@@ -152,7 +155,7 @@ public class MultiInventoryHandler implements IGuiAddonProvider, ICapabilityHold
 
         @Override
         public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
-            PosInvHandler handler = getFromSlot(slot);
+            InventoryComponent<T> handler = getFromSlot(slot);
             if (handler != null) {
                 handler.setStackInSlot(getRelativeSlot(handler, slot), stack);
             }
@@ -165,8 +168,8 @@ public class MultiInventoryHandler implements IGuiAddonProvider, ICapabilityHold
                 throw new RuntimeException("Slot " + slot + " not in valid range - [0," + slotAmount + ")");
         }
 
-        public PosInvHandler getFromSlot(int slot) {
-            for (PosInvHandler handler : inventoryHandlers) {
+        public InventoryComponent<T> getFromSlot(int slot) {
+            for (InventoryComponent<T> handler : inventoryHandlers) {
                 slot -= handler.getSlots();
                 if (slot < 0) {
                     return handler;
@@ -175,8 +178,8 @@ public class MultiInventoryHandler implements IGuiAddonProvider, ICapabilityHold
             return null;
         }
 
-        public int getRelativeSlot(PosInvHandler handler, int slot) {
-            for (PosInvHandler h : inventoryHandlers) {
+        public int getRelativeSlot(InventoryComponent<T> handler, int slot) {
+            for (InventoryComponent<T> h : inventoryHandlers) {
                 if (h.equals(handler)) return slot;
                 slot -= h.getSlots();
             }

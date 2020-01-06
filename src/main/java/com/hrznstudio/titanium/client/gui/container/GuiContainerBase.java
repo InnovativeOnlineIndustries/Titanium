@@ -24,6 +24,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.glfw.GLFW;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -135,6 +136,7 @@ public class GuiContainerBase<T extends Container> extends ContainerScreen<T> im
     }
 
     @Override
+    @Nonnull
     public T getContainer() {
         return container;
     }
