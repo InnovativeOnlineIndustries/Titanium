@@ -13,9 +13,9 @@ import com.hrznstudio.titanium.api.IMachine;
 import com.hrznstudio.titanium.api.augment.IAugment;
 import com.hrznstudio.titanium.api.augment.IAugmentType;
 import com.hrznstudio.titanium.api.client.AssetTypes;
-import com.hrznstudio.titanium.api.client.IGuiAddon;
+import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.block.BasicTileBlock;
-import com.hrznstudio.titanium.client.gui.addon.AssetGuiAddon;
+import com.hrznstudio.titanium.client.screen.addon.AssetScreenAddon;
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.hrznstudio.titanium.component.inventory.SidedInventoryComponent;
 import com.hrznstudio.titanium.component.sideness.IFacingComponent;
@@ -84,8 +84,8 @@ public abstract class MachineTile<T extends MachineTile<T>> extends PoweredTile<
                 .setRange(1, 4);
     }
 
-    public IFactory<? extends IGuiAddon> getAugmentBackground() {
-        return () -> new AssetGuiAddon(AssetTypes.AUGMENT_BACKGROUND, 175, 4, true);
+    public IFactory<? extends IScreenAddon> getAugmentBackground() {
+        return () -> new AssetScreenAddon(AssetTypes.AUGMENT_BACKGROUND, 175, 4, true);
     }
 
     private List<ItemStack> getItemStackAugments() {

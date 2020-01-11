@@ -8,14 +8,14 @@
 package com.hrznstudio.titanium.component.filter;
 
 import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.api.client.IGuiAddon;
-import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
+import com.hrznstudio.titanium.api.client.IScreenAddon;
+import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.api.filter.IFilter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MultiFilterComponent implements IGuiAddonProvider {
+public class MultiFilterComponent implements IScreenAddonProvider {
     public final List<IFilter> filters;
 
     public MultiFilterComponent() {
@@ -31,9 +31,9 @@ public class MultiFilterComponent implements IGuiAddonProvider {
     }
 
     @Override
-    public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
-        List<IFactory<? extends IGuiAddon>> addons = new ArrayList<>();
-        filters.forEach(filter -> addons.addAll(filter.getGuiAddons()));
+    public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
+        List<IFactory<? extends IScreenAddon>> addons = new ArrayList<>();
+        filters.forEach(filter -> addons.addAll(filter.getScreenAddons()));
         return addons;
     }
 }

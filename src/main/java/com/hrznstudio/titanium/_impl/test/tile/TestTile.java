@@ -12,15 +12,15 @@ import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.IItemStackQuery;
 import com.hrznstudio.titanium.api.client.AssetTypes;
-import com.hrznstudio.titanium.api.client.IGuiAddon;
+import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.block.tile.PoweredTile;
 import com.hrznstudio.titanium.component.button.ButtonComponent;
 import com.hrznstudio.titanium.component.fluid.FluidTankComponent;
 import com.hrznstudio.titanium.component.inventory.SidedInventoryComponent;
 import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
-import com.hrznstudio.titanium.client.gui.addon.EnergyBarGuiAddon;
-import com.hrznstudio.titanium.client.gui.addon.StateButtonAddon;
-import com.hrznstudio.titanium.client.gui.addon.StateButtonInfo;
+import com.hrznstudio.titanium.client.screen.addon.EnergyBarScreenAddon;
+import com.hrznstudio.titanium.client.screen.addon.StateButtonAddon;
+import com.hrznstudio.titanium.client.screen.addon.StateButtonInfo;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.util.ActionResultType;
@@ -56,7 +56,7 @@ public class TestTile extends PoweredTile<TestTile> {
         this.addInventory(second = (SidedInventoryComponent<TestTile>) new SidedInventoryComponent<TestTile>("test2", 80, 30, 1, 1)
                 .setComponentHarness(this)
                 .setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
-        this.addGuiAddonFactory(() -> new EnergyBarGuiAddon(4, 10, getEnergyStorage()));
+        this.addGuiAddonFactory(() -> new EnergyBarScreenAddon(4, 10, getEnergyStorage()));
         this.addProgressBar(bar = new ProgressBarComponent<TestTile>(40, 20, 500)
                 .setCanIncrease(tileEntity -> true)
                 .setOnFinishWork(() -> System.out.println("WOWOOW"))
@@ -65,7 +65,7 @@ public class TestTile extends PoweredTile<TestTile> {
         this.addTank(third = new FluidTankComponent<>("testTank", 8000, 130, 30));
         this.addButton(button = new ButtonComponent(-13, 1, 14, 14) {
             @Override
-            public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
+            public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
                 return Collections.singletonList(() -> new StateButtonAddon(button, new StateButtonInfo(0, AssetTypes.BUTTON_SIDENESS_DISABLED), new StateButtonInfo(1, AssetTypes.BUTTON_SIDENESS_ENABLED), new StateButtonInfo(2, AssetTypes.BUTTON_SIDENESS_PULL), new StateButtonInfo(3, AssetTypes.BUTTON_SIDENESS_PUSH)) {
                     @Override
                     public int getState() {

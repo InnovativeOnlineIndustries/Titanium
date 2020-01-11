@@ -8,14 +8,14 @@
 package com.hrznstudio.titanium.component.progress;
 
 import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.api.client.IGuiAddon;
-import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
+import com.hrznstudio.titanium.api.client.IScreenAddon;
+import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.component.IComponentHarness;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MultiProgressBarHandler<T extends IComponentHarness> implements IGuiAddonProvider {
+public class MultiProgressBarHandler<T extends IComponentHarness> implements IScreenAddonProvider {
 
     private final List<ProgressBarComponent<T>> posWorkBars;
 
@@ -44,10 +44,10 @@ public class MultiProgressBarHandler<T extends IComponentHarness> implements IGu
     }
 
     @Override
-    public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
-        List<IFactory<? extends IGuiAddon>> list = new ArrayList<>();
+    public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
+        List<IFactory<? extends IScreenAddon>> list = new ArrayList<>();
         for (ProgressBarComponent<T> posWorkBar : posWorkBars) {
-            list.addAll(posWorkBar.getGuiAddons());
+            list.addAll(posWorkBar.getScreenAddons());
         }
         return list;
     }

@@ -10,7 +10,7 @@ package com.hrznstudio.titanium.component.sideness;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.api.client.IAssetType;
-import com.hrznstudio.titanium.client.gui.addon.StateButtonInfo;
+import com.hrznstudio.titanium.client.screen.addon.StateButtonInfo;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;

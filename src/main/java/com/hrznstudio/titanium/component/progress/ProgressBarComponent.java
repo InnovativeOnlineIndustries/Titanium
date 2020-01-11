@@ -10,10 +10,10 @@ package com.hrznstudio.titanium.component.progress;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
-import com.hrznstudio.titanium.api.client.IGuiAddon;
-import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
-import com.hrznstudio.titanium.client.gui.addon.ProgressBarGuiAddon;
-import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
+import com.hrznstudio.titanium.api.client.IScreenAddon;
+import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
+import com.hrznstudio.titanium.client.screen.addon.ProgressBarScreenAddon;
+import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.component.IComponentHarness;
 import com.hrznstudio.titanium.util.AssetUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -29,7 +29,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class ProgressBarComponent<T extends IComponentHarness> implements INBTSerializable<CompoundNBT>, IGuiAddonProvider {
+public class ProgressBarComponent<T extends IComponentHarness> implements INBTSerializable<CompoundNBT>, IScreenAddonProvider {
     private int posX;
     private int posY;
     private int progress;
@@ -346,8 +346,8 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
      * @return A list of GUI addon factories
      */
     @Override
-    public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
-        return Collections.singletonList(() -> new ProgressBarGuiAddon<>(posX, posY, this));
+    public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
+        return Collections.singletonList(() -> new ProgressBarScreenAddon<>(posX, posY, this));
     }
 
     @Override
@@ -371,7 +371,7 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
     public enum BarDirection {
         VERTICAL_UP {
             @Override
-            public <T extends IComponentHarness> void render(Screen screen, int guiX, int guiY, IAssetProvider provider, ProgressBarGuiAddon<T> addon) {
+            public <T extends IComponentHarness> void render(Screen screen, int guiX, int guiY, IAssetProvider provider, ProgressBarScreenAddon<T> addon) {
                 IAsset assetBorder = IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_BORDER_VERTICAL);
                 Point offset = assetBorder.getOffset();
                 Rectangle area = assetBorder.getArea();
@@ -411,7 +411,7 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
         },
         HORIZONTAL_RIGHT {
             @Override
-            public <T extends IComponentHarness> void render(Screen screen, int guiX, int guiY, IAssetProvider provider, ProgressBarGuiAddon<T> addon) {
+            public <T extends IComponentHarness> void render(Screen screen, int guiX, int guiY, IAssetProvider provider, ProgressBarScreenAddon<T> addon) {
                 AssetUtil.drawAsset(screen, IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_BACKGROUND_HORIZONTAL), addon.getPosX() + guiX, addon.getPosY() + guiY);
                 IAsset asset = IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_HORIZONTAL);
                 Point offset = asset.getOffset();
@@ -437,7 +437,7 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
         };
 
         @OnlyIn(Dist.CLIENT)
-        public abstract <T extends IComponentHarness> void render(Screen screen, int guiX, int guiY, IAssetProvider provider, ProgressBarGuiAddon<T> addon);
+        public abstract <T extends IComponentHarness> void render(Screen screen, int guiX, int guiY, IAssetProvider provider, ProgressBarScreenAddon<T> addon);
 
         @OnlyIn(Dist.CLIENT)
         public abstract int getXSize(IAssetProvider provider);
