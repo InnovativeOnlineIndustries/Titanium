@@ -7,7 +7,7 @@
 
 package com.hrznstudio.titanium.block.tile;
 
-import com.hrznstudio.titanium.block.BlockTileBase;
+import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.nbthandler.NBTManager;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
@@ -20,16 +20,20 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 
-public class TileBase extends TileEntity {
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
-    BlockTileBase blockTileBase;
+public class BasicTile<T extends BasicTile<T>> extends TileEntity {
 
-    public TileBase(BlockTileBase base) {
+    private final BasicTileBlock<T> basicTileBlock;
+
+    public BasicTile(BasicTileBlock<T> base) {
         super(base.getTileEntityType());
-        this.blockTileBase = base;
+        this.basicTileBlock = base;
     }
 
-    public ActionResultType onActivated(PlayerEntity playerIn, Hand hand, Direction facing, double hitX, double hitY, double hitZ) {
+    @ParametersAreNonnullByDefault
+    public ActionResultType onActivated(PlayerEntity player, Hand hand, Direction facing, double hitX, double hitY, double hitZ) {
         return ActionResultType.PASS;
     }
 
@@ -44,6 +48,7 @@ public class TileBase extends TileEntity {
     }
 
     @Override
+    @Nonnull
     public CompoundNBT write(CompoundNBT compound) {
         return NBTManager.getInstance().writeTileEntity(this, super.write(compound));
     }
@@ -54,6 +59,7 @@ public class TileBase extends TileEntity {
     }
 
     @Override
+    @Nonnull
     public CompoundNBT getUpdateTag() {
         return write(new CompoundNBT());
     }
@@ -83,7 +89,7 @@ public class TileBase extends TileEntity {
         return !isClient();
     }
 
-    public BlockTileBase getBlockTileBase() {
-        return blockTileBase;
+    public BasicTileBlock<T> getBasicTileBlock() {
+        return basicTileBlock;
     }
 }

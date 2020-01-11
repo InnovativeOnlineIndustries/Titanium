@@ -7,25 +7,31 @@
 
 package com.hrznstudio.titanium._impl.test;
 
-import com.hrznstudio.titanium._impl.test.tile.TileAssetTest;
+import com.hrznstudio.titanium._impl.test.tile.TestTile;
+import com.hrznstudio.titanium.annotation.config.ConfigFile;
+import com.hrznstudio.titanium.annotation.config.ConfigVal;
 import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.block.BlockRotation;
+import com.hrznstudio.titanium.block.RotatableBlock;
 import com.hrznstudio.titanium.recipe.generator.TitaniumLootTableProvider;
 import net.minecraft.block.material.Material;
 
 import javax.annotation.Nonnull;
 
-public class BlockAssetTest extends BlockRotation<TileAssetTest> {
+@ConfigFile.Child(TitaniumConfig.class)
+public class TestBlock extends RotatableBlock<TestTile> {
 
-    public static BlockAssetTest TEST;
+    @ConfigVal
+    public static int DUMB_VALUE = 135;
 
-    public BlockAssetTest() {
-        super("block_asset_test", Properties.create(Material.ROCK), TileAssetTest.class);
+    public static TestBlock TEST;
+
+    public TestBlock() {
+        super("block_test", Properties.create(Material.ROCK), TestTile.class);
     }
 
     @Override
-    public IFactory<TileAssetTest> getTileEntityFactory() {
-        return TileAssetTest::new;
+    public IFactory<TestTile> getTileEntityFactory() {
+        return TestTile::new;
     }
 
     @Nonnull

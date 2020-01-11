@@ -10,7 +10,7 @@ package com.hrznstudio.titanium.block.tile;
 import com.google.common.collect.Sets;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.block.BlockTileBase;
+import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.energy.NBTEnergyHandler;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
@@ -22,16 +22,15 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Set;
 
-public abstract class TilePowered<T extends TilePowered<T>> extends TileActive<T> {
+public abstract class PoweredTile<T extends PoweredTile<T>> extends ActiveTile<T> {
     @Save
     private NBTEnergyHandler energyHandler;
     private LazyOptional<IEnergyStorage> energyCap;
 
-    public TilePowered(BlockTileBase blockTileBase) {
-        super(blockTileBase);
+    public PoweredTile(BasicTileBlock<T> basicTileBlock) {
+        super(basicTileBlock);
         this.energyHandler = getEnergyHandlerFactory().create();
         this.energyCap = LazyOptional.of(() -> this.energyHandler);
-        //addGuiAddonFactory(() -> new EnergyBarGuiAddon(20, 20, energyHandler));
     }
 
     protected IFactory<NBTEnergyHandler> getEnergyHandlerFactory() {
@@ -49,8 +48,9 @@ public abstract class TilePowered<T extends TilePowered<T>> extends TileActive<T
     @Nonnull
     @Override
     public <U> LazyOptional<U> getCapability(@Nonnull Capability<U> cap, @Nullable Direction side) {
-        if (cap == CapabilityEnergy.ENERGY)
+        if (cap == CapabilityEnergy.ENERGY) {
             return energyCap.cast();
+        }
         return super.getCapability(cap, side);
     }
 }

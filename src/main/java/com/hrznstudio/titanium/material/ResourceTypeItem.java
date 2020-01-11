@@ -12,7 +12,7 @@ import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.api.material.IHasColor;
 import com.hrznstudio.titanium.api.material.IResourceHolder;
 import com.hrznstudio.titanium.api.material.IResourceType;
-import com.hrznstudio.titanium.item.ItemBase;
+import com.hrznstudio.titanium.item.BasicItem;
 import com.hrznstudio.titanium.recipe.generator.IJSONGenerator;
 import com.hrznstudio.titanium.recipe.generator.IJsonFile;
 import net.minecraft.item.Item;
@@ -21,7 +21,7 @@ import net.minecraft.util.text.ITextComponent;
 
 import javax.annotation.Nullable;
 
-public class ResourceTypeItem extends ItemBase implements IJsonFile, IJSONGenerator, IResourceHolder, IHasColor {
+public class ResourceTypeItem extends BasicItem implements IJsonFile, IJSONGenerator, IResourceHolder, IHasColor {
 
     private final ResourceMaterial material;
     private final IResourceType type;

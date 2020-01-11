@@ -7,9 +7,9 @@
 
 package com.hrznstudio.titanium._impl.creative.tile;
 
-import com.hrznstudio.titanium._impl.creative.BlockCreativeFEGenerator;
+import com.hrznstudio.titanium._impl.creative.CreativeFEGeneratorBlock;
 import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.block.tile.TilePowered;
+import com.hrznstudio.titanium.block.tile.PoweredTile;
 import com.hrznstudio.titanium.energy.NBTEnergyHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -18,10 +18,13 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraftforge.energy.CapabilityEnergy;
 
-public class TileCreativeFEGenerator extends TilePowered<TileCreativeFEGenerator> {
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
-    public TileCreativeFEGenerator() {
-        super(BlockCreativeFEGenerator.INSTANCE);
+public class CreativeFEGeneratorTile extends PoweredTile<CreativeFEGeneratorTile> {
+
+    public CreativeFEGeneratorTile() {
+        super(CreativeFEGeneratorBlock.INSTANCE);
     }
 
     @Override
@@ -44,14 +47,16 @@ public class TileCreativeFEGenerator extends TilePowered<TileCreativeFEGenerator
     }
 
     @Override
-    public TileCreativeFEGenerator getSelf() {
+    @Nonnull
+    public CreativeFEGeneratorTile getSelf() {
         return this;
     }
 
     @Override
-    public ActionResultType onActivated(PlayerEntity playerIn, Hand hand, Direction facing, double hitX, double hitY, double hitZ) {
-        if (super.onActivated(playerIn, hand, facing, hitX, hitY, hitZ) == ActionResultType.PASS) {
-            openGui(playerIn);
+    @ParametersAreNonnullByDefault
+    public ActionResultType onActivated(PlayerEntity player, Hand hand, Direction facing, double hitX, double hitY, double hitZ) {
+        if (super.onActivated(player, hand, facing, hitX, hitY, hitZ) == ActionResultType.PASS) {
+            openGui(player);
             return ActionResultType.SUCCESS;
         }
         return ActionResultType.PASS;
