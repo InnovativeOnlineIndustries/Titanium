@@ -8,9 +8,9 @@
 package com.hrznstudio.titanium.client.screen.addon;
 
 import com.hrznstudio.titanium.api.client.assets.types.ITankAsset;
+import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.component.IComponentHarness;
 import com.hrznstudio.titanium.component.fluid.FluidTankComponent;
-import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.util.AssetUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.Screen;
@@ -50,7 +50,7 @@ public class TankScreenAddon<T extends IComponentHarness> extends BasicScreenAdd
             int offset = (stored * (area.height - topBottomPadding) / capacity);
             ResourceLocation flowing = stack.getFluid().getAttributes().getStillTexture(stack);
             if (flowing != null) {
-                Texture texture = screen.getMinecraft().getTextureManager().func_229267_b_(AtlasTexture.LOCATION_BLOCKS_TEXTURE); //getAtlasSprite
+                Texture texture = screen.getMinecraft().getTextureManager().getTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE); //getAtlasSprite
                 if (texture instanceof AtlasTexture) {
                     TextureAtlasSprite sprite = ((AtlasTexture) texture).getSprite(flowing);
                     if (sprite != null) {

@@ -108,7 +108,7 @@ public class BasicContainerScreen<T extends Container> extends ContainerScreen<T
     }
 
     private void checkForMouseDrag(int mouseX, int mouseY) {
-        if (GLFW.glfwGetMouseButton(Minecraft.getInstance().func_228018_at_().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS) { //Main Windows
+        if (GLFW.glfwGetMouseButton(Minecraft.getInstance().getWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS) { //Main Windows
             for (IScreenAddon iScreenAddon : this.addons) {
                 if (iScreenAddon instanceof ICanMouseDrag /*&& iGuiAddon.isInside(null, mouseX - x, mouseY - y)*/) {
                     ((ICanMouseDrag) iScreenAddon).drag(mouseX - dragX, mouseY - dragY);

@@ -7,37 +7,33 @@
 
 package com.hrznstudio.titanium.client;
 
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonObject;
 import net.minecraft.client.renderer.model.IUnbakedModel;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.ICustomModelLoader;
+import net.minecraftforge.client.model.IModelLoader;
+import net.minecraftforge.client.model.geometry.IModelGeometry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.Event;
 
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.HashMap;
 import java.util.Map;
 
 @ParametersAreNonnullByDefault
-public class TitaniumModelLoader implements ICustomModelLoader {
+public class TitaniumModelLoader implements IModelLoader {
     private final Map<ResourceLocation, IUnbakedModel> MODEL_MAP = new HashMap<>();
-
-    @Override
-    public boolean accepts(ResourceLocation modelLocation) {
-        return MODEL_MAP.containsKey(modelLocation);
-    }
-
-    @Override
-    @Nonnull
-    public IUnbakedModel loadModel(ResourceLocation modelLocation) {
-        return MODEL_MAP.get(modelLocation);
-    }
 
     @Override
     public void onResourceManagerReload(IResourceManager resourceManager) {
         MODEL_MAP.clear();
         MinecraftForge.EVENT_BUS.post(new TitaniumModelEvent(this));
+    }
+
+    @Override
+    public IModelGeometry read(JsonDeserializationContext deserializationContext, JsonObject modelContents) {
+        return null;
     }
 
     public static class TitaniumModelEvent extends Event {

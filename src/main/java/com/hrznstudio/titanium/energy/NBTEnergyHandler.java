@@ -62,7 +62,7 @@ public class NBTEnergyHandler extends EnergyStorage implements INBTSerializable<
 
     @Override
     public IntNBT serializeNBT() {
-        return IntNBT.func_229692_a_(getEnergyStored());
+        return IntNBT.of(getEnergyStored());
     }
 
     @Override

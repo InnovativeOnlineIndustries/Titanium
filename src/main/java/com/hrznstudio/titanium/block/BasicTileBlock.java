@@ -25,7 +25,6 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Optional;
 
@@ -65,14 +64,12 @@ public abstract class BasicTileBlock<T extends BasicTile<T>> extends BasicBlock 
         getTile(worldIn, pos).ifPresent(tile -> tile.onNeighborChanged(blockIn, fromPos));
     }
 
-    //On Activated
+
     @Override
-    @Nonnull
-    @SuppressWarnings("deprecation")
-    public ActionResultType func_225533_a_(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult ray) {
+    public ActionResultType onUse(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult ray) {
         return getTile(worldIn, pos)
                 .map(tile -> tile.onActivated(player, hand, ray.getFace(), ray.getHitVec().x, ray.getHitVec().y, ray.getHitVec().z))
-                .orElseGet(() -> super.func_225533_a_(state, worldIn, pos, player, hand, ray));
+                .orElseGet(() -> super.onUse(state, worldIn, pos, player, hand, ray));
     }
 
     @Nullable
