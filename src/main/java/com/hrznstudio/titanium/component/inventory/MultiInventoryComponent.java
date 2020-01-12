@@ -8,8 +8,8 @@
 package com.hrznstudio.titanium.component.inventory;
 
 import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.api.client.IGuiAddon;
-import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
+import com.hrznstudio.titanium.api.client.IScreenAddon;
+import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.component.sideness.ICapabilityHolder;
 import com.hrznstudio.titanium.component.sideness.IFacingComponent;
 import com.hrznstudio.titanium.component.IComponentHarness;
@@ -22,7 +22,7 @@ import javax.annotation.Nonnull;
 import java.util.*;
 
 
-public class MultiInventoryComponent<T extends IComponentHarness> implements IGuiAddonProvider,
+public class MultiInventoryComponent<T extends IComponentHarness> implements IScreenAddonProvider,
         ICapabilityHolder<InventoryComponent<T>, MultiInventoryComponent.MultiInvCapabilityHandler<T>> {
 
     private final LinkedHashSet<InventoryComponent<T>> inventoryHandlers;
@@ -92,9 +92,9 @@ public class MultiInventoryComponent<T extends IComponentHarness> implements IGu
     }
 
     @Override
-    public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
-        List<IFactory<? extends IGuiAddon>> addons = new ArrayList<>();
-        inventoryHandlers.forEach(posInvHandler -> addons.addAll(posInvHandler.getGuiAddons()));
+    public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
+        List<IFactory<? extends IScreenAddon>> addons = new ArrayList<>();
+        inventoryHandlers.forEach(posInvHandler -> addons.addAll(posInvHandler.getScreenAddons()));
         return addons;
     }
 

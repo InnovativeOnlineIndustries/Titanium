@@ -13,7 +13,7 @@ import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.material.IHasColor;
 import com.hrznstudio.titanium.api.material.IResourceHolder;
 import com.hrznstudio.titanium.api.material.IResourceType;
-import com.hrznstudio.titanium.block.BlockBase;
+import com.hrznstudio.titanium.block.BasicBlock;
 import com.hrznstudio.titanium.recipe.generator.IJSONGenerator;
 import com.hrznstudio.titanium.recipe.generator.IJsonFile;
 import net.minecraft.block.Block;
@@ -25,7 +25,7 @@ import net.minecraft.util.text.ITextComponent;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
-public class ResourceTypeBlock extends BlockBase implements IJsonFile, IJSONGenerator, IResourceHolder, IHasColor {
+public class ResourceTypeBlock extends BasicBlock implements IJsonFile, IJSONGenerator, IResourceHolder, IHasColor {
 
     private final ResourceMaterial resourceMaterial;
     private final IResourceType resourceType;

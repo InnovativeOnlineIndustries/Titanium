@@ -7,31 +7,31 @@
 
 package com.hrznstudio.titanium.energy;
 
-import com.hrznstudio.titanium.block.tile.TileBase;
+import com.hrznstudio.titanium.block.tile.BasicTile;
 import net.minecraft.nbt.IntNBT;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.energy.EnergyStorage;
 
 public class NBTEnergyHandler extends EnergyStorage implements INBTSerializable<IntNBT> {
 
-    private TileBase base;
+    private BasicTile base;
 
-    public NBTEnergyHandler(TileBase base, int capacity) {
+    public NBTEnergyHandler(BasicTile base, int capacity) {
         super(capacity);
         this.base = base;
     }
 
-    public NBTEnergyHandler(TileBase base, int capacity, int maxTransfer) {
+    public NBTEnergyHandler(BasicTile base, int capacity, int maxTransfer) {
         super(capacity, maxTransfer);
         this.base = base;
     }
 
-    public NBTEnergyHandler(TileBase base, int capacity, int maxReceive, int maxExtract) {
+    public NBTEnergyHandler(BasicTile base, int capacity, int maxReceive, int maxExtract) {
         super(capacity, maxReceive, maxExtract);
         this.base = base;
     }
 
-    public NBTEnergyHandler(TileBase base, int capacity, int maxReceive, int maxExtract, int energy) {
+    public NBTEnergyHandler(BasicTile base, int capacity, int maxReceive, int maxExtract, int energy) {
         super(capacity, maxReceive, maxExtract, energy);
         this.base = base;
     }
@@ -62,7 +62,7 @@ public class NBTEnergyHandler extends EnergyStorage implements INBTSerializable<
 
     @Override
     public IntNBT serializeNBT() {
-        return IntNBT.func_229692_a_(getEnergyStored());
+        return IntNBT.of(getEnergyStored());
     }
 
     @Override

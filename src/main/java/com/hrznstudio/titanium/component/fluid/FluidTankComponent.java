@@ -10,13 +10,11 @@ package com.hrznstudio.titanium.component.fluid;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAssetType;
-import com.hrznstudio.titanium.api.client.IGuiAddon;
-import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
+import com.hrznstudio.titanium.api.client.IScreenAddon;
+import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.api.client.assets.types.ITankAsset;
-import com.hrznstudio.titanium.block.tile.TileBase;
-import com.hrznstudio.titanium.client.gui.addon.TankGuiAddon;
+import com.hrznstudio.titanium.client.screen.addon.TankScreenAddon;
 import com.hrznstudio.titanium.component.IComponentHarness;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
@@ -24,7 +22,7 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FluidTankComponent<T extends IComponentHarness> extends FluidTank implements IGuiAddonProvider {
+public class FluidTankComponent<T extends IComponentHarness> extends FluidTank implements IScreenAddonProvider {
 
     private final int posX;
     private final int posY;
@@ -156,9 +154,9 @@ public class FluidTankComponent<T extends IComponentHarness> extends FluidTank i
     }
 
     @Override
-    public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
-        List<IFactory<? extends IGuiAddon>> addons = new ArrayList<>();
-        addons.add(() -> new TankGuiAddon<>(this));
+    public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
+        List<IFactory<? extends IScreenAddon>> addons = new ArrayList<>();
+        addons.add(() -> new TankScreenAddon<>(this));
         return addons;
     }
 

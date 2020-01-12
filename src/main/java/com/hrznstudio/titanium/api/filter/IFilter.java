@@ -7,14 +7,14 @@
 
 package com.hrznstudio.titanium.api.filter;
 
-import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
+import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.function.Predicate;
 
-public interface IFilter<T> extends INBTSerializable<CompoundNBT>, IGuiAddonProvider {
+public interface IFilter<T> extends INBTSerializable<CompoundNBT>, IScreenAddonProvider {
     String getName();
 
     boolean acceptsAsFilter(ItemStack filter);

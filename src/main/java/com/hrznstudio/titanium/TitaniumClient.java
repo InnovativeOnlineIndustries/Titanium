@@ -7,7 +7,7 @@
 
 package com.hrznstudio.titanium;
 
-import com.hrznstudio.titanium.block.BlockBase;
+import com.hrznstudio.titanium.block.BasicBlock;
 import com.hrznstudio.titanium.util.RayTraceUtils;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -38,13 +38,13 @@ public class TitaniumClient {
         if (event.getTarget() != null) {
             BlockRayTraceResult traceResult = event.getTarget();
             BlockState og = Minecraft.getInstance().world.getBlockState(traceResult.getPos());
-            if (og.getBlock() instanceof BlockBase && ((BlockBase) og.getBlock()).hasIndividualRenderVoxelShape()) {
+            if (og.getBlock() instanceof BasicBlock && ((BasicBlock) og.getBlock()).hasIndividualRenderVoxelShape()) {
                 VoxelShape shape = RayTraceUtils.rayTraceVoxelShape(traceResult, Minecraft.getInstance().world, Minecraft.getInstance().player, 32, event.getPartialTicks());
                 if (shape != null) {
                     //event.setCanceled(true);
                     RenderSystem.enableBlend();
                     RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-                    RenderSystem.lineWidth(Math.max(2.5F, (float) Minecraft.getInstance().func_228018_at_().getFramebufferWidth() / 1920.0F * 2.5F)); //MainWindow
+                    RenderSystem.lineWidth(Math.max(2.5F, (float) Minecraft.getInstance().getWindow().getFramebufferWidth() / 1920.0F * 2.5F)); //MainWindow
                     RenderSystem.disableTexture();
                     RenderSystem.depthMask(false);
                     RenderSystem.matrixMode(5889);
@@ -59,7 +59,7 @@ public class TitaniumClient {
                     //stack.func_227860_a_();
                     //stack.func_227861_a_(0,0,0);
                     //stack.func_227861_a_((double) blockpos.getX() - d0, (double) blockpos.getY() - d1, (double) blockpos.getZ() - d2);
-                    IVertexBuilder buffer = Minecraft.getInstance().func_228019_au_().func_228490_d_().getBuffer(RenderType.func_228659_m_());
+                    IVertexBuilder buffer = Minecraft.getInstance().getBufferBuilders().getOutlineVertexConsumers().getBuffer(RenderType.getLines());
                     //WorldRenderer.func_228431_a_(stack, buffer, shape,(double) blockpos.getX(), (double) blockpos.getY() , (double) blockpos.getZ(), 1.0F, 1.0F, 1.0F, 1.0F);
                     //TODO Minecraft.getInstance().worldRenderer.drawShape(shape, (double) blockpos.getX() - d0, (double) blockpos.getY() - d1, (double) blockpos.getZ() - d2, 0.0F, 0.0F, 0.0F, 0.4F);
                     //stack.func_227865_b_();

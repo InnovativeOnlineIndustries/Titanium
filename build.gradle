@@ -33,7 +33,7 @@ license {
 }
 
 minecraft {
-    mappings channel: 'snapshot', version: '20191230-1.14.3'
+    mappings channel: 'snapshot', version: '20200111-mixed-1.15.1'
     runs {
         client = {
             // recommended logging data for a userdev environment
@@ -74,9 +74,12 @@ repositories {
         name = "ModMaven"
         url = "https://modmaven.k-4u.nl"
     }
+    maven {
+        url "https://maven.tterrag.com/"
+    }
 }
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.15.1-30.0.11'
+    minecraft 'net.minecraftforge:forge:1.15.1-30.0.36'
 
     compileOnly fg.deobf("mezz.jei:jei-1.14.4:6.0.0.18:api")
         // at runtime, use the full JEI jar

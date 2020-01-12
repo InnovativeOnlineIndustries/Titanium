@@ -8,8 +8,8 @@
 package com.hrznstudio.titanium.component.fluid;
 
 import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.api.client.IGuiAddon;
-import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
+import com.hrznstudio.titanium.api.client.IScreenAddon;
+import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.component.IComponentHarness;
 import com.hrznstudio.titanium.component.sideness.ICapabilityHolder;
 import com.hrznstudio.titanium.component.sideness.IFacingComponent;
@@ -22,7 +22,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-public class MultiTankComponent<T extends IComponentHarness> implements IGuiAddonProvider,
+public class MultiTankComponent<T extends IComponentHarness> implements IScreenAddonProvider,
         ICapabilityHolder<FluidTankComponent<T>, MultiTankComponent.MultiTankCapabilityHandler<T>> {
 
     private final LinkedHashSet<FluidTankComponent<T>> tanks;
@@ -92,10 +92,10 @@ public class MultiTankComponent<T extends IComponentHarness> implements IGuiAddo
     }
 
     @Override
-    public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
-        List<IFactory<? extends IGuiAddon>> addons = new ArrayList<>();
+    public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
+        List<IFactory<? extends IScreenAddon>> addons = new ArrayList<>();
         for (FluidTankComponent<T> tank : tanks) {
-            addons.addAll(tank.getGuiAddons());
+            addons.addAll(tank.getScreenAddons());
         }
         return addons;
     }
