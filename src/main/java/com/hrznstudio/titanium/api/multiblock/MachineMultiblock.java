@@ -17,6 +17,7 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.function.Predicate;
 
+@Deprecated
 public class MachineMultiblock implements IMultiblock {
 
     private final ResourceLocation resourceLocation;

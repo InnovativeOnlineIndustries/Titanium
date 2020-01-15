@@ -16,6 +16,7 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.util.function.Predicate;
 
+@Deprecated
 public interface IMultiblock extends IForgeRegistryEntry<Block> {
 
     Predicate<BlockState>[][][] getStructureBlocks();
