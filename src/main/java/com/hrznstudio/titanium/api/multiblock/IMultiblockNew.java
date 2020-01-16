@@ -13,11 +13,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 
-public interface IShapedMultiblock {
-
-
-    List<Pair<BlockPos, Pair<BlockState, VoxelShape>>> getMultiblock();
-
+public interface IMultiblockNew {
     /**
      * @param state // Trigger BlockState
      * Used to check whether the given blockstate can be used to trigger the formation of the Multiblock Structure.
@@ -39,7 +35,7 @@ public interface IShapedMultiblock {
      * @param direction
      * @param block
      * @param playerEntity
-     * This is used for the final check for the structure and sets the new structure.
+     * This is used for dealing with the breaking and subsequent "resetting" of the blockstates.
      */
     void breakStructure(World world, BlockPos controllerPos, Direction direction, Block block, PlayerEntity playerEntity);
 

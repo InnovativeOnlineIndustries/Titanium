@@ -1,6 +1,6 @@
 package com.hrznstudio.titanium.event.custom;
 
-import com.hrznstudio.titanium.api.multiblock.IShapedMultiblock;
+import com.hrznstudio.titanium.api.multiblock.IMultiblockNew;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
@@ -9,18 +9,18 @@ import net.minecraftforge.eventbus.api.Cancelable;
 
 public class MultiblockFormationEvent extends PlayerEvent {
 
-    private final IShapedMultiblock multiblock;
+    private final IMultiblockNew multiblock;
     private final BlockPos controller;
     private final ItemStack formationTool;
 
-    public MultiblockFormationEvent(PlayerEntity player, IShapedMultiblock multiblock, BlockPos controller, ItemStack formationTool) {
+    public MultiblockFormationEvent(PlayerEntity player, IMultiblockNew multiblock, BlockPos controller, ItemStack formationTool) {
         super(player);
         this.multiblock = multiblock;
         this.controller = controller;
         this.formationTool = formationTool;
     }
 
-    public IShapedMultiblock getMultiblock() {
+    public IMultiblockNew getMultiblock() {
         return multiblock;
     }
 
@@ -38,14 +38,14 @@ public class MultiblockFormationEvent extends PlayerEvent {
      */
     @Cancelable
     public static class Pre extends MultiblockFormationEvent {
-        public Pre(PlayerEntity player, IShapedMultiblock multiblock, BlockPos controller, ItemStack formationTool) {
+        public Pre(PlayerEntity player, IMultiblockNew multiblock, BlockPos controller, ItemStack formationTool) {
             super(player, multiblock, controller, formationTool);
         }
     }
 
 
     public static class Post extends MultiblockFormationEvent {
-        public Post(PlayerEntity player, IShapedMultiblock multiblock, BlockPos controller, ItemStack formationTool) {
+        public Post(PlayerEntity player, IMultiblockNew multiblock, BlockPos controller, ItemStack formationTool) {
             super(player, multiblock, controller, formationTool);
         }
     }
