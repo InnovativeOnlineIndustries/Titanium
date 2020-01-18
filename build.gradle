@@ -64,11 +64,11 @@ minecraft {
 repositories {
     mavenCentral()
     jcenter()
-    //maven {
-    //    // location of the maven that hosts JEI files
-    //    name = "Progwml6 maven"
-    //    url = "https://dvs1.progwml6.com/files/maven/"
-    //}
+    maven {
+        // location of the maven that hosts JEI files
+        name = "Progwml6 maven"
+        url = "https://dvs1.progwml6.com/files/maven/"
+    }
     maven {
         // location of a maven mirror for JEI files, as a fallback
         name = "ModMaven"
@@ -81,9 +81,9 @@ repositories {
 dependencies {
     minecraft 'net.minecraftforge:forge:1.15.1-30.0.36'
 
-    compileOnly fg.deobf("mezz.jei:jei-1.14.4:6.0.0.18:api")
+    compileOnly fg.deobf("mezz.jei:jei-1.15.1:6.0.0.1:api")
         // at runtime, use the full JEI jar
-    //runtimeOnly fg.deobf("mezz.jei:jei-1.14.4:6.0.0.18")
+    runtimeOnly fg.deobf("mezz.jei:jei-1.15.1:6.0.0.1")
 
 
 }
