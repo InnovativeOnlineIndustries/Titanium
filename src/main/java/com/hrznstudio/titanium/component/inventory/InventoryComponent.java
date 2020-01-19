@@ -141,7 +141,7 @@ public class InventoryComponent<T extends IComponentHarness> extends ItemStackHa
     @Override
     protected void onContentsChanged(int slot) {
         if (this.componentHarness != null) {
-            componentHarness.markDirty();
+            componentHarness.markComponentDirty();
         }
         onSlotChanged.accept(getStackInSlot(slot), slot);
     }

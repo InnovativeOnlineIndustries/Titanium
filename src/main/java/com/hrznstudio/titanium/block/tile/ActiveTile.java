@@ -46,6 +46,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidUtil;
@@ -267,4 +268,19 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
 
     @Nonnull
     public abstract T getSelf();
+
+    @Override
+    public World getComponentWorld() {
+        return getSelf().getWorld();
+    }
+
+    @Override
+    public void markComponentDirty() {
+        super.markDirty();
+    }
+
+    @Override
+    public void markComponentForUpdate() {
+        super.markForUpdate();
+    }
 }

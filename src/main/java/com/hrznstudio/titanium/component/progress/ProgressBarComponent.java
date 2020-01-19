@@ -163,7 +163,7 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
      * Ticks the bar so it can increase if possible, managed by {@link MultiProgressBarHandler#update()}
      */
     public void tickBar() {
-        if (componentHarness != null && componentHarness.getWorld().getGameTime() % tickingTime == 0) {
+        if (componentHarness != null && componentHarness.getComponentWorld().getGameTime() % tickingTime == 0) {
             if (increaseType && progress < maxProgress) {
                 setProgress(this.progress + progressIncrease);
                 this.onTickWork.run();
@@ -237,7 +237,7 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
      */
     public void setProgress(int progress) {
         this.progress = progress;
-        if (componentHarness != null) componentHarness.markForUpdate();
+        if (componentHarness != null) componentHarness.markComponentForUpdate();
     }
 
     /**
