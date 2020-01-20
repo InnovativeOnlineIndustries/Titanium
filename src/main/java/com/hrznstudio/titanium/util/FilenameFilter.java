@@ -29,11 +29,6 @@ public enum FilenameFilter implements java.io.FilenameFilter {
     DAT("dat"),
     OBJ("obj"),
     CLASS("class"),
-    //Roadworks
-    ROADWORKS_SCRIPT("rs"),
-    ROADWORKS_GUI("rgui"),
-    ROADWORKS_STYLING("rstyle"),
-    ROADWORKS_PLUGIN("plugin");
 
     private String[] extensions;
 
