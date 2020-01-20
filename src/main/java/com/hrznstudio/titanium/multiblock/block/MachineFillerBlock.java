@@ -5,6 +5,7 @@ import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.multiblock.tile.MachineFillerTile;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
+import net.minecraft.world.gen.feature.template.Template;
 
 public class MachineFillerBlock extends BasicTileBlock<MachineFillerTile> {
     private BlockState originalState;

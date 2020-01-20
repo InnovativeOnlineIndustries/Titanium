@@ -5,7 +5,6 @@ import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.multiblock.tile.MachineControllerTile;
 
 public class MachineControllerBlock<T extends MachineControllerTile<T>> extends BasicTileBlock<T> {
-
     public MachineControllerBlock(Properties properties, Class<T> tileClass) {
         super(properties, tileClass);
     }
