@@ -5,15 +5,12 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.apache.commons.lang3.tuple.Pair;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
-import java.util.List;
-
-public interface IMultiblockNew {
+public interface IMultiblockHandler extends IForgeRegistryEntry<IMultiblockHandler> {
     /**
      * @param state // Trigger BlockState
      * Used to check whether the given blockstate can be used to trigger the formation of the Multiblock Structure.
@@ -30,11 +27,11 @@ public interface IMultiblockNew {
     boolean createStructure(World world, BlockPos controllerPos, Direction direction, PlayerEntity playerEntity);
 
     /**
-     * @param world
-     * @param controllerPos
-     * @param direction
-     * @param block
-     * @param playerEntity
+     * @param world //Server World
+     * @param controllerPos //Controller BlockPos
+     * @param direction //Direction Controller was Clicked from
+     * @param block //Broken Block
+     * @param playerEntity //Player who Clicked
      * This is used for dealing with the breaking and subsequent "resetting" of the blockstates.
      */
     void breakStructure(World world, BlockPos controllerPos, Direction direction, Block block, PlayerEntity playerEntity);
