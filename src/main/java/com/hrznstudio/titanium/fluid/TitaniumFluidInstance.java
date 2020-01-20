@@ -62,4 +62,10 @@ public class TitaniumFluidInstance extends net.minecraftforge.registries.ForgeRe
     public Block getBlockFluid() {
         return blockFluid;
     }
+
+    public void setBucketFluid(Item bucketFluid) {
+        this.bucketFluid = bucketFluid;
+        this.sourceFluid.setBucketFluid(bucketFluid);
+        this.flowingFluid.setBucketFluid(bucketFluid);
+    }
 }

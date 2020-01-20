@@ -12,20 +12,20 @@ import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.api.filter.IFilter;
-import com.hrznstudio.titanium.block.RotatableBlock;
 import com.hrznstudio.titanium.block.BasicTileBlock;
-import com.hrznstudio.titanium.component.button.MultiButtonComponent;
-import com.hrznstudio.titanium.component.button.ButtonComponent;
-import com.hrznstudio.titanium.component.filter.MultiFilterComponent;
-import com.hrznstudio.titanium.component.sideness.IFacingComponent;
+import com.hrznstudio.titanium.block.RotatableBlock;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.component.IComponentHarness;
-import com.hrznstudio.titanium.component.fluid.MultiTankComponent;
+import com.hrznstudio.titanium.component.button.ButtonComponent;
+import com.hrznstudio.titanium.component.button.MultiButtonComponent;
+import com.hrznstudio.titanium.component.filter.MultiFilterComponent;
 import com.hrznstudio.titanium.component.fluid.FluidTankComponent;
+import com.hrznstudio.titanium.component.fluid.MultiTankComponent;
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.hrznstudio.titanium.component.inventory.MultiInventoryComponent;
 import com.hrznstudio.titanium.component.progress.MultiProgressBarHandler;
 import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
+import com.hrznstudio.titanium.component.sideness.IFacingComponent;
 import com.hrznstudio.titanium.container.impl.BasicTileContainer;
 import com.hrznstudio.titanium.network.IButtonHandler;
 import com.hrznstudio.titanium.util.FacingUtil;
@@ -46,6 +46,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidUtil;
@@ -217,7 +218,7 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
     }
 
     public Direction getFacingDirection() {
-        return this.world.getBlockState(pos).has(RotatableBlock.FACING_ALL) ? this.world.getBlockState(pos).get(RotatableBlock.FACING_ALL) : Direction.NORTH;
+        return this.world.getBlockState(pos).has(RotatableBlock.FACING_ALL) ? this.world.getBlockState(pos).get(RotatableBlock.FACING_ALL) : (this.world.getBlockState(pos).has(RotatableBlock.FACING_HORIZONTAL) ? this.world.getBlockState(pos).get(RotatableBlock.FACING_HORIZONTAL) : Direction.NORTH);
     }
 
     public IFacingComponent getHandlerFromName(String string) {
@@ -267,4 +268,19 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
 
     @Nonnull
     public abstract T getSelf();
+
+    @Override
+    public World getComponentWorld() {
+        return getSelf().getWorld();
+    }
+
+    @Override
+    public void markComponentDirty() {
+        super.markDirty();
+    }
+
+    @Override
+    public void markComponentForUpdate() {
+        super.markForUpdate();
+    }
 }

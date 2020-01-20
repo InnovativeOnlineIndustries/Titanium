@@ -10,9 +10,11 @@ package com.hrznstudio.titanium.component;
 import net.minecraft.world.World;
 
 public interface IComponentHarness {
-    World getWorld();
 
-    void markForUpdate();
+    World getComponentWorld();
 
-    void markDirty();
+    void markComponentForUpdate();
+
+    void markComponentDirty();
+
 }
