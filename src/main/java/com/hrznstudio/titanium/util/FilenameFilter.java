@@ -28,7 +28,7 @@ public enum FilenameFilter implements java.io.FilenameFilter {
     LOG("log"),
     DAT("dat"),
     OBJ("obj"),
-    CLASS("class"),
+    CLASS("class");
 
     private String[] extensions;
 
