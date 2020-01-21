@@ -1,4 +1,4 @@
-package com.hrznstudio.titanium.api.multiblock;
+package com.hrznstudio.titanium.util;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -18,7 +18,7 @@ import java.util.Optional;
  * Full credits for this class to Immersive Engineering
  * Source: https://github.com/BluSunrize/ImmersiveEngineering/blob/1.14/src/main/java/blusunrize/immersiveengineering/common/blocks/multiblocks/StaticTemplateManager.java
  */
-public class StaticTemplateHandler {
+public class StaticTemplateUtil {
 
     public static Optional<InputStream> getModResource(ResourcePackType type, ResourceLocation name) {
         return ModList.get().getMods().stream()

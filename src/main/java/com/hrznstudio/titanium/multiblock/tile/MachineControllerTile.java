@@ -1,5 +1,6 @@
 package com.hrznstudio.titanium.multiblock.tile;
 
+import com.hrznstudio.titanium.api.multiblock.IMultiblockComponent;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.block.tile.ActiveTile;
 import net.minecraft.block.BlockState;
@@ -17,9 +18,10 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MachineControllerTile<T extends MachineControllerTile<T>> extends ActiveTile<T> {
+public class MachineControllerTile<T extends MachineControllerTile<T>> extends ActiveTile<T> implements IMultiblockComponent {
 
     private BlockState originalState;
+    private boolean isFormed = false;
     private List<Pair<BlockPos, BlockState>> children = new ArrayList<>();
 
     public MachineControllerTile(BasicTileBlock<T> base, BlockState originalState) {
@@ -66,5 +68,13 @@ public class MachineControllerTile<T extends MachineControllerTile<T>> extends A
     @Override
     public T getSelf() {
         return null;
+    }
+
+    public boolean isFormed() {
+        return this.isFormed;
+    }
+
+    public void setFormed(boolean formed) {
+        this.isFormed = formed;
     }
 }
