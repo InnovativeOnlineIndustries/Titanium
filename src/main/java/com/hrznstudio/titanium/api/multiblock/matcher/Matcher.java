@@ -1,4 +1,4 @@
-package com.hrznstudio.titanium.api.multiblock;
+package com.hrznstudio.titanium.api.multiblock.matcher;
 
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;

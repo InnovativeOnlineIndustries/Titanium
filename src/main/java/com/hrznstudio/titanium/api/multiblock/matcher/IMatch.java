@@ -1,4 +1,4 @@
-package com.hrznstudio.titanium.api.multiblock;
+package com.hrznstudio.titanium.api.multiblock.matcher;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;

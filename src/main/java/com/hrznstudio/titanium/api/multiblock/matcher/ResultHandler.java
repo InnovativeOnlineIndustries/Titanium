@@ -1,4 +1,4 @@
-package com.hrznstudio.titanium.api.multiblock;
+package com.hrznstudio.titanium.api.multiblock.matcher;
 
 import com.hrznstudio.titanium.Titanium;
 import net.minecraftforge.eventbus.api.Event;
