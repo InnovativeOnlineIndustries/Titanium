@@ -1,5 +1,6 @@
 package com.hrznstudio.titanium.util;
 
+import com.hrznstudio.titanium.Titanium;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.resources.ResourcePackType;
@@ -38,15 +39,16 @@ public class StaticTemplateUtil {
         try {
             return source.getResourceStream(type, id);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            Titanium.LOGGER.error(e);
         }
+        return null;
     }
 
     public static Template loadStaticTemplate(ResourceLocation id) throws IOException {
         Optional<InputStream> optStream = getModResource(ResourcePackType.SERVER_DATA,
                 new ResourceLocation(id.getNamespace(), id.getPath() + ".nbt"));
         if (!optStream.isPresent()) {
-            throw new RuntimeException("Mod resource not found: " + id);
+            Titanium.LOGGER.error(new RuntimeException("Mod resource not found: " + id));
         }
         return loadTemplate(optStream.get());
     }
