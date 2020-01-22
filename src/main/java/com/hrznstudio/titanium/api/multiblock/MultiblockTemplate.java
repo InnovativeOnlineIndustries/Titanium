@@ -1,6 +1,7 @@
 package com.hrznstudio.titanium.api.multiblock;
 
 import com.google.common.collect.ImmutableList;
+import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.api.multiblock.matcher.IMatch;
 import com.hrznstudio.titanium.api.multiblock.matcher.Matcher;
 import com.hrznstudio.titanium.util.BlockPosUtil;
@@ -144,7 +145,7 @@ public abstract class MultiblockTemplate implements IMultiblock {
             try {
                 template = StaticTemplateUtil.loadStaticTemplate(id);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                Titanium.LOGGER.error(e);
             }
         }
         return template;
