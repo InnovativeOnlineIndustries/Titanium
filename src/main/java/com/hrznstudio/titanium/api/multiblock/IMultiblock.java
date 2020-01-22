@@ -14,35 +14,35 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public interface IMultiblock {
 
     /**
-     * @param state // Trigger BlockState
+     * @param state Trigger BlockState
      * Used to check whether the given blockstate can be used to trigger the formation of the Multiblock Structure.
      */
     boolean isBlockTrigger(BlockState state);
 
     /**
-     * @param world //World
-     * @param controllerPos //Controller BlockPos
-     * @param direction //Direction Controller was Clicked from
-     * @param playerEntity //Player who Clicked
+     * @param world         World
+     * @param controllerPos Controller BlockPos
+     * @param direction     Direction Controller was Clicked from
+     * @param playerEntity  Player who Clicked
      * This is used for the final check for the structure and sets the new structure.
      */
     boolean createStructure(World world, BlockPos controllerPos, Direction direction, PlayerEntity playerEntity);
 
     /**
-     * @param world //World
-     * @param originPos //Origin Position
-     * @param rotation //Rotation
-     * @param mirror //Mirror
-     * @param direction //Direction
+     * @param world     World
+     * @param originPos Origin Position
+     * @param rotation  Rotation
+     * @param mirror    Mirror
+     * @param direction Direction
      * This is used for forming the actual structure and replacing blockstates.
      */
     void formStructure(World world, BlockPos originPos, Rotation rotation, Mirror mirror, Direction direction);
 
     /**
-     * @param world //Server World
-     * @param originPos //Controller BlockPos
-     * @param direction //Direction Controller was Clicked from
-     * @param mirrored //Mirrored Boolean
+     * @param world     Server World
+     * @param originPos Controller BlockPos
+     * @param direction Direction Controller was Clicked from
+     * @param mirrored  Mirrored Boolean
      * This is used for dealing with the breaking and subsequent "resetting" of the blockstates.
      */
     void breakStructure(World world, BlockPos originPos, Direction direction, boolean mirrored);
