@@ -23,7 +23,7 @@ public class BlockPosUtil {
     }
 
     public static BlockPos withSettingsAndOffset(BlockPos origin, BlockPos relative, boolean mirrored, Direction facing) {
-        Rotation rot = RotationUtil.getRotationBetweenFacings(Direction.NORTH, facing);
+        Rotation rot = FacingUtil.getRotationBetweenFacings(Direction.NORTH, facing);
         if(rot == null) {
             return origin;
         }

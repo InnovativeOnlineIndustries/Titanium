@@ -5,7 +5,7 @@ import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.api.multiblock.matcher.IMatch;
 import com.hrznstudio.titanium.api.multiblock.matcher.Matcher;
 import com.hrznstudio.titanium.util.BlockPosUtil;
-import com.hrznstudio.titanium.util.RotationUtil;
+import com.hrznstudio.titanium.util.FacingUtil;
 import com.hrznstudio.titanium.util.StaticTemplateUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -71,7 +71,7 @@ public abstract class MultiblockTemplate implements IMultiblock {
             direction = Direction.fromAngle(playerEntity.rotationYaw);
         }
 
-        Rotation rotation = RotationUtil.getRotationBetweenFacings(Direction.NORTH, direction.getOpposite());
+        Rotation rotation = FacingUtil.getRotationBetweenFacings(Direction.NORTH, direction.getOpposite());
         if (rotation == null) {
             return false;
         }
@@ -117,7 +117,7 @@ public abstract class MultiblockTemplate implements IMultiblock {
     @Override
     public void breakStructure(World world, BlockPos originPos, Direction direction, boolean mirrored) {
         Mirror mirror = mirrored ? Mirror.FRONT_BACK : Mirror.NONE;
-        Rotation rot = RotationUtil.getRotationBetweenFacings(Direction.NORTH, direction);
+        Rotation rot = FacingUtil.getRotationBetweenFacings(Direction.NORTH, direction);
         if (rot != null) {
             for (Template.BlockInfo info : getTemplate().blocks.get(0)) {
                 BlockPos actualPos = BlockPosUtil.withSettingsAndOffset(originPos, info.pos, mirror, rot);
