@@ -1,6 +1,6 @@
 package com.hrznstudio.titanium._impl.test.multiblock;
 
-import com.hrznstudio.titanium.api.multiblock.IMultiblockHandler;
+import com.hrznstudio.titanium.api.multiblock.IMultiblock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
-public class MultiblockTestHandler implements IMultiblockHandler {
+public class MultiblockTestHandler implements IMultiblock {
     
 
     @Override
@@ -40,7 +40,7 @@ public class MultiblockTestHandler implements IMultiblockHandler {
     }
 
     @Override
-    public IMultiblockHandler setRegistryName(ResourceLocation name) {
+    public IMultiblock setRegistryName(ResourceLocation name) {
         return null;
     }
 
@@ -51,7 +51,7 @@ public class MultiblockTestHandler implements IMultiblockHandler {
     }
 
     @Override
-    public Class<IMultiblockHandler> getRegistryType() {
+    public Class<IMultiblock> getRegistryType() {
         return null;
     }
 }

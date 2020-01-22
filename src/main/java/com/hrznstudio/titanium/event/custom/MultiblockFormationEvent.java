@@ -1,6 +1,6 @@
 package com.hrznstudio.titanium.event.custom;
 
-import com.hrznstudio.titanium.api.multiblock.IMultiblockHandler;
+import com.hrznstudio.titanium.api.multiblock.IMultiblock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
@@ -9,18 +9,18 @@ import net.minecraftforge.eventbus.api.Cancelable;
 
 public class MultiblockFormationEvent extends PlayerEvent {
 
-    private final IMultiblockHandler multiblock;
+    private final IMultiblock multiblock;
     private final BlockPos controller;
     private final ItemStack formationTool;
 
-    public MultiblockFormationEvent(PlayerEntity player, IMultiblockHandler multiblock, BlockPos controller, ItemStack formationTool) {
+    public MultiblockFormationEvent(PlayerEntity player, IMultiblock multiblock, BlockPos controller, ItemStack formationTool) {
         super(player);
         this.multiblock = multiblock;
         this.controller = controller;
         this.formationTool = formationTool;
     }
 
-    public IMultiblockHandler getMultiblock() {
+    public IMultiblock getMultiblock() {
         return multiblock;
     }
 
@@ -38,14 +38,14 @@ public class MultiblockFormationEvent extends PlayerEvent {
      */
     @Cancelable
     public static class Pre extends MultiblockFormationEvent {
-        public Pre(PlayerEntity player, IMultiblockHandler multiblock, BlockPos controller, ItemStack formationTool) {
+        public Pre(PlayerEntity player, IMultiblock multiblock, BlockPos controller, ItemStack formationTool) {
             super(player, multiblock, controller, formationTool);
         }
     }
 
 
     public static class Post extends MultiblockFormationEvent {
-        public Post(PlayerEntity player, IMultiblockHandler multiblock, BlockPos controller, ItemStack formationTool) {
+        public Post(PlayerEntity player, IMultiblock multiblock, BlockPos controller, ItemStack formationTool) {
             super(player, multiblock, controller, formationTool);
         }
     }

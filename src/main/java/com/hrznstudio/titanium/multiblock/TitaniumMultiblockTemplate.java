@@ -1,6 +1,8 @@
-package com.hrznstudio.titanium.api.multiblock;
+package com.hrznstudio.titanium.multiblock;
 
 import com.hrznstudio.titanium.Titanium;
+import com.hrznstudio.titanium.api.multiblock.IMultiblockComponent;
+import com.hrznstudio.titanium.api.multiblock.MultiblockTemplate;
 import com.hrznstudio.titanium.multiblock.tile.MachineControllerTile;
 import com.hrznstudio.titanium.multiblock.tile.MachineFillerTile;
 import net.minecraft.block.BlockState;

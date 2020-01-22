@@ -1,7 +1,7 @@
 package com.hrznstudio.titanium.util;
 
 import com.hrznstudio.titanium.Titanium;
-import com.hrznstudio.titanium.api.multiblock.IMultiblockHandler;
+import com.hrznstudio.titanium.api.multiblock.IMultiblock;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
@@ -10,13 +10,13 @@ import net.minecraftforge.registries.RegistryManager;
 public class TitaniumRegistries {
 
     public static void init(){
-        new RegistryBuilder<IMultiblockHandler>()
+        new RegistryBuilder<IMultiblock>()
                 .setName(new ResourceLocation(Titanium.MODID, "multiblock_handlers"))
                 .setIDRange(1, Integer.MAX_VALUE - 1)
-                .setType(IMultiblockHandler.class)
+                .setType(IMultiblock.class)
                 .disableSaving()
                 .create();
     }
 
-    public static IForgeRegistry<IMultiblockHandler> multiblock_registry = RegistryManager.ACTIVE.getRegistry(IMultiblockHandler.class);
+    public static IForgeRegistry<IMultiblock> multiblock_registry = RegistryManager.ACTIVE.getRegistry(IMultiblock.class);
 }

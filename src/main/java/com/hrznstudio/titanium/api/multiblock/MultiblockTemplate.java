@@ -28,7 +28,7 @@ import java.util.List;
  *
  * @Link https://github.com/BluSunrize/ImmersiveEngineering
  */
-public abstract class MultiblockTemplate implements IMultiblockHandler {
+public abstract class MultiblockTemplate implements IMultiblock {
 
     private final ResourceLocation id;
     private final List<IMatch> additionalPredicates;
