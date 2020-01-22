@@ -25,8 +25,10 @@ import java.util.List;
 
 /**
  * Big shout-outs and credits to Immersive Engineering for providing most of the inspiration and example implementation code for us to figure out this implementation.
+ *
  * IE is licensed under "Blu's License of Common Sense" as seen here:
  * @Link https://github.com/BluSunrize/ImmersiveEngineering/blob/master/LICENSE
+ *
  * You should also go check out their github repo:
  * @Link https://github.com/BluSunrize/ImmersiveEngineering
  */
