@@ -90,7 +90,6 @@ public class Titanium extends ModuleController {
         EventManager.mod(FMLCommonSetupEvent.class).process(this::commonSetup).subscribe();
         EventManager.forge(PlayerEvent.PlayerLoggedInEvent.class).process(this::onPlayerLoggedIn).subscribe();
         EventManager.forge(FMLServerStartingEvent.class).process(this::onServerStart).subscribe();
-        TitaniumRegistries.init();
     }
 
     public static void openGui(ActiveTile tile, ServerPlayerEntity player) {
