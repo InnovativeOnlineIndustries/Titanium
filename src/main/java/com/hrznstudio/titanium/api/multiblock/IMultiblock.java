@@ -56,8 +56,6 @@ public interface IMultiblock {
 
     /**
      * Used to check if the Multiblock can be rendered in @IShapedMultiblock#renderFormedMultiblock
-     * @value True  Can Render the Multiblock
-     * @value False Can't Render the Multiblock
      */
     @OnlyIn(Dist.CLIENT)
     boolean canRenderFormedMultiblock();
