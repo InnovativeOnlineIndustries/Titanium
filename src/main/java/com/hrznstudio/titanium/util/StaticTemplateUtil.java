@@ -25,10 +25,10 @@ import java.util.Optional;
 /**
  * Full credits for this class to Immersive Engineering.
  * Source:
- * @Link https://github.com/BluSunrize/ImmersiveEngineering/blob/1.14/src/main/java/blusunrize/immersiveengineering/common/blocks/multiblocks/StaticTemplateManager.java
+ * https://github.com/BluSunrize/ImmersiveEngineering/blob/1.14/src/main/java/blusunrize/immersiveengineering/common/blocks/multiblocks/StaticTemplateManager.java
  *
  * IE is licensed under "Blu's License of Common Sense" as seen here:
- * @Link https://github.com/BluSunrize/ImmersiveEngineering/blob/master/LICENSE
+ * https://github.com/BluSunrize/ImmersiveEngineering/blob/master/LICENSE
  */
 public class StaticTemplateUtil {
 

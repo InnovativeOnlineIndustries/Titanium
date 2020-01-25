@@ -18,10 +18,10 @@ import net.minecraft.world.gen.feature.template.Template;
  * Big shout-outs and credits to Immersive Engineering for providing most of the inspiration and example implementation code for us to figure out this implementation.
  *
  * IE is licensed under "Blu's License of Common Sense" as seen here:
- * @Link https://github.com/BluSunrize/ImmersiveEngineering/blob/master/LICENSE
+ * https://github.com/BluSunrize/ImmersiveEngineering/blob/master/LICENSE
  *
  * You should also go check out their github repo:
- * @Link https://github.com/BluSunrize/ImmersiveEngineering
+ * https://github.com/BluSunrize/ImmersiveEngineering
  */
 public class BlockPosUtil {
     public static BlockPos withSettingsAndOffset(BlockPos origin, BlockPos relative, Mirror mirror, Rotation rot) {
