@@ -7,11 +7,14 @@
 
 package com.hrznstudio.titanium.api.multiblock;
 
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 
 public interface IMultiblockComponent {
     boolean isFormed();
-    void setFormed(boolean formed);
+    void setFormed(boolean isFormed);
     BlockPos getPosition();
     BlockPos getMasterPosition();
+    Direction getFacing();
+    void setFacing(Direction facing);
 }

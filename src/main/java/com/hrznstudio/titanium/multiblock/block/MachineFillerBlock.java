@@ -8,13 +8,13 @@
 package com.hrznstudio.titanium.multiblock.block;
 
 import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.block.BasicTileBlock;
+import com.hrznstudio.titanium.block.RotatableBlock;
 import com.hrznstudio.titanium.multiblock.tile.MachineFillerTile;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.world.gen.feature.template.Template;
 
-public class MachineFillerBlock extends BasicTileBlock<MachineFillerTile> {
+public class MachineFillerBlock extends RotatableBlock<MachineFillerTile> {
     private BlockState originalState;
     public static MachineFillerBlock INSTANCE = new MachineFillerBlock();
 

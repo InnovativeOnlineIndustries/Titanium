@@ -12,10 +12,13 @@ import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.block.tile.ActiveTile;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import org.apache.commons.lang3.tuple.Pair;
@@ -27,13 +30,28 @@ import java.util.List;
 
 public class MachineControllerTile<T extends MachineControllerTile<T>> extends ActiveTile<T> implements IMultiblockComponent {
 
-    private BlockState originalState;
+    @Save
+    private BlockPos masterPos = BlockPos.ZERO;
+    @Save
+    private BlockPos posInMultiblock = BlockPos.ZERO;
+    @Save
+    private BlockPos posRSBlock = BlockPos.ZERO;
+    @Save
+    private boolean hasRedStoneSignal = false;
+    @Save
     private boolean isFormed = false;
+    @Save
+    private Item formationTool;
+    @Save
+    private BlockState originalState;
+
+    private MultiblockTemplate multiblockTemplate;
+
     private List<Pair<BlockPos, BlockState>> children = new ArrayList<>();
 
-    public MachineControllerTile(BasicTileBlock<T> base, BlockState originalState) {
+    public MachineControllerTile(BasicTileBlock<T> base, Item formationTool) {
         super(base);
-        this.originalState = originalState;
+        this.formationTool = formationTool;
     }
 
     public void addChild(MachineFillerTile child) {
@@ -81,17 +99,46 @@ public class MachineControllerTile<T extends MachineControllerTile<T>> extends A
         return this.isFormed;
     }
 
-    public void setFormed(boolean formed) {
-        this.isFormed = formed;
-    }
-
-    @Override
-    public BlockPos getPosition() {
-        return null;
+    public void setFormed(boolean isFormed) {
+        this.isFormed = isFormed;
     }
 
     @Override
     public BlockPos getMasterPosition() {
-        return null;
+        return masterPos;
     }
+
+    public boolean hasRedStoneSignal() {
+        return hasRedStoneSignal;
+    }
+
+    public void updateMasterBlock(BlockState state, boolean blockUpdate)
+    {
+        markDirty();
+        if(blockUpdate){
+            markForUpdate(state);
+        }
+    }
+
+    public boolean targetFormationSide(ItemStack stack, Direction direction, PlayerEntity player, Vec3d vec3d, boolean consumable){
+       if(!world.isRemote) {
+           if (consumable) {
+
+           } else {
+
+           }
+       }
+        return false;
+    }
+
+    public void disassemble()
+    {
+        if(isFormed() && !world.isRemote)
+        {
+            BlockPos startPos = this.pos;
+            multiblockTemplate.disassemble(world, startPos, getIsMirrored(), multiblockTemplate.untransformDirection(getFacing()));
+            world.removeBlock(pos, false);
+        }
+    }
+
 }
