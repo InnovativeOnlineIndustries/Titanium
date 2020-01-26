@@ -25,7 +25,6 @@ import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.template.PlacementSettings;
 import net.minecraft.world.gen.feature.template.Template;
-import net.minecraftforge.client.model.pipeline.BlockInfo;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -166,13 +165,11 @@ public abstract class MultiblockTemplate implements IMultiblock {
         return true;
     }
 
-    @Override
-    public List<BlockInfo> getStructure()
+    public List<Template.BlockInfo> getStructure()
     {
         return getTemplate().blocks.get(0);
     }
 
-    @Override
     public Vec3i getSize()
     {
         return getTemplate().getSize();

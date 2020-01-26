@@ -7,7 +7,9 @@
 
 package com.hrznstudio.titanium.multiblock.tile;
 
+import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.multiblock.IMultiblockComponent;
+import com.hrznstudio.titanium.api.multiblock.MultiblockTemplate;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.block.tile.ActiveTile;
 import net.minecraft.block.BlockState;
@@ -104,19 +106,33 @@ public class MachineControllerTile<T extends MachineControllerTile<T>> extends A
     }
 
     @Override
+    public BlockPos getPosition() {
+        return null;
+    }
+
+    @Override
     public BlockPos getMasterPosition() {
         return masterPos;
+    }
+
+    @Override
+    public Direction getFacing() {
+        return null;
+    }
+
+    @Override
+    public void setFacing(Direction facing) {
+
     }
 
     public boolean hasRedStoneSignal() {
         return hasRedStoneSignal;
     }
 
-    public void updateMasterBlock(BlockState state, boolean blockUpdate)
-    {
+    public void updateMasterBlock(BlockState state, boolean blockUpdate) {
         markDirty();
-        if(blockUpdate){
-            markForUpdate(state);
+        if(blockUpdate) {
+            markForUpdate();
         }
     }
 
@@ -131,12 +147,10 @@ public class MachineControllerTile<T extends MachineControllerTile<T>> extends A
         return false;
     }
 
-    public void disassemble()
-    {
-        if(isFormed() && !world.isRemote)
-        {
+    public void disassemble() {
+        if(isFormed() && !world.isRemote) {
             BlockPos startPos = this.pos;
-            multiblockTemplate.disassemble(world, startPos, getIsMirrored(), multiblockTemplate.untransformDirection(getFacing()));
+            multiblockTemplate.breakStructure(world, startPos, getIsMirrored(), multiblockTemplate.untransformDirection(getFacing()));
             world.removeBlock(pos, false);
         }
     }

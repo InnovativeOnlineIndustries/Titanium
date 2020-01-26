@@ -7,11 +7,14 @@
 
 package com.hrznstudio.titanium.multiblock.tile;
 
+import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.multiblock.IFormationTool;
 import com.hrznstudio.titanium.api.multiblock.IMultiblockComponent;
+import com.hrznstudio.titanium.api.multiblock.MultiblockTemplate;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.block.tile.ActiveTile;
 import com.hrznstudio.titanium.block.tile.BasicTile;
+import com.hrznstudio.titanium.multiblock.TitaniumMultiblockTemplate;
 import com.hrznstudio.titanium.multiblock.block.MachineFillerBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -20,6 +23,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.gen.feature.template.Template;
 
 import javax.annotation.Nonnull;
+
+import static com.hrznstudio.titanium.block.RotatableBlock.FACING_HORIZONTAL;
 
 public class MachineFillerTile extends ActiveTile<MachineFillerTile> implements IMultiblockComponent {
 
@@ -66,8 +71,7 @@ public class MachineFillerTile extends ActiveTile<MachineFillerTile> implements 
         this.isFormed = isFormed;
     }
 
-    public BlockPos getOrigin()
-    {
+    public BlockPos getOrigin() {
         return TitaniumMultiblockTemplate.withSettingsAndOffset(pos, BlockPos.ZERO.subtract(posInMultiblock),
                 getIsMirrored(), multiblockTemplate.untransformDirection(getFacing()));
     }
@@ -102,9 +106,8 @@ public class MachineFillerTile extends ActiveTile<MachineFillerTile> implements 
         return false;
     }
 
-    public BlockState getOriginalBlock()
-    {
-        for(Template.BlockInfo block : multiblockTemplate.getStructure())
+    public BlockState getOriginalBlock() {
+        for(Template.BlockInfo block : multiblockTemplate.getStructure()) {}
         return Blocks.AIR.getDefaultState();
     }
 }
