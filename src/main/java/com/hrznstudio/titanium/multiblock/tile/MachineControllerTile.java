@@ -8,6 +8,7 @@
 package com.hrznstudio.titanium.multiblock.tile;
 
 import com.hrznstudio.titanium.annotation.Save;
+import com.hrznstudio.titanium.api.multiblock.IFormationItem;
 import com.hrznstudio.titanium.api.multiblock.IMultiblockComponent;
 import com.hrznstudio.titanium.api.multiblock.MultiblockTemplate;
 import com.hrznstudio.titanium.block.BasicTileBlock;
@@ -51,7 +52,11 @@ public class MachineControllerTile<T extends MachineControllerTile<T>> extends A
 
     private List<Pair<BlockPos, BlockState>> children = new ArrayList<>();
 
-    public MachineControllerTile(BasicTileBlock<T> base, Item formationTool) {
+    public MachineControllerTile(BasicTileBlock<T> base) {
+        this(base, null);
+    }
+
+    public MachineControllerTile(BasicTileBlock<T> base, @Nullable Item formationTool) {
         super(base);
         this.formationTool = formationTool;
     }
@@ -61,18 +66,40 @@ public class MachineControllerTile<T extends MachineControllerTile<T>> extends A
     }
 
     public void onBreak() {
-        children.forEach(pair -> {
-            world.setBlockState(pair.getKey(), pair.getValue());
-        });
-        world.setBlockState(getPos(), originalState);
+        if(isFormed() && !world.isRemote) {
+            children.forEach(pair -> {
+                world.setBlockState(pair.getKey(), pair.getValue());
+            });
+            world.setBlockState(getPos(), originalState);
+        }
     }
 
     @Override
     public ActionResultType onActivated(PlayerEntity player, Hand hand, Direction facing, double hitX, double hitY, double hitZ) {
-        if (super.onActivated(player, hand, facing, hitX, hitY, hitZ) == ActionResultType.FAIL) {
-            if (!player.isSneaking()) {
+        if (super.onActivated(player, hand, facing, hitX, hitY, hitZ) == ActionResultType.PASS) {
+            ItemStack stack = player.getHeldItem(hand);
+            Item item = stack.getItem();
+            boolean isItemFormationTool = stack.isItemEqual(formationTool.getDefaultInstance());
+            if (!player.isSneaking() && isFormed) {
                 openGui(player);
                 return ActionResultType.SUCCESS;
+            } else if(isItemFormationTool){
+                if(item instanceof IFormationItem){
+                    if(((IFormationItem) item).isConsumable()){
+                        int cost = ((IFormationItem) item).formationCost();
+                        setFormed(true);
+                        if(cost != 0) {
+                            stack.shrink(((IFormationItem) item).formationCost());
+                            return ActionResultType.SUCCESS;
+                        }else{
+                            stack.shrink(1);
+                            return ActionResultType.SUCCESS;
+                        }
+                    }else{
+                        setFormed(true);
+                        return ActionResultType.SUCCESS;
+                    }
+                }
             }
             return ActionResultType.FAIL;
         } else {
@@ -130,29 +157,27 @@ public class MachineControllerTile<T extends MachineControllerTile<T>> extends A
     }
 
     public void updateMasterBlock(BlockState state, boolean blockUpdate) {
-        markDirty();
         if(blockUpdate) {
             markForUpdate();
+        }else{
+            markDirty();
         }
     }
 
     public boolean targetFormationSide(ItemStack stack, Direction direction, PlayerEntity player, Vec3d vec3d, boolean consumable){
        if(!world.isRemote) {
-           if (consumable) {
+           if(formationTool != null) {
 
+               if (consumable) {
+
+               } else {
+
+               }
            } else {
 
            }
        }
         return false;
-    }
-
-    public void disassemble() {
-        if(isFormed() && !world.isRemote) {
-            BlockPos startPos = this.pos;
-            multiblockTemplate.breakStructure(world, startPos, getIsMirrored(), multiblockTemplate.untransformDirection(getFacing()));
-            world.removeBlock(pos, false);
-        }
     }
 
 }
