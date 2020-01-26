@@ -9,7 +9,7 @@ package com.hrznstudio.titanium.util;
 
 import javax.annotation.Nullable;
 
-public class Unboxing {
+public class UnboxingUtil {
 
     public static long safelyUnbox(@Nullable Long l) {
         if (l == null)

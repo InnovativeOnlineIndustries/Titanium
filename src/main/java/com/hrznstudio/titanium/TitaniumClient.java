@@ -8,7 +8,7 @@
 package com.hrznstudio.titanium;
 
 import com.hrznstudio.titanium.block.BasicBlock;
-import com.hrznstudio.titanium.util.RayTraceUtils;
+import com.hrznstudio.titanium.util.RayTraceUtil;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.BlockState;
@@ -40,7 +40,7 @@ public class TitaniumClient {
             BlockRayTraceResult traceResult = event.getTarget();
             BlockState og = Minecraft.getInstance().world.getBlockState(traceResult.getPos());
             if (og.getBlock() instanceof BasicBlock && ((BasicBlock) og.getBlock()).hasIndividualRenderVoxelShape()) {
-                VoxelShape shape = RayTraceUtils.rayTraceVoxelShape(traceResult, Minecraft.getInstance().world, Minecraft.getInstance().player, 32, event.getPartialTicks());
+                VoxelShape shape = RayTraceUtil.rayTraceVoxelShape(traceResult, Minecraft.getInstance().world, Minecraft.getInstance().player, 32, event.getPartialTicks());
                 BlockPos blockpos = event.getTarget().getPos();
                 if (shape != null) {
                     event.setCanceled(true);

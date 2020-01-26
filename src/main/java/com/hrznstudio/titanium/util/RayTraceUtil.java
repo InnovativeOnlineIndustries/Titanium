@@ -20,7 +20,7 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class RayTraceUtils {
+public class RayTraceUtil {
 
     public static RayTraceResult rayTraceSimple(World world, LivingEntity living, double blockReachDistance, float partialTicks) {
         Vec3d vec3d = living.getEyePosition(partialTicks);

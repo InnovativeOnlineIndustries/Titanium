@@ -11,7 +11,7 @@ import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.hrznstudio.titanium.event.handler.EventManager;
 import com.hrznstudio.titanium.module.api.IAlternativeEntries;
 import com.hrznstudio.titanium.module.api.RegistryManager;
-import com.hrznstudio.titanium.util.SidedHandler;
+import com.hrznstudio.titanium.util.SidedHandlerUtil;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
@@ -107,7 +107,7 @@ public class Feature {
         }
 
         public Builder eventClient(Supplier<Supplier<EventManager.FilteredEventManager<?>>> managerSupplier) {
-            SidedHandler.runOn(Dist.CLIENT, () -> () -> events.add(managerSupplier.get().get()));
+            SidedHandlerUtil.runOn(Dist.CLIENT, () -> () -> events.add(managerSupplier.get().get()));
             return this;
         }
 

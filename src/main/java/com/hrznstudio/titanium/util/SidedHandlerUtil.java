@@ -12,8 +12,8 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import java.util.function.Supplier;
 
-public final class SidedHandler {
-    private SidedHandler() {
+public final class SidedHandlerUtil {
+    private SidedHandlerUtil() {
     }
 
     public static Dist getSide() {

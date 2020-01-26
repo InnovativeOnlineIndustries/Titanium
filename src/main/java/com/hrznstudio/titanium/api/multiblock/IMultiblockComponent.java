@@ -7,7 +7,11 @@
 
 package com.hrznstudio.titanium.api.multiblock;
 
+import net.minecraft.util.math.BlockPos;
+
 public interface IMultiblockComponent {
     boolean isFormed();
     void setFormed(boolean formed);
+    BlockPos getPosition();
+    BlockPos getMasterPosition();
 }

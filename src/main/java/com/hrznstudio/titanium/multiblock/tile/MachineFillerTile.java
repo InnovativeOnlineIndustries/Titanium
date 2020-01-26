@@ -13,6 +13,7 @@ import com.hrznstudio.titanium.block.tile.ActiveTile;
 import com.hrznstudio.titanium.block.tile.BasicTile;
 import com.hrznstudio.titanium.multiblock.block.MachineFillerBlock;
 import net.minecraft.block.BlockState;
+import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
 
@@ -40,7 +41,18 @@ public class MachineFillerTile extends ActiveTile<MachineFillerTile> implements 
         return false;
     }
 
+    @Override
     public void setFormed(boolean formed) {
         this.formed = formed;
+    }
+
+    @Override
+    public BlockPos getPosition() {
+        return null;
+    }
+
+    @Override
+    public BlockPos getMasterPosition() {
+        return null;
     }
 }

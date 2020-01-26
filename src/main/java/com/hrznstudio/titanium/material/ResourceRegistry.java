@@ -19,7 +19,7 @@ import com.hrznstudio.titanium.module.Module;
 import com.hrznstudio.titanium.module.ModuleController;
 import com.hrznstudio.titanium.tab.AdvancedTitaniumTab;
 import com.hrznstudio.titanium.util.AnnotationUtil;
-import com.hrznstudio.titanium.util.SidedHandler;
+import com.hrznstudio.titanium.util.SidedHandlerUtil;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -49,7 +49,7 @@ public class ResourceRegistry {
     public static void onInit() {
         scanForReferences();
         ModLoader.get().postEvent(new ResourceRegistrationEvent());
-        SidedHandler.runOn(Dist.CLIENT, () -> () -> {
+        SidedHandlerUtil.runOn(Dist.CLIENT, () -> () -> {
             EventManager.mod(ColorHandlerEvent.Item.class).process(item -> {
                 ResourceRegistry.getMaterials().forEach(material -> {
                     material.getGenerated().values().stream().filter(entry -> entry instanceof IHasColor).forEach(entry -> {

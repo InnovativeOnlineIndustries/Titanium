@@ -84,4 +84,14 @@ public class MachineControllerTile<T extends MachineControllerTile<T>> extends A
     public void setFormed(boolean formed) {
         this.isFormed = formed;
     }
+
+    @Override
+    public BlockPos getPosition() {
+        return null;
+    }
+
+    @Override
+    public BlockPos getMasterPosition() {
+        return null;
+    }
 }

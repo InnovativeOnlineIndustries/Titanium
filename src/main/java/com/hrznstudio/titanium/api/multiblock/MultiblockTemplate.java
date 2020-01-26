@@ -9,8 +9,8 @@ package com.hrznstudio.titanium.api.multiblock;
 
 import com.google.common.collect.ImmutableList;
 import com.hrznstudio.titanium.Titanium;
-import com.hrznstudio.titanium.api.multiblock.matcher.IMatch;
-import com.hrznstudio.titanium.api.multiblock.matcher.Matcher;
+import com.hrznstudio.titanium.util.matcher.IMatch;
+import com.hrznstudio.titanium.util.matcher.Matcher;
 import com.hrznstudio.titanium.util.BlockPosUtil;
 import com.hrznstudio.titanium.util.FacingUtil;
 import com.hrznstudio.titanium.util.StaticTemplateUtil;

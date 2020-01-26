@@ -11,7 +11,7 @@ import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 
-public enum FilenameFilter implements java.io.FilenameFilter {
+public enum FilenameFilterUtil implements java.io.FilenameFilter {
     XML("xml"),
     JSON("json"),
     CFG("cfg"),
@@ -32,12 +32,12 @@ public enum FilenameFilter implements java.io.FilenameFilter {
 
     private String[] extensions;
 
-    FilenameFilter(String... suffix) {
+    FilenameFilterUtil(String... suffix) {
         this.extensions = suffix;
     }
 
     public static boolean isKnown(File dir, String name) {
-        for (FilenameFilter filter : values())
+        for (FilenameFilterUtil filter : values())
             if (filter.accept(dir, name))
                 return true;
         return false;

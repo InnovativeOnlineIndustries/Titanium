@@ -23,7 +23,7 @@ import net.minecraftforge.fml.hooks.BasicEventHooks;
 
 import java.util.LinkedList;
 
-public class TeleportationUtils {
+public class TeleportationUtil {
 
 
     public static Entity teleportEntity(Entity entity, DimensionType dimension, double xCoord, double yCoord, double zCoord, float yaw, float pitch) {
