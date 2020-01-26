@@ -5,7 +5,7 @@
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
 
-package com.hrznstudio.titanium.api.multiblock.matcher;
+package com.hrznstudio.titanium.util.matcher;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
