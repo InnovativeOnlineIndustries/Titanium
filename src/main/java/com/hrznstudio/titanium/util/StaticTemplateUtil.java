@@ -53,8 +53,7 @@ public class StaticTemplateUtil {
     }
 
     public static Template loadStaticTemplate(ResourceLocation id) throws IOException {
-        Optional<InputStream> optStream = getModResource(ResourcePackType.SERVER_DATA,
-                new ResourceLocation(id.getNamespace(), id.getPath() + ".nbt"));
+        Optional<InputStream> optStream = getModResource(ResourcePackType.SERVER_DATA, new ResourceLocation(id.getNamespace(), id.getPath() + ".nbt"));
         if (!optStream.isPresent()) {
             Titanium.LOGGER.error(new RuntimeException("Mod resource not found: " + id));
         }

@@ -7,6 +7,7 @@
 
 package com.hrznstudio.titanium.multiblock.tile;
 
+import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.multiblock.IFormationItem;
 import com.hrznstudio.titanium.api.multiblock.IMultiblockComponent;
@@ -92,6 +93,7 @@ public class MultiblockControllerTile<T extends MultiblockControllerTile<T>> ext
                 Item item = stack.getItem();
                 if (multiblockTemplate.createStructure(world, pos, facing, player)) {
                     formationHandler();
+                    Titanium.LOGGER.info(isFormed);
                 }
             }
             return ActionResultType.SUCCESS;
