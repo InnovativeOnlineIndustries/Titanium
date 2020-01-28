@@ -61,6 +61,10 @@ public class MultiblockFillerTile<T extends MultiblockFillerTile<T>> extends Act
         return false;
     }
 
+    public void setMultiblockTemplate(MultiblockTemplate multiblockTemplate) {
+        this.multiblockTemplate = multiblockTemplate;
+    }
+
     public boolean isIOBlock() {
         return false;
     }

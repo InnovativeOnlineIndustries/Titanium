@@ -160,6 +160,7 @@ public class MultiblockControllerTile<T extends MultiblockControllerTile<T>> ext
                     setFormed(true);
                     ((MultiblockFillerTile) target).setFormed(true);
                     ((MultiblockFillerTile) target).setMasterPosition(this.getPos());
+                    ((MultiblockFillerTile) target).setMultiblockTemplate(multiblockTemplate);
                 }
             }
         }
