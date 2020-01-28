@@ -103,7 +103,7 @@ public abstract class ModuleController {
             addConfig(AnnotationConfigManager.Type.of(annotation.type(), aClass).setName(annotation.value()));
         });
         EventManager.mod(ModConfig.Loading.class).process(ev -> configManager.inject()).subscribe();
-        EventManager.mod(ModConfig.ConfigReloading.class).process(ev -> configManager.inject()).subscribe();
+        EventManager.mod(ModConfig.Reloading.class).process(ev -> configManager.inject()).subscribe();
         EventManager.mod(GatherDataEvent.class).process(this::addDataProvider).subscribe();
     }
 

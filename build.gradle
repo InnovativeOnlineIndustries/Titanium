@@ -15,8 +15,8 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 
-//def BUILD_NUMBER = System.getenv("COMMIT") ? "${project.api_version}-${System.getenv("COMMIT")}-SNAPSHOT" : "${project.api_version}"
-version = "${minecraftVersion}-${project.api_version}"
+//def BUILD_NUMBER = Sbystem.getenv("COMMIT") ? "${project.api_version}-${System.getenv("COMMIT")}-SNAPSHOT" : "${project.api_version}"
+version = "${minecraft_version}-${project.api_version}"
 group = 'com.hrznstudio'
 archivesBaseName = 'titanium'
 
@@ -33,7 +33,7 @@ license {
 }
 
 minecraft {
-    mappings channel: 'snapshot', version: '20200111-mixed-1.15.1'
+    mappings channel: 'snapshot', version: mappings_version
     runs {
         client = {
             // recommended logging data for a userdev environment
@@ -79,11 +79,11 @@ repositories {
     }
 }
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.15.1-30.0.36'
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-    compileOnly fg.deobf("mezz.jei:jei-1.15.1:6.0.0.1:api")
+    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api")
         // at runtime, use the full JEI jar
-    runtimeOnly fg.deobf("mezz.jei:jei-1.15.1:6.0.0.1")
+    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}")
 
 
 }
@@ -151,7 +151,7 @@ publishing {
 processResources {
     // this will ensure that this task is redone when the versions change.
     inputs.property 'version', project.version
-    inputs.property 'mcversion', '1.14'
+    inputs.property 'mcversion', '1.15'
 
     // replace stuff in mcmod.info, nothing else
     from(sourceSets.main.resources.srcDirs) {
