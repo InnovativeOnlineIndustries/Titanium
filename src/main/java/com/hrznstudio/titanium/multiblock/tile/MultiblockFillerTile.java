@@ -61,6 +61,10 @@ public class MultiblockFillerTile<T extends MultiblockFillerTile<T>> extends Act
         return false;
     }
 
+    public boolean isIOBlock() {
+        return false;
+    }
+
     public BlockState getOriginalState(){
         return originalState;
     }
