@@ -10,7 +10,7 @@ package com.hrznstudio.titanium.multiblock.tile;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.multiblock.IFormationItem;
 import com.hrznstudio.titanium.api.multiblock.IMultiblockComponent;
-import com.hrznstudio.titanium.api.multiblock.MultiblockTemplate;
+import com.hrznstudio.titanium.api.multiblock.ShapedMultiblockTemplate;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.block.tile.ActiveTile;
 import net.minecraft.block.BlockState;
@@ -47,17 +47,17 @@ public class MultiblockControllerTile<T extends MultiblockControllerTile<T>> ext
     @Save
     private BlockState originalState;
 
-    private MultiblockTemplate multiblockTemplate;
+    private ShapedMultiblockTemplate multiblockTemplate;
 
     private List<Pair<BlockPos, BlockState>> children = new ArrayList<>();
 
-    public MultiblockControllerTile(MultiblockTemplate multiblockTemplate, BasicTileBlock<T> base) {
+    public MultiblockControllerTile(ShapedMultiblockTemplate multiblockTemplate, BasicTileBlock<T> base) {
         super(base);
         this.multiblockTemplate = multiblockTemplate;
         this.formationTool = itemStack -> (itemStack.getItem().isIn(FORMATION_TOOL));
     }
 
-    public MultiblockControllerTile(MultiblockTemplate multiblockTemplate, BasicTileBlock<T> base, Predicate<ItemStack> formationTool) {
+    public MultiblockControllerTile(ShapedMultiblockTemplate multiblockTemplate, BasicTileBlock<T> base, Predicate<ItemStack> formationTool) {
         super(base);
         this.multiblockTemplate = multiblockTemplate;
         this.formationTool = formationTool;

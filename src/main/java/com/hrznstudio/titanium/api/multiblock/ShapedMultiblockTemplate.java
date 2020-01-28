@@ -39,7 +39,7 @@ import java.util.List;
  * You should also go check out their github repo:
  * https://github.com/BluSunrize/ImmersiveEngineering
  */
-public abstract class MultiblockTemplate implements IMultiblock {
+public abstract class ShapedMultiblockTemplate implements IMultiblock {
 
     private final ResourceLocation id;
     private final List<IMatch> additionalPredicates;
@@ -51,14 +51,14 @@ public abstract class MultiblockTemplate implements IMultiblock {
     private List<BlockState> blockStates;
     private BlockState triggerState;
 
-    public MultiblockTemplate(ResourceLocation id, BlockPos masterPos, BlockPos triggerPos, List<IMatch> additionalPredicates) {
+    public ShapedMultiblockTemplate(ResourceLocation id, BlockPos masterPos, BlockPos triggerPos, List<IMatch> additionalPredicates) {
         this.id = id;
         this.masterPos = masterPos;
         this.triggerPos = triggerPos;
         this.additionalPredicates = additionalPredicates;
     }
 
-    public MultiblockTemplate(ResourceLocation id, BlockPos masterPos, BlockPos triggerPos) {
+    public ShapedMultiblockTemplate(ResourceLocation id, BlockPos masterPos, BlockPos triggerPos) {
         this.id = id;
         this.masterPos = masterPos;
         this.triggerPos = triggerPos;

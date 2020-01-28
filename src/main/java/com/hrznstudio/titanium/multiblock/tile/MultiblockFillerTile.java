@@ -9,7 +9,7 @@ package com.hrznstudio.titanium.multiblock.tile;
 
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.multiblock.IMultiblockComponent;
-import com.hrznstudio.titanium.api.multiblock.MultiblockTemplate;
+import com.hrznstudio.titanium.api.multiblock.ShapedMultiblockTemplate;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.block.tile.ActiveTile;
 import net.minecraft.block.BlockState;
@@ -37,7 +37,7 @@ public class MultiblockFillerTile<T extends MultiblockFillerTile<T>> extends Act
     @Save
     public BlockState originalState = this.getBlockState();
 
-    private MultiblockTemplate multiblockTemplate;
+    private ShapedMultiblockTemplate multiblockTemplate;
 
     public MultiblockFillerTile(BasicTileBlock<T> base) {
         super(base);
@@ -61,7 +61,7 @@ public class MultiblockFillerTile<T extends MultiblockFillerTile<T>> extends Act
         return false;
     }
 
-    public void setMultiblockTemplate(MultiblockTemplate multiblockTemplate) {
+    public void setMultiblockTemplate(ShapedMultiblockTemplate multiblockTemplate) {
         this.multiblockTemplate = multiblockTemplate;
     }
 
