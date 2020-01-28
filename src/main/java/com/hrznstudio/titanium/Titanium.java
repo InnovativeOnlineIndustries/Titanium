@@ -12,6 +12,8 @@ import com.hrznstudio.titanium._impl.test.AssetTestBlock;
 import com.hrznstudio.titanium._impl.test.MachineTestBlock;
 import com.hrznstudio.titanium._impl.test.TestBlock;
 import com.hrznstudio.titanium._impl.test.TwentyFourTestBlock;
+import com.hrznstudio.titanium._impl.test.multiblock.TestMultiblockControllerBlock;
+import com.hrznstudio.titanium._impl.test.multiblock.TestMultiblockFillerBlock;
 import com.hrznstudio.titanium._impl.test.recipe.TestSerializableRecipe;
 import com.hrznstudio.titanium.block.tile.ActiveTile;
 import com.hrznstudio.titanium.client.screen.container.BasicTileContainerScreen;
@@ -133,6 +135,8 @@ public class Titanium extends ModuleController {
                         .content(Block.class, TwentyFourTestBlock.TEST = new TwentyFourTestBlock())
                         .content(Block.class, AssetTestBlock.TEST = new AssetTestBlock())
                         .content(Block.class, MachineTestBlock.TEST = new MachineTestBlock())
+                        .content(Block.class, TestMultiblockControllerBlock.TEST = new TestMultiblockControllerBlock())
+                        .content(Block.class, TestMultiblockFillerBlock.TEST = new TestMultiblockFillerBlock())
                 )
                 .feature(Feature.builder("events")
                         .description("Adds test titanium events")

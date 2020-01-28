@@ -26,7 +26,7 @@ import static com.hrznstudio.titanium.block.RotatableBlock.FACING_HORIZONTAL;
 
 public class MultiblockFillerTile<T extends MultiblockFillerTile<T>> extends ActiveTile<T> implements IMultiblockComponent {
 
-    @Save
+
     public BlockState originalState = this.getBlockState();
     @Save
     private BlockPos masterPos = BlockPos.ZERO;

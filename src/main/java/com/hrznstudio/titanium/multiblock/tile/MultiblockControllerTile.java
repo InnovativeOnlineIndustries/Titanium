@@ -42,9 +42,9 @@ public class MultiblockControllerTile<T extends MultiblockControllerTile<T>> ext
     private boolean hasRedStoneSignal = false;
     @Save
     private boolean isFormed = false;
-    @Save
+
     private Predicate<ItemStack> formationTool;
-    @Save
+
     private BlockState originalState;
 
     private ShapedMultiblockTemplate multiblockTemplate;
