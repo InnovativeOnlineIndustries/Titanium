@@ -51,8 +51,9 @@ public class NBTManager {
     private static List<Field> getAllDeclaredFields(Class<?> entity) {
         List<Field> currentClassFields = Lists.newArrayList(entity.getDeclaredFields());
         Class<?> parent = entity.getSuperclass();
-        if (TileEntity.class.isAssignableFrom(parent))
+        if (TileEntity.class.isAssignableFrom(parent)) {
             currentClassFields.addAll(getAllDeclaredFields(entity.getSuperclass()));
+        }
         return currentClassFields;
     }
 
@@ -74,7 +75,9 @@ public class NBTManager {
                 fields.add(field);
             }
         }
-        if (!fields.isEmpty()) tileFieldList.put(entity, fields);
+        if (!fields.isEmpty()) {
+            tileFieldList.put(entity, fields);
+        }
     }
 
     private boolean checkForHandler(Field field) {
@@ -99,7 +102,9 @@ public class NBTManager {
                 Save save = field.getAnnotation(Save.class);
                 try {
                     Object obj = field.get(entity);
-                    if (obj == null) continue;
+                    if (obj == null) {
+                        continue;
+                    }
                     compound = handleNBTWrite(compound, save.value().isEmpty() ? field.getName() : save.value(), obj, field);
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
@@ -140,7 +145,9 @@ public class NBTManager {
     private CompoundNBT handleNBTWrite(CompoundNBT compound, String name, Object value, Field field) {
         for (INBTHandler handler : handlerList) {
             if (handler.isClassValid(value == null ? field.getType() : value.getClass())) {
-                if (handler.storeToNBT(compound, name, value)) return compound;
+                if (handler.storeToNBT(compound, name, value)) {
+                    return compound;
+                }
             }
         }
         return compound;
@@ -157,7 +164,9 @@ public class NBTManager {
     private Object handleNBTRead(CompoundNBT compound, String name, @Nullable Object value, Field field) {
         for (INBTHandler handler : handlerList) {
             if (handler.isClassValid(value == null ? field.getType() : value.getClass())) {
-                if (!compound.contains(name)) continue;
+                if (!compound.contains(name)) {
+                    continue;
+                }
                 Object readValue = handler.readFromNBT(compound, name, value);
                 if (readValue != null) {
                     return readValue;

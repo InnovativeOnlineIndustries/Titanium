@@ -140,7 +140,9 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon implements IClick
             if (clicked) {
                 ((BasicTileContainerScreen) screen).getContainer().setDisabled(true);
                 for (FacingUtil.Sideness facing : FacingUtil.Sideness.values()) {
-                    if (!handler.getFacingModes().containsKey(facing)) continue;
+                    if (!handler.getFacingModes().containsKey(facing)) {
+                        continue;
+                    }
                     Point point = getPointFromFacing(facing, inventoryPoint);
                     StateButtonAddon addon = new StateButtonAddon(new ButtonComponent(point.x, point.y, 14, 14), IFacingComponent.FaceMode.NONE.getInfo(), IFacingComponent.FaceMode.ENABLED.getInfo(), IFacingComponent.FaceMode.PULL.getInfo(), IFacingComponent.FaceMode.PUSH.getInfo()) {
                         @Override
@@ -159,7 +161,9 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon implements IClick
                                 CompoundNBT compound = new CompoundNBT();
                                 compound.putString("Facing", facing.name());
                                 int faceMode = (getState() + (mouse == 0 ? 1 : -1)) % IFacingComponent.FaceMode.values().length;
-                                if (faceMode < 0) faceMode = IFacingComponent.FaceMode.values().length - 1;
+                                if (faceMode < 0) {
+                                    faceMode = IFacingComponent.FaceMode.values().length - 1;
+                                }
                                 compound.putInt("Next", faceMode);
                                 compound.putString("Name", handler.getName());
                                 Titanium.NETWORK.get().sendToServer(new ButtonClickNetworkMessage(((BasicTileContainerScreen) gui).getContainer().getLocatorInstance(), -1, compound));

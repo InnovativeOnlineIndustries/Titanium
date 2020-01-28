@@ -81,8 +81,9 @@ public class RewardCommand {
         try {
             CommandSource source = context.getSource();
             ResourceLocation resourceLocation = context.getArgument("reward", ResourceLocation.class);
-            if (RewardManager.get().getReward(resourceLocation) == null || !RewardManager.get().getReward(resourceLocation).isPlayerValid(source.asPlayer().getUniqueID()))
+            if (RewardManager.get().getReward(resourceLocation) == null || !RewardManager.get().getReward(resourceLocation).isPlayerValid(source.asPlayer().getUniqueID())) {
                 return false;
+            }
             RewardWorldStorage rewardWorldStorage = RewardWorldStorage.get(source.getWorld());
             rewardWorldStorage.add(source.asPlayer().getUniqueID(), context.getArgument("reward", ResourceLocation.class), context.getArgument("option", String.class));
             rewardWorldStorage.markDirty();

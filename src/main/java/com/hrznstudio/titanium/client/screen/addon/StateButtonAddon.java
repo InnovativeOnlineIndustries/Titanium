@@ -7,8 +7,8 @@
 
 package com.hrznstudio.titanium.client.screen.addon;
 
-import com.hrznstudio.titanium.component.button.ButtonComponent;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
+import com.hrznstudio.titanium.component.button.ButtonComponent;
 import com.hrznstudio.titanium.util.AssetUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.Screen;
@@ -23,7 +23,9 @@ public abstract class StateButtonAddon extends BasicButtonAddon {
     public StateButtonAddon(ButtonComponent buttonComponent, StateButtonInfo... buttonInfos) {
         super(buttonComponent);
         this.buttonInfos = new StateButtonInfo[]{};
-        if (buttonInfos != null) this.buttonInfos = buttonInfos;
+        if (buttonInfos != null) {
+            this.buttonInfos = buttonInfos;
+        }
     }
 
 

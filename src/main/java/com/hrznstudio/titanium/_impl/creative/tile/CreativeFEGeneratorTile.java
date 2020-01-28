@@ -39,8 +39,9 @@ public class CreativeFEGeneratorTile extends PoweredTile<CreativeFEGeneratorTile
             this.getEnergyStorage().receiveEnergy(Integer.MAX_VALUE, false);
             for (Direction direction : Direction.values()) {
                 TileEntity tile = this.world.getTileEntity(this.getPos().offset(direction));
-                if (tile != null)
+                if (tile != null) {
                     tile.getCapability(CapabilityEnergy.ENERGY, direction.getOpposite()).ifPresent(iEnergyStorage -> iEnergyStorage.receiveEnergy(Integer.MAX_VALUE, false));
+                }
             }
             markForUpdate();
         }

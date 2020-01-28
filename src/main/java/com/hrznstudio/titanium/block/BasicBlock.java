@@ -135,8 +135,9 @@ public abstract class BasicBlock extends Block implements IAlternativeEntries, I
         List<DistanceRayTraceResult> results = new ArrayList<>();
         for (VoxelShape box : boxes) {
             DistanceRayTraceResult hit = rayTraceBox(pos, start, end, box);
-            if (hit != null)
+            if (hit != null) {
                 results.add(hit);
+            }
         }
         RayTraceResult closestHit = null;
         double curClosest = Double.MAX_VALUE;

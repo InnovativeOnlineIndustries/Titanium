@@ -12,8 +12,12 @@ import net.minecraft.util.math.BlockPos;
 
 public interface IMultiblockComponent {
     boolean isFormed();
+
     void setFormed(boolean isFormed);
+
     BlockPos getMasterPosition();
+
     Direction getFacing();
+
     void setFacing(Direction facing);
 }

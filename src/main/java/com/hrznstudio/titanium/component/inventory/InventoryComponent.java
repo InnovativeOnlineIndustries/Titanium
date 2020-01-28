@@ -70,17 +70,6 @@ public class InventoryComponent<T extends IComponentHarness> extends ItemStackHa
     }
 
     /**
-     * Sets the tile where the inventory is to allow markForUpdate automatically
-     *
-     * @param componentHarness the object which owns this component
-     * @return itself
-     */
-    public InventoryComponent<T> setComponentHarness(T componentHarness) {
-        this.componentHarness = componentHarness;
-        return this;
-    }
-
-    /**
      * Sets the predicate input filter to filter what items go into which slot.
      *
      * @param predicate A bi predicate where the itemstack is the item trying to be inserted and the slot where is trying to be inserted to
@@ -176,6 +165,17 @@ public class InventoryComponent<T extends IComponentHarness> extends ItemStackHa
 
     public T getComponentHarness() {
         return componentHarness;
+    }
+
+    /**
+     * Sets the tile where the inventory is to allow markForUpdate automatically
+     *
+     * @param componentHarness the object which owns this component
+     * @return itself
+     */
+    public InventoryComponent<T> setComponentHarness(T componentHarness) {
+        this.componentHarness = componentHarness;
+        return this;
     }
 
     public BiPredicate<ItemStack, Integer> getInsertPredicate() {

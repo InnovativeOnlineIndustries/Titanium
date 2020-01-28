@@ -10,7 +10,6 @@ package com.hrznstudio.titanium.network.locator.instance;
 import com.hrznstudio.titanium.network.locator.LocatorInstance;
 import com.hrznstudio.titanium.network.locator.LocatorTypes;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.util.Hand;
 
 import java.util.Optional;

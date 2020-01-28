@@ -12,13 +12,40 @@ import net.minecraftforge.eventbus.api.Event;
 
 public class ResultHandler {
 
+    public static final ResultHandler DEFAULT = new ResultHandler(0, Event.Result.DEFAULT);
     final int x;
     final Event.Result result;
-    public static final ResultHandler DEFAULT = new ResultHandler(0, Event.Result.DEFAULT);
 
     public ResultHandler(int x, Event.Result result) {
         this.x = x;
         this.result = result;
+    }
+
+    public static ResultHandler combine(ResultHandler a, ResultHandler b) {
+        if (Math.abs(a.x) > Math.abs(b.x)) {
+            return a;
+        } else if (Math.abs(a.x) < Math.abs(b.x)) {
+            return b;
+        } else {
+            Titanium.LOGGER.info("Can't combine same valued results");
+            return a;
+        }
+    }
+
+    public static ResultHandler allowed(int x) {
+        ResultHandler handler = null;
+        if (x > 0) {
+            handler = new ResultHandler(x, Event.Result.ALLOW);
+        }
+        return handler;
+    }
+
+    public static ResultHandler denied(int x) {
+        ResultHandler handler = null;
+        if (x > 0) {
+            handler = new ResultHandler(x, Event.Result.DENY);
+        }
+        return handler;
     }
 
     public boolean isAllowed() {
@@ -31,32 +58,5 @@ public class ResultHandler {
 
     public boolean isDenied() {
         return result == Event.Result.DENY;
-    }
-
-    public static ResultHandler combine(ResultHandler a, ResultHandler b) {
-        if (Math.abs(a.x) > Math.abs(b.x)) {
-            return a;
-        } else if(Math.abs(a.x) < Math.abs(b.x)) {
-            return b;
-        } else {
-            Titanium.LOGGER.info("Can't combine same valued results");
-            return a;
-        }
-    }
-
-    public static ResultHandler allowed(int x) {
-        ResultHandler handler = null;
-        if(x > 0) {
-            handler = new ResultHandler(x, Event.Result.ALLOW);
-        }
-        return handler;
-    }
-
-    public static ResultHandler denied(int x) {
-        ResultHandler handler = null;
-        if(x > 0) {
-            handler = new ResultHandler(x, Event.Result.DENY);
-        }
-        return handler;
     }
 }

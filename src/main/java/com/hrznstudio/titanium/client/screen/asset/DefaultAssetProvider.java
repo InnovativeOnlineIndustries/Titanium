@@ -115,50 +115,72 @@ public final class DefaultAssetProvider implements IAssetProvider {
     @Nullable
     @Override
     public <T extends IAsset> T getAsset(IAssetType<T> assetType) {
-        if (assetType == AssetTypes.BACKGROUND)
+        if (assetType == AssetTypes.BACKGROUND) {
             return assetType.castOrDefault(BACKGROUND);
-        if (assetType == AssetTypes.ENERGY_BACKGROUND)
+        }
+        if (assetType == AssetTypes.ENERGY_BACKGROUND) {
             return assetType.castOrDefault(ENERGY_BAR);
-        if (assetType == AssetTypes.ENERGY_BAR)
+        }
+        if (assetType == AssetTypes.ENERGY_BAR) {
             return assetType.castOrDefault(ENERGY_FILL);
-        if (assetType == AssetTypes.PROGRESS_BAR_BACKGROUND_VERTICAL)
+        }
+        if (assetType == AssetTypes.PROGRESS_BAR_BACKGROUND_VERTICAL) {
             return assetType.castOrDefault(PROGRESS_BAR_BACKGROUND);
-        if (assetType == AssetTypes.PROGRESS_BAR_VERTICAL)
+        }
+        if (assetType == AssetTypes.PROGRESS_BAR_VERTICAL) {
             return assetType.castOrDefault(PROGRESS_BAR_FILL);
-        if (assetType == AssetTypes.SLOT)
+        }
+        if (assetType == AssetTypes.SLOT) {
             return assetType.castOrDefault(SLOT);
-        if (assetType == AssetTypes.TANK_NORMAL)
+        }
+        if (assetType == AssetTypes.TANK_NORMAL) {
             return assetType.castOrDefault(TANK_NORMAL);
-        if (assetType == AssetTypes.TANK_SMALL)
+        }
+        if (assetType == AssetTypes.TANK_SMALL) {
             return assetType.castOrDefault(TANK_SMALL);
-        if (assetType == AssetTypes.PROGRESS_BAR_BORDER_VERTICAL)
+        }
+        if (assetType == AssetTypes.PROGRESS_BAR_BORDER_VERTICAL) {
             return assetType.castOrDefault(PROGRESS_BAR_BORDER);
-        if (assetType == AssetTypes.BUTTON_SIDENESS_DISABLED)
+        }
+        if (assetType == AssetTypes.BUTTON_SIDENESS_DISABLED) {
             return assetType.castOrDefault(BUTTON_SIDENESS_DISABLED);
-        if (assetType == AssetTypes.BUTTON_SIDENESS_ENABLED)
+        }
+        if (assetType == AssetTypes.BUTTON_SIDENESS_ENABLED) {
             return assetType.castOrDefault(BUTTON_SIDENESS_ENABLED);
-        if (assetType == AssetTypes.BUTTON_SIDENESS_PULL)
+        }
+        if (assetType == AssetTypes.BUTTON_SIDENESS_PULL) {
             return assetType.castOrDefault(BUTTON_SIDENESS_PULL);
-        if (assetType == AssetTypes.BUTTON_SIDENESS_PUSH)
+        }
+        if (assetType == AssetTypes.BUTTON_SIDENESS_PUSH) {
             return assetType.castOrDefault(BUTTON_SIDENESS_PUSH);
-        if (assetType == AssetTypes.BUTTON_SIDENESS_MANAGER)
+        }
+        if (assetType == AssetTypes.BUTTON_SIDENESS_MANAGER) {
             return assetType.castOrDefault(BUTTON_SIDENESS_MANAGER);
-        if (assetType == AssetTypes.PROGRESS_BAR_BACKGROUND_HORIZONTAL)
+        }
+        if (assetType == AssetTypes.PROGRESS_BAR_BACKGROUND_HORIZONTAL) {
             return assetType.castOrDefault(PROGRESS_BAR_BACKGROUND_HORIZONTAL);
-        if (assetType == AssetTypes.PROGRESS_BAR_HORIZONTAL)
+        }
+        if (assetType == AssetTypes.PROGRESS_BAR_HORIZONTAL) {
             return assetType.castOrDefault(PROGRESS_BAR_HORIZONTAL);
-        if (assetType == AssetTypes.AUGMENT_BACKGROUND)
+        }
+        if (assetType == AssetTypes.AUGMENT_BACKGROUND) {
             return assetType.castOrDefault(AUGMENT_BACKGROUND);
-        if (assetType == AssetTypes.BUTTON_ARROW_LEFT)
+        }
+        if (assetType == AssetTypes.BUTTON_ARROW_LEFT) {
             return assetType.castOrDefault(BUTTON_ARROW_LEFT);
-        if (assetType == AssetTypes.BUTTON_ARROW_RIGHT)
+        }
+        if (assetType == AssetTypes.BUTTON_ARROW_RIGHT) {
             return assetType.castOrDefault(BUTTON_ARROW_RIGHT);
-        if (assetType == AssetTypes.BUTTON_ARROW_UP)
+        }
+        if (assetType == AssetTypes.BUTTON_ARROW_UP) {
             return assetType.castOrDefault(BUTTON_ARROW_UP);
-        if (assetType == AssetTypes.BUTTON_ARROW_DOWN)
+        }
+        if (assetType == AssetTypes.BUTTON_ARROW_DOWN) {
             return assetType.castOrDefault(BUTTON_ARROW_DOWN);
-        if (assetType == AssetTypes.ITEM_BACKGROUND)
+        }
+        if (assetType == AssetTypes.ITEM_BACKGROUND) {
             return assetType.castOrDefault(ITEM_BACKGROUND);
+        }
         return null;
     }
 }

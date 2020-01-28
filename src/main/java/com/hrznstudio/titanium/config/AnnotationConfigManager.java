@@ -39,7 +39,9 @@ public class AnnotationConfigManager {
         }
         // REGISTERING CONFIG
         String fileName = ModLoadingContext.get().getActiveContainer().getModId() + "/" + (type.fileName.isEmpty() ? ModLoadingContext.get().getActiveContainer().getModId() : type.fileName);
-        if (!fileName.endsWith(".toml")) fileName = fileName + ".toml";
+        if (!fileName.endsWith(".toml")) {
+            fileName = fileName + ".toml";
+        }
         ModLoadingContext.get().registerConfig(type.type, builder.build(), fileName);
     }
 
@@ -51,20 +53,26 @@ public class AnnotationConfigManager {
                     if (field.getType().isPrimitive() || field.getType().equals(String.class)) {
                         ConfigVal value = field.getAnnotation(ConfigVal.class);
                         ForgeConfigSpec.ConfigValue configValue = null;
-                        if (!value.comment().isEmpty()) builder.comment(value.comment());
+                        if (!value.comment().isEmpty()) {
+                            builder.comment(value.comment());
+                        }
 
-                        if (field.isAnnotationPresent(ConfigVal.InRangeDouble.class))
+                        if (field.isAnnotationPresent(ConfigVal.InRangeDouble.class)) {
                             configValue = builder.defineInRange(value.value().isEmpty() ? field.getName() : value.value(), (Double) field.get(null),
                                     field.getAnnotation(ConfigVal.InRangeDouble.class).min(), field.getAnnotation(ConfigVal.InRangeDouble.class).max());
-                        if (field.isAnnotationPresent(ConfigVal.InRangeLong.class))
+                        }
+                        if (field.isAnnotationPresent(ConfigVal.InRangeLong.class)) {
                             configValue = builder.defineInRange(value.value().isEmpty() ? field.getName() : value.value(), (Long) field.get(null),
                                     field.getAnnotation(ConfigVal.InRangeLong.class).min(), field.getAnnotation(ConfigVal.InRangeLong.class).max());
-                        if (field.isAnnotationPresent(ConfigVal.InRangeInt.class))
+                        }
+                        if (field.isAnnotationPresent(ConfigVal.InRangeInt.class)) {
                             configValue = builder.defineInRange(value.value().isEmpty() ? field.getName() : value.value(), (Integer) field.get(null),
                                     field.getAnnotation(ConfigVal.InRangeInt.class).min(), field.getAnnotation(ConfigVal.InRangeInt.class).max());
+                        }
 
-                        if (configValue == null)
+                        if (configValue == null) {
                             configValue = builder.define(value.value().isEmpty() ? field.getName() : value.value(), field.get(null));
+                        }
                         cachedConfigValues.put(field, configValue);
                     } else {
                         scanClass(field.getType(), builder);
@@ -93,7 +101,9 @@ public class AnnotationConfigManager {
     public boolean isClassManaged(Class clazz) {
         for (Type configClass : configClasses) {
             for (Class aClass : configClass.configClass) {
-                if (clazz.equals(aClass)) return true;
+                if (clazz.equals(aClass)) {
+                    return true;
+                }
             }
         }
         return false;

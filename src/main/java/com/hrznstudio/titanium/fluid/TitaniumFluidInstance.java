@@ -31,8 +31,9 @@ public class TitaniumFluidInstance extends net.minecraftforge.registries.ForgeRe
         this.flowingFluid = (TitaniumFluid) new TitaniumFluid.Flowing(attributes).setRegistryName(modid, fluid + "_fluid");
         this.sourceFluid = this.sourceFluid.setSourceFluid(sourceFluid).setFlowingFluid(flowingFluid);
         this.flowingFluid = this.flowingFluid.setSourceFluid(sourceFluid).setFlowingFluid(flowingFluid);
-        if (hasBucket)
+        if (hasBucket) {
             this.bucketFluid = new BucketItem(this.sourceFluid, new Item.Properties().containerItem(Items.BUCKET).maxStackSize(1).group(group)).setRegistryName(modid, fluid + "_bucket");
+        }
         this.blockFluid = new FlowingFluidBlock(sourceFluid, Block.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops()) {
         }.setRegistryName(modid, fluid + "_block");
         this.sourceFluid.setBlockFluid(blockFluid).setBucketFluid(bucketFluid);
@@ -44,7 +45,9 @@ public class TitaniumFluidInstance extends net.minecraftforge.registries.ForgeRe
         registry.content(Fluid.class, flowingFluid);
         registry.content(Fluid.class, sourceFluid);
         registry.content(Block.class, blockFluid);
-        if (bucketFluid != null) registry.content(Item.class, bucketFluid);
+        if (bucketFluid != null) {
+            registry.content(Item.class, bucketFluid);
+        }
     }
 
     public TitaniumFluid getFlowingFluid() {
@@ -59,13 +62,13 @@ public class TitaniumFluidInstance extends net.minecraftforge.registries.ForgeRe
         return bucketFluid;
     }
 
-    public Block getBlockFluid() {
-        return blockFluid;
-    }
-
     public void setBucketFluid(Item bucketFluid) {
         this.bucketFluid = bucketFluid;
         this.sourceFluid.setBucketFluid(bucketFluid);
         this.flowingFluid.setBucketFluid(bucketFluid);
+    }
+
+    public Block getBlockFluid() {
+        return blockFluid;
     }
 }

@@ -39,14 +39,18 @@ public class NBTEnergyHandler extends EnergyStorage implements INBTSerializable<
     @Override
     public int receiveEnergy(int maxReceive, boolean simulate) {
         int energy = super.receiveEnergy(maxReceive, simulate);
-        if (energy != 0 && !simulate) base.markForUpdate();
+        if (energy != 0 && !simulate) {
+            base.markForUpdate();
+        }
         return energy;
     }
 
     @Override
     public int extractEnergy(int maxExtract, boolean simulate) {
         int energy = super.extractEnergy(maxExtract, simulate);
-        if (energy != 0 && !simulate) base.markForUpdate();
+        if (energy != 0 && !simulate) {
+            base.markForUpdate();
+        }
         return energy;
     }
 

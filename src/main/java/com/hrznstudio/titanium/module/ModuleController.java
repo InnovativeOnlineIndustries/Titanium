@@ -38,7 +38,9 @@ public abstract class ModuleController {
 
     private void addConfig(AnnotationConfigManager.Type type) {
         for (Class configClass : type.getConfigClass()) {
-            if (configManager.isClassManaged(configClass)) return;
+            if (configManager.isClassManaged(configClass)) {
+                return;
+            }
         }
         configManager.add(type);
     }
@@ -91,8 +93,9 @@ public abstract class ModuleController {
         EventManager.mod(RegistryEvent.Register.class).process(event -> {
             moduleMap.values().forEach(m -> {
                 List<? extends IForgeRegistryEntry<?>> l = m.getEntries((Class) event.getGenericType());
-                if (!l.isEmpty())
+                if (!l.isEmpty()) {
                     l.forEach(event.getRegistry()::register);
+                }
             });
         }).subscribe();
     }

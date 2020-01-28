@@ -142,7 +142,7 @@ public class TeleportationUtil {
         PlayerList playerList = server.getPlayerList();
 
         player.dimension = destination;
-        player.connection.sendPacket(new SRespawnPacket(destination,0, sourceInfo.getGenerator(), player.interactionManager.getGameType()));
+        player.connection.sendPacket(new SRespawnPacket(destination, 0, sourceInfo.getGenerator(), player.interactionManager.getGameType()));
         player.connection.sendPacket(new SServerDifficultyPacket(sourceInfo.getDifficulty(), sourceInfo.isDifficultyLocked()));
         playerList.updatePermissionLevel(player);
         sourceWorld.removeEntity(player, true);
@@ -164,7 +164,9 @@ public class TeleportationUtil {
     public static Entity getHighestRidingEntity(Entity mount) {
         Entity entity;
 
-        for (entity = mount; entity.getPassengers().size() > 0; entity = entity.getPassengers().get(0)) ;
+        for (entity = mount; entity.getPassengers().size() > 0; entity = entity.getPassengers().get(0)) {
+            ;
+        }
 
         return entity;
     }
@@ -216,7 +218,7 @@ public class TeleportationUtil {
          */
         public void remountRiders() {
             if (entity.isPassenger()) {
-                entity.setLocationAndAngles(entity.getPosition().getX() + offsetX, entity.getPosition().getY() + offsetY, entity.getPosition().getZ()+ offsetZ, entity.rotationYaw, entity.rotationPitch);
+                entity.setLocationAndAngles(entity.getPosition().getX() + offsetX, entity.getPosition().getY() + offsetY, entity.getPosition().getZ() + offsetZ, entity.rotationYaw, entity.rotationPitch);
             }
             for (PassengerHelper passenger : passengers) {
                 passenger.entity.startRiding(entity, true);

@@ -31,8 +31,9 @@ public class GenericAssetType<T extends IAsset> implements IAssetType<T> {
 
     @Override
     public T castOrDefault(IAsset asset) throws ClassCastException {
-        if (tClass.isInstance(asset))
+        if (tClass.isInstance(asset)) {
             return tClass.cast(asset);
+        }
         return defaultAsset.get();
     }
 }

@@ -9,10 +9,10 @@ package com.hrznstudio.titanium.client.screen.addon;
 
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
+import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.component.IComponentHarness;
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.hrznstudio.titanium.component.inventory.SidedInventoryComponent;
-import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.util.AssetUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.AbstractGui;
@@ -29,16 +29,6 @@ public class SlotsScreenAddon<T extends IComponentHarness> extends BasicScreenAd
     public SlotsScreenAddon(InventoryComponent<T> handler) {
         super(handler.getXPos(), handler.getYPos());
         this.handler = handler;
-    }
-
-    @Override
-    public int getXSize() {
-        return 0;
-    }
-
-    @Override
-    public int getYSize() {
-        return 0;
     }
 
     public static void drawAsset(Screen screen, IAssetProvider provider, int handlerPosX, int handlerPosY, int guiX, int guiY, int slots, Function<Integer, Pair<Integer, Integer>> positionFunction, boolean drawColor, int color) {
@@ -72,6 +62,16 @@ public class SlotsScreenAddon<T extends IComponentHarness> extends BasicScreenAd
                 RenderSystem.color4f(1, 1, 1, 1);
             }
         }
+    }
+
+    @Override
+    public int getXSize() {
+        return 0;
+    }
+
+    @Override
+    public int getYSize() {
+        return 0;
     }
 
     @Override

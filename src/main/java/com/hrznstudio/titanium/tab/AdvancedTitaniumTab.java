@@ -40,8 +40,9 @@ public class AdvancedTitaniumTab extends TitaniumTab {
                     currentIcon = icons.get(random.nextInt(icons.size()));
                 } else {
                     currentIcon = icons.get(current++);
-                    if (current >= icons.size())
+                    if (current >= icons.size()) {
                         current = 0;
+                    }
                 }
             }
         } else {

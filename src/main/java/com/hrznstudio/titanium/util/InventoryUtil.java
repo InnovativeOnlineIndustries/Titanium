@@ -21,19 +21,22 @@ import java.util.List;
 public class InventoryUtil {
     public static List<ItemStack> getStacks(ICapabilityProvider provider) {
         LazyOptional<IItemHandler> inv = provider.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-        if (!inv.isPresent())
+        if (!inv.isPresent()) {
             return Collections.emptyList();
+        }
         return getStacks(inv.orElseThrow(NullPointerException::new));
     }
 
     public static List<ItemStack> getStacks(@Nullable IItemHandler handler) {
-        if (handler == null)
+        if (handler == null) {
             return Collections.emptyList();
+        }
         ImmutableList.Builder<ItemStack> builder = new ImmutableList.Builder<>();
         for (int slot = 0; slot < handler.getSlots(); slot++) {
             ItemStack subStack = handler.getStackInSlot(slot);
-            if (!subStack.isEmpty())
+            if (!subStack.isEmpty()) {
                 builder.add(subStack);
+            }
         }
         return builder.build();
     }

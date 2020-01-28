@@ -125,12 +125,16 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
     }
 
     public void addTank(FluidTankComponent<T> tank) {
-        if (multiTankComponent == null) multiTankComponent = new MultiTankComponent<T>();
+        if (multiTankComponent == null) {
+            multiTankComponent = new MultiTankComponent<T>();
+        }
         multiTankComponent.add(tank.setComponentHarness(this.getSelf()));
     }
 
     public void addButton(ButtonComponent button) {
-        if (multiButtonComponent == null) multiButtonComponent = new MultiButtonComponent();
+        if (multiButtonComponent == null) {
+            multiButtonComponent = new MultiButtonComponent();
+        }
         multiButtonComponent.addButton(button);
     }
 
@@ -168,11 +172,21 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
     @Override
     public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
         List<IFactory<? extends IScreenAddon>> addons = new ArrayList<>(guiAddons);
-        if (multiInventoryComponent != null) addons.addAll(multiInventoryComponent.getScreenAddons());
-        if (multiProgressBarHandler != null) addons.addAll(multiProgressBarHandler.getScreenAddons());
-        if (multiTankComponent != null) addons.addAll(multiTankComponent.getScreenAddons());
-        if (multiButtonComponent != null) addons.addAll(multiButtonComponent.getScreenAddons());
-        if (multiFilterComponent != null) addons.addAll(multiFilterComponent.getScreenAddons());
+        if (multiInventoryComponent != null) {
+            addons.addAll(multiInventoryComponent.getScreenAddons());
+        }
+        if (multiProgressBarHandler != null) {
+            addons.addAll(multiProgressBarHandler.getScreenAddons());
+        }
+        if (multiTankComponent != null) {
+            addons.addAll(multiTankComponent.getScreenAddons());
+        }
+        if (multiButtonComponent != null) {
+            addons.addAll(multiButtonComponent.getScreenAddons());
+        }
+        if (multiFilterComponent != null) {
+            addons.addAll(multiFilterComponent.getScreenAddons());
+        }
         return addons;
     }
 
@@ -183,21 +197,25 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
     @Override
     public void tick() {
         if (!world.isRemote) {
-            if (multiProgressBarHandler != null) multiProgressBarHandler.update();
+            if (multiProgressBarHandler != null) {
+                multiProgressBarHandler.update();
+            }
             if (world.getGameTime() % getFacingHandlerWorkTime() == 0) {
                 if (multiInventoryComponent != null) {
                     for (InventoryComponent<T> inventoryHandler : multiInventoryComponent.getInventoryHandlers()) {
                         if (inventoryHandler instanceof IFacingComponent) {
-                            if (((IFacingComponent) inventoryHandler).work(this.world, this.pos, this.getFacingDirection(), getFacingHandlerWorkAmount()))
+                            if (((IFacingComponent) inventoryHandler).work(this.world, this.pos, this.getFacingDirection(), getFacingHandlerWorkAmount())) {
                                 break;
+                            }
                         }
                     }
                 }
                 if (multiTankComponent != null) {
                     for (FluidTankComponent<T> tank : multiTankComponent.getTanks()) {
                         if (tank instanceof IFacingComponent) {
-                            if (((IFacingComponent) tank).work(this.world, this.pos, this.getFacingDirection(), getFacingHandlerWorkAmount()))
+                            if (((IFacingComponent) tank).work(this.world, this.pos, this.getFacingDirection(), getFacingHandlerWorkAmount())) {
                                 break;
+                            }
                         }
                     }
                 }
@@ -224,14 +242,16 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
     public IFacingComponent getHandlerFromName(String string) {
         if (multiInventoryComponent != null) {
             for (InventoryComponent<T> handler : multiInventoryComponent.getInventoryHandlers()) {
-                if (handler instanceof IFacingComponent && handler.getName().equalsIgnoreCase(string))
+                if (handler instanceof IFacingComponent && handler.getName().equalsIgnoreCase(string)) {
                     return (IFacingComponent) handler;
+                }
             }
         }
         if (multiTankComponent != null) {
             for (FluidTankComponent<T> fluidTankComponent : multiTankComponent.getTanks()) {
-                if (fluidTankComponent instanceof IFacingComponent && fluidTankComponent.getName().equalsIgnoreCase(string))
+                if (fluidTankComponent instanceof IFacingComponent && fluidTankComponent.getName().equalsIgnoreCase(string)) {
                     return (IFacingComponent) fluidTankComponent;
+                }
             }
         }
         return null;

@@ -92,9 +92,12 @@ public class BasicItem extends Item {
         }
 
         public boolean isDown() {
-            for (int key : keys)
+            for (int key : keys) {
                 if (GLFW.glfwGetKey(Minecraft.getInstance().getWindow().getHandle(), key) == GLFW.GLFW_PRESS) //Main windows
+                {
                     return true;
+                }
+            }
             return false;
         }
 

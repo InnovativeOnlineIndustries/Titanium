@@ -43,7 +43,9 @@ public class RewardManager {
     public Reward getReward(ResourceLocation resourceLocation) {
         for (RewardGiver value : rewards.values()) {
             for (Reward reward : value.getRewards()) {
-                if (reward.getResourceLocation().equals(resourceLocation)) return reward;
+                if (reward.getResourceLocation().equals(resourceLocation)) {
+                    return reward;
+                }
             }
         }
         return null;

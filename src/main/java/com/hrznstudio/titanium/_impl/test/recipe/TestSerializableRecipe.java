@@ -25,9 +25,9 @@ import java.util.List;
 
 public class TestSerializableRecipe extends SerializableRecipe {
 
+    public static final List<TestSerializableRecipe> RECIPES = new ArrayList<>();
     public static GenericSerializer<TestSerializableRecipe> SERIALIZER
             = new GenericSerializer<>(new ResourceLocation(Titanium.MODID, "test_serializer"), TestSerializableRecipe.class);
-    public static final List<TestSerializableRecipe> RECIPES = new ArrayList<>();
 
     static {
         new TestSerializableRecipe(new ResourceLocation(Titanium.MODID, "saplings_to_sticks"), Ingredient.fromStacks(new ItemStack(Items.OAK_SAPLING)), new ItemStack(Items.STICK, 3), Blocks.STONE);

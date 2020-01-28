@@ -60,7 +60,9 @@ public class BasicTileContainer<T extends ActiveTile<T>> extends BasicInventoryC
                 for (int y = 0; y < handler.getYSize(); ++y) {
                     for (int x = 0; x < handler.getXSize(); ++x) {
                         for (Slot inventorySlot : this.inventorySlots) {
-                            if (!(inventorySlot instanceof SlotItemHandler)) continue;
+                            if (!(inventorySlot instanceof SlotItemHandler)) {
+                                continue;
+                            }
                             if (((SlotItemHandler) inventorySlot).getItemHandler().equals(handler) && i == inventorySlot.getSlotIndex()) {
                                 //inventorySlot.xPos = handler.getXPos() + handler.getSlotPosition().apply(i).getLeft();
                                 //inventorySlot.yPos = handler.getYPos() + handler.getSlotPosition().apply(i).getRight();

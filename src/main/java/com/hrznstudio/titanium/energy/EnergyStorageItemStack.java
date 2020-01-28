@@ -51,8 +51,9 @@ public class EnergyStorageItemStack implements IEnergyStorage {
 
     @Override
     public int receiveEnergy(int maxReceive, boolean simulate) {
-        if (!canReceive())
+        if (!canReceive()) {
             return 0;
+        }
         int energyReceived = Math.min(getMaxEnergyStored() - getEnergyStored(), Math.min(getMaxReceive(), maxReceive));
 
         if (!simulate) {
@@ -65,8 +66,9 @@ public class EnergyStorageItemStack implements IEnergyStorage {
 
     @Override
     public int extractEnergy(int maxExtract, boolean simulate) {
-        if (!canExtract())
+        if (!canExtract()) {
             return 0;
+        }
         int energyExtracted = Math.min(getEnergyStored(), Math.min(getMaxExtract(), maxExtract));
 
         if (!simulate) {

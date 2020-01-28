@@ -41,7 +41,9 @@ public class AnnotationUtil {
         List<Class> classList = new ArrayList<>();
         Type type = Type.getType(annotation);
         for (ModFileScanData allScanDatum : ModList.get().getAllScanData()) {
-            if (allScanDatum.getTargets().get(filter) == null) continue;
+            if (allScanDatum.getTargets().get(filter) == null) {
+                continue;
+            }
             for (ModFileScanData.AnnotationData allScanDatumAnnotation : allScanDatum.getAnnotations()) {
                 if (Objects.equals(allScanDatumAnnotation.getAnnotationType(), type)) {
                     try {

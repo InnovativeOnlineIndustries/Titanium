@@ -11,10 +11,10 @@ import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
-import com.hrznstudio.titanium.component.sideness.IFacingComponent;
-import com.hrznstudio.titanium.component.sideness.SidedComponentManager;
 import com.hrznstudio.titanium.client.screen.addon.FacingHandlerScreenAddon;
 import com.hrznstudio.titanium.component.IComponentHarness;
+import com.hrznstudio.titanium.component.sideness.IFacingComponent;
+import com.hrznstudio.titanium.component.sideness.SidedComponentManager;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
@@ -185,22 +185,29 @@ public class SidedInventoryComponent<T extends IComponentHarness> extends Invent
     @Override
     public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
         List<IFactory<? extends IScreenAddon>> addons = super.getScreenAddons();
-        if (hasFacingAddon)
+        if (hasFacingAddon) {
             addons.add(() -> new FacingHandlerScreenAddon(SidedComponentManager.ofRight(getFacingHandlerX(), getFacingHandlerY(), position, AssetTypes.BUTTON_SIDENESS_MANAGER, 4), this, AssetTypes.SLOT));
+        }
         return addons;
     }
 
     private int getNextSlot(IItemHandler handler, int currentSlot) {
         for (int i = currentSlot; i < handler.getSlots(); i++) {
-            if (!handler.getStackInSlot(i).isEmpty()) return i;
+            if (!handler.getStackInSlot(i).isEmpty()) {
+                return i;
+            }
         }
         return 0;
     }
 
     private boolean transfer(FacingUtil.Sideness sideness, IItemHandler from, IItemHandler to, int workAmount) {
-        if (from.getSlots() < 0) return false;
+        if (from.getSlots() < 0) {
+            return false;
+        }
         int slot = slotCache.getOrDefault(sideness, getNextSlot(from, 0));
-        if (slot >= from.getSlots()) slot = 0;
+        if (slot >= from.getSlots()) {
+            slot = 0;
+        }
         ItemStack extracted = from.extractItem(slot, workAmount, true);
         if (!extracted.isEmpty()) {
             ItemStack returned = ItemHandlerHelper.insertItemStacked(to, extracted, false);

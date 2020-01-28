@@ -7,9 +7,9 @@
 
 package com.hrznstudio.titanium.client.screen.addon;
 
+import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.component.IComponentHarness;
 import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
-import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.text.TextFormatting;
 
@@ -58,7 +58,9 @@ public class ProgressBarScreenAddon<T extends IComponentHarness> extends BasicSc
         List<String> tooltip = new ArrayList<>();
         tooltip.add(TextFormatting.GOLD + "Progress: " + TextFormatting.WHITE + new DecimalFormat().format(progressBar.getProgress()) + TextFormatting.GOLD + "/" + TextFormatting.WHITE + new DecimalFormat().format(progressBar.getMaxProgress()));
         int progress = (progressBar.getMaxProgress() - progressBar.getProgress()) / progressBar.getProgressIncrease();
-        if (!progressBar.getIncreaseType()) progress = progressBar.getMaxProgress() - progress;
+        if (!progressBar.getIncreaseType()) {
+            progress = progressBar.getMaxProgress() - progress;
+        }
         tooltip.add(TextFormatting.GOLD + "ETA: " + TextFormatting.WHITE + new DecimalFormat().format(Math.ceil(progress * progressBar.getTickingTime() / 20D)) + TextFormatting.DARK_AQUA + "s");
         return tooltip;
     }

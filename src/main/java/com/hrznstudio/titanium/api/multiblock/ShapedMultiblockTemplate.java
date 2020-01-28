@@ -9,11 +9,11 @@ package com.hrznstudio.titanium.api.multiblock;
 
 import com.google.common.collect.ImmutableList;
 import com.hrznstudio.titanium.Titanium;
-import com.hrznstudio.titanium.util.matcher.IMatch;
-import com.hrznstudio.titanium.util.matcher.Matcher;
 import com.hrznstudio.titanium.util.BlockPosUtil;
 import com.hrznstudio.titanium.util.FacingUtil;
 import com.hrznstudio.titanium.util.StaticTemplateUtil;
+import com.hrznstudio.titanium.util.matcher.IMatch;
+import com.hrznstudio.titanium.util.matcher.Matcher;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Direction;
@@ -32,10 +32,10 @@ import java.util.List;
 
 /**
  * Big shout-outs and credits to Immersive Engineering for providing most of the inspiration and example implementation code for us to figure out this implementation.
- *
+ * <p>
  * IE is licensed under "Blu's License of Common Sense" as seen here:
  * https://github.com/BluSunrize/ImmersiveEngineering/blob/master/LICENSE
- *
+ * <p>
  * You should also go check out their github repo:
  * https://github.com/BluSunrize/ImmersiveEngineering
  */
@@ -148,13 +148,11 @@ public abstract class ShapedMultiblockTemplate implements IMultiblock {
         return true;
     }
 
-    public List<Template.BlockInfo> getStructure()
-    {
+    public List<Template.BlockInfo> getStructure() {
         return getTemplate().blocks.get(0);
     }
 
-    public Vec3i getSize()
-    {
+    public Vec3i getSize() {
         return getTemplate().getSize();
     }
 }

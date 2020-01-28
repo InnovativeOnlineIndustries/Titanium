@@ -27,6 +27,8 @@ import static com.hrznstudio.titanium.block.RotatableBlock.FACING_HORIZONTAL;
 public class MultiblockFillerTile<T extends MultiblockFillerTile<T>> extends ActiveTile<T> implements IMultiblockComponent {
 
     @Save
+    public BlockState originalState = this.getBlockState();
+    @Save
     private BlockPos masterPos = BlockPos.ZERO;
     @Save
     private boolean isRedStoneBlock;
@@ -34,9 +36,6 @@ public class MultiblockFillerTile<T extends MultiblockFillerTile<T>> extends Act
     private boolean isIOBlock;
     @Save
     private boolean isFormed = false;
-    @Save
-    public BlockState originalState = this.getBlockState();
-
     private ShapedMultiblockTemplate multiblockTemplate;
 
     public MultiblockFillerTile(BasicTileBlock<T> base) {
@@ -69,7 +68,7 @@ public class MultiblockFillerTile<T extends MultiblockFillerTile<T>> extends Act
         return false;
     }
 
-    public BlockState getOriginalState(){
+    public BlockState getOriginalState() {
         return originalState;
     }
 
@@ -101,13 +100,13 @@ public class MultiblockFillerTile<T extends MultiblockFillerTile<T>> extends Act
         world.setBlockState(pos, newState);
     }
 
-    public void setMasterPosition(BlockPos master){
-        masterPos = master;
-    }
-
     @Override
     public BlockPos getMasterPosition() {
         return masterPos;
+    }
+
+    public void setMasterPosition(BlockPos master) {
+        masterPos = master;
     }
 
     public boolean getRedStoneSignal() {

@@ -16,10 +16,10 @@ import net.minecraft.world.gen.feature.template.Template;
 
 /**
  * Big shout-outs and credits to Immersive Engineering for providing most of the inspiration and example implementation code for us to figure out this implementation.
- *
+ * <p>
  * IE is licensed under "Blu's License of Common Sense" as seen here:
  * https://github.com/BluSunrize/ImmersiveEngineering/blob/master/LICENSE
- *
+ * <p>
  * You should also go check out their github repo:
  * https://github.com/BluSunrize/ImmersiveEngineering
  */
@@ -31,7 +31,7 @@ public class BlockPosUtil {
 
     public static BlockPos withSettingsAndOffset(BlockPos origin, BlockPos relative, boolean mirrored, Direction facing) {
         Rotation rot = FacingUtil.getRotationBetweenFacings(Direction.NORTH, facing);
-        if(rot == null) {
+        if (rot == null) {
             return origin;
         }
         return withSettingsAndOffset(origin, relative, mirrored ? Mirror.FRONT_BACK : Mirror.NONE, rot);

@@ -16,7 +16,6 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.biome.Biome;
@@ -169,8 +168,9 @@ public class CompoundSerializableDataHandler {
 
     public static Pair<Reader, Writer> getHandler(Class<?> clazz) {
         Pair<Reader, Writer> pair = FIELD_SERIALIZER.get(clazz);
-        if (pair == null)
+        if (pair == null) {
             throw new RuntimeException("No R/W handler for  " + clazz);
+        }
         return pair;
     }
 

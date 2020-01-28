@@ -14,13 +14,13 @@ import com.hrznstudio.titanium.api.IItemStackQuery;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.block.tile.PoweredTile;
+import com.hrznstudio.titanium.client.screen.addon.EnergyBarScreenAddon;
+import com.hrznstudio.titanium.client.screen.addon.StateButtonAddon;
+import com.hrznstudio.titanium.client.screen.addon.StateButtonInfo;
 import com.hrznstudio.titanium.component.button.ButtonComponent;
 import com.hrznstudio.titanium.component.fluid.FluidTankComponent;
 import com.hrznstudio.titanium.component.inventory.SidedInventoryComponent;
 import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
-import com.hrznstudio.titanium.client.screen.addon.EnergyBarScreenAddon;
-import com.hrznstudio.titanium.client.screen.addon.StateButtonAddon;
-import com.hrznstudio.titanium.client.screen.addon.StateButtonInfo;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.util.ActionResultType;
@@ -76,7 +76,9 @@ public class TestTile extends PoweredTile<TestTile> {
         }.setId(0).setPredicate((playerEntity, compoundNBT) -> {
             System.out.println(":pepeD:");
             ++state;
-            if (state >= 4) state = 0;
+            if (state >= 4) {
+                state = 0;
+            }
             markForUpdate();
         }));
         first.setColor(DyeColor.LIME);

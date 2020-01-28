@@ -37,9 +37,11 @@ public enum FilenameFilterUtil implements java.io.FilenameFilter {
     }
 
     public static boolean isKnown(File dir, String name) {
-        for (FilenameFilterUtil filter : values())
-            if (filter.accept(dir, name))
+        for (FilenameFilterUtil filter : values()) {
+            if (filter.accept(dir, name)) {
                 return true;
+            }
+        }
         return false;
     }
 

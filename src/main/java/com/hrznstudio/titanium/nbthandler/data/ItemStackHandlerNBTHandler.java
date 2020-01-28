@@ -30,7 +30,9 @@ public class ItemStackHandlerNBTHandler implements INBTHandler<ItemStackHandler>
     @Override
     public ItemStackHandler readFromNBT(@Nonnull CompoundNBT compound, @Nonnull String name, @Nullable ItemStackHandler current) {
         if (compound.contains(name)) {
-            if (current == null) current = new ItemStackHandler();
+            if (current == null) {
+                current = new ItemStackHandler();
+            }
             current.deserializeNBT(compound.getCompound(name));
             return current;
         }

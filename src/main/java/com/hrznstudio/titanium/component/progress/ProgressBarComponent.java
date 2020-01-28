@@ -105,6 +105,15 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
     }
 
     /**
+     * Gets the tile where this bar is running
+     *
+     * @return The tile
+     */
+    public T getComponentHarness() {
+        return componentHarness;
+    }
+
+    /**
      * Sets the tile where this bar is running
      *
      * @param componentHarness The tile
@@ -113,15 +122,6 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
     public ProgressBarComponent<T> setComponentHarness(T componentHarness) {
         this.componentHarness = componentHarness;
         return this;
-    }
-
-    /**
-     * Gets the tile where this bar is running
-     *
-     * @return The tile
-     */
-    public T getComponentHarness() {
-        return componentHarness;
     }
 
     /**
@@ -237,7 +237,9 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
      */
     public void setProgress(int progress) {
         this.progress = progress;
-        if (componentHarness != null) componentHarness.markComponentForUpdate();
+        if (componentHarness != null) {
+            componentHarness.markComponentForUpdate();
+        }
     }
 
     /**

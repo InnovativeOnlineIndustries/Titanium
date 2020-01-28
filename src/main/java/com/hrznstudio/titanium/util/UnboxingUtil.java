@@ -12,38 +12,44 @@ import javax.annotation.Nullable;
 public class UnboxingUtil {
 
     public static long safelyUnbox(@Nullable Long l) {
-        if (l == null)
+        if (l == null) {
             return 0;
+        }
         return l;
     }
 
     public static int safelyUnbox(@Nullable Integer i) {
-        if (i == null)
+        if (i == null) {
             return 0;
+        }
         return i;
     }
 
     public static double safelyUnbox(@Nullable Double d) {
-        if (d == null)
+        if (d == null) {
             return 0;
+        }
         return d;
     }
 
     public static boolean safelyUnbox(@Nullable Boolean b) {
-        if (b == null)
+        if (b == null) {
             return false;
+        }
         return b;
     }
 
     public static short safelyUnbox(@Nullable Short s) {
-        if (s == null)
+        if (s == null) {
             return 0;
+        }
         return s;
     }
 
     public static float safelyUnbox(@Nullable Float f) {
-        if (f == null)
+        if (f == null) {
             return 0;
+        }
         return f;
     }
 }

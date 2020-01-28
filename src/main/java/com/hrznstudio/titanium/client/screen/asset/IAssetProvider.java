@@ -23,8 +23,9 @@ public interface IAssetProvider {
     @Nonnull
     static <T extends IAsset> T getAsset(IAssetProvider provider, IAssetType<T> type) {
         T asset = provider.getAsset(type);
-        if (asset == null && provider != DEFAULT_PROVIDER)
+        if (asset == null && provider != DEFAULT_PROVIDER) {
             asset = DEFAULT_PROVIDER.getAsset(type);
+        }
         return asset != null ? asset : type.getDefaultAsset();
     }
 

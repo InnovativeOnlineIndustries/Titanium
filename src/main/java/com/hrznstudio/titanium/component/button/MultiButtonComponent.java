@@ -39,7 +39,9 @@ public class MultiButtonComponent implements IScreenAddonProvider {
         List<IFactory<? extends IScreenAddon>> addons = new ArrayList<>();
         for (ButtonComponent basicButtonAddon : basicButtonAddons) {
             List<IFactory<? extends IScreenAddon>> addon = basicButtonAddon.getScreenAddons();
-            if (addon != null) addons.addAll(addon);
+            if (addon != null) {
+                addons.addAll(addon);
+            }
         }
         return addons;
     }

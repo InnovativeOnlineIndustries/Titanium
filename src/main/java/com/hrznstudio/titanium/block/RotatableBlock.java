@@ -44,7 +44,9 @@ public abstract class RotatableBlock<T extends BasicTile<T>> extends BasicTileBl
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> p_206840_1_) {
         super.fillStateContainer(p_206840_1_);
-        if (this.getRotationType().getProperties() != null) p_206840_1_.add(this.getRotationType().getProperties());
+        if (this.getRotationType().getProperties() != null) {
+            p_206840_1_.add(this.getRotationType().getProperties());
+        }
     }
 
     public enum RotationType {

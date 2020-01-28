@@ -10,9 +10,9 @@ package com.hrznstudio.titanium.component.inventory;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
+import com.hrznstudio.titanium.component.IComponentHarness;
 import com.hrznstudio.titanium.component.sideness.ICapabilityHolder;
 import com.hrznstudio.titanium.component.sideness.IFacingComponent;
-import com.hrznstudio.titanium.component.IComponentHarness;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
@@ -136,8 +136,9 @@ public class MultiInventoryComponent<T extends IComponentHarness> implements ISc
             InventoryComponent<T> handler = getFromSlot(slot);
             if (handler != null) {
                 int relativeSlot = getRelativeSlot(handler, slot);
-                if (!handler.getExtractPredicate().test(handler.getStackInSlot(relativeSlot), relativeSlot))
+                if (!handler.getExtractPredicate().test(handler.getStackInSlot(relativeSlot), relativeSlot)) {
                     return ItemStack.EMPTY;
+                }
                 return handler.extractItem(relativeSlot, amount, simulate);
             }
             return super.extractItem(slot, amount, simulate);
@@ -164,8 +165,9 @@ public class MultiInventoryComponent<T extends IComponentHarness> implements ISc
 
         @Override
         protected void validateSlotIndex(int slot) {
-            if (slot < 0 || slot >= slotAmount)
+            if (slot < 0 || slot >= slotAmount) {
                 throw new RuntimeException("Slot " + slot + " not in valid range - [0," + slotAmount + ")");
+            }
         }
 
         public InventoryComponent<T> getFromSlot(int slot) {
@@ -180,7 +182,9 @@ public class MultiInventoryComponent<T extends IComponentHarness> implements ISc
 
         public int getRelativeSlot(InventoryComponent<T> handler, int slot) {
             for (InventoryComponent<T> h : inventoryHandlers) {
-                if (h.equals(handler)) return slot;
+                if (h.equals(handler)) {
+                    return slot;
+                }
                 slot -= h.getSlots();
             }
             return 0;

@@ -32,12 +32,12 @@ public class MultiblockFillerBlock<T extends MultiblockFillerTile<T>> extends Ro
     @Override
     public void onBlockHarvested(World world, BlockPos pos, BlockState state, PlayerEntity player) {
         TileEntity tile = world.getTileEntity(pos);
-        if(tile instanceof IMultiblockComponent){
-            if(((IMultiblockComponent) tile).isFormed()){
+        if (tile instanceof IMultiblockComponent) {
+            if (((IMultiblockComponent) tile).isFormed()) {
                 BlockPos masterPos = ((IMultiblockComponent) tile).getMasterPosition();
                 TileEntity master = world.getTileEntity(masterPos);
-                if(master instanceof MultiblockControllerTile){
-                    if(((MultiblockControllerTile) master).isFormed()) {
+                if (master instanceof MultiblockControllerTile) {
+                    if (((MultiblockControllerTile) master).isFormed()) {
                         ((MultiblockControllerTile) master).onBreak();
                         ((MultiblockControllerTile) master).setFormed(false);
                     }

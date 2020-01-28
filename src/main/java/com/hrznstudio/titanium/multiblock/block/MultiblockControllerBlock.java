@@ -31,7 +31,7 @@ public class MultiblockControllerBlock<T extends MultiblockControllerTile<T>> ex
     public void onBlockHarvested(World world, BlockPos pos, BlockState state, PlayerEntity player) {
         TileEntity master = world.getTileEntity(pos);
         if (master instanceof MultiblockControllerTile) {
-            if(((MultiblockControllerTile) master).isFormed()) {
+            if (((MultiblockControllerTile) master).isFormed()) {
                 ((MultiblockControllerTile) master).onBreak();
                 ((MultiblockControllerTile) master).setFormed(false);
             }

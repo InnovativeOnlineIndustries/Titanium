@@ -104,8 +104,9 @@ public class ItemStackFilter implements IFilter<ItemStack> {
         compoundNBT.putInt("Pointer", pointer);
         CompoundNBT filter = new CompoundNBT();
         for (FilterSlot<ItemStack> itemStackFilterSlot : this.filter) {
-            if (itemStackFilterSlot != null && !itemStackFilterSlot.getFilter().isEmpty())
+            if (itemStackFilterSlot != null && !itemStackFilterSlot.getFilter().isEmpty()) {
                 filter.put(itemStackFilterSlot.getFilterID() + "", itemStackFilterSlot.getFilter().serializeNBT());
+            }
         }
         compoundNBT.put("Filter", filter);
         compoundNBT.putString("Type", type.name());

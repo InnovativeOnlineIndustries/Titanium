@@ -96,8 +96,9 @@ public class Feature {
 
         public <T extends IForgeRegistryEntry<T>> Builder content(Class<T> tClass, T t) {
             getList(tClass).add(t);
-            if (t instanceof IAlternativeEntries)
+            if (t instanceof IAlternativeEntries) {
                 ((IAlternativeEntries) t).addAlternatives(this);
+            }
             return this;
         }
 

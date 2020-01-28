@@ -7,7 +7,6 @@
 
 package com.hrznstudio.titanium.api.multiblock;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Direction;
@@ -22,7 +21,7 @@ public interface IMultiblock {
 
     /**
      * @param state Trigger BlockState
-     * Used to check whether the given blockstate can be used to trigger the formation of the Multiblock Structure.
+     *              Used to check whether the given blockstate can be used to trigger the formation of the Multiblock Structure.
      */
     boolean isBlockTrigger(BlockState state);
 
@@ -31,7 +30,7 @@ public interface IMultiblock {
      * @param controllerPos Controller BlockPos
      * @param direction     Direction Controller was Clicked from
      * @param playerEntity  Player who Clicked
-     * This is used for the final check for the structure and sets the new structure.
+     *                      This is used for the final check for the structure and sets the new structure.
      */
     boolean createStructure(World world, BlockPos controllerPos, Direction direction, PlayerEntity playerEntity);
 
@@ -41,7 +40,7 @@ public interface IMultiblock {
      * @param rotation  Rotation
      * @param mirror    Mirror
      * @param direction Direction
-     * This is used for forming the actual structure and replacing blockstates.
+     *                  This is used for forming the actual structure and replacing blockstates.
      */
     void formStructure(World world, BlockPos originPos, Rotation rotation, Mirror mirror, Direction direction);
 

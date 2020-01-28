@@ -37,10 +37,12 @@ public class TagUtil {
     }
 
     public static <T> Collection<T> getAllEntries(Tag<T>... tags) {
-        if (tags.length == 0)
+        if (tags.length == 0) {
             return Collections.emptyList();
-        if (tags.length == 1)
+        }
+        if (tags.length == 1) {
             return tags[0].getAllElements();
+        }
         List<T> list = new ArrayList<>();
         for (Tag<T> tag : tags) {
             list.addAll(tag.getAllElements());

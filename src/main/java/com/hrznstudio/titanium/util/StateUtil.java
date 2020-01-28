@@ -32,8 +32,9 @@ public class StateUtil {
         }
 
         for (String args : extrasArgs) {
-            if (stringbuilder.length() != 0)
+            if (stringbuilder.length() != 0) {
                 stringbuilder.append(",");
+            }
             stringbuilder.append(args);
         }
 

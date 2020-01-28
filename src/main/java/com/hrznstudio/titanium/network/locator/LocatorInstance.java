@@ -10,7 +10,6 @@ package com.hrznstudio.titanium.network.locator;
 import com.hrznstudio.titanium.network.CompoundSerializableDataHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
@@ -34,10 +33,13 @@ public abstract class LocatorInstance {
         try {
             Class<?> clazz = getClass();
             for (Field f : clazz.getDeclaredFields()) {
-                if (!f.isAccessible()) f.setAccessible(true);
+                if (!f.isAccessible()) {
+                    f.setAccessible(true);
+                }
                 Class<?> type = f.getType();
-                if (CompoundSerializableDataHandler.acceptField(f, type))
+                if (CompoundSerializableDataHandler.acceptField(f, type)) {
                     CompoundSerializableDataHandler.readField(f, type, buf, this);
+                }
             }
         } catch (Exception e) {
             throw new RuntimeException("Error at reading packet " + this, e);
@@ -48,10 +50,13 @@ public abstract class LocatorInstance {
         try {
             Class<?> clazz = getClass();
             for (Field f : clazz.getDeclaredFields()) {
-                if (!f.isAccessible()) f.setAccessible(true);
+                if (!f.isAccessible()) {
+                    f.setAccessible(true);
+                }
                 Class<?> type = f.getType();
-                if (CompoundSerializableDataHandler.acceptField(f, type))
+                if (CompoundSerializableDataHandler.acceptField(f, type)) {
                     CompoundSerializableDataHandler.writeField(f, type, buf, this);
+                }
             }
         } catch (Exception e) {
             throw new RuntimeException("Error at writing packet " + this, e);
