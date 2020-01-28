@@ -23,12 +23,9 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.gen.feature.template.Template;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -54,13 +51,15 @@ public class MultiblockControllerTile<T extends MultiblockControllerTile<T>> ext
 
     private List<Pair<BlockPos, BlockState>> children = new ArrayList<>();
 
-    public MultiblockControllerTile(BasicTileBlock<T> base) {
+    public MultiblockControllerTile(MultiblockTemplate multiblockTemplate, BasicTileBlock<T> base) {
         super(base);
+        this.multiblockTemplate = multiblockTemplate;
         this.formationTool = itemStack -> (itemStack.getItem().isIn(FORMATION_TOOL));
     }
 
-    public MultiblockControllerTile(BasicTileBlock<T> base, Predicate<ItemStack> formationTool) {
+    public MultiblockControllerTile(MultiblockTemplate multiblockTemplate, BasicTileBlock<T> base, Predicate<ItemStack> formationTool) {
         super(base);
+        this.multiblockTemplate = multiblockTemplate;
         this.formationTool = formationTool;
     }
 
@@ -108,17 +107,6 @@ public class MultiblockControllerTile<T extends MultiblockControllerTile<T>> ext
             }
         }
         return ActionResultType.FAIL;
-    }
-
-    @Nonnull
-    @Override
-    public <U> LazyOptional<U> getCapability(@Nonnull Capability<U> cap, @Nullable Direction side) {
-        return super.getCapability(cap, side);
-    }
-
-    @Nonnull
-    public <U> LazyOptional<U> getMimicCapability(@Nonnull Capability<U> cap, @Nullable Direction side, BlockPos mimicPos) {
-        return getCapability(cap, side);
     }
 
     @Nonnull
