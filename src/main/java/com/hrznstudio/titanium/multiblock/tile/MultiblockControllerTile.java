@@ -17,11 +17,12 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.gen.feature.template.Template;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import org.apache.commons.lang3.tuple.Pair;
@@ -30,13 +31,14 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
-public class MachineControllerTile<T extends MachineControllerTile<T>> extends ActiveTile<T> implements IMultiblockComponent {
+import static com.hrznstudio.titanium.util.TitaniumTags.FORMATION_TOOL;
+
+public class MultiblockControllerTile<T extends MultiblockControllerTile<T>> extends ActiveTile<T> implements IMultiblockComponent {
 
     @Save
     private BlockPos masterPos = BlockPos.ZERO;
-    @Save
-    private BlockPos posInMultiblock = BlockPos.ZERO;
     @Save
     private BlockPos posRSBlock = BlockPos.ZERO;
     @Save
@@ -44,7 +46,7 @@ public class MachineControllerTile<T extends MachineControllerTile<T>> extends A
     @Save
     private boolean isFormed = false;
     @Save
-    private Item formationTool;
+    private Predicate<ItemStack> formationTool;
     @Save
     private BlockState originalState;
 
@@ -52,21 +54,27 @@ public class MachineControllerTile<T extends MachineControllerTile<T>> extends A
 
     private List<Pair<BlockPos, BlockState>> children = new ArrayList<>();
 
-    public MachineControllerTile(BasicTileBlock<T> base) {
-        this(base, null);
+    public MultiblockControllerTile(BasicTileBlock<T> base) {
+        super(base);
+        this.formationTool = itemStack -> (itemStack.getItem().isIn(FORMATION_TOOL));
     }
 
-    public MachineControllerTile(BasicTileBlock<T> base, @Nullable Item formationTool) {
+    public MultiblockControllerTile(BasicTileBlock<T> base, Predicate<ItemStack> formationTool) {
         super(base);
         this.formationTool = formationTool;
     }
 
-    public void addChild(MachineFillerTile child) {
+    public void addChild(MultiblockFillerTile child) {
         children.add(Pair.of(child.getPos(), child.getOriginalState()));
     }
 
+    public void setOriginalState(MultiblockFillerTile child) {
+        this.originalState = this.getBlockState();
+        child.originalState = child.getBlockState();
+    }
+
     public void onBreak() {
-        if(isFormed() && !world.isRemote) {
+        if (isFormed() && !world.isRemote) {
             children.forEach(pair -> {
                 world.setBlockState(pair.getKey(), pair.getValue());
             });
@@ -78,33 +86,28 @@ public class MachineControllerTile<T extends MachineControllerTile<T>> extends A
     public ActionResultType onActivated(PlayerEntity player, Hand hand, Direction facing, double hitX, double hitY, double hitZ) {
         if (super.onActivated(player, hand, facing, hitX, hitY, hitZ) == ActionResultType.PASS) {
             ItemStack stack = player.getHeldItem(hand);
-            Item item = stack.getItem();
-            boolean isItemFormationTool = stack.isItemEqual(formationTool.getDefaultInstance());
             if (!player.isSneaking() && isFormed) {
                 openGui(player);
                 return ActionResultType.SUCCESS;
-            } else if(isItemFormationTool){
-                if(item instanceof IFormationItem){
-                    if(((IFormationItem) item).isConsumable()){
+            } else if (formationTool.test(stack)) {
+                Item item = stack.getItem();
+                if (item instanceof IFormationItem) {
+                    if (((IFormationItem) item).isConsumable()) {
                         int cost = ((IFormationItem) item).formationCost();
-                        setFormed(true);
-                        if(cost != 0) {
+                        formationHandler();
+                        if (cost != 0) {
                             stack.shrink(((IFormationItem) item).formationCost());
-                            return ActionResultType.SUCCESS;
-                        }else{
+                        } else {
                             stack.shrink(1);
-                            return ActionResultType.SUCCESS;
                         }
-                    }else{
+                    } else {
                         setFormed(true);
-                        return ActionResultType.SUCCESS;
                     }
+                    return ActionResultType.SUCCESS;
                 }
             }
-            return ActionResultType.FAIL;
-        } else {
-            return ActionResultType.SUCCESS;
         }
+        return ActionResultType.FAIL;
     }
 
     @Nonnull
@@ -114,7 +117,7 @@ public class MachineControllerTile<T extends MachineControllerTile<T>> extends A
     }
 
     @Nonnull
-    public <U> LazyOptional<U> getMimicCapbility(@Nonnull Capability<U> cap, @Nullable Direction side, BlockPos mimicPos) {
+    public <U> LazyOptional<U> getMimicCapability(@Nonnull Capability<U> cap, @Nullable Direction side, BlockPos mimicPos) {
         return getCapability(cap, side);
     }
 
@@ -130,11 +133,6 @@ public class MachineControllerTile<T extends MachineControllerTile<T>> extends A
 
     public void setFormed(boolean isFormed) {
         this.isFormed = isFormed;
-    }
-
-    @Override
-    public BlockPos getPosition() {
-        return null;
     }
 
     @Override
@@ -157,27 +155,25 @@ public class MachineControllerTile<T extends MachineControllerTile<T>> extends A
     }
 
     public void updateMasterBlock(BlockState state, boolean blockUpdate) {
-        if(blockUpdate) {
+        if (blockUpdate) {
             markForUpdate();
-        }else{
+        } else {
             markDirty();
         }
     }
 
-    public boolean targetFormationSide(ItemStack stack, Direction direction, PlayerEntity player, Vec3d vec3d, boolean consumable){
-       if(!world.isRemote) {
-           if(formationTool != null) {
-
-               if (consumable) {
-
-               } else {
-
-               }
-           } else {
-
-           }
-       }
-        return false;
+    public void formationHandler() {
+        for (Template.BlockInfo block : multiblockTemplate.getStructure()) {
+            TileEntity target = world.getTileEntity(pos.add(block.pos.getX(), block.pos.getY(), block.pos.getZ()));
+            if (target.getBlockState().equals(block.state)) {
+                if (target instanceof MultiblockFillerTile) {
+                    setOriginalState((MultiblockFillerTile) target);
+                    addChild((MultiblockFillerTile) target);
+                    setFormed(true);
+                    ((MultiblockFillerTile) target).setFormed(true);
+                    ((MultiblockFillerTile) target).setMasterPosition(this.getPos());
+                }
+            }
+        }
     }
-
 }

@@ -8,56 +8,66 @@
 package com.hrznstudio.titanium.multiblock.tile;
 
 import com.hrznstudio.titanium.annotation.Save;
-import com.hrznstudio.titanium.api.multiblock.IFormationTool;
 import com.hrznstudio.titanium.api.multiblock.IMultiblockComponent;
 import com.hrznstudio.titanium.api.multiblock.MultiblockTemplate;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.block.tile.ActiveTile;
-import com.hrznstudio.titanium.block.tile.BasicTile;
-import com.hrznstudio.titanium.multiblock.TitaniumMultiblockTemplate;
-import com.hrznstudio.titanium.multiblock.block.MachineFillerBlock;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.gen.feature.template.Template;
 
 import javax.annotation.Nonnull;
 
 import static com.hrznstudio.titanium.block.RotatableBlock.FACING_HORIZONTAL;
 
-public class MachineFillerTile extends ActiveTile<MachineFillerTile> implements IMultiblockComponent {
+public class MultiblockFillerTile<T extends MultiblockFillerTile<T>> extends ActiveTile<T> implements IMultiblockComponent {
 
-    @Save
-    private BlockPos posFromMaster = BlockPos.ZERO;
-    @Save
-    private BlockPos posInMultiblock = BlockPos.ZERO;
     @Save
     private BlockPos masterPos = BlockPos.ZERO;
     @Save
     private boolean isRedStoneBlock;
     @Save
+    private boolean isIOBlock;
+    @Save
     private boolean isFormed = false;
     @Save
-    private BlockState originalState = getOriginalBlock();
+    public BlockState originalState = this.getBlockState();
 
     private MultiblockTemplate multiblockTemplate;
 
-    public MachineFillerTile(BasicTileBlock<MachineFillerTile> base) {
+    public MultiblockFillerTile(BasicTileBlock<T> base) {
         super(base);
+    }
+
+    @Override
+    public ActionResultType onActivated(PlayerEntity player, Hand hand, Direction facing, double hitX, double hitY, double hitZ) {
+        if (super.onActivated(player, hand, facing, hitX, hitY, hitZ) == ActionResultType.PASS) {
+            if (isFormed()) {
+                BlockPos masterPosition = getMasterPosition();
+                TileEntity master = world.getTileEntity(masterPosition);
+                if (master instanceof MultiblockControllerTile) {
+                    ((MultiblockControllerTile) master).openGui(player);
+                }
+            }
+        }
+        return ActionResultType.FAIL;
     }
 
     public boolean isRedStoneBlock() {
         return false;
     }
 
-    public BlockState getOriginalState() {
+    public BlockState getOriginalState(){
         return originalState;
     }
 
     @Nonnull
     @Override
-    public MachineFillerTile getSelf() {
+    public T getSelf() {
         return null;
     }
 
@@ -71,43 +81,36 @@ public class MachineFillerTile extends ActiveTile<MachineFillerTile> implements 
         this.isFormed = isFormed;
     }
 
-    public BlockPos getOrigin() {
-        return TitaniumMultiblockTemplate.withSettingsAndOffset(pos, BlockPos.ZERO.subtract(posInMultiblock),
-                getIsMirrored(), multiblockTemplate.untransformDirection(getFacing()));
-    }
-
     //ToDo:: Add this to RotatableBlock
-    public Direction getFacing()
-    {
+    public Direction getFacing() {
         BlockState state = getBlockState();
         return state.get(FACING_HORIZONTAL);
     }
 
-    public void setFacing(Direction facing)
-    {
+    public void setFacing(Direction facing) {
         BlockState oldState = world.getBlockState(pos);
         BlockState newState = oldState.with(FACING_HORIZONTAL, facing);
         world.setBlockState(pos, newState);
     }
 
-    @Override
-    public BlockPos getMasterPosition() {
-        return null;
+    public void setMasterPosition(BlockPos master){
+        masterPos = master;
     }
 
-    public boolean getRedStoneSignal(){
-        if(isRedStoneBlock()){
-            if(world.isBlockPowered(pos)){
+    @Override
+    public BlockPos getMasterPosition() {
+        return masterPos;
+    }
+
+    public boolean getRedStoneSignal() {
+        if (isRedStoneBlock()) {
+            if (world.isBlockPowered(pos)) {
                 return true;
-            }else{
+            } else {
                 return false;
             }
         }
         return false;
     }
 
-    public BlockState getOriginalBlock() {
-        for(Template.BlockInfo block : multiblockTemplate.getStructure()) {}
-        return Blocks.AIR.getDefaultState();
-    }
 }
