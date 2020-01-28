@@ -7,12 +7,19 @@
 
 package com.hrznstudio.titanium.util;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.state.DirectionProperty;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
 
 import javax.annotation.Nullable;
 
 public class FacingUtil {
+
+    public static void rotateBlock(Block block, Direction facing, Sideness sideness) {
+
+    }
 
     public static Sideness getFacingRelative(Direction relative, @Nullable Direction facing) {
         if (facing == null) return null;

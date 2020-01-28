@@ -35,7 +35,7 @@ public class TitaniumMultiblockTemplate extends MultiblockTemplate {
     @Override
     protected void prepareBlockForDisassembly(World world, BlockPos originPos) {
         TileEntity tileEntity = world.getTileEntity(originPos);
-        if (isTileEntityMultiblock(tileEntity) && tileEntity instanceof IMultiblockComponent) {
+        if (tileEntity instanceof IMultiblockComponent) {
             IMultiblockComponent component = (IMultiblockComponent) tileEntity;
             if (component.isFormed()) {
                 component.setFormed(false);
@@ -60,10 +60,6 @@ public class TitaniumMultiblockTemplate extends MultiblockTemplate {
             Titanium.LOGGER.error("Tile at BlockPos: " + originPos + ", should have been a IMultiblockComponent Tile, It wasn't... FIX YOH SHIT!");
         }
         world.addBlockEvent(originPos, world.getBlockState(originPos).getBlock(), 255, 0);
-    }
-
-    private boolean isTileEntityMultiblock(TileEntity tileEntity) {
-        return tileEntity instanceof MultiblockControllerTile || tileEntity instanceof MultiblockFillerTile;
     }
 
     public Supplier<BlockState> getBlockStateSupplier() {
