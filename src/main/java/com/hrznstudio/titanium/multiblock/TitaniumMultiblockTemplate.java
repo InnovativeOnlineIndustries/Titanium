@@ -32,36 +32,6 @@ public class TitaniumMultiblockTemplate extends MultiblockTemplate {
         this.blockStateSupplier = blockStateSupplier;
     }
 
-    @Override
-    protected void prepareBlockForDisassembly(World world, BlockPos originPos) {
-        TileEntity tileEntity = world.getTileEntity(originPos);
-        if (tileEntity instanceof IMultiblockComponent) {
-            IMultiblockComponent component = (IMultiblockComponent) tileEntity;
-            if (component.isFormed()) {
-                component.setFormed(false);
-            }
-        } else {
-            Titanium.LOGGER.error("Tile at BlockPos: " + originPos + ", should have been a IMultiblockComponent Tile, It wasn't... FIX YOH SHIT!");
-        }
-    }
-
-    @Override
-    protected void replaceStructureBlock(Template.BlockInfo info, World world, BlockPos originPos, boolean mirrored, Direction clickDirection, Vec3i offsetFromMaster) {
-        BlockState baseState = blockStateSupplier.get();
-        if (offsetFromMaster != Vec3i.NULL_VECTOR) {
-          //TODO: Assign Slave to BlockState
-        }
-        world.setBlockState(originPos, baseState);
-        TileEntity tileEntity = world.getTileEntity(originPos);
-        if (tileEntity instanceof IMultiblockComponent) {
-            IMultiblockComponent component = (IMultiblockComponent) tileEntity;
-            component.setFormed(true);
-        } else {
-            Titanium.LOGGER.error("Tile at BlockPos: " + originPos + ", should have been a IMultiblockComponent Tile, It wasn't... FIX YOH SHIT!");
-        }
-        world.addBlockEvent(originPos, world.getBlockState(originPos).getBlock(), 255, 0);
-    }
-
     public Supplier<BlockState> getBlockStateSupplier() {
         return blockStateSupplier;
     }

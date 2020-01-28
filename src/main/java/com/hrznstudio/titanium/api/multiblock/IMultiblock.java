@@ -46,15 +46,6 @@ public interface IMultiblock {
     void formStructure(World world, BlockPos originPos, Rotation rotation, Mirror mirror, Direction direction);
 
     /**
-     * @param world     Server World
-     * @param originPos Controller BlockPos
-     * @param direction Direction Controller was Clicked from
-     * @param mirrored  Mirrored Boolean
-     * This is used for dealing with the breaking and subsequent "resetting" of the blockstates.
-     */
-    void breakStructure(World world, BlockPos originPos, Direction direction, boolean mirrored);
-
-    /**
      * Used to check if the Multiblock can be rendered in @IShapedMultiblock#renderFormedMultiblock
      */
     @OnlyIn(Dist.CLIENT)

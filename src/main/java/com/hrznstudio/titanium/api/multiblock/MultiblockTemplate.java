@@ -119,23 +119,6 @@ public abstract class MultiblockTemplate implements IMultiblock {
         }
     }
 
-    protected abstract void replaceStructureBlock(Template.BlockInfo info, World world, BlockPos originPos, boolean mirrored, Direction clickDirection, Vec3i offsetFromMaster);
-
-    @Override
-    public void breakStructure(World world, BlockPos originPos, Direction direction, boolean mirrored) {
-        Mirror mirror = mirrored ? Mirror.FRONT_BACK : Mirror.NONE;
-        Rotation rot = FacingUtil.getRotationBetweenFacings(Direction.NORTH, direction);
-        if (rot != null) {
-            for (Template.BlockInfo info : getTemplate().blocks.get(0)) {
-                BlockPos actualPos = BlockPosUtil.withSettingsAndOffset(originPos, info.pos, mirror, rot);
-                prepareBlockForDisassembly(world, actualPos);
-                world.setBlockState(actualPos, info.state.mirror(mirror).rotate(rot));
-            }
-        }
-    }
-
-    protected void prepareBlockForDisassembly(World world, BlockPos originPos) {}
-
     @Override
     public boolean canRenderFormedMultiblock() {
         return false;
