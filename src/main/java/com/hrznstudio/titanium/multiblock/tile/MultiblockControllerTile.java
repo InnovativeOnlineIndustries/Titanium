@@ -93,7 +93,9 @@ public class MultiblockControllerTile<T extends MultiblockControllerTile<T>> ext
                 if (item instanceof IFormationItem) {
                     if (((IFormationItem) item).isConsumable()) {
                         int cost = ((IFormationItem) item).formationCost();
-                        formationHandler();
+                        if(multiblockTemplate.createStructure(world,pos,facing,player)) {
+                            formationHandler();
+                        }
                         if (cost != 0) {
                             stack.shrink(((IFormationItem) item).formationCost());
                         } else {
