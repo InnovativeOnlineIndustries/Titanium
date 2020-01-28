@@ -1,6 +1,7 @@
 package com.hrznstudio.titanium._impl.test.multiblock;
 
 import com.hrznstudio.titanium.Titanium;
+import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.multiblock.block.MultiblockControllerBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -15,4 +16,8 @@ public class TestMultiblockControllerBlock extends MultiblockControllerBlock<Tes
         setRegistryName(new ResourceLocation(Titanium.MODID, "test_controller_block"));
     }
 
+    @Override
+    public IFactory<TestMultiblockControllerTile> getTileEntityFactory() {
+        return TestMultiblockControllerTile::new;
+    }
 }
