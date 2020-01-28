@@ -90,23 +90,11 @@ public class MultiblockControllerTile<T extends MultiblockControllerTile<T>> ext
                 return ActionResultType.SUCCESS;
             } else if (formationTool.test(stack)) {
                 Item item = stack.getItem();
-                if (item instanceof IFormationItem) {
-                    if (((IFormationItem) item).isConsumable()) {
-                        int cost = ((IFormationItem) item).formationCost();
-                        if(multiblockTemplate.createStructure(world,pos,facing,player)) {
-                            formationHandler();
-                        }
-                        if (cost != 0) {
-                            stack.shrink(((IFormationItem) item).formationCost());
-                        } else {
-                            stack.shrink(1);
-                        }
-                    } else {
-                        setFormed(true);
-                    }
-                    return ActionResultType.SUCCESS;
+                if (multiblockTemplate.createStructure(world, pos, facing, player)) {
+                    formationHandler();
                 }
             }
+            return ActionResultType.SUCCESS;
         }
         return ActionResultType.FAIL;
     }
