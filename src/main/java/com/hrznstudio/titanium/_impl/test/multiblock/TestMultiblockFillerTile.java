@@ -6,11 +6,8 @@ import net.minecraftforge.registries.ObjectHolder;
 
 public class TestMultiblockFillerTile extends MultiblockFillerTile<TestMultiblockFillerTile> {
 
-    @ObjectHolder("titanium:test_filler_block")
-    public static TestMultiblockFillerBlock fillerBlock;
-
     public TestMultiblockFillerTile() {
-        super(fillerBlock);
+        super(TestMultiblockFillerBlock.TEST);
     }
 
 }

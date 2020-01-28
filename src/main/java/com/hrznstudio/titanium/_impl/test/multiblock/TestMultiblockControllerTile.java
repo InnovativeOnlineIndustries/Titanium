@@ -6,10 +6,7 @@ import net.minecraftforge.registries.ObjectHolder;
 
 public class TestMultiblockControllerTile extends MultiblockControllerTile<TestMultiblockControllerTile> {
 
-    @ObjectHolder("titanium:test_controller_block")
-    public static TestMultiblockControllerBlock controllerBlock;
-
     public TestMultiblockControllerTile() {
-        super(new TestMultiblockTemplate(), controllerBlock);
+        super(new TestMultiblockTemplate(), TestMultiblockControllerBlock.TEST);
     }
 }
