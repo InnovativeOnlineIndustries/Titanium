@@ -66,10 +66,11 @@ public abstract class BasicTileBlock<T extends BasicTile<T>> extends BasicBlock 
 
 
     @Override
-    public ActionResultType onUse(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult ray) {
+    @SuppressWarnings("deprecation")
+    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult ray) {
         return getTile(worldIn, pos)
                 .map(tile -> tile.onActivated(player, hand, ray.getFace(), ray.getHitVec().x, ray.getHitVec().y, ray.getHitVec().z))
-                .orElseGet(() -> super.onUse(state, worldIn, pos, player, hand, ray));
+                .orElseGet(() -> super.onBlockActivated(state, worldIn, pos, player, hand, ray));
     }
 
     @Nullable

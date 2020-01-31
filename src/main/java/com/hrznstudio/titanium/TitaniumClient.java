@@ -47,13 +47,14 @@ public class TitaniumClient {
                     MatrixStack stack = new MatrixStack();
                     stack.push();
                     ActiveRenderInfo info = event.getInfo();
-                    stack.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(info.getPitch()));
-                    stack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(info.getYaw() + 180));
+                    stack.rotate(Vector3f.XP.rotationDegrees(info.getPitch()));
+                    stack.rotate(Vector3f.YP.rotationDegrees(info.getYaw() + 180));
                     double d0 = info.getProjectedView().getX();
                     double d1 = info.getProjectedView().getY();
                     double d2 = info.getProjectedView().getZ();
-                    IVertexBuilder builder = Minecraft.getInstance().getBufferBuilders().getOutlineVertexConsumers().getBuffer(RenderType.getLines());
-                    WorldRenderer.drawBox(stack, builder, shape.getBoundingBox().offset(blockpos.getX() - d0, blockpos.getY() - d1, blockpos.getZ() - d2), 0, 0, 0, 0.5F);
+                    IVertexBuilder builder = Minecraft.getInstance().getRenderTypeBuffers().getOutlineBufferSource().getBuffer(RenderType.LINES);
+                    WorldRenderer.drawBoundingBox(stack, builder, shape.getBoundingBox().offset(blockpos.getX() - d0,
+                            blockpos.getY() - d1, blockpos.getZ() - d2), 0, 0, 0, 0.5F);
                     stack.pop();
                 }
             }

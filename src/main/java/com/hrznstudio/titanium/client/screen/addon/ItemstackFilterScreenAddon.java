@@ -57,7 +57,7 @@ public class ItemstackFilterScreenAddon extends BasicScreenAddon implements ICli
                         guiX + filterSlot.getX() + 17, guiY + filterSlot.getY() + 17, new Color(color.getRed(), color.getGreen(), color.getBlue(), 256 / 2).getRGB());
                 RenderSystem.color4f(1, 1, 1, 1);
                 if (!filterSlot.getFilter().isEmpty()) {
-                    RenderHelper.enable(); //enableGUIStandarItemLightning
+                    RenderHelper.enableStandardItemLighting(); //enableGUIStandarItemLightning
                     Minecraft.getInstance().getItemRenderer().renderItemIntoGUI(filterSlot.getFilter(), filterSlot.getX() + guiX + 1, filterSlot.getY() + guiY + 1);
                 }
             }

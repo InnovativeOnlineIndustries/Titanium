@@ -7,6 +7,7 @@
 
 package com.hrznstudio.titanium.annotation.config;
 
+
 import net.minecraftforge.fml.config.ModConfig;
 
 import java.lang.annotation.ElementType;

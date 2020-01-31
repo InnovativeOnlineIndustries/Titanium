@@ -84,7 +84,7 @@ public abstract class ScreenAddonScreen extends Screen implements IScreenAddonCo
     public abstract List<IFactory<IScreenAddon>> guiAddons();
 
     private void checkForMouseDrag(int mouseX, int mouseY) {
-        if (GLFW.glfwGetMouseButton(Minecraft.getInstance().getWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS) {//Main Window
+        if (GLFW.glfwGetMouseButton(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS) {//Main Window
             if (!this.isMouseDragging) {
                 this.isMouseDragging = true;
             } else {

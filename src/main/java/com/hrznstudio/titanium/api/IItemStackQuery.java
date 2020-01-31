@@ -32,7 +32,7 @@ public interface IItemStackQuery extends Predicate<ItemStack> {
     }
 
     static IItemStackQuery of(Block block) {
-        return of(Item.getItemFromBlock(block));
+        return of(block.asItem());
     }
 
     boolean matches(ItemStack stack);
