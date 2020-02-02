@@ -197,7 +197,7 @@ public class SidedInventoryComponent<T extends IComponentHarness> extends Invent
     }
 
     private boolean transfer(FacingUtil.Sideness sideness, IItemHandler from, IItemHandler to, int workAmount) {
-        if (from.getSlots() < 0) return false;
+        if (from.getSlots() <= 0) return false;
         int slot = slotCache.getOrDefault(sideness, getNextSlot(from, 0));
         if (slot >= from.getSlots()) slot = 0;
         ItemStack extracted = from.extractItem(slot, workAmount, true);
