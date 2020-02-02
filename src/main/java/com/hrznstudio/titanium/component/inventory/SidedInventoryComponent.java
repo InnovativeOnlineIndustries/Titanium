@@ -11,10 +11,10 @@ import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
-import com.hrznstudio.titanium.component.sideness.IFacingComponent;
-import com.hrznstudio.titanium.component.sideness.SidedComponentManager;
 import com.hrznstudio.titanium.client.screen.addon.FacingHandlerScreenAddon;
 import com.hrznstudio.titanium.component.IComponentHarness;
+import com.hrznstudio.titanium.component.sideness.IFacingComponent;
+import com.hrznstudio.titanium.component.sideness.SidedComponentManager;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
@@ -25,7 +25,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -202,12 +201,21 @@ public class SidedInventoryComponent<T extends IComponentHarness> extends Invent
         int slot = slotCache.getOrDefault(sideness, getNextSlot(from, 0));
         if (slot >= from.getSlots()) slot = 0;
         ItemStack extracted = from.extractItem(slot, workAmount, true);
-        if (!extracted.isEmpty()) {
-            ItemStack returned = ItemHandlerHelper.insertItemStacked(to, extracted, false);
+        int outSlot = isValidForAnySlot(to, extracted);
+        if (!extracted.isEmpty() && outSlot != -1) {
+            ItemStack returned = to.insertItem(outSlot, extracted, false);
             return !from.extractItem(slot, extracted.getCount() - returned.getCount(), false).isEmpty();
-        } else {
-            slotCache.put(sideness, getNextSlot(from, slot));
         }
+        slotCache.put(sideness, getNextSlot(from, slot + 1));
         return false;
+    }
+
+    private int isValidForAnySlot(IItemHandler dest, ItemStack stack) {
+        for (int i = 0; i < dest.getSlots(); i++) {
+            if (dest.isItemValid(i, stack)) {
+                return i;
+            }
+        }
+        return -1;
     }
 }
