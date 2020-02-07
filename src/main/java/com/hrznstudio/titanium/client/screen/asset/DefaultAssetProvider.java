@@ -108,6 +108,8 @@ public final class DefaultAssetProvider implements IAssetProvider {
     private final IAsset BUTTON_ARROW_DOWN = () -> new Rectangle(207, 151, 14, 14);
     private final IAsset BUTTON_ARROW_LEFT = () -> new Rectangle(222, 151, 14, 14);
     private final IAsset ITEM_BACKGROUND = () -> new Rectangle(177, 166, 18, 18);
+    private final IAsset TEXT_FIELD_ACTIVE = () -> new Rectangle(31, 240, 110, 16);
+    private final IAsset TEXT_FIELD_INACTIVE = () -> new Rectangle(142, 240, 110, 16);
 
     DefaultAssetProvider() {
     }
@@ -159,6 +161,10 @@ public final class DefaultAssetProvider implements IAssetProvider {
             return assetType.castOrDefault(BUTTON_ARROW_DOWN);
         if (assetType == AssetTypes.ITEM_BACKGROUND)
             return assetType.castOrDefault(ITEM_BACKGROUND);
+        if (assetType == AssetTypes.TEXT_FIELD_ACTIVE)
+            return assetType.castOrDefault(TEXT_FIELD_ACTIVE);
+        if (assetType == AssetTypes.TEXT_FIELD_INACTIVE)
+            return assetType.castOrDefault(TEXT_FIELD_INACTIVE);
         return null;
     }
 }

@@ -34,4 +34,7 @@ public class AssetTypes {
     public static final IAssetType<IAsset> BUTTON_ARROW_UP = new GenericAssetType<>(IAssetType::getDefaultAsset, IAsset.class);
     public static final IAssetType<IAsset> BUTTON_ARROW_DOWN = new GenericAssetType<>(IAssetType::getDefaultAsset, IAsset.class);
     public static final IAssetType<IAsset> ITEM_BACKGROUND = new GenericAssetType<>(IAssetType::getDefaultAsset, IAsset.class);
+    public static final IAssetType<IAsset> TEXT_FIELD_ACTIVE = new GenericAssetType<>(IAssetType::getDefaultAsset, IAsset.class);
+    public static final IAssetType<IAsset> TEXT_FIELD_INACTIVE = new GenericAssetType<>(IAssetType::getDefaultAsset, IAsset.class);
+
 }
