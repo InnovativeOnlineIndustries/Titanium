@@ -1,8 +1,14 @@
+/*
+ * This file is part of Titanium
+ * Copyright (C) 2020, Horizon Studio <contact@hrznstudio.com>.
+ *
+ * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
+ */
+
 package com.hrznstudio.titanium.client.screen.addon;
 
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
-import com.hrznstudio.titanium.client.screen.addon.BasicScreenAddon;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.util.AssetUtil;
 import net.minecraft.client.Minecraft;
