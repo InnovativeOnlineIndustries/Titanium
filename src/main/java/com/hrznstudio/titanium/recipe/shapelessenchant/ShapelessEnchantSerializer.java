@@ -71,11 +71,11 @@ public class ShapelessEnchantSerializer extends ShapelessRecipe.Serializer {
         return Pair.of(enchantment, JSONUtils.getInt(jsonObject, "level", 1));
     }
 
-    private static NonNullList<Ingredient> readIngredients(JsonArray p_199568_0_) {
+    private static NonNullList<Ingredient> readIngredients(JsonArray ingredientArray) {
         NonNullList<Ingredient> ingredients = NonNullList.create();
 
-        for(int i = 0; i < p_199568_0_.size(); ++i) {
-            Ingredient ingredient = Ingredient.deserialize(p_199568_0_.get(i));
+        for(int i = 0; i < ingredientArray.size(); ++i) {
+            Ingredient ingredient = Ingredient.deserialize(ingredientArray.get(i));
             if (!ingredient.hasNoMatchingItems()) {
                 ingredients.add(ingredient);
             }
