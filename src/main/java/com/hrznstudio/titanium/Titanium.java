@@ -33,6 +33,7 @@ import com.hrznstudio.titanium.recipe.generator.BlockItemModelGeneratorProvider;
 import com.hrznstudio.titanium.recipe.generator.titanium.DefaultLootTableProvider;
 import com.hrznstudio.titanium.recipe.generator.titanium.JsonRecipeSerializerProvider;
 import com.hrznstudio.titanium.recipe.generator.titanium.ResourceRegistryProvider;
+import com.hrznstudio.titanium.recipe.shapelessenchant.ShapelessEnchantSerializer;
 import com.hrznstudio.titanium.reward.Reward;
 import com.hrznstudio.titanium.reward.RewardManager;
 import com.hrznstudio.titanium.reward.RewardSyncMessage;
@@ -123,7 +124,10 @@ public class Titanium extends ModuleController {
     protected void initModules() {
         addModule(Module.builder("core").force()
                 .feature(Feature.builder("core").force()
-                        .content(ContainerType.class, (ContainerType) IForgeContainerType.create(BasicTileContainer::new).setRegistryName(new ResourceLocation(Titanium.MODID, "tile_container")))));
+                        .content(ContainerType.class, (ContainerType) IForgeContainerType.create(BasicTileContainer::new).setRegistryName(new ResourceLocation(Titanium.MODID, "tile_container")))
+                        .content(IRecipeSerializer.class, (IRecipeSerializer)new ShapelessEnchantSerializer().setRegistryName(new ResourceLocation(Titanium.MODID, "shapeless_enchant")))
+                )
+        );
         addModule(Module.builder("test_module")
                 .disableByDefault()
                 .description("Test module for titanium features")
