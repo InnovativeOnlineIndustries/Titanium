@@ -58,4 +58,24 @@ public interface IScreenAddon {
      */
     boolean isInside(Screen screen, double mouseX, double mouseY);
 
+    /**
+     * Called when a key is pressed
+     * @param key The key pressed
+     * @param scan ??
+     * @param modifiers ??
+     * @return if something was done
+     */
+    default boolean keyPressed(int key, int scan, int modifiers) {
+        return false;
+    }
+
+    /**
+     * Called when init is called in the screen.
+     *
+     * @param screenX the left point of the Screen
+     * @param screenY the top point of the Screen
+     */
+    default void init(int screenX, int screenY) {
+
+    }
 }

@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BasicContainerScreen<T extends Container> extends ContainerScreen<T> implements IScreenAddonConsumer {
-
     private final T container;
     private final ITextComponent title;
     private IAssetProvider assetProvider;
@@ -60,6 +59,12 @@ public class BasicContainerScreen<T extends Container> extends ContainerScreen<T
         this.xSize = background.getArea().width;
         this.ySize = background.getArea().height;
         this.addons = new ArrayList<>();
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+        this.getAddons().forEach(screenAddon -> screenAddon.init(this.guiLeft, this.guiTop));
     }
 
     @Override
@@ -125,6 +130,13 @@ public class BasicContainerScreen<T extends Container> extends ContainerScreen<T
         new ArrayList<>(addons).stream().filter(iGuiAddon -> iGuiAddon instanceof IClickable && iGuiAddon.isInside(this, mouseX - xCenter, mouseY - yCenter))
                 .forEach(iGuiAddon -> ((IClickable) iGuiAddon).handleClick(this, xCenter, yCenter, mouseX, mouseY, mouseButton));
         return false;
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scan, int modifiers) {
+        return this.getAddons().stream()
+                .anyMatch(screenAddon -> screenAddon.keyPressed(keyCode, scan, modifiers)) ||
+                super.keyPressed(keyCode, scan, modifiers);
     }
 
     public int getX() {
