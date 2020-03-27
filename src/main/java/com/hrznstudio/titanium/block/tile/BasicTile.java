@@ -61,8 +61,7 @@ public class BasicTile<T extends BasicTile<T>> extends TileEntity {
     public CompoundNBT write(CompoundNBT compound) {
         if(basicTileBlock != null) {
             return NBTManager.getInstance().writeTileEntity(this, super.write(compound));
-        }
-        else {
+        } else {
             return super.write(compound);
         }
     }

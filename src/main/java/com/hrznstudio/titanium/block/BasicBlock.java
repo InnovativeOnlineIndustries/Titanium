@@ -119,8 +119,7 @@ public abstract class BasicBlock extends Block implements IAlternativeEntries, I
     public Item asItem() {
         if(name != null) { //Then we're registering Titanium style
             return item;
-        }
-        else {
+        } else {
             return super.asItem();
         }
     }
