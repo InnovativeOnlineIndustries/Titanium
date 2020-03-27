@@ -50,6 +50,7 @@ public abstract class BasicBlock extends Block implements IAlternativeEntries, I
 
     private ItemGroup itemGroup = ItemGroup.SEARCH;
     private BlockItem item;
+    private String name;
 
     public BasicBlock(Properties properties) {
         super(properties);
@@ -58,6 +59,7 @@ public abstract class BasicBlock extends Block implements IAlternativeEntries, I
 
     public BasicBlock(String name, Properties properties) {
         super(properties);
+        this.name = name;
         setRegistryName(name);
         BLOCKS.add(this);
     }
@@ -115,7 +117,12 @@ public abstract class BasicBlock extends Block implements IAlternativeEntries, I
     @Override
     @Nonnull
     public Item asItem() {
-        return item;
+        if(name != null) { //Then we're registering Titanium style
+            return item;
+        }
+        else {
+            return super.asItem();
+        }
     }
 
     public void setItem(BlockItem item) {
