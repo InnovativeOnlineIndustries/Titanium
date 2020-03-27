@@ -15,12 +15,14 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 public class BasicTile<T extends BasicTile<T>> extends TileEntity {
@@ -29,6 +31,11 @@ public class BasicTile<T extends BasicTile<T>> extends TileEntity {
 
     public BasicTile(BasicTileBlock<T> base) {
         super(base.getTileEntityType());
+        this.basicTileBlock = base;
+    }
+
+    public BasicTile(TileEntityType<T> tileEntityType, BasicTileBlock<T> base) {
+        super(tileEntityType);
         this.basicTileBlock = base;
     }
 
@@ -43,14 +50,21 @@ public class BasicTile<T extends BasicTile<T>> extends TileEntity {
 
     @Override
     public void read(CompoundNBT compound) {
-        NBTManager.getInstance().readTileEntity(this, compound);
+        if(basicTileBlock != null) {
+            NBTManager.getInstance().readTileEntity(this, compound);
+        }
         super.read(compound);
     }
 
     @Override
     @Nonnull
     public CompoundNBT write(CompoundNBT compound) {
-        return NBTManager.getInstance().writeTileEntity(this, super.write(compound));
+        if(basicTileBlock != null) {
+            return NBTManager.getInstance().writeTileEntity(this, super.write(compound));
+        }
+        else {
+            return super.write(compound);
+        }
     }
 
     public void markForUpdate() {
@@ -89,6 +103,7 @@ public class BasicTile<T extends BasicTile<T>> extends TileEntity {
         return !isClient();
     }
 
+    @Nullable
     public BasicTileBlock<T> getBasicTileBlock() {
         return basicTileBlock;
     }

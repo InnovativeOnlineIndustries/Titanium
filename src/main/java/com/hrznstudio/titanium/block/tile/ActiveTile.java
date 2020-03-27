@@ -38,6 +38,7 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -75,6 +76,11 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
         this.guiAddons = new ArrayList<>();
     }
 
+    public ActiveTile(TileEntityType<T> tileEntityType, BasicTileBlock<T> base) {
+        super(tileEntityType, base);
+        this.guiAddons = new ArrayList<>();
+    }
+
     @Override
     @ParametersAreNonnullByDefault
     public ActionResultType onActivated(PlayerEntity player, Hand hand, Direction facing, double hitX, double hitY, double hitZ) {
@@ -103,8 +109,12 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
 
     @Override
     @Nonnull
+    //TODO...
     public ITextComponent getDisplayName() {
-        return new TranslationTextComponent(getBasicTileBlock().getTranslationKey()).setStyle(new Style().setColor(TextFormatting.DARK_GRAY));
+        if(getBasicTileBlock() != null) {
+            return new TranslationTextComponent(getBasicTileBlock().getTranslationKey()).setStyle(new Style().setColor(TextFormatting.DARK_GRAY));
+        }
+        return new TranslationTextComponent("");
     }
 
     /*
