@@ -109,12 +109,8 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
 
     @Override
     @Nonnull
-    //TODO...
     public ITextComponent getDisplayName() {
-        if(getBasicTileBlock() != null) {
-            return new TranslationTextComponent(getBasicTileBlock().getTranslationKey()).setStyle(new Style().setColor(TextFormatting.DARK_GRAY));
-        }
-        return new TranslationTextComponent("");
+        return new TranslationTextComponent(getBasicTileBlock().getTranslationKey()).setStyle(new Style().setColor(TextFormatting.DARK_GRAY));
     }
 
     /*
