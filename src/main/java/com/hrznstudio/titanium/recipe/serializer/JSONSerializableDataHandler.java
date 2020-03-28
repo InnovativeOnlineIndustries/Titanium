@@ -20,6 +20,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.fluids.FluidStack;
@@ -150,7 +151,8 @@ public class JSONSerializableDataHandler {
     }
 
     public static ItemStack readItemStack(JsonObject object) {
-        ItemStack stack = new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation(object.get("item").getAsString())), object.get("count").getAsInt());
+        ItemStack stack = new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation(object.get("item").getAsString())),
+                JSONUtils.getInt(object, "count", 1));
         if (object.has("nbt")) {
             try {
                 stack.setTag(JsonToNBT.getTagFromJson(object.get("nbt").getAsString()));
