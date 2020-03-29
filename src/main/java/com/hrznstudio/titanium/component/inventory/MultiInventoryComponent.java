@@ -13,6 +13,8 @@ import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.component.sideness.ICapabilityHolder;
 import com.hrznstudio.titanium.component.sideness.IFacingComponent;
 import com.hrznstudio.titanium.component.IComponentHarness;
+import com.hrznstudio.titanium.container.addon.IContainerAddon;
+import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
@@ -22,7 +24,7 @@ import javax.annotation.Nonnull;
 import java.util.*;
 
 
-public class MultiInventoryComponent<T extends IComponentHarness> implements IScreenAddonProvider,
+public class MultiInventoryComponent<T extends IComponentHarness> implements IScreenAddonProvider, IContainerAddonProvider,
         ICapabilityHolder<InventoryComponent<T>, MultiInventoryComponent.MultiInvCapabilityHandler<T>> {
 
     private final LinkedHashSet<InventoryComponent<T>> inventoryHandlers;
@@ -95,6 +97,15 @@ public class MultiInventoryComponent<T extends IComponentHarness> implements ISc
     public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
         List<IFactory<? extends IScreenAddon>> addons = new ArrayList<>();
         inventoryHandlers.forEach(posInvHandler -> addons.addAll(posInvHandler.getScreenAddons()));
+        return addons;
+    }
+
+    @Override
+    public List<IFactory<? extends IContainerAddon>> getContainerAddons() {
+        List<IFactory<? extends IContainerAddon>> addons = new ArrayList<>();
+        for (InventoryComponent<T> inventoryComponent: inventoryHandlers) {
+            addons.addAll(inventoryComponent.getContainerAddons());
+        }
         return addons;
     }
 

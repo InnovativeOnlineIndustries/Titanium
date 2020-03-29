@@ -7,12 +7,17 @@
 
 package com.hrznstudio.titanium.component.inventory;
 
+import com.google.common.collect.Lists;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.client.screen.addon.SlotsScreenAddon;
 import com.hrznstudio.titanium.component.IComponentHarness;
+import com.hrznstudio.titanium.container.addon.IContainerAddon;
+import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
+import com.hrznstudio.titanium.container.addon.SlotContainerAddon;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IntReferenceHolder;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 import org.apache.commons.lang3.tuple.Pair;
@@ -26,7 +31,8 @@ import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 
-public class InventoryComponent<T extends IComponentHarness> extends ItemStackHandler implements IScreenAddonProvider {
+public class InventoryComponent<T extends IComponentHarness> extends ItemStackHandler implements IScreenAddonProvider,
+        IContainerAddonProvider {
 
     private final String name;
     private int xPos;
@@ -246,7 +252,14 @@ public class InventoryComponent<T extends IComponentHarness> extends ItemStackHa
     @Override
     public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
         List<IFactory<? extends IScreenAddon>> addons = new ArrayList<>();
-        addons.add(() -> new SlotsScreenAddon(this));
+        addons.add(() -> new SlotsScreenAddon<>(this));
         return addons;
+    }
+
+    @Override
+    public List<IFactory<? extends IContainerAddon>> getContainerAddons() {
+        return Lists.newArrayList(
+                () -> new SlotContainerAddon(this, xPos, yPos, slotPosition)
+        );
     }
 }
