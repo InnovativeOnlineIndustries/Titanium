@@ -29,6 +29,7 @@ import com.hrznstudio.titanium.module.ModuleController;
 import com.hrznstudio.titanium.network.NetworkHandler;
 import com.hrznstudio.titanium.network.locator.LocatorTypes;
 import com.hrznstudio.titanium.network.messages.ButtonClickNetworkMessage;
+import com.hrznstudio.titanium.recipe.condition.ContentExistsConditionSerializer;
 import com.hrznstudio.titanium.recipe.generator.BlockItemModelGeneratorProvider;
 import com.hrznstudio.titanium.recipe.generator.titanium.DefaultLootTableProvider;
 import com.hrznstudio.titanium.recipe.generator.titanium.JsonRecipeSerializerProvider;
@@ -57,6 +58,7 @@ import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.DrawHighlightEvent;
+import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -90,6 +92,7 @@ public class Titanium extends ModuleController {
         EventManager.mod(FMLCommonSetupEvent.class).process(this::commonSetup).subscribe();
         EventManager.forge(PlayerEvent.PlayerLoggedInEvent.class).process(this::onPlayerLoggedIn).subscribe();
         EventManager.forge(FMLServerStartingEvent.class).process(this::onServerStart).subscribe();
+        CraftingHelper.register(new ContentExistsConditionSerializer());
     }
 
     public static void openGui(ActiveTile tile, ServerPlayerEntity player) {
