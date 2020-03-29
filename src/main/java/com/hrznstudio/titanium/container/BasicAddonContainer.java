@@ -8,6 +8,9 @@
 package com.hrznstudio.titanium.container;
 
 import com.hrznstudio.titanium.api.IFactory;
+import com.hrznstudio.titanium.client.screen.asset.DefaultAssetProvider;
+import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
+import com.hrznstudio.titanium.client.screen.asset.IHasAssetProvider;
 import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
 import com.hrznstudio.titanium.container.impl.BasicInventoryContainer;
 import com.hrznstudio.titanium.network.locator.LocatorFactory;
@@ -33,7 +36,7 @@ public class BasicAddonContainer extends BasicInventoryContainer implements IObj
 
     public BasicAddonContainer(Object provider, ContainerType<?> containerType, IWorldPosCallable worldPosCallable,
                                PlayerInventory playerInventory, int containerId) {
-        super(containerType, playerInventory, containerId);
+        super(containerType, playerInventory, containerId, findAssetProvider(provider));
         this.worldPosCallable = worldPosCallable;
         this.provider = provider;
         if (provider instanceof IContainerAddonProvider) {
@@ -47,6 +50,14 @@ public class BasicAddonContainer extends BasicInventoryContainer implements IObj
                     });
         }
         this.initInventory();
+    }
+
+    private static IAssetProvider findAssetProvider(Object provider) {
+        if (provider instanceof IHasAssetProvider) {
+            return ((IHasAssetProvider) provider).getAssetProvider();
+        } else {
+            return DefaultAssetProvider.DEFAULT_PROVIDER;
+        }
     }
 
     @Override

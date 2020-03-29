@@ -15,7 +15,7 @@ import net.minecraft.util.text.ITextComponent;
 
 public class BasicAddonScreen extends BasicContainerScreen<BasicAddonContainer> {
     public BasicAddonScreen(BasicAddonContainer container, PlayerInventory inventory, ITextComponent title) {
-        super(container, inventory, title);
+        super(container, inventory, title, container.getAssetProvider());
         if (container.getProvider() instanceof IScreenAddonProvider) {
             ((IScreenAddonProvider) container.getProvider()).getScreenAddons()
                     .stream()

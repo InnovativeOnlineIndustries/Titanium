@@ -5,8 +5,8 @@
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
 
-package com.hrznstudio.titanium.container;
+package com.hrznstudio.titanium.client.screen.asset;
 
-public interface IObjectContainer {
-    Object getObject();
+public interface IHasAssetProvider {
+    IAssetProvider getAssetProvider();
 }

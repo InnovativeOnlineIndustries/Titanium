@@ -14,7 +14,7 @@ import com.hrznstudio.titanium.api.filter.IFilter;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.block.RotatableBlock;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
-import com.hrznstudio.titanium.component.IComponentHarness;
+import com.hrznstudio.titanium.client.screen.asset.IHasAssetProvider;
 import com.hrznstudio.titanium.component.button.ButtonComponent;
 import com.hrznstudio.titanium.component.button.MultiButtonComponent;
 import com.hrznstudio.titanium.component.filter.MultiFilterComponent;
@@ -66,7 +66,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> implements IScreenAddonProvider,
-        ITickableTileEntity, INamedContainerProvider, IButtonHandler, IFacingComponentHarness, IContainerAddonProvider {
+        ITickableTileEntity, INamedContainerProvider, IButtonHandler, IFacingComponentHarness, IContainerAddonProvider,
+        IHasAssetProvider {
 
     private MultiInventoryComponent<T> multiInventoryComponent;
     private MultiProgressBarHandler<T> multiProgressBarHandler;
@@ -144,7 +145,7 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
         multiButtonComponent.addButton(button);
     }
 
-    public void addFilter(IFilter filter) {
+    public void addFilter(IFilter<?> filter) {
         if (multiFilterComponent == null) {
             multiFilterComponent = new MultiFilterComponent();
         }
@@ -200,6 +201,7 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
         return addons;
     }
 
+    @Override
     public IAssetProvider getAssetProvider() {
         return IAssetProvider.DEFAULT_PROVIDER;
     }
