@@ -46,6 +46,7 @@ public class BasicAddonContainer extends BasicInventoryContainer {
                         containAddon.getIntArrayReferenceHolders().forEach(this::trackIntArray);
                     });
         }
+        this.initInventory();
     }
 
     @Override
