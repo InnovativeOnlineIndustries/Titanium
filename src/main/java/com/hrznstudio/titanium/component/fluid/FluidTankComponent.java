@@ -64,7 +64,7 @@ public class FluidTankComponent<T extends IComponentHarness> extends FluidTank i
     protected void onContentsChanged() {
         super.onContentsChanged();
         if (componentHarness != null) {
-            componentHarness.markComponentForUpdate();
+            componentHarness.markComponentForUpdate(true);
         }
         onContentChange.run();
     }

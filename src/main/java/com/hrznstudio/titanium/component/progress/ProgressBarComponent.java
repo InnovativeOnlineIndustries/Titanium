@@ -243,7 +243,7 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
      */
     public void setProgress(int progress) {
         this.progress = progress;
-        if (componentHarness != null) componentHarness.markComponentForUpdate();
+        if (componentHarness != null) componentHarness.markComponentForUpdate(true);
     }
 
     /**

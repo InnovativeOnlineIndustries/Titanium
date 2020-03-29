@@ -13,7 +13,11 @@ public interface IComponentHarness {
 
     World getComponentWorld();
 
-    void markComponentForUpdate();
+    /**
+     * Allows
+     * @param referenced
+     */
+    void markComponentForUpdate(boolean referenced);
 
     void markComponentDirty();
 

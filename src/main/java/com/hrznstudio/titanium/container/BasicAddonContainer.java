@@ -19,7 +19,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.IWorldPosCallable;
 import net.minecraftforge.registries.ObjectHolder;
 
-public class BasicAddonContainer extends BasicInventoryContainer {
+public class BasicAddonContainer extends BasicInventoryContainer implements IObjectContainer {
     @ObjectHolder("titanium:addon_container")
     public static ContainerType<BasicAddonContainer> TYPE;
 
@@ -72,5 +72,10 @@ public class BasicAddonContainer extends BasicInventoryContainer {
 
     public Object getProvider() {
         return provider;
+    }
+
+    @Override
+    public Object getObject() {
+        return this.getProvider();
     }
 }
