@@ -18,6 +18,7 @@ import net.minecraft.data.*;
 import net.minecraft.item.Item;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,6 +27,9 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ResourceRegistryProvider implements IDataProvider {
 
@@ -37,19 +41,44 @@ public class ResourceRegistryProvider implements IDataProvider {
 
     public ResourceRegistryProvider(DataGenerator generator) {
         this.generator = generator;
+        Map<ResourceLocation, List<Block>> typeBlockMap = new HashMap<>();
         this.itemTagsProvider = new ItemTagsProvider(generator) {
             @Override
             protected void registerTags() {
-                ResourceRegistry.getMaterials().forEach(material -> {
-                    material.getGenerated().values().stream().filter(entry -> entry instanceof IResourceHolder).forEach(entry -> {
-                        if (entry instanceof Block) {
-                            this.copy(new BlockTags.Wrapper(new ResourceLocation("forge", ((IResourceHolder) entry).getType().getTag() + "/" + ((IResourceHolder) entry).getMaterial().getMaterialType())),
-                                    new ItemTags.Wrapper(new ResourceLocation("forge", ((IResourceHolder) entry).getType().getTag() + "/" + ((IResourceHolder) entry).getMaterial().getMaterialType())));
-                        } else if (entry instanceof Item) {
-                            this.getBuilder(new ItemTags.Wrapper(new ResourceLocation("forge", ((IResourceHolder) entry).getType().getTag() + "/" + ((IResourceHolder) entry).getMaterial().getMaterialType()))).add((Item) entry);
-                        }
-                    });
-                });
+                Map<ResourceLocation, List<Item>> typeItemMap = new HashMap<>();
+                ResourceRegistry.getMaterials().forEach(material -> material.getGenerated().values().stream().filter(entry -> entry instanceof IResourceHolder).forEach(entry -> {
+                    IResourceHolder resourceHolder = ((IResourceHolder) entry);
+                    String tag = resourceHolder.getType().getTag();
+                    String type = resourceHolder.getMaterial().getMaterialType();
+                    if (entry instanceof Block) {
+                        this.copy(new BlockTags.Wrapper(new ResourceLocation("forge", tag + "/" + type)),
+                                new ItemTags.Wrapper(new ResourceLocation("forge", tag + "/" + type)));
+                        typeBlockMap.compute(new ResourceLocation("forge", tag), (resourceLocation, blocks) -> {
+                            if (blocks == null) {
+                                List<Block> list = NonNullList.create();
+                                list.add((Block) entry);
+                                return list;
+                            } else {
+                                blocks.add((Block) entry);
+                                return blocks;
+                            }
+                        });
+                    } else if (entry instanceof Item) {
+                        this.getBuilder(new ItemTags.Wrapper(new ResourceLocation("forge", tag + "/" + type))).add((Item) entry);
+                        typeItemMap.compute(new ResourceLocation("forge", tag), (resourceLocation, items) -> {
+                            if(items == null) {
+                                List<Item> list = NonNullList.create();
+                                list.add((Item) entry);
+                                return list;
+                            }
+                            else {
+                                items.add((Item)entry);
+                                return items;
+                            }
+                        });
+                    }
+                }));
+                typeItemMap.forEach((tagLocation, itemList) -> this.getBuilder(new ItemTags.Wrapper(tagLocation)).add(itemList.toArray(new Item[itemList.size()])));
             }
         };
         this.blockTagsProvider = new BlockTagsProvider(generator) {
@@ -57,11 +86,25 @@ public class ResourceRegistryProvider implements IDataProvider {
             protected void registerTags() {
                 ResourceRegistry.getMaterials().forEach(material -> {
                     material.getGenerated().values().stream().filter(entry -> entry instanceof IResourceHolder).forEach(entry -> {
+                        IResourceHolder resourceHolder = ((IResourceHolder) entry);
+                        String tag = resourceHolder.getType().getTag();
+                        String type = resourceHolder.getMaterial().getMaterialType();
                         if (entry instanceof Block) {
-                            this.getBuilder(new BlockTags.Wrapper(new ResourceLocation("forge", ((IResourceHolder) entry).getType().getTag() + "s/" + ((IResourceHolder) entry).getMaterial().getMaterialType()))).add((Block) entry);
+                            this.getBuilder(new BlockTags.Wrapper(new ResourceLocation("forge", tag + "/" + type))).add((Block) entry);
+                            typeBlockMap.compute(new ResourceLocation("forge", tag), (resourceLocation, blocks) -> {
+                                if (blocks == null) {
+                                    List<Block> list = NonNullList.create();
+                                    list.add((Block) entry);
+                                    return list;
+                                } else {
+                                    blocks.add((Block) entry);
+                                    return blocks;
+                                }
+                            });
                         }
                     });
                 });
+                typeBlockMap.forEach((tagLocation, blockList) -> this.getBuilder(new BlockTags.Wrapper(tagLocation)).add(blockList.toArray(new Block[blockList.size()])));
             }
         };
     }
