@@ -58,7 +58,7 @@ public class ResourceRegistryProvider implements IDataProvider {
                 ResourceRegistry.getMaterials().forEach(material -> {
                     material.getGenerated().values().stream().filter(entry -> entry instanceof IResourceHolder).forEach(entry -> {
                         if (entry instanceof Block) {
-                            this.getBuilder(new BlockTags.Wrapper(new ResourceLocation("forge", ((IResourceHolder) entry).getType().getTag() + "/" + ((IResourceHolder) entry).getMaterial().getMaterialType()))).add((Block) entry);
+                            this.getBuilder(new BlockTags.Wrapper(new ResourceLocation("forge", ((IResourceHolder) entry).getType().getTag() + "s/" + ((IResourceHolder) entry).getMaterial().getMaterialType()))).add((Block) entry);
                         }
                     });
                 });
