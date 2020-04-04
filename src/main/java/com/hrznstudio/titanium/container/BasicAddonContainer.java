@@ -7,6 +7,7 @@
 
 package com.hrznstudio.titanium.container;
 
+import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.client.screen.asset.DefaultAssetProvider;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
@@ -78,7 +79,8 @@ public class BasicAddonContainer extends BasicInventoryContainer implements IObj
                 return container;
             }
         }
-        throw new IllegalStateException("Failed to Locate Object for Container");
+        Titanium.LOGGER.error("Failed to find locate instance to create Container for");
+        return new BasicAddonContainer(new Object(), IWorldPosCallable.DUMMY, inventory, id);
     }
 
     public Object getProvider() {
