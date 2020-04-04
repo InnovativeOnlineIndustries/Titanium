@@ -7,7 +7,6 @@
 
 package com.hrznstudio.titanium.block.tile;
 
-import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
@@ -15,7 +14,7 @@ import com.hrznstudio.titanium.api.filter.IFilter;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.block.RotatableBlock;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
-import com.hrznstudio.titanium.component.IComponentHarness;
+import com.hrznstudio.titanium.client.screen.asset.IHasAssetProvider;
 import com.hrznstudio.titanium.component.button.ButtonComponent;
 import com.hrznstudio.titanium.component.button.MultiButtonComponent;
 import com.hrznstudio.titanium.component.filter.MultiFilterComponent;
@@ -26,8 +25,13 @@ import com.hrznstudio.titanium.component.inventory.MultiInventoryComponent;
 import com.hrznstudio.titanium.component.progress.MultiProgressBarHandler;
 import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
 import com.hrznstudio.titanium.component.sideness.IFacingComponent;
-import com.hrznstudio.titanium.container.impl.BasicTileContainer;
+import com.hrznstudio.titanium.component.sideness.IFacingComponentHarness;
+import com.hrznstudio.titanium.container.BasicAddonContainer;
+import com.hrznstudio.titanium.container.addon.IContainerAddon;
+import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
 import com.hrznstudio.titanium.network.IButtonHandler;
+import com.hrznstudio.titanium.network.locator.LocatorFactory;
+import com.hrznstudio.titanium.network.locator.instance.TileEntityLocatorInstance;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
@@ -41,6 +45,7 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.IWorldPosCallable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
@@ -51,6 +56,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nonnull;
@@ -59,8 +65,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> implements IScreenAddonProvider, ITickableTileEntity, INamedContainerProvider,
-        IButtonHandler, IComponentHarness {
+public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> implements IScreenAddonProvider,
+        ITickableTileEntity, INamedContainerProvider, IButtonHandler, IFacingComponentHarness, IContainerAddonProvider,
+        IHasAssetProvider {
 
     private MultiInventoryComponent<T> multiInventoryComponent;
     private MultiProgressBarHandler<T> multiProgressBarHandler;
@@ -70,9 +77,12 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
 
     private List<IFactory<? extends IScreenAddon>> guiAddons;
 
+    private List<IFactory<? extends IContainerAddon>> containerAddons;
+
     public ActiveTile(BasicTileBlock<T> base) {
         super(base);
         this.guiAddons = new ArrayList<>();
+        this.containerAddons = new ArrayList<>();
     }
 
     @Override
@@ -91,14 +101,15 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
 
     public void openGui(PlayerEntity player) {
         if (player instanceof ServerPlayerEntity) {
-            Titanium.openGui(this, (ServerPlayerEntity) player);
+            NetworkHooks.openGui((ServerPlayerEntity) player, this, buffer ->
+                    LocatorFactory.writePacketBuffer(buffer, new TileEntityLocatorInstance(this.pos)));
         }
     }
 
     @Nullable
     @Override
     public Container createMenu(int menu, PlayerInventory inventoryPlayer, PlayerEntity entityPlayer) {
-        return new BasicTileContainer(this, inventoryPlayer, menu);
+        return new BasicAddonContainer(this, this.getWorldPosCallable(), inventoryPlayer, menu);
     }
 
     @Override
@@ -134,7 +145,7 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
         multiButtonComponent.addButton(button);
     }
 
-    public void addFilter(IFilter filter) {
+    public void addFilter(IFilter<?> filter) {
         if (multiFilterComponent == null) {
             multiFilterComponent = new MultiFilterComponent();
         }
@@ -165,6 +176,11 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
         this.guiAddons.add(factory);
     }
 
+    public void addContainerAddonFactory(IFactory<? extends IContainerAddon> factory) {
+        this.containerAddons.add(factory);
+    }
+
+
     @Override
     public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
         List<IFactory<? extends IScreenAddon>> addons = new ArrayList<>(guiAddons);
@@ -176,6 +192,16 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
         return addons;
     }
 
+    @Override
+    public List<IFactory<? extends IContainerAddon>> getContainerAddons() {
+        List<IFactory<? extends IContainerAddon>> addons = new ArrayList<>(containerAddons);
+        if (multiInventoryComponent != null) addons.addAll(multiInventoryComponent.getContainerAddons());
+        if (multiProgressBarHandler != null) addons.addAll(multiProgressBarHandler.getContainerAddons());
+        if (multiTankComponent != null) addons.addAll(multiTankComponent.getContainerAddons());
+        return addons;
+    }
+
+    @Override
     public IAssetProvider getAssetProvider() {
         return IAssetProvider.DEFAULT_PROVIDER;
     }
@@ -221,6 +247,7 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
         return this.world.getBlockState(pos).has(RotatableBlock.FACING_ALL) ? this.world.getBlockState(pos).get(RotatableBlock.FACING_ALL) : (this.world.getBlockState(pos).has(RotatableBlock.FACING_HORIZONTAL) ? this.world.getBlockState(pos).get(RotatableBlock.FACING_HORIZONTAL) : Direction.NORTH);
     }
 
+    @Override
     public IFacingComponent getHandlerFromName(String string) {
         if (multiInventoryComponent != null) {
             for (InventoryComponent<T> handler : multiInventoryComponent.getInventoryHandlers()) {
@@ -242,7 +269,7 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
         if (id == -2) {
             String name = compound.getString("Name");
             if (multiFilterComponent != null) {
-                for (IFilter filter : multiFilterComponent.getFilters()) {
+                for (IFilter<?> filter : multiFilterComponent.getFilters()) {
                     if (filter.getName().equals(name)) {
                         int slot = compound.getInt("Slot");
                         filter.setFilter(slot, ItemStack.read(compound.getCompound("Filter")));
@@ -280,7 +307,15 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
     }
 
     @Override
-    public void markComponentForUpdate() {
-        super.markForUpdate();
+    public void markComponentForUpdate(boolean referenced) {
+        if (!referenced) {
+            super.markForUpdate();
+        } else {
+            this.markComponentDirty();
+        }
+    }
+
+    public IWorldPosCallable getWorldPosCallable() {
+        return this.getWorld() != null ? IWorldPosCallable.of(this.getWorld(), this.getPos()) : IWorldPosCallable.DUMMY;
     }
 }

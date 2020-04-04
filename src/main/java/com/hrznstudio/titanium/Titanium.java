@@ -14,10 +14,10 @@ import com.hrznstudio.titanium._impl.test.TestBlock;
 import com.hrznstudio.titanium._impl.test.TwentyFourTestBlock;
 import com.hrznstudio.titanium._impl.test.recipe.TestSerializableRecipe;
 import com.hrznstudio.titanium.block.tile.ActiveTile;
-import com.hrznstudio.titanium.client.screen.container.BasicTileContainerScreen;
+import com.hrznstudio.titanium.client.screen.container.BasicAddonScreen;
 import com.hrznstudio.titanium.command.RewardCommand;
 import com.hrznstudio.titanium.command.RewardGrantCommand;
-import com.hrznstudio.titanium.container.impl.BasicTileContainer;
+import com.hrznstudio.titanium.container.BasicAddonContainer;
 import com.hrznstudio.titanium.event.custom.ResourceRegistrationEvent;
 import com.hrznstudio.titanium.event.handler.EventManager;
 import com.hrznstudio.titanium.material.ResourceRegistry;
@@ -92,10 +92,6 @@ public class Titanium extends ModuleController {
         EventManager.forge(FMLServerStartingEvent.class).process(this::onServerStart).subscribe();
     }
 
-    public static void openGui(ActiveTile tile, ServerPlayerEntity player) {
-        NetworkHooks.openGui(player, tile, tile.getPos());
-    }
-
     @Override
     public void onPreInit() {
         super.onPreInit();
@@ -124,7 +120,7 @@ public class Titanium extends ModuleController {
     protected void initModules() {
         addModule(Module.builder("core").force()
                 .feature(Feature.builder("core").force()
-                        .content(ContainerType.class, (ContainerType) IForgeContainerType.create(BasicTileContainer::new).setRegistryName(new ResourceLocation(Titanium.MODID, "tile_container")))
+                        .content(ContainerType.class, (ContainerType) IForgeContainerType.create(BasicAddonContainer::create).setRegistryName(new ResourceLocation(Titanium.MODID, "addon_container")))
                         .content(IRecipeSerializer.class, (IRecipeSerializer)new ShapelessEnchantSerializer().setRegistryName(new ResourceLocation(Titanium.MODID, "shapeless_enchant")))
                 )
         );
@@ -194,7 +190,7 @@ public class Titanium extends ModuleController {
         EventManager.forge(DrawHighlightEvent.HighlightBlock.class).process(TitaniumClient::blockOverlayEvent).subscribe();
         TitaniumClient.registerModelLoader();
         RewardManager.get().getRewards().values().forEach(rewardGiver -> rewardGiver.getRewards().forEach(reward -> reward.register(Dist.CLIENT)));
-        ScreenManager.registerFactory(BasicTileContainer.TYPE, BasicTileContainerScreen::new);
+        ScreenManager.registerFactory(BasicAddonContainer.TYPE, BasicAddonScreen::new);
     }
 
     private void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {

@@ -7,6 +7,7 @@
 
 package com.hrznstudio.titanium.component.progress;
 
+import com.google.common.collect.Lists;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
@@ -15,6 +16,10 @@ import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.client.screen.addon.ProgressBarScreenAddon;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.component.IComponentHarness;
+import com.hrznstudio.titanium.container.addon.IContainerAddon;
+import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
+import com.hrznstudio.titanium.container.addon.IntArrayReferenceHolderAddon;
+import com.hrznstudio.titanium.container.referenceholder.ProgressBarReferenceHolder;
 import com.hrznstudio.titanium.util.AssetUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.Screen;
@@ -29,7 +34,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class ProgressBarComponent<T extends IComponentHarness> implements INBTSerializable<CompoundNBT>, IScreenAddonProvider {
+public class ProgressBarComponent<T extends IComponentHarness> implements INBTSerializable<CompoundNBT>,
+        IScreenAddonProvider, IContainerAddonProvider {
     private int posX;
     private int posY;
     private int progress;
@@ -237,7 +243,7 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
      */
     public void setProgress(int progress) {
         this.progress = progress;
-        if (componentHarness != null) componentHarness.markComponentForUpdate();
+        if (componentHarness != null) componentHarness.markComponentForUpdate(true);
     }
 
     /**
@@ -366,6 +372,13 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
 
     public void onStart() {
         onStart.run();
+    }
+
+    @Override
+    public List<IFactory<? extends IContainerAddon>> getContainerAddons() {
+        return Lists.newArrayList(
+                () -> new IntArrayReferenceHolderAddon(new ProgressBarReferenceHolder(this))
+        );
     }
 
     public enum BarDirection {

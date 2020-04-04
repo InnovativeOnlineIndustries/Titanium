@@ -10,6 +10,7 @@ package com.hrznstudio.titanium.network.locator;
 import com.hrznstudio.titanium.network.CompoundSerializableDataHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.IWorldPosCallable;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -29,6 +30,10 @@ public abstract class LocatorInstance {
     }
 
     public abstract Optional<?> locale(PlayerEntity playerEntity);
+
+    public IWorldPosCallable getWorldPosCallable(World world) {
+        return IWorldPosCallable.DUMMY;
+    }
 
     public final void fromBytes(PacketBuffer buf) {
         try {

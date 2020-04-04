@@ -13,7 +13,11 @@ public interface IComponentHarness {
 
     World getComponentWorld();
 
-    void markComponentForUpdate();
+    /**
+     * Allows a Component to force an updated
+     * @param referenced whether or not this update would be covered by an IntReferenceHolder in a container, AKA should I sync this, if I don't need it outside a container.
+     */
+    void markComponentForUpdate(boolean referenced);
 
     void markComponentDirty();
 

@@ -20,6 +20,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 public class TwentyFourTestTile extends PoweredTile<TwentyFourTestTile> implements ITickableTileEntity {
@@ -68,6 +69,7 @@ public class TwentyFourTestTile extends PoweredTile<TwentyFourTestTile> implemen
     }
 
     @Override
+    @Nonnull
     public TwentyFourTestTile getSelf() {
         return this;
     }
