@@ -1,4 +1,11 @@
 {
+  "conditions": [
+    {
+      "type": "titanium:content_exists",
+      "registry": "minecraft:recipe_serializer",
+      "name": "titanium:test_serializer"
+    }
+  ],
   "input": {
     "item": "minecraft:stone"
   },
