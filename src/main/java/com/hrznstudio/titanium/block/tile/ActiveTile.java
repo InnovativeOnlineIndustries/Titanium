@@ -109,7 +109,8 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
     @Nullable
     @Override
     public Container createMenu(int menu, PlayerInventory inventoryPlayer, PlayerEntity entityPlayer) {
-        return new BasicAddonContainer(this, this.getWorldPosCallable(), inventoryPlayer, menu);
+        return new BasicAddonContainer(this, new TileEntityLocatorInstance(this.pos), this.getWorldPosCallable(),
+                inventoryPlayer, menu);
     }
 
     @Override

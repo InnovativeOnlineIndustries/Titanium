@@ -14,32 +14,37 @@ import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.client.screen.asset.IHasAssetProvider;
 import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
 import com.hrznstudio.titanium.container.impl.BasicInventoryContainer;
+import com.hrznstudio.titanium.network.locator.ILocatable;
 import com.hrznstudio.titanium.network.locator.LocatorFactory;
 import com.hrznstudio.titanium.network.locator.LocatorInstance;
+import com.hrznstudio.titanium.network.locator.instance.EmptyLocatorInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.IWorldPosCallable;
+import net.minecraft.world.World;
 import net.minecraftforge.registries.ObjectHolder;
 
-public class BasicAddonContainer extends BasicInventoryContainer implements IObjectContainer {
+public class BasicAddonContainer extends BasicInventoryContainer implements IObjectContainer, ILocatable {
     @ObjectHolder("titanium:addon_container")
     public static ContainerType<BasicAddonContainer> TYPE;
 
     private final IWorldPosCallable worldPosCallable;
     private final Object provider;
+    private final LocatorInstance locatorInstance;
 
-    public BasicAddonContainer(Object provider, IWorldPosCallable worldPosCallable,
+    public BasicAddonContainer(Object provider, LocatorInstance locatorInstance, IWorldPosCallable worldPosCallable,
                                PlayerInventory playerInventory, int containerId) {
-        this(provider, TYPE, worldPosCallable, playerInventory, containerId);
+        this(provider, locatorInstance, TYPE, worldPosCallable, playerInventory, containerId);
     }
 
-    public BasicAddonContainer(Object provider, ContainerType<?> containerType, IWorldPosCallable worldPosCallable,
-                               PlayerInventory playerInventory, int containerId) {
+    public BasicAddonContainer(Object provider, LocatorInstance locatorInstance, ContainerType<?> containerType,
+                               IWorldPosCallable worldPosCallable, PlayerInventory playerInventory, int containerId) {
         super(containerType, playerInventory, containerId, findAssetProvider(provider));
         this.worldPosCallable = worldPosCallable;
         this.provider = provider;
+        this.locatorInstance = locatorInstance;
         if (provider instanceof IContainerAddonProvider) {
             ((IContainerAddonProvider) provider).getContainerAddons()
                     .stream()
@@ -71,8 +76,9 @@ public class BasicAddonContainer extends BasicInventoryContainer implements IObj
         LocatorInstance instance = LocatorFactory.readPacketBuffer(packetBuffer);
         if (instance != null) {
             PlayerEntity playerEntity = inventory.player;
+            World world = playerEntity.getEntityWorld();
             BasicAddonContainer container = instance.locale(playerEntity)
-                    .map(located -> new BasicAddonContainer(located, instance.getWorldPosCallable(playerEntity.world),
+                    .map(located -> new BasicAddonContainer(located, instance, instance.getWorldPosCallable(world),
                             inventory, id))
                     .orElse(null);
             if (container != null) {
@@ -80,7 +86,7 @@ public class BasicAddonContainer extends BasicInventoryContainer implements IObj
             }
         }
         Titanium.LOGGER.error("Failed to find locate instance to create Container for");
-        return new BasicAddonContainer(new Object(), IWorldPosCallable.DUMMY, inventory, id);
+        return new BasicAddonContainer(new Object(), new EmptyLocatorInstance(), IWorldPosCallable.DUMMY, inventory, id);
     }
 
     public Object getProvider() {
@@ -90,5 +96,10 @@ public class BasicAddonContainer extends BasicInventoryContainer implements IObj
     @Override
     public Object getObject() {
         return this.getProvider();
+    }
+
+    @Override
+    public LocatorInstance getLocatorInstance() {
+        return locatorInstance;
     }
 }
