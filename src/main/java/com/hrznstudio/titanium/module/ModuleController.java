@@ -9,10 +9,13 @@ package com.hrznstudio.titanium.module;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.hrznstudio.titanium.annotation.config.ConfigFile;
+import com.hrznstudio.titanium.annotation.plugin.FeaturePlugin;
 import com.hrznstudio.titanium.config.AnnotationConfigManager;
 import com.hrznstudio.titanium.event.handler.EventManager;
+import com.hrznstudio.titanium.plugin.PluginManager;
 import com.hrznstudio.titanium.util.AnnotationUtil;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
@@ -44,7 +47,8 @@ public abstract class ModuleController {
     }
 
     public void onPreInit() {
-
+        new PluginManager(modid, FeaturePlugin.FeaturePluginType.MOD, featurePlugin -> ModList.get().isLoaded(featurePlugin.value())); // Gets all the mod plugins for the mods that are loaded
+        new PluginManager(modid, FeaturePlugin.FeaturePluginType.FEATURE, featurePlugin -> featurePlugin.value().equalsIgnoreCase("resources")); // Gets all the feature plugins for the feature resources
     }
 
     public void onInit() {
