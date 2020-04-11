@@ -17,26 +17,26 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 import javax.annotation.Nullable;
 
 public enum ResourceType implements IResourceType, IStringSerializable {
-    INGOT,
-    DUST,
-    NUGGET,
-    CHUNK,
-    CLUMP,
+    INGOT("ingots"),
+    DUST("dusts"),
+    NUGGET("nuggets"),
+    CHUNK("chunks"),
+    CLUMP("clumps"),
     CRUSHED,
     PURIFIED,
-    STONE,
+    STONE("stones"),
     PEBBLES,
     FLAKES,
     GRINDINGS,
-    GEM,
-    SMALL_DUST("small_dust"),
-    PLATE,
-    DENSE_PLATE("plate_dense"),
-    CASING,
-    REINFORCED_PLATE("plate_reinforced"),
-    ROD,
-    DENSE_ROD("rod_dense"),
-    GEAR,
+    GEM("gems"),
+    SMALL_DUST("small_dusts"),
+    PLATE("plates"),
+    DENSE_PLATE("plates_dense"),
+    CASING("casings"),
+    REINFORCED_PLATE("plates_reinforced"),
+    ROD("rods"),
+    DENSE_ROD("rods_dense"),
+    GEAR("gears"),
     METAL_BLOCK("storage_blocks") {
         @Override
         public IFactory<ForgeRegistryEntry> getInstanceFactory(ResourceMaterial material, @Nullable ResourceTypeProperties properties) {
@@ -49,7 +49,7 @@ public enum ResourceType implements IResourceType, IStringSerializable {
             return () -> new ResourceTypeBlock(material, this, BlockAdvancedResourceType.ORE, properties);
         }
     },
-    NETHER_ORE("ore/nether") {
+    NETHER_ORE("ores/nether") {
         @Override
         public IFactory<ForgeRegistryEntry> getInstanceFactory(ResourceMaterial material, @Nullable ResourceTypeProperties properties) {
             return () -> new ResourceTypeBlock(material, this, BlockAdvancedResourceType.NETHER_ORE, properties);
