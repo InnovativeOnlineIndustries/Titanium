@@ -9,12 +9,18 @@ package com.hrznstudio.titanium.module;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.hrznstudio.titanium.annotation.config.ConfigFile;
+import com.hrznstudio.titanium.annotation.plugin.FeaturePlugin;
 import com.hrznstudio.titanium.config.AnnotationConfigManager;
 import com.hrznstudio.titanium.event.handler.EventManager;
+import com.hrznstudio.titanium.plugin.PluginManager;
+import com.hrznstudio.titanium.plugin.PluginPhase;
 import com.hrznstudio.titanium.util.AnnotationUtil;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
@@ -28,9 +34,12 @@ public abstract class ModuleController {
     private final Map<String, Module> moduleMap = new HashMap<>();
     private final Map<String, Module> disabledModuleMap = new HashMap<>();
     private final AnnotationConfigManager configManager = new AnnotationConfigManager();
+    private final PluginManager modPluginManager;
 
     public ModuleController() {
         this.modid = ModLoadingContext.get().getActiveContainer().getModId();
+        this.modPluginManager = new PluginManager(modid, FeaturePlugin.FeaturePluginType.MOD, featurePlugin -> ModList.get().isLoaded(featurePlugin.value()), true);
+        this.modPluginManager.execute(PluginPhase.CONSTRUCTION);
         onPreInit();
         onInit();
         onPostInit();
@@ -44,6 +53,7 @@ public abstract class ModuleController {
     }
 
     public void onPreInit() {
+        this.modPluginManager.execute(PluginPhase.PRE_INIT);
     }
 
     public void onInit() {
@@ -94,6 +104,7 @@ public abstract class ModuleController {
                     l.forEach(event.getRegistry()::register);
             });
         }).subscribe();
+        this.modPluginManager.execute(PluginPhase.INIT);
     }
 
     public void onPostInit() {
@@ -101,9 +112,18 @@ public abstract class ModuleController {
             ConfigFile annotation = (ConfigFile) aClass.getAnnotation(ConfigFile.class);
             addConfig(AnnotationConfigManager.Type.of(annotation.type(), aClass).setName(annotation.value()));
         });
-        EventManager.mod(ModConfig.Loading.class).process(ev -> configManager.inject()).subscribe();
-        EventManager.mod(ModConfig.Reloading.class).process(ev -> configManager.inject()).subscribe();
+        EventManager.mod(ModConfig.Loading.class).process(ev -> {
+            configManager.inject();
+            this.modPluginManager.execute(PluginPhase.CONFIG_LOAD);
+        }).subscribe();
+        EventManager.mod(ModConfig.Reloading.class).process(ev -> {
+            configManager.inject();
+            this.modPluginManager.execute(PluginPhase.CONFIG_RELOAD);
+        }).subscribe();
         EventManager.mod(GatherDataEvent.class).process(this::addDataProvider).subscribe();
+        EventManager.mod(FMLClientSetupEvent.class).process(fmlClientSetupEvent -> this.modPluginManager.execute(PluginPhase.CLIENT_SETUP)).subscribe();
+        EventManager.mod(FMLCommonSetupEvent.class).process(fmlClientSetupEvent -> this.modPluginManager.execute(PluginPhase.COMMON_SETUP)).subscribe();
+        this.modPluginManager.execute(PluginPhase.POST_INIT);
     }
 
     protected abstract void initModules();
