@@ -21,6 +21,10 @@ public class PluginManager {
     private List<FeaturePluginInstance> instances;
     private final boolean useModIdFilter;
 
+    public PluginManager(String modid, FeaturePlugin.FeaturePluginType type, String featureNameCheck, boolean useModIdFilter) {
+        this(modid, type, featurePlugin -> featurePlugin.value().equalsIgnoreCase(featureNameCheck), useModIdFilter);
+    }
+
     public PluginManager(String modid, FeaturePlugin.FeaturePluginType type, Predicate<FeaturePlugin> predicate, boolean useModIdFilter) {
         this.modid = modid;
         this.type = type;
@@ -43,7 +47,7 @@ public class PluginManager {
                     instances.add((FeaturePluginInstance) aClass.newInstance());
                     LOGGER.info("Constructed class " + aClass.getSimpleName() + " for plugin " + ((FeaturePlugin) aClass.getAnnotation(FeaturePlugin.class)).value() + " for mod " + modid);
                 } catch (InstantiationException | IllegalAccessException e) {
-                    e.printStackTrace();
+                    LOGGER.error(e);
                 }
             });
         }
