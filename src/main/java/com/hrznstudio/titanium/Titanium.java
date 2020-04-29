@@ -13,22 +13,20 @@ import com.hrznstudio.titanium._impl.test.MachineTestBlock;
 import com.hrznstudio.titanium._impl.test.TestBlock;
 import com.hrznstudio.titanium._impl.test.TwentyFourTestBlock;
 import com.hrznstudio.titanium._impl.test.recipe.TestSerializableRecipe;
-import com.hrznstudio.titanium.block.tile.ActiveTile;
+import com.hrznstudio.titanium.annotation.plugin.FeaturePlugin;
 import com.hrznstudio.titanium.client.screen.container.BasicAddonScreen;
 import com.hrznstudio.titanium.command.RewardCommand;
 import com.hrznstudio.titanium.command.RewardGrantCommand;
 import com.hrznstudio.titanium.container.BasicAddonContainer;
-import com.hrznstudio.titanium.event.custom.ResourceRegistrationEvent;
 import com.hrznstudio.titanium.event.handler.EventManager;
 import com.hrznstudio.titanium.material.ResourceRegistry;
-import com.hrznstudio.titanium.material.ResourceType;
-import com.hrznstudio.titanium.material.ResourceTypeProperties;
 import com.hrznstudio.titanium.module.Feature;
 import com.hrznstudio.titanium.module.Module;
 import com.hrznstudio.titanium.module.ModuleController;
 import com.hrznstudio.titanium.network.NetworkHandler;
 import com.hrznstudio.titanium.network.locator.LocatorTypes;
 import com.hrznstudio.titanium.network.messages.ButtonClickNetworkMessage;
+import com.hrznstudio.titanium.plugin.PluginManager;
 import com.hrznstudio.titanium.recipe.condition.ContentExistsConditionSerializer;
 import com.hrznstudio.titanium.recipe.generator.BlockItemModelGeneratorProvider;
 import com.hrznstudio.titanium.recipe.generator.titanium.DefaultLootTableProvider;
@@ -41,11 +39,8 @@ import com.hrznstudio.titanium.reward.RewardSyncMessage;
 import com.hrznstudio.titanium.reward.storage.RewardWorldStorage;
 import com.hrznstudio.titanium.util.SidedHandler;
 import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -70,7 +65,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.network.NetworkDirection;
-import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -84,6 +78,8 @@ public class Titanium extends ModuleController {
     public static final String MODID = "titanium";
     public static final Logger LOGGER = LogManager.getLogger(MODID);
     public static NetworkHandler NETWORK = new NetworkHandler(MODID);
+    public static final PluginManager RESOURCES = new PluginManager(MODID, FeaturePlugin.FeaturePluginType.FEATURE, featurePlugin -> featurePlugin.value().equalsIgnoreCase(ResourceRegistry.PLUGIN_NAME), false);
+    ;
 
     public Titanium() {
         NETWORK.registerMessage(ButtonClickNetworkMessage.class);
@@ -98,19 +94,6 @@ public class Titanium extends ModuleController {
     @Override
     public void onPreInit() {
         super.onPreInit();
-        EventManager.mod(ResourceRegistrationEvent.class).process(event -> {
-            ResourceTypeProperties.DEFAULTS.put(Block.class, new ResourceTypeProperties(Block.Properties.from(Blocks.IRON_ORE)));
-            ResourceTypeProperties.DEFAULTS.put(Item.class, new ResourceTypeProperties(new Item.Properties().group(ResourceRegistry.RESOURCES)));
-            event.get("iron").setColor(0xd8d8d8).withOverride(ResourceType.ORE, Blocks.IRON_ORE).withOverride(ResourceType.METAL_BLOCK, Blocks.IRON_BLOCK).withOverride(ResourceType.INGOT, Items.IRON_INGOT).withOverride(ResourceType.NUGGET, Items.IRON_NUGGET);
-            event.get("gold").setColor(0xfad64a).withOverride(ResourceType.ORE, Blocks.GOLD_ORE).withOverride(ResourceType.METAL_BLOCK, Blocks.GOLD_BLOCK).withOverride(ResourceType.INGOT, Items.GOLD_INGOT).withOverride(ResourceType.NUGGET, Items.GOLD_NUGGET);
-            event.get("coal").setColor(0x363636).withOverride(ResourceType.ORE, Blocks.COAL_ORE).withOverride(ResourceType.GEM_BLOCK, Blocks.COAL_BLOCK).withOverride(ResourceType.GEM, Items.COAL);
-            event.get("lapis_lazuli").setColor(0x345ec3).withOverride(ResourceType.ORE, Blocks.LAPIS_ORE).withOverride(ResourceType.GEM_BLOCK, Blocks.LAPIS_BLOCK).withOverride(ResourceType.GEM, Items.LAPIS_LAZULI);
-            event.get("diamond").setColor(0x4aedd9).withOverride(ResourceType.ORE, Blocks.DIAMOND_ORE).withOverride(ResourceType.GEM_BLOCK, Blocks.DIAMOND_BLOCK).withOverride(ResourceType.GEM, Items.DIAMOND);
-            event.get("redstone").setColor(0xaa0f01).withOverride(ResourceType.ORE, Blocks.REDSTONE_ORE).withOverride(ResourceType.GEM_BLOCK, Blocks.REDSTONE_BLOCK).withOverride(ResourceType.DUST, Items.REDSTONE);
-            event.get("emerald").setColor(0x17dd62).withOverride(ResourceType.ORE, Blocks.EMERALD_ORE).withOverride(ResourceType.GEM_BLOCK, Blocks.EMERALD_BLOCK).withOverride(ResourceType.GEM, Items.EMERALD);
-            event.get("nether_quartz").setColor(0xddd4c6).withOverride(ResourceType.NETHER_ORE, Blocks.NETHER_QUARTZ_ORE).withOverride(ResourceType.GEM_BLOCK, Blocks.QUARTZ_BLOCK).withOverride(ResourceType.GEM, Items.QUARTZ);
-            event.get("glowstone").setColor(0xffbc5e).withOverride(ResourceType.GEM_BLOCK, Blocks.GLOWSTONE).withOverride(ResourceType.DUST, Items.GLOWSTONE_DUST);
-        }).subscribe();
     }
 
     @Override
