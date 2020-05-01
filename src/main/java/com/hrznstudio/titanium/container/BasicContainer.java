@@ -46,7 +46,7 @@ public class BasicContainer extends Container {
             ItemStack itemstack1 = slot.getStack();
             itemstack = itemstack1.copy();
 
-            int containerSlots = inventorySlots.size() - player.inventory.mainInventory.size() - 9;
+            int containerSlots = inventorySlots.size() - player.inventory.mainInventory.size();
 
             if (index < containerSlots) {
                 if (!this.mergeItemStack(itemstack1, containerSlots, inventorySlots.size(), true)) {
@@ -61,7 +61,14 @@ public class BasicContainer extends Container {
             } else {
                 slot.onSlotChanged();
             }
+
+            if (itemstack1.getCount() == itemstack.getCount()) {
+                return ItemStack.EMPTY;
+            }
+
+            slot.onTake(player, itemstack1);
         }
+
         return itemstack;
     }
 
