@@ -78,7 +78,7 @@ public class JSONSerializableDataHandler {
         map(Biome[].class, (biomes) -> {
             JsonArray array = new JsonArray();
             for (Biome biome : biomes) {
-                array.add(biome.getRegistryName().toString());
+                array.add(writeBiomeType(biome));
             }
             return array;
         }, element -> {
@@ -86,7 +86,7 @@ public class JSONSerializableDataHandler {
             int i = 0;
             for (Iterator<JsonElement> iterator = element.getAsJsonArray().iterator(); iterator.hasNext(); i++) {
                 JsonElement jsonElement = iterator.next();
-                biomes[i] = ForgeRegistries.BIOMES.getValue(new ResourceLocation(jsonElement.getAsString()));
+                biomes[i] = readBiomeType(jsonElement);
             }
             return biomes;
         });
@@ -94,7 +94,7 @@ public class JSONSerializableDataHandler {
         map(Ingredient[].class, (type) -> {
             JsonArray array = new JsonArray();
             for (Ingredient ingredient : type) {
-                array.add(ingredient.serialize());
+                array.add(write(Ingredient.class, ingredient));
             }
             return array;
         }, (element) -> {
@@ -102,7 +102,7 @@ public class JSONSerializableDataHandler {
             int i = 0;
             for (Iterator<JsonElement> iterator = element.getAsJsonArray().iterator(); iterator.hasNext(); i++) {
                 JsonElement jsonElement = iterator.next();
-                ingredients[i] = Ingredient.deserialize(jsonElement);
+                ingredients[i] = read(Ingredient.class, jsonElement);
             }
             return ingredients;
         });
@@ -110,14 +110,14 @@ public class JSONSerializableDataHandler {
         map(Ingredient.IItemList[].class, type -> {
             JsonArray array = new JsonArray();
             for (Ingredient.IItemList ingredient : type) {
-                array.add(ingredient.serialize());
+                array.add(write(Ingredient.IItemList.class, ingredient));
             }
             return array;
         }, element -> {
             Ingredient.IItemList[] ingredient = new Ingredient.IItemList[element.getAsJsonArray().size()];
             int i = 0;
             for (JsonElement jsonElement : element.getAsJsonArray()) {
-                ingredient[i] = Ingredient.deserializeItemList(jsonElement.getAsJsonObject());
+                ingredient[i] = read(Ingredient.IItemList.class, jsonElement);
                 ++i;
             }
             return ingredient;
