@@ -25,5 +25,6 @@
   "direction.titanium.north": "North",
   "direction.titanium.south": "South",
   "direction.titanium.up": "Up",
-  "direction.titanium.down": "Down"
+  "direction.titanium.down": "Down",
+  "itemGroup.resources": "Titanium: Resources"
 }
