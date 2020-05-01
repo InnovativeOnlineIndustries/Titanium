@@ -56,6 +56,20 @@ public class JSONSerializableDataHandler {
 
 
         map(ItemStack.class, JSONSerializableDataHandler::writeItemStack, element -> readItemStack(element.getAsJsonObject()));
+        map(ItemStack[].class, (stacks) -> {
+            JsonArray array = new JsonArray();
+            for (ItemStack stack : stacks) {
+                array.add(JSONSerializableDataHandler.writeItemStack(stack));
+            }
+            return array;
+        }, (element) -> {
+            JsonArray array = element.getAsJsonArray();
+            ItemStack[] stacks = new ItemStack[array.size()];
+            for(int i = 0; i < array.size(); i++) {
+                stacks[i] = JSONSerializableDataHandler.readItemStack(array.get(i).getAsJsonObject());
+            }
+            return stacks;
+        });
         map(ResourceLocation.class, type -> new JsonPrimitive(type.toString()), element -> new ResourceLocation(element.getAsString()));
         map(Block.class, type -> new JsonPrimitive(type.getRegistryName().toString()), element -> ForgeRegistries.BLOCKS.getValue(new ResourceLocation(element.getAsString())));
         map(FluidStack.class, JSONSerializableDataHandler::writeFluidStack, JSONSerializableDataHandler::readFluidStack);
