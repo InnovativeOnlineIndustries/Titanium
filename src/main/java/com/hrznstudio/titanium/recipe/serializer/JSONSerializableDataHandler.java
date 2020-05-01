@@ -90,7 +90,12 @@ public class JSONSerializableDataHandler {
             }
             return biomes;
         });
-        map(Ingredient.class, Ingredient::serialize, Ingredient::deserialize);
+        map(Ingredient.class, (type) -> {
+            if(Ingredient.EMPTY.equals(type)) {
+                return null;
+            }
+            return type.serialize();
+        }, Ingredient::deserialize);
         map(Ingredient[].class, (type) -> {
             JsonArray array = new JsonArray();
             for (Ingredient ingredient : type) {
@@ -142,6 +147,9 @@ public class JSONSerializableDataHandler {
     }
 
     public static JsonObject writeItemStack(ItemStack stack) {
+        if(stack.isEmpty()) {
+            return null;
+        }
         JsonObject object = new JsonObject();
         object.addProperty("item", stack.getItem().getRegistryName().toString());
         object.addProperty("count", stack.getCount());
@@ -152,6 +160,9 @@ public class JSONSerializableDataHandler {
     }
 
     public static JsonElement writeFluidStack(FluidStack fluidStack) {
+        if(fluidStack.isEmpty()) {
+            return null;
+        }
         return new JsonPrimitive(fluidStack.writeToNBT(new CompoundNBT()).toString());
     }
 
