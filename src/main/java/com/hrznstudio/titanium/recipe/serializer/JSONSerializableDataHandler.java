@@ -23,6 +23,7 @@ import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
+import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -95,7 +96,7 @@ public class JSONSerializableDataHandler {
                 return null;
             }
             return type.serialize();
-        }, Ingredient::deserialize);
+        }, CraftingHelper::getIngredient);
         map(Ingredient[].class, (type) -> {
             JsonArray array = new JsonArray();
             for (Ingredient ingredient : type) {
