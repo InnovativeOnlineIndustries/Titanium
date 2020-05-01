@@ -60,6 +60,10 @@ public class FluidTankComponent<T extends IComponentHarness> extends FluidTank i
         return this;
     }
 
+    public T getComponentHarness() {
+        return componentHarness;
+    }
+
     @Override
     protected void onContentsChanged() {
         super.onContentsChanged();
