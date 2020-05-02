@@ -13,6 +13,8 @@ import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.component.IComponentHarness;
 import com.hrznstudio.titanium.component.sideness.ICapabilityHolder;
 import com.hrznstudio.titanium.component.sideness.IFacingComponent;
+import com.hrznstudio.titanium.container.addon.IContainerAddon;
+import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -22,7 +24,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-public class MultiTankComponent<T extends IComponentHarness> implements IScreenAddonProvider,
+public class MultiTankComponent<T extends IComponentHarness> implements IScreenAddonProvider, IContainerAddonProvider,
         ICapabilityHolder<FluidTankComponent<T>, MultiTankComponent.MultiTankCapabilityHandler<T>> {
 
     private final LinkedHashSet<FluidTankComponent<T>> tanks;
@@ -96,6 +98,15 @@ public class MultiTankComponent<T extends IComponentHarness> implements IScreenA
         List<IFactory<? extends IScreenAddon>> addons = new ArrayList<>();
         for (FluidTankComponent<T> tank : tanks) {
             addons.addAll(tank.getScreenAddons());
+        }
+        return addons;
+    }
+
+    @Override
+    public List<IFactory<? extends IContainerAddon>> getContainerAddons() {
+        List<IFactory<? extends IContainerAddon>> addons = new ArrayList<>();
+        for (FluidTankComponent<T> tank : tanks) {
+            addons.addAll(tank.getContainerAddons());
         }
         return addons;
     }

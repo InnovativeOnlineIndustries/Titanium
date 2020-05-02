@@ -19,5 +19,12 @@
   "titanium.rewards.remove_success": "Removed reward successfully",
   "titanium.rewards.enabled_success": "Enabled reward successfully",
   "titanium.rewards.granted_success": "Granted reward to the server successfully",
-  "block.titanium.block_asset_test": "Asset Test"
+  "block.titanium.block_asset_test": "Asset Test",
+  "direction.titanium.east": "East",
+  "direction.titanium.west": "West",
+  "direction.titanium.north": "North",
+  "direction.titanium.south": "South",
+  "direction.titanium.up": "Up",
+  "direction.titanium.down": "Down",
+  "itemGroup.resources": "Titanium: Resources"
 }

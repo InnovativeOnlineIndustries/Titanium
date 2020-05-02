@@ -10,6 +10,7 @@ package com.hrznstudio.titanium.container.impl;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.container.BasicContainer;
+import com.hrznstudio.titanium.container.IDisableableContainer;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
@@ -17,7 +18,7 @@ import net.minecraft.network.PacketBuffer;
 
 import java.awt.*;
 
-public class BasicInventoryContainer extends BasicContainer {
+public class BasicInventoryContainer extends BasicContainer implements IDisableableContainer {
     private boolean isDisabled = false;
     private PlayerInventory inventory;
     private boolean hasPlayerInventory;
@@ -66,10 +67,12 @@ public class BasicInventoryContainer extends BasicContainer {
         return inventory;
     }
 
+    @Override
     public boolean isDisabled() {
         return isDisabled;
     }
 
+    @Override
     public void setDisabled(boolean disabled) {
         isDisabled = disabled;
     }

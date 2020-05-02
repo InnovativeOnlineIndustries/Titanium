@@ -7,6 +7,7 @@
 
 package com.hrznstudio.titanium.util;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipe;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
@@ -15,6 +16,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
@@ -32,4 +34,10 @@ public class RecipeUtil {
     public static Collection<FurnaceRecipe> getCookingRecipes(World world) {
         return getRecipes(world, IRecipeType.SMELTING);
     }
+
+    @Nullable
+    public static FurnaceRecipe getSmelingRecipeFor(World world, ItemStack stack) {
+        return getCookingRecipes(world).stream().filter(furnaceRecipe -> furnaceRecipe.getIngredients().get(0).test(stack)).findFirst().orElse(null);
+    }
+
 }

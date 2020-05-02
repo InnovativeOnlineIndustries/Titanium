@@ -12,11 +12,11 @@ import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.annotation.MaterialReference;
 import com.hrznstudio.titanium.api.material.IHasColor;
 import com.hrznstudio.titanium.api.material.IResourceType;
-import com.hrznstudio.titanium.event.custom.ResourceRegistrationEvent;
 import com.hrznstudio.titanium.event.handler.EventManager;
 import com.hrznstudio.titanium.module.Feature;
 import com.hrznstudio.titanium.module.Module;
 import com.hrznstudio.titanium.module.ModuleController;
+import com.hrznstudio.titanium.plugin.PluginPhase;
 import com.hrznstudio.titanium.tab.AdvancedTitaniumTab;
 import com.hrznstudio.titanium.util.AnnotationUtil;
 import com.hrznstudio.titanium.util.SidedHandler;
@@ -26,7 +26,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IItemProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ColorHandlerEvent;
-import net.minecraftforge.fml.ModLoader;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import org.apache.logging.log4j.LogManager;
@@ -41,6 +40,7 @@ public class ResourceRegistry {
 
     public static AdvancedTitaniumTab RESOURCES = new AdvancedTitaniumTab("resources", true);
     public static Logger LOGGER = LogManager.getLogger(Titanium.MODID + "-ResourceRegistry");
+    public static final String PLUGIN_NAME = "resources";
 
     private static HashMap<String, ResourceMaterial> MATERIALS = new HashMap<>();
     private static HashMap<String, HashMultimap<String, Field>> ANNOTATED_FIELDS = new HashMap<>();
@@ -48,7 +48,7 @@ public class ResourceRegistry {
 
     public static void onInit() {
         scanForReferences();
-        ModLoader.get().postEvent(new ResourceRegistrationEvent());
+        Titanium.RESOURCES.execute(PluginPhase.CONSTRUCTION);
         SidedHandler.runOn(Dist.CLIENT, () -> () -> {
             EventManager.mod(ColorHandlerEvent.Item.class).process(item -> {
                 ResourceRegistry.getMaterials().forEach(material -> {

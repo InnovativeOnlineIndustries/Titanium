@@ -7,6 +7,7 @@
 
 package com.hrznstudio.titanium.container.impl;
 
+import com.hrznstudio.titanium.container.IDisableableContainer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
@@ -16,8 +17,8 @@ import java.util.function.BooleanSupplier;
 public class DisableableSlot extends Slot {
     private final BooleanSupplier isDisabled;
 
-    public DisableableSlot(IInventory inventoryIn, int index, int xPosition, int yPosition, BasicInventoryContainer basicInventoryContainer) {
-        this(inventoryIn, index, xPosition, yPosition, basicInventoryContainer::isDisabled);
+    public DisableableSlot(IInventory inventoryIn, int index, int xPosition, int yPosition, IDisableableContainer disableableContainer) {
+        this(inventoryIn, index, xPosition, yPosition, disableableContainer::isDisabled);
     }
 
     public DisableableSlot(IInventory inventoryIn, int index, int xPosition, int yPosition, BooleanSupplier isDisabled) {

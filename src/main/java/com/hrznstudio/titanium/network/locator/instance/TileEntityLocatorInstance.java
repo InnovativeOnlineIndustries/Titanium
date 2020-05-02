@@ -11,7 +11,9 @@ import com.hrznstudio.titanium.network.locator.LocatorInstance;
 import com.hrznstudio.titanium.network.locator.LocatorTypes;
 import com.hrznstudio.titanium.util.TileUtil;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.IWorldPosCallable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import java.util.Optional;
 
@@ -30,5 +32,10 @@ public class TileEntityLocatorInstance extends LocatorInstance {
     @Override
     public Optional<?> locale(PlayerEntity playerEntity) {
         return TileUtil.getTileEntity(playerEntity.getEntityWorld(), blockPos);
+    }
+
+    @Override
+    public IWorldPosCallable getWorldPosCallable(World world) {
+        return IWorldPosCallable.of(world, this.blockPos);
     }
 }

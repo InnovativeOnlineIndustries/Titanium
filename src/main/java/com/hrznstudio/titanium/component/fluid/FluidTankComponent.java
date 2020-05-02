@@ -7,6 +7,7 @@
 
 package com.hrznstudio.titanium.component.fluid;
 
+import com.google.common.collect.Lists;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAssetType;
@@ -15,6 +16,10 @@ import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.api.client.assets.types.ITankAsset;
 import com.hrznstudio.titanium.client.screen.addon.TankScreenAddon;
 import com.hrznstudio.titanium.component.IComponentHarness;
+import com.hrznstudio.titanium.container.addon.IContainerAddon;
+import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
+import com.hrznstudio.titanium.container.addon.IntArrayReferenceHolderAddon;
+import com.hrznstudio.titanium.container.referenceholder.FluidTankReferenceHolder;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
@@ -22,7 +27,8 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FluidTankComponent<T extends IComponentHarness> extends FluidTank implements IScreenAddonProvider {
+public class FluidTankComponent<T extends IComponentHarness> extends FluidTank implements IScreenAddonProvider,
+        IContainerAddonProvider {
 
     private final int posX;
     private final int posY;
@@ -54,11 +60,15 @@ public class FluidTankComponent<T extends IComponentHarness> extends FluidTank i
         return this;
     }
 
+    public T getComponentHarness() {
+        return componentHarness;
+    }
+
     @Override
     protected void onContentsChanged() {
         super.onContentsChanged();
         if (componentHarness != null) {
-            componentHarness.markComponentForUpdate();
+            componentHarness.markComponentForUpdate(true);
         }
         onContentChange.run();
     }
@@ -153,11 +163,22 @@ public class FluidTankComponent<T extends IComponentHarness> extends FluidTank i
         return drainInternal(maxDrain, action);
     }
 
+    public void setFluidStack(FluidStack fluidStack) {
+        this.fluid = fluidStack;
+    }
+
     @Override
     public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
         List<IFactory<? extends IScreenAddon>> addons = new ArrayList<>();
         addons.add(() -> new TankScreenAddon<>(this));
         return addons;
+    }
+
+    @Override
+    public List<IFactory<? extends IContainerAddon>> getContainerAddons() {
+        return Lists.newArrayList(
+                () -> new IntArrayReferenceHolderAddon(new FluidTankReferenceHolder(this))
+        );
     }
 
     public enum Type {
