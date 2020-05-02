@@ -26,6 +26,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -213,7 +214,9 @@ public class SidedInventoryComponent<T extends IComponentHarness> extends Invent
 
     private int isValidForAnySlot(IItemHandler dest, ItemStack stack) {
         for (int i = 0; i < dest.getSlots(); i++) {
-            if (dest.isItemValid(i, stack) && dest.getStackInSlot(i).getCount() < dest.getSlotLimit(i) && dest.getStackInSlot(i).getCount() < dest.getStackInSlot(i).getMaxStackSize()) {
+            if (!dest.isItemValid(i, stack)) continue;
+            if (dest.getStackInSlot(i).isEmpty()) return i;
+            if (ItemHandlerHelper.canItemStacksStack(dest.getStackInSlot(i), stack) && dest.getStackInSlot(i).getCount() < dest.getSlotLimit(i) && dest.getStackInSlot(i).getCount() < dest.getStackInSlot(i).getMaxStackSize()) {
                 return i;
             }
         }
