@@ -10,7 +10,6 @@ package com.hrznstudio.titanium.json;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.hrznstudio.titanium.json.jsondirector.IJsonDirector;
-import com.hrznstudio.titanium.json.jsonprovider.IJsonProvider;
 import net.minecraft.client.resources.JsonReloadListener;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.resources.IResourceManager;

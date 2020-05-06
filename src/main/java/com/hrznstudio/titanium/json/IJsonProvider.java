@@ -5,7 +5,7 @@
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
 
-package com.hrznstudio.titanium.json.jsonprovider;
+package com.hrznstudio.titanium.json;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
