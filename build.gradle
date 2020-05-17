@@ -183,7 +183,7 @@ curseforge {
   }
   project {
     id = '287342'
-    changelog = file('CHANGELOG.md')
+    changelog = new File('CHANGELOG.md')
     changelogType = 'markdown'
     releaseType = 'beta'
     addGameVersion '1.15.2'
@@ -198,8 +198,8 @@ curseforge {
 }
 
 task makeChangelog(type: GitChangelogTask) {
-  fromRepo = "https://github.com/InnovativeOnlineIndustries/Titanium"
-  file = file("CHANGELOG.md")
+  //fromRepo = "https://github.com/InnovativeOnlineIndustries/Titanium"
+  file = new File("CHANGELOG.md")
   untaggedName = "Version ${project.version}"
   fromCommit = "30cb69084596e7ba6008c33538f87407d26f8c84"
   toRef = "release-1.15"
