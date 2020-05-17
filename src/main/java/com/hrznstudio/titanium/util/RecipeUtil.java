@@ -26,7 +26,10 @@ public class RecipeUtil {
     public static <T extends IRecipe<?>> Collection<T> getRecipes(World world, IRecipeType<T> recipeType) {
         Map<IRecipeType<?>, Map<ResourceLocation, IRecipe<?>>> recipes = ObfuscationReflectionHelper.getPrivateValue(RecipeManager.class, world.getRecipeManager(), "field_199522_d");
         if (recipes != null) {
-            return (Collection<T>) recipes.get(recipeType).values();
+            Map<ResourceLocation, IRecipe<?>> typedRecipes = recipes.get(recipeType);
+            if (typedRecipes != null) {
+                return (Collection<T>)typedRecipes.values();
+            }
         }
         return new ArrayList<>();
     }

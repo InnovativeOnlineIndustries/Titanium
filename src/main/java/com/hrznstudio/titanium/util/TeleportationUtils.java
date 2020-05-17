@@ -149,7 +149,7 @@ public class TeleportationUtils {
         player.revive();
         player.setLocationAndAngles(xCoord, yCoord, zCoord, yaw, pitch);
         player.setWorld(destinationWorld);
-        destinationWorld.func_217447_b(player);
+        destinationWorld.addDuringPortalTeleport(player);
         player.connection.setPlayerLocation(xCoord, yCoord, zCoord, yaw, pitch);
         player.interactionManager.setWorld(destinationWorld);
         player.connection.sendPacket(new SPlayerAbilitiesPacket(player.abilities));
