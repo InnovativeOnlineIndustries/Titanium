@@ -6,11 +6,13 @@ buildscript {
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.1.0"
     }
 }
 plugins {
     id 'maven-publish'
     id 'net.minecrell.licenser' version '0.4.1'
+    id "com.matthewprenger.cursegradle" version "1.1.0"
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
@@ -19,6 +21,7 @@ apply plugin: 'eclipse'
 version = "${minecraftVersion}-${project.api_version}"
 group = 'com.hrznstudio'
 archivesBaseName = 'titanium'
+
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
@@ -165,4 +168,26 @@ processResources {
     from(sourceSets.main.resources.srcDirs) {
         exclude 'META_INF/mods.toml'
     }
+}
+
+logger.info("Curse api: " + System.getenv("CURSE_API"))
+tasks.curseforge.enabled = System.getenv("CURSE_API") != null
+
+curseforge {
+  if (System.getenv("CURSE_API") != null) {
+    apiKey = System.getenv("CURSE_API")
+  }
+  project {
+    id = '287342'
+    changelog = file('CHANGELOG.md')
+    changelogType = 'markdown'
+    releaseType = 'beta'
+
+    mainArtifact(jar){
+
+    }
+    addArtifact sourcesJar
+    addArtifact deobfJar
+    addArtifact javadocJar
+  }
 }
