@@ -3,6 +3,7 @@ steps:
   args:
     - './gradlew'
     - 'build'
+    - 'makeChangelog'
     - 'publish'
     - 'curseforge'
   env:

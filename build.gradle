@@ -24,7 +24,7 @@ apply plugin: 'eclipse'
 version = "${minecraftVersion}-${project.api_version}"
 group = 'com.hrznstudio'
 archivesBaseName = 'titanium'
-
+def isReleaseBranch = System.getenv("BRANCH") == "release" || System.getenv("BRANCH") == "release-1.15";
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
@@ -141,7 +141,7 @@ publishing {
         }
     }
     repositories {
-        if(System.getenv("BRANCH") == "release" || System.getenv("BRANCH") == "release-1.15") {
+        if(isReleaseBranch) {
             maven {
                 url "s3://cdn.hrzn.studio/maven"
                 authentication {
@@ -173,7 +173,7 @@ processResources {
     }
 }
 
-tasks.curseforge.enabled = System.getenv("CURSE_API") != null
+tasks.curseforge.enabled = System.getenv("CURSE_API") != null && isReleaseBranch
 //tasks.makeChangelog.enabled = System.getenv("CURSE_API") != null
 
 curseforge {
