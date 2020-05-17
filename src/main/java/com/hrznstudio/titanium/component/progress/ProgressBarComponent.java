@@ -402,7 +402,7 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
                 screen.getMinecraft().getTextureManager().bindTexture(asset.getResourceLocation());
                 int progress = addon.getProgressBar().getProgress();
                 int maxProgress = addon.getProgressBar().getMaxProgress();
-                int progressOffset = progress * area.height / maxProgress;
+                int progressOffset = progress * area.height / Math.max(maxProgress, 1);
                 screen.blit(addon.getPosX() + offset.x + guiX,
                         addon.getPosY() + offset.y + area.height - progressOffset + guiY,
                         area.x,
@@ -432,7 +432,7 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
                 screen.getMinecraft().getTextureManager().bindTexture(asset.getResourceLocation());
                 int progress = addon.getProgressBar().getProgress();
                 int maxProgress = addon.getProgressBar().getMaxProgress();
-                int progressOffset = progress * area.width / maxProgress;
+                int progressOffset = progress * area.width / Math.max(maxProgress, 1);
                 RenderSystem.color4f(addon.getProgressBar().getColor().getColorComponentValues()[0], addon.getProgressBar().getColor().getColorComponentValues()[1], addon.getProgressBar().getColor().getColorComponentValues()[2], 1);
                 screen.blit(addon.getPosX() + offset.x + guiX, addon.getPosY() + offset.y + guiY, area.x, area.y, progressOffset, area.height);
                 RenderSystem.color4f(1, 1, 1, 1);
