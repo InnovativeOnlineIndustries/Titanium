@@ -170,17 +170,17 @@ processResources {
     }
 }
 
-logger.info("Curse api: " + System.getenv("CURSE_API"))
 tasks.curseforge.enabled = System.getenv("CURSE_API") != null
 
 curseforge {
+  logger.info("Curse api: " + System.getenv("CURSE_API"))
   if (System.getenv("CURSE_API") != null) {
     apiKey = System.getenv("CURSE_API")
   }
   project {
     id = '287342'
-    changelog = file('CHANGELOG.md')
-    changelogType = 'markdown'
+    //changelog = file('CHANGELOG.md')
+    //changelogType = 'markdown'
     releaseType = 'beta'
 
     mainArtifact(jar){
