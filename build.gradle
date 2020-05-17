@@ -1,3 +1,5 @@
+import se.bjurr.gitchangelog.plugin.gradle.GitChangelogTask
+
 buildscript {
     repositories {
         maven { url = 'https://files.minecraftforge.net/maven' }
@@ -6,13 +8,14 @@ buildscript {
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
-        classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.1.0"
+        classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.4.0"
     }
 }
 plugins {
     id 'maven-publish'
     id 'net.minecrell.licenser' version '0.4.1'
-    id "com.matthewprenger.cursegradle" version "1.1.0"
+    id "com.matthewprenger.cursegradle" version "1.4.0"
+    id "se.bjurr.gitchangelog.git-changelog-gradle-plugin" version "1.64"
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
@@ -171,6 +174,7 @@ processResources {
 }
 
 tasks.curseforge.enabled = System.getenv("CURSE_API") != null
+//tasks.makeChangelog.enabled = System.getenv("CURSE_API") != null
 
 curseforge {
   logger.info("Curse api: " + System.getenv("CURSE_API"))
@@ -179,9 +183,10 @@ curseforge {
   }
   project {
     id = '287342'
-    //changelog = file('CHANGELOG.md')
-    //changelogType = 'markdown'
+    changelog = file('CHANGELOG.md')
+    changelogType = 'markdown'
     releaseType = 'beta'
+    addGameVersion '1.15.2'
 
     mainArtifact(jar){
 
@@ -190,4 +195,12 @@ curseforge {
     addArtifact deobfJar
     addArtifact javadocJar
   }
+}
+
+task makeChangelog(type: GitChangelogTask) {
+  file = new File("CHANGELOG.md")
+  untaggedName = "Version ${project.version}"
+  fromCommit = "30cb69084596e7ba6008c33538f87407d26f8c84"
+  toRef = "HEAD"
+  templateContent = file("changelog.mustache").getText("UTF-8")
 }
