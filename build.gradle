@@ -198,7 +198,7 @@ curseforge {
 }
 
 task makeChangelog(type: GitChangelogTask) {
-  file = new File("CHANGELOG.md")
+  file = new File("/workspace/CHANGELOG.md")
   untaggedName = "Version ${project.version}"
   fromCommit = "30cb69084596e7ba6008c33538f87407d26f8c84"
   toRef = "HEAD"
