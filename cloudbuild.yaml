@@ -11,10 +11,10 @@ steps:
   - 'REPO=$REPO_NAME'
   - 'BRANCH=$BRANCH_NAME'
   - 'COMMIT=$SHORT_SHA'
-  - 'CURSE_API'
   secretEnv:
   - 'AWS_ACCESS_KEY_ID'
   - 'AWS_SECRET_ACCESS_KEY'
+  - 'CURSE_API'
 secrets:
   - kmsKeyName: projects/hrznfactory/locations/global/keyRings/keyring/cryptoKeys/key
     secretEnv:
