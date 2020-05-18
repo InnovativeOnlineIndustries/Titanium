@@ -23,4 +23,5 @@ jobs:
         uses: TriPSs/conventional-changelog-action@v2
         with:
           github-token: ${{ secrets.github_token }}
-          git-message: Updated Changelog
+          git-message: 'Updated Changelog'
+          output-file: 'CHANGELOG.md'
