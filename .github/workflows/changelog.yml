@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Conventional Changelog Action
+name: Changelog Action
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
 on:
@@ -19,9 +19,9 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it   
-      - name: Conventional Changelog Action
+      - name: Changelog Action
         uses: TriPSs/conventional-changelog-action@v2
         with:
-          github-token: ${{ secrets.github_token }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           git-message: 'Updated Changelog'
           output-file: 'CHANGELOG.md'
