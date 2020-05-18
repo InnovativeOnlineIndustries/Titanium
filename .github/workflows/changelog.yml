@@ -21,7 +21,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
         with:
-          fetch-depth: 0
+          fetch-depth: 1000
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it   
       - name: Changelog Action
         uses: TriPSs/conventional-changelog-action@v2
