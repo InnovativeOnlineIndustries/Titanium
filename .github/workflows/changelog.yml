@@ -29,3 +29,4 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           git-message: 'Updated Changelog'
           output-file: 'CHANGELOG.md'
+          release-count: 0
