@@ -22,7 +22,7 @@ jobs:
       - name: Changelog Action
         uses: TriPSs/conventional-changelog-action@v2.3.3
         with:
-          github-token: ${{ secrets.ACTIONS_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           git-message: 'Updated Changelog'
           output-file: 'CHANGELOG.md'
           release-count: 0
