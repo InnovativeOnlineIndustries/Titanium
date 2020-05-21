@@ -1,0 +1,19 @@
+{
+  "name": "conventional-changelog-action-test",
+  "version": "2.4.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/InnovativeOnlineIndustries/Titanium.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/InnovativeOnlineIndustries/Titanium/issues"
+  },
+  "homepage": "https://github.com/InnovativeOnlineIndustries/Titanium#readme"
+}
