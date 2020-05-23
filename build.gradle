@@ -200,7 +200,7 @@ curseforge {
 }
 
 task makeChangelog(type: GitChangelogTask) {
-  //fromRepo = "https://github.com/InnovativeOnlineIndustries/Titanium"
+  fromRepo = "../home/runner/work/Titanium/Titanium"
   file = new File("CHANGELOG.md")
   untaggedName = "Version ${project.version}"
   fromCommit = "30cb69084596e7ba6008c33538f87407d26f8c84"
