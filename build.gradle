@@ -1,3 +1,5 @@
+import se.bjurr.gitchangelog.plugin.gradle.GitChangelogTask
+
 buildscript {
     repositories {
         maven { url = 'https://files.minecraftforge.net/maven' }
@@ -14,7 +16,7 @@ plugins {
     id 'maven-publish'
     id 'net.minecrell.licenser' version '0.4.1'
     id "com.matthewprenger.cursegradle" version "1.4.0"
-
+  id "se.bjurr.gitchangelog.git-changelog-gradle-plugin" version "1.64"
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
@@ -197,24 +199,11 @@ curseforge {
   }
 }
 
-changelog {
-    title = "Titanium"
-    fileName = "CHANGELOG.md"
-    outputDirectory = file("$projectDir")
-
-    commitFormat = '%s (%an)'
-    markdown {
-        commitFormat = '* %s (%an)'
-    }
-    includeLines = {
-        !it.contains("Merge")
-    }
-    processLines = {
-        String input = it as String
-        if (input.contains('[ci skip] ')) {
-            input = input.minus('[ci skip] ')
-        }
-        input
-    }
-    since = 'last_tag'
+task makeChangelog(type: GitChangelogTask) {
+  //fromRepo = "https://github.com/InnovativeOnlineIndustries/Titanium"
+  file = new File("CHANGELOG.md")
+  untaggedName = "Version ${project.version}"
+  fromCommit = "30cb69084596e7ba6008c33538f87407d26f8c84"
+  toRef = "release-1.15"
+  templateContent = file("changelog.mustache").getText("UTF-8")
 }
