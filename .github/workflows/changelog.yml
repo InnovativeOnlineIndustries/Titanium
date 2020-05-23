@@ -6,23 +6,33 @@ name: Changelog Action
 on:
   push:
     branches: [ release-1.15 ]
+    paths-ignore: 
+      - '**.md'
   pull_request:
     branches: [ release-1.15 ]
+
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      - uses: actions/checkout@master
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it   
       - name: Changelog Action
-        uses: TriPSs/conventional-changelog-action@v2.3.3
+        uses: OrangeLabs-moe/gradle-actions@v5.0-openjdk-14
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          git-message: 'Updated Changelog'
-          output-file: 'CHANGELOG.md'
-          release-count: 0
+          args: makeChangelog
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v4
+        with:
+          author_name: Buuz135
+          author_email: changelog@gmail.com
+          message: "Updated changelog"
+          add: "**.md"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
