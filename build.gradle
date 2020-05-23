@@ -9,7 +9,6 @@ buildscript {
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
         classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.4.0"
-        classpath 'com.selesse:gradle-git-changelog:0.2.+'
     }
 }
 plugins {
@@ -20,7 +19,6 @@ plugins {
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
-apply plugin: 'com.selesse.git.changelog'
 
 //def BUILD_NUMBER = System.getenv("COMMIT") ? "${project.api_version}-${System.getenv("COMMIT")}-SNAPSHOT" : "${project.api_version}"
 version = "${minecraftVersion}-${project.api_version}"
