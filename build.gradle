@@ -1,3 +1,5 @@
+import se.bjurr.gitchangelog.plugin.gradle.GitChangelogTask
+
 buildscript {
     repositories {
         maven { url = 'https://files.minecraftforge.net/maven' }
@@ -7,18 +9,16 @@ buildscript {
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
         classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.4.0"
-        classpath 'com.selesse:gradle-git-changelog:0.2.+'
     }
 }
 plugins {
     id 'maven-publish'
     id 'net.minecrell.licenser' version '0.4.1'
     id "com.matthewprenger.cursegradle" version "1.4.0"
-
+    id "se.bjurr.gitchangelog.git-changelog-gradle-plugin" version "1.64"
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
-apply plugin: 'com.selesse.git.changelog'
 
 //def BUILD_NUMBER = System.getenv("COMMIT") ? "${project.api_version}-${System.getenv("COMMIT")}-SNAPSHOT" : "${project.api_version}"
 version = "${minecraftVersion}-${project.api_version}"
@@ -183,7 +183,7 @@ curseforge {
   }
   project {
     id = '287342'
-    changelog = new File('CHANGELOG.md')
+    changelog = "https://github.com/InnovativeOnlineIndustries/Titanium/blob/changelog/CHANGELOG.md"
     changelogType = 'markdown'
     releaseType = 'beta'
     addGameVersion '1.15.2'
@@ -197,24 +197,12 @@ curseforge {
   }
 }
 
-changelog {
-    title = "Titanium"
-    fileName = "CHANGELOG.md"
-    outputDirectory = file("$projectDir")
-
-    commitFormat = '%s (%an)'
-    markdown {
-        commitFormat = '* %s (%an)'
-    }
-    includeLines = {
-        !it.contains("Merge")
-    }
-    processLines = {
-        String input = it as String
-        if (input.contains('[ci skip] ')) {
-            input = input.minus('[ci skip] ')
-        }
-        input
-    }
-    since = 'last_tag'
+task makeChangelog(type: GitChangelogTask) {
+  //fromRepo = file("../../home/runner/work/Titanium/Titanium")
+  file = new File("CHANGELOG.md")
+  untaggedName = "Version ${project.version}"
+  fromCommit = "6a5a3df3665643ea181873312e3801db7c662686"
+  fromRef = "refs/tags/2.4.0"
+  toRef = "release-1.15"
+  templateContent = file("changelog.mustache").getText("UTF-8")
 }
