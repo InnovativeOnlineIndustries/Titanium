@@ -14,18 +14,15 @@ jobs:
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it   
       - name: Changelog Action
-        uses: TriPSs/conventional-changelog-action@v2
+        uses: TriPSs/conventional-changelog-action@v2.3.3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           git-message: 'Updated Changelog'
           output-file: 'CHANGELOG.md'
+          release-count: 0
