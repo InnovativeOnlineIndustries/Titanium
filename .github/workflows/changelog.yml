@@ -24,7 +24,7 @@ jobs:
       - uses: actions/checkout@master
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it   
       - name: Changelog Action
-        uses: OrangeLabs-moe/gradle-actions@v5.0-openjdk-14
+        uses: OrangeLabs-moe/gradle-actions@v5.0-openjdk-8
         with:
           args: makeChangelog
       - name: Commit changes
