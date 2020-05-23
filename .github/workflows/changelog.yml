@@ -38,5 +38,6 @@ jobs:
           author_email: changelog@gmail.com
           message: "Updated changelog"
           add: "**.md"
+          ref: "changelog"  
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
