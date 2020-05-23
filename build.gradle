@@ -203,7 +203,7 @@ task makeChangelog(type: GitChangelogTask) {
   //fromRepo = file("../../home/runner/work/Titanium/Titanium")
   file = new File("CHANGELOG.md")
   untaggedName = "Version ${project.version}"
-  //fromCommit = "6a5a3df3665643ea181873312e3801db7c662686"
+  fromCommit = "6a5a3df3665643ea181873312e3801db7c662686"
   fromRef = "release-1.15"
   toRef = "release-1.15"
   templateContent = file("changelog.mustache").getText("UTF-8")
