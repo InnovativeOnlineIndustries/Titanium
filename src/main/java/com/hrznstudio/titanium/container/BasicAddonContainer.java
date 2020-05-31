@@ -48,15 +48,15 @@ public class BasicAddonContainer extends BasicInventoryContainer implements IObj
         this.worldPosCallable = worldPosCallable;
         this.provider = provider;
         this.locatorInstance = locatorInstance;
-        if (provider instanceof IContainerAddonProvider) {
-            ((IContainerAddonProvider) provider).getContainerAddons()
-                    .stream()
-                    .map(IFactory::create)
-                    .forEach(containAddon -> {
-                        containAddon.getSlots().forEach(this::addSlot);
-                        containAddon.getIntReferenceHolders().forEach(this::trackInt);
-                        containAddon.getIntArrayReferenceHolders().forEach(this::trackIntArray);
-                    });
+        if (this.provider instanceof IContainerAddonProvider) {
+            ((IContainerAddonProvider) this.provider).getContainerAddons()
+                .stream()
+                .map(IFactory::create)
+                .forEach(containAddon -> {
+                    containAddon.getSlots().forEach(this::addSlot);
+                    containAddon.getIntReferenceHolders().forEach(this::trackInt);
+                    containAddon.getIntArrayReferenceHolders().forEach(this::trackIntArray);
+                });
         }
         this.initInventory();
     }

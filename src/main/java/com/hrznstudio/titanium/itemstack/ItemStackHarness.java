@@ -26,9 +26,11 @@ public class ItemStackHarness implements IContainerAddonProvider, IScreenAddonPr
     private final ItemStack itemStack;
     private final IButtonHandler buttonHandler;
     private final Capability<?>[] capabilities;
+    private final IScreenAddonProvider defaultProvider;
 
-    public ItemStackHarness(ItemStack itemStack, IButtonHandler buttonHandler, Capability<?>... capabilities) {
+    public ItemStackHarness(ItemStack itemStack, IScreenAddonProvider defaultProvider, IButtonHandler buttonHandler, Capability<?>... capabilities) {
         this.itemStack = itemStack;
+        this.defaultProvider = defaultProvider;
         this.buttonHandler = buttonHandler;
         this.capabilities = capabilities;
     }
@@ -37,6 +39,7 @@ public class ItemStackHarness implements IContainerAddonProvider, IScreenAddonPr
     @Nonnull
     public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
         List<IFactory<? extends IScreenAddon>> screenAddons = Lists.newArrayList();
+        if (defaultProvider != null) screenAddons.addAll(defaultProvider.getScreenAddons());
         for (Capability<?> capability : capabilities) {
             screenAddons.addAll(itemStack.getCapability(capability)
                 .filter(cap -> cap instanceof IScreenAddonProvider)
