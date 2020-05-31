@@ -170,7 +170,7 @@ public class FluidTankComponent<T extends IComponentHarness> extends FluidTank i
     @Override
     public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
         List<IFactory<? extends IScreenAddon>> addons = new ArrayList<>();
-        addons.add(() -> new TankScreenAddon<>(this));
+        addons.add(() -> new TankScreenAddon(posX, posY, this, tankType));
         return addons;
     }
 
