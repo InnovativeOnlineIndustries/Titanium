@@ -18,9 +18,12 @@ import com.hrznstudio.titanium.network.locator.ILocatable;
 import com.hrznstudio.titanium.network.locator.LocatorFactory;
 import com.hrznstudio.titanium.network.locator.LocatorInstance;
 import com.hrznstudio.titanium.network.locator.instance.EmptyLocatorInstance;
+import com.hrznstudio.titanium.network.locator.instance.HeldStackLocatorInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.IWorldPosCallable;
 import net.minecraft.world.World;
@@ -69,7 +72,21 @@ public class BasicAddonContainer extends BasicInventoryContainer implements IObj
     @Override
     public boolean canInteractWith(PlayerEntity playerIn) {
         return worldPosCallable.applyOrElse((world, blockPos) -> playerIn.getDistanceSq(blockPos.getX() + 0.5D,
-                blockPos.getY() + 0.5D, blockPos.getZ() + 0.5D) <= 64.0D, true);
+            blockPos.getY() + 0.5D, blockPos.getZ() + 0.5D) <= 64.0D, true);
+    }
+
+    @Override
+    public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, PlayerEntity player) {
+        if (locatorInstance instanceof HeldStackLocatorInstance) {
+            if (((HeldStackLocatorInstance) locatorInstance).isMainHand()) {
+                if (player.inventory.currentItem == (slotId - 27)) {
+                    return ItemStack.EMPTY;
+                }
+            } else if (slotId == 40) {
+                return ItemStack.EMPTY;
+            }
+        }
+        return super.slotClick(slotId, dragType, clickTypeIn, player);
     }
 
     public static BasicAddonContainer create(int id, PlayerInventory inventory, PacketBuffer packetBuffer) {
@@ -78,9 +95,9 @@ public class BasicAddonContainer extends BasicInventoryContainer implements IObj
             PlayerEntity playerEntity = inventory.player;
             World world = playerEntity.getEntityWorld();
             BasicAddonContainer container = instance.locale(playerEntity)
-                    .map(located -> new BasicAddonContainer(located, instance, instance.getWorldPosCallable(world),
-                            inventory, id))
-                    .orElse(null);
+                .map(located -> new BasicAddonContainer(located, instance, instance.getWorldPosCallable(world),
+                    inventory, id))
+                .orElse(null);
             if (container != null) {
                 return container;
             }
