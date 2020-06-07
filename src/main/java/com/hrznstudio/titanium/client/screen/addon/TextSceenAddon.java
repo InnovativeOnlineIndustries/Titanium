@@ -1,0 +1,52 @@
+package com.hrznstudio.titanium.client.screen.addon;
+
+import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.Screen;
+
+public class TextSceenAddon extends BasicScreenAddon {
+
+    private String text;
+    private boolean shadow;
+    private int color;
+
+    public TextSceenAddon(String text, int posX, int posY, boolean shadow, int color) {
+        super(posX, posY);
+        this.text = text;
+        this.shadow = shadow;
+        this.color = color;
+    }
+
+    public TextSceenAddon(String text, int posX, int posY, boolean shadow) {
+        this(text, posX, posY, shadow, 0xFFFFFF);
+    }
+
+    @Override
+    public int getXSize() {
+        return 0;
+    }
+
+    @Override
+    public int getYSize() {
+        return 0;
+    }
+
+    @Override
+    public void drawBackgroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+        if (shadow) {
+            Minecraft.getInstance().fontRenderer.drawStringWithShadow(getText(), guiX + getPosX(), guiY + getPosY(), color);
+        } else {
+            Minecraft.getInstance().fontRenderer.drawString(getText(), guiX + getPosX(), guiY + getPosY(), color);
+        }
+    }
+
+    @Override
+    public void drawForegroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
+
+    }
+
+    public String getText() {
+        return text;
+    }
+
+}
