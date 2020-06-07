@@ -4,20 +4,20 @@ import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 
-public class TextSceenAddon extends BasicScreenAddon {
+public class TextScreenAddon extends BasicScreenAddon {
 
     private String text;
     private boolean shadow;
     private int color;
 
-    public TextSceenAddon(String text, int posX, int posY, boolean shadow, int color) {
+    public TextScreenAddon(String text, int posX, int posY, boolean shadow, int color) {
         super(posX, posY);
         this.text = text;
         this.shadow = shadow;
         this.color = color;
     }
 
-    public TextSceenAddon(String text, int posX, int posY, boolean shadow) {
+    public TextScreenAddon(String text, int posX, int posY, boolean shadow) {
         this(text, posX, posY, shadow, 0xFFFFFF);
     }
 
