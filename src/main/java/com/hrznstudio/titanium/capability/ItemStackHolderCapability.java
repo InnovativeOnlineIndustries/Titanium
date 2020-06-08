@@ -21,8 +21,8 @@ public class ItemStackHolderCapability implements IStackHolder {
     }
 
     @Override
-    public ItemStack getHolder() {
-        return holder.get();
+    public Supplier<ItemStack> getHolder() {
+        return holder;
     }
 
     @Override

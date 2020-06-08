@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 
 public interface IStackHolder {
 
-    ItemStack getHolder();
+    Supplier<ItemStack> getHolder();
 
     void setHolder(Supplier<ItemStack> stack);
 

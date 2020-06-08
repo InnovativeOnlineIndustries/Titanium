@@ -35,7 +35,7 @@ public class CapabilityItemStackHolder {
             if (!(instance instanceof ItemStackHolderCapability))
                 throw new RuntimeException("Cannot serialize to an instance that isn't the default implementation");
             CompoundNBT nbt = new CompoundNBT();
-            nbt.put("ItemStack", instance.getHolder().write(new CompoundNBT()));
+            nbt.put("ItemStack", instance.getHolder().get().write(new CompoundNBT()));
             return nbt;
         }
 
