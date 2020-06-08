@@ -43,7 +43,7 @@ public class EnergyBarScreenAddon extends BasicScreenAddon {
         Point offset = asset.getOffset();
         Rectangle area = asset.getArea();
         screen.getMinecraft().getTextureManager().bindTexture(asset.getResourceLocation());
-        int powerOffset = (int) (stored * area.height / capacity);
+        int powerOffset = (int) (stored * area.height / Math.max(capacity, 1));
         screen.blit(handlerPosX + offset.x, handlerPosY + offset.y + area.height - powerOffset, area.x, area.y + (area.height - powerOffset), area.width, powerOffset);
     }
 

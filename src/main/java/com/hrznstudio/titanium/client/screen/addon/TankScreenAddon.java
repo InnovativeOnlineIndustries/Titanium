@@ -9,7 +9,6 @@ package com.hrznstudio.titanium.client.screen.addon;
 
 import com.hrznstudio.titanium.api.client.assets.types.ITankAsset;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
-import com.hrznstudio.titanium.component.IComponentHarness;
 import com.hrznstudio.titanium.component.fluid.FluidTankComponent;
 import com.hrznstudio.titanium.util.AssetUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -22,25 +21,28 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidTank;
 
 import java.awt.*;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
 
-public class TankScreenAddon<T extends IComponentHarness> extends BasicScreenAddon {
+public class TankScreenAddon extends BasicScreenAddon {
 
-    private FluidTankComponent<T> tank;
+    private IFluidTank tank;
     private ITankAsset asset;
+    private FluidTankComponent.Type type;
 
-    public TankScreenAddon(FluidTankComponent<T> tank) {
-        super(tank.getPosX(), tank.getPosY());
+    public TankScreenAddon(int posX, int posY, IFluidTank tank, FluidTankComponent.Type type) {
+        super(posX, posY);
         this.tank = tank;
+        this.type = type;
     }
 
     @Override
     public void drawBackgroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
-        asset = IAssetProvider.getAsset(provider, tank.getTankType().getAssetType());
+        asset = IAssetProvider.getAsset(provider, type.getAssetType());
         Rectangle area = asset.getArea();
         if (!tank.getFluid().isEmpty()) {
             FluidStack stack = tank.getFluid();
@@ -72,7 +74,7 @@ public class TankScreenAddon<T extends IComponentHarness> extends BasicScreenAdd
         }
         RenderSystem.color4f(1, 1, 1, 1);
         RenderSystem.enableAlphaTest();
-        ITankAsset asset = IAssetProvider.getAsset(provider, tank.getTankType().getAssetType());
+        ITankAsset asset = IAssetProvider.getAsset(provider, type.getAssetType());
         AssetUtil.drawAsset(screen, asset, guiX + getPosX(), guiY + getPosY());
     }
 

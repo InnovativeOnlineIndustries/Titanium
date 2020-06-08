@@ -14,6 +14,7 @@ import com.hrznstudio.titanium._impl.test.TestBlock;
 import com.hrznstudio.titanium._impl.test.TwentyFourTestBlock;
 import com.hrznstudio.titanium._impl.test.recipe.TestSerializableRecipe;
 import com.hrznstudio.titanium.annotation.plugin.FeaturePlugin;
+import com.hrznstudio.titanium.capability.CapabilityItemStackHolder;
 import com.hrznstudio.titanium.client.screen.container.BasicAddonScreen;
 import com.hrznstudio.titanium.command.RewardCommand;
 import com.hrznstudio.titanium.command.RewardGrantCommand;
@@ -167,6 +168,7 @@ public class Titanium extends ModuleController {
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
+        CapabilityItemStackHolder.register();
         RewardManager.get().getRewards().values().forEach(rewardGiver -> rewardGiver.getRewards().forEach(reward -> reward.register(Dist.DEDICATED_SERVER)));
         LocatorTypes.register();
     }

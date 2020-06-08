@@ -11,6 +11,7 @@ import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
+import com.hrznstudio.titanium.block.tile.ActiveTile;
 import com.hrznstudio.titanium.client.screen.addon.FacingHandlerScreenAddon;
 import com.hrznstudio.titanium.component.IComponentHarness;
 import com.hrznstudio.titanium.component.sideness.IFacingComponent;
@@ -25,6 +26,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -185,7 +187,7 @@ public class SidedInventoryComponent<T extends IComponentHarness> extends Invent
     public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
         List<IFactory<? extends IScreenAddon>> addons = super.getScreenAddons();
         if (hasFacingAddon)
-            addons.add(() -> new FacingHandlerScreenAddon(SidedComponentManager.ofRight(getFacingHandlerX(), getFacingHandlerY(), position, AssetTypes.BUTTON_SIDENESS_MANAGER, 4), this, AssetTypes.SLOT));
+            addons.add(() -> new FacingHandlerScreenAddon(SidedComponentManager.ofRight(getFacingHandlerX(), getFacingHandlerY(), position, AssetTypes.BUTTON_SIDENESS_MANAGER, 4), this, AssetTypes.SLOT, this.getComponentHarness() instanceof ActiveTile ? ((ActiveTile) this.getComponentHarness()).getFacingDirection() : Direction.NORTH));
         return addons;
     }
 
@@ -212,7 +214,9 @@ public class SidedInventoryComponent<T extends IComponentHarness> extends Invent
 
     private int isValidForAnySlot(IItemHandler dest, ItemStack stack) {
         for (int i = 0; i < dest.getSlots(); i++) {
-            if (dest.isItemValid(i, stack)) {
+            if (!dest.isItemValid(i, stack)) continue;
+            if (dest.getStackInSlot(i).isEmpty()) return i;
+            if (ItemHandlerHelper.canItemStacksStack(dest.getStackInSlot(i), stack) && dest.getStackInSlot(i).getCount() < dest.getSlotLimit(i) && dest.getStackInSlot(i).getCount() < dest.getStackInSlot(i).getMaxStackSize()) {
                 return i;
             }
         }

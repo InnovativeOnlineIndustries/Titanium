@@ -39,8 +39,8 @@ public class FluidTankReferenceHolder implements IIntArray {
             this.fluidTank.setFluidStack(FluidStack.EMPTY);
         } else if (index == 0) {
             this.fluidTank.setFluidStack(new FluidStack(((ForgeRegistry<Fluid>) ForgeRegistries.FLUIDS).getValue(value),
-                    this.fluidTank.getFluidAmount()));
-        } else {
+                this.fluidTank.getFluidAmount()));
+        } else if (!this.fluidTank.getFluid().isEmpty()) {
             this.fluidTank.getFluid().setAmount(value);
         }
     }

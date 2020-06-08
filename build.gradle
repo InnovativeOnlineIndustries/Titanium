@@ -1,3 +1,5 @@
+import se.bjurr.gitchangelog.plugin.gradle.GitChangelogTask
+
 buildscript {
     repositories {
         maven { url = 'https://files.minecraftforge.net/maven' }
@@ -6,11 +8,14 @@ buildscript {
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.4.0"
     }
 }
 plugins {
     id 'maven-publish'
     id 'net.minecrell.licenser' version '0.4.1'
+    id "com.matthewprenger.cursegradle" version "1.4.0"
+    id "se.bjurr.gitchangelog.git-changelog-gradle-plugin" version "1.64"
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
@@ -19,6 +24,7 @@ apply plugin: 'eclipse'
 version = "${minecraftVersion}-${project.api_version}"
 group = 'com.hrznstudio'
 archivesBaseName = 'titanium'
+def isReleaseBranch = System.getenv("BRANCH") == "release" || System.getenv("BRANCH") == "release-1.15";
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
@@ -33,7 +39,7 @@ license {
 }
 
 minecraft {
-    mappings channel: 'snapshot', version: '20200129-1.15.1'
+    mappings channel: 'snapshot', version: '20200517-1.15.1'
     runs {
         client = {
             // recommended logging data for a userdev environment
@@ -79,7 +85,7 @@ repositories {
     }
 }
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.15.2-31.1.43'
+    minecraft 'net.minecraftforge:forge:1.15.2-31.2.0'
 
     compileOnly fg.deobf("mezz.jei:jei-1.15.2:6.0.0.2:api")
         // at runtime, use the full JEI jar
@@ -135,7 +141,7 @@ publishing {
         }
     }
     repositories {
-        if(System.getenv("BRANCH") == "release" || System.getenv("BRANCH") == "release-1.15") {
+        if(isReleaseBranch) {
             maven {
                 url "s3://cdn.hrzn.studio/maven"
                 authentication {
@@ -165,4 +171,38 @@ processResources {
     from(sourceSets.main.resources.srcDirs) {
         exclude 'META_INF/mods.toml'
     }
+}
+
+tasks.curseforge.enabled = System.getenv("CURSE_API") != null && isReleaseBranch
+//tasks.makeChangelog.enabled = System.getenv("CURSE_API") != null
+
+curseforge {
+  logger.info("Curse api: " + System.getenv("CURSE_API"))
+  if (System.getenv("CURSE_API") != null) {
+    apiKey = System.getenv("CURSE_API")
+  }
+  project {
+    id = '287342'
+    changelog = "https://github.com/InnovativeOnlineIndustries/Titanium/blob/changelog/CHANGELOG.md"
+    changelogType = 'markdown'
+    releaseType = 'beta'
+    addGameVersion '1.15.2'
+
+    mainArtifact(jar){
+
+    }
+    addArtifact sourcesJar
+    addArtifact deobfJar
+    addArtifact javadocJar
+  }
+}
+
+task makeChangelog(type: GitChangelogTask) {
+  //fromRepo = file("../../home/runner/work/Titanium/Titanium")
+  file = new File("CHANGELOG.md")
+  untaggedName = "Version ${project.version}"
+  fromCommit = "6a5a3df3665643ea181873312e3801db7c662686"
+  fromRef = "refs/tags/2.4.0"
+  toRef = "release-1.15"
+  templateContent = file("changelog.mustache").getText("UTF-8")
 }
