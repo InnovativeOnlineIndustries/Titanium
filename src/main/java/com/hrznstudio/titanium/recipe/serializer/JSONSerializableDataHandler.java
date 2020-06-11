@@ -23,6 +23,7 @@ import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
+import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -56,6 +57,20 @@ public class JSONSerializableDataHandler {
 
 
         map(ItemStack.class, JSONSerializableDataHandler::writeItemStack, element -> readItemStack(element.getAsJsonObject()));
+        map(ItemStack[].class, (stacks) -> {
+            JsonArray array = new JsonArray();
+            for (ItemStack stack : stacks) {
+                array.add(JSONSerializableDataHandler.writeItemStack(stack));
+            }
+            return array;
+        }, (element) -> {
+            JsonArray array = element.getAsJsonArray();
+            ItemStack[] stacks = new ItemStack[array.size()];
+            for(int i = 0; i < array.size(); i++) {
+                stacks[i] = JSONSerializableDataHandler.readItemStack(array.get(i).getAsJsonObject());
+            }
+            return stacks;
+        });
         map(ResourceLocation.class, type -> new JsonPrimitive(type.toString()), element -> new ResourceLocation(element.getAsString()));
         map(Block.class, type -> new JsonPrimitive(type.getRegistryName().toString()), element -> ForgeRegistries.BLOCKS.getValue(new ResourceLocation(element.getAsString())));
         map(FluidStack.class, JSONSerializableDataHandler::writeFluidStack, JSONSerializableDataHandler::readFluidStack);
@@ -64,7 +79,7 @@ public class JSONSerializableDataHandler {
         map(Biome[].class, (biomes) -> {
             JsonArray array = new JsonArray();
             for (Biome biome : biomes) {
-                array.add(biome.getRegistryName().toString());
+                array.add(writeBiomeType(biome));
             }
             return array;
         }, element -> {
@@ -72,15 +87,20 @@ public class JSONSerializableDataHandler {
             int i = 0;
             for (Iterator<JsonElement> iterator = element.getAsJsonArray().iterator(); iterator.hasNext(); i++) {
                 JsonElement jsonElement = iterator.next();
-                biomes[i] = ForgeRegistries.BIOMES.getValue(new ResourceLocation(jsonElement.getAsString()));
+                biomes[i] = readBiomeType(jsonElement);
             }
             return biomes;
         });
-        map(Ingredient.class, Ingredient::serialize, Ingredient::deserialize);
+        map(Ingredient.class, (type) -> {
+            if(Ingredient.EMPTY.equals(type)) {
+                return null;
+            }
+            return type.serialize();
+        }, CraftingHelper::getIngredient);
         map(Ingredient[].class, (type) -> {
             JsonArray array = new JsonArray();
             for (Ingredient ingredient : type) {
-                array.add(ingredient.serialize());
+                array.add(write(Ingredient.class, ingredient));
             }
             return array;
         }, (element) -> {
@@ -88,7 +108,7 @@ public class JSONSerializableDataHandler {
             int i = 0;
             for (Iterator<JsonElement> iterator = element.getAsJsonArray().iterator(); iterator.hasNext(); i++) {
                 JsonElement jsonElement = iterator.next();
-                ingredients[i] = Ingredient.deserialize(jsonElement);
+                ingredients[i] = read(Ingredient.class, jsonElement);
             }
             return ingredients;
         });
@@ -96,14 +116,14 @@ public class JSONSerializableDataHandler {
         map(Ingredient.IItemList[].class, type -> {
             JsonArray array = new JsonArray();
             for (Ingredient.IItemList ingredient : type) {
-                array.add(ingredient.serialize());
+                array.add(write(Ingredient.IItemList.class, ingredient));
             }
             return array;
         }, element -> {
             Ingredient.IItemList[] ingredient = new Ingredient.IItemList[element.getAsJsonArray().size()];
             int i = 0;
             for (JsonElement jsonElement : element.getAsJsonArray()) {
-                ingredient[i] = Ingredient.deserializeItemList(jsonElement.getAsJsonObject());
+                ingredient[i] = read(Ingredient.IItemList.class, jsonElement);
                 ++i;
             }
             return ingredient;
@@ -128,6 +148,9 @@ public class JSONSerializableDataHandler {
     }
 
     public static JsonObject writeItemStack(ItemStack stack) {
+        if(stack.isEmpty()) {
+            return null;
+        }
         JsonObject object = new JsonObject();
         object.addProperty("item", stack.getItem().getRegistryName().toString());
         object.addProperty("count", stack.getCount());
@@ -138,6 +161,9 @@ public class JSONSerializableDataHandler {
     }
 
     public static JsonElement writeFluidStack(FluidStack fluidStack) {
+        if(fluidStack.isEmpty()) {
+            return null;
+        }
         return new JsonPrimitive(fluidStack.writeToNBT(new CompoundNBT()).toString());
     }
 
