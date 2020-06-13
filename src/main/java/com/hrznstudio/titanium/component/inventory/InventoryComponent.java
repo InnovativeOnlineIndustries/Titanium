@@ -44,6 +44,7 @@ public class InventoryComponent<T extends IComponentHarness> extends ItemStackHa
     private BiPredicate<ItemStack, Integer> extractPredicate;
     private BiConsumer<ItemStack, Integer> onSlotChanged;
     private Map<Integer, Integer> slotAmountFilter;
+    private Map<Integer, ItemStack> slotToStackRenderMap;
     private int slotLimit;
     private Function<Integer, Pair<Integer, Integer>> slotPosition;
 
@@ -58,6 +59,7 @@ public class InventoryComponent<T extends IComponentHarness> extends ItemStackHa
         this.onSlotChanged = (stack, integer) -> {
         };
         this.slotAmountFilter = new HashMap<>();
+        this.slotToStackRenderMap = new HashMap<>();
         this.slotLimit = 64;
         this.slotPosition = integer -> Pair.of(18 * (integer % xSize), 18 * (integer / xSize));
     }
@@ -217,6 +219,24 @@ public class InventoryComponent<T extends IComponentHarness> extends ItemStackHa
     public InventoryComponent<T> setSlotLimit(int slot, int limit) {
         this.slotAmountFilter.put(slot, limit);
         return this;
+    }
+
+    /**
+     * @param slot The slot to render the stack in
+     * @param stack The Itemstack to render in the slot
+     * @return itself
+     */
+    public InventoryComponent<T> setSlotToItemStackRender(int slot, ItemStack stack) {
+        this.slotToStackRenderMap.put(slot, stack);
+        return this;
+    }
+
+    /**
+     * @param slot
+     * @return
+     */
+    public ItemStack getItemStackForSlotRendering(int slot) {
+        return this.slotToStackRenderMap.getOrDefault(slot, ItemStack.EMPTY);
     }
 
     /**

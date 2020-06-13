@@ -23,6 +23,8 @@ import com.hrznstudio.titanium.client.screen.addon.StateButtonAddon;
 import com.hrznstudio.titanium.client.screen.addon.StateButtonInfo;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -55,7 +57,8 @@ public class TestTile extends PoweredTile<TestTile> {
                 .setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
         this.addInventory(second = (SidedInventoryComponent<TestTile>) new SidedInventoryComponent<TestTile>("test2", 80, 30, 1, 1)
                 .setComponentHarness(this)
-                .setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
+                .setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack))
+                .setSlotToItemStackRender(0, new ItemStack(Items.GLASS)));
         this.addGuiAddonFactory(() -> new EnergyBarScreenAddon(4, 10, getEnergyStorage()));
         this.addProgressBar(bar = new ProgressBarComponent<TestTile>(40, 20, 500)
                 .setCanIncrease(tileEntity -> true)
