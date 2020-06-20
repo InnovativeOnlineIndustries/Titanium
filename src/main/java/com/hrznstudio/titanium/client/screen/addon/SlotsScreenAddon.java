@@ -49,12 +49,19 @@ public class SlotsScreenAddon<T extends IComponentHarness> extends BasicScreenAd
         IAsset slot = IAssetProvider.getAsset(provider, AssetTypes.SLOT);
         Rectangle area = slot.getArea();
         screen.getMinecraft().getTextureManager().bindTexture(slot.getResourceLocation());
-        //Draw ItemStack for Slot if applicable
+        //Draw slot
         for (int slotID = 0; slotID < slots; slotID++) {
             int posX = positionFunction.apply(slotID).getLeft();
             int posY = positionFunction.apply(slotID).getRight();
+            AssetUtil.drawAsset(screen, slot, handlerPosX + posX + guiX - 1, handlerPosY + posY + guiY - 1);
+        }
+        //Draw ItemStack for Slot if applicable
+        for (int slotID = 0; slotID < handler.getSlots(); slotID++) {
+            int posX = handler.getSlotPosition().apply(slotID).getLeft();
+            int posY = handler.getSlotPosition().apply(slotID).getRight();
             ItemStack stack = handler.getItemStackForSlotRendering(slotID);
             screen.getMinecraft().getItemRenderer().renderItemIntoGUI(stack, handlerPosX + posX + guiX, handlerPosY + posY + guiY);
+            RenderSystem.disableDepthTest();
         }
         //Draw background
         if (drawColor) {
@@ -92,7 +99,6 @@ public class SlotsScreenAddon<T extends IComponentHarness> extends BasicScreenAd
     }
 
     @Override
-    public void drawForegroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
+    public void drawForegroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {}
 
-    }
 }
