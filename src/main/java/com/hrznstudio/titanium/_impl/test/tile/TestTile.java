@@ -52,13 +52,14 @@ public class TestTile extends PoweredTile<TestTile> {
 
     public TestTile() {
         super(TestBlock.TEST);
-        this.addInventory(first = (SidedInventoryComponent<TestTile>) new SidedInventoryComponent<TestTile>("test", 80, 60, 1, 0)
+        this.addInventory(first = (SidedInventoryComponent<TestTile>) new SidedInventoryComponent<TestTile>("test", 80, 30, 1, 0)
                 .setComponentHarness(this)
                 .setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
-        this.addInventory(second = (SidedInventoryComponent<TestTile>) new SidedInventoryComponent<TestTile>("test2", 80, 30, 1, 1)
+        this.addInventory(second = (SidedInventoryComponent<TestTile>) new SidedInventoryComponent<TestTile>("test2", 80, 60, 2, 1)
                 .setComponentHarness(this)
                 .setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack))
-                .setSlotToItemStackRender(0, new ItemStack(Items.GLASS)));
+                .setSlotToItemStackRender(0, new ItemStack(Items.STONE_PICKAXE))
+                .setSlotToColorRender(1, DyeColor.ORANGE));
         this.addGuiAddonFactory(() -> new EnergyBarScreenAddon(4, 10, getEnergyStorage()));
         this.addProgressBar(bar = new ProgressBarComponent<TestTile>(40, 20, 500)
                 .setCanIncrease(tileEntity -> true)

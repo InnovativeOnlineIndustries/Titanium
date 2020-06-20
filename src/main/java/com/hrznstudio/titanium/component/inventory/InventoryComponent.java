@@ -16,6 +16,8 @@ import com.hrznstudio.titanium.component.IComponentHarness;
 import com.hrznstudio.titanium.container.addon.IContainerAddon;
 import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
 import com.hrznstudio.titanium.container.addon.SlotContainerAddon;
+import net.minecraft.item.DyeColor;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IntReferenceHolder;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -23,6 +25,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,6 +48,8 @@ public class InventoryComponent<T extends IComponentHarness> extends ItemStackHa
     private BiConsumer<ItemStack, Integer> onSlotChanged;
     private Map<Integer, Integer> slotAmountFilter;
     private Map<Integer, ItemStack> slotToStackRenderMap;
+    private boolean colorGuiEnabled;
+    private Map<Integer, Color> slotToColorRenderMap;
     private int slotLimit;
     private Function<Integer, Pair<Integer, Integer>> slotPosition;
 
@@ -60,6 +65,8 @@ public class InventoryComponent<T extends IComponentHarness> extends ItemStackHa
         };
         this.slotAmountFilter = new HashMap<>();
         this.slotToStackRenderMap = new HashMap<>();
+        this.colorGuiEnabled = false;
+        this.slotToColorRenderMap = new HashMap<>();
         this.slotLimit = 64;
         this.slotPosition = integer -> Pair.of(18 * (integer % xSize), 18 * (integer / xSize));
     }
@@ -198,6 +205,18 @@ public class InventoryComponent<T extends IComponentHarness> extends ItemStackHa
         return onSlotChanged;
     }
 
+    public void setColorGuiEnabled(boolean colorGuiEnabled) {
+        this.colorGuiEnabled = colorGuiEnabled;
+    }
+
+    public boolean isColorGuiEnabled() {
+        return colorGuiEnabled;
+    }
+
+    public Map<Integer, Color> getSlotToColorRenderMap() {
+        return slotToColorRenderMap;
+    }
+
     /**
      * Sets the predicate slot changed that gets triggered when a slot is changed.
      *
@@ -233,10 +252,57 @@ public class InventoryComponent<T extends IComponentHarness> extends ItemStackHa
 
     /**
      * @param slot
+     * @param color
      * @return
+     */
+    public InventoryComponent<T> setSlotToColorRender(int slot, int color) {
+        if (!this.colorGuiEnabled) {
+            this.colorGuiEnabled = true;
+        }
+        this.slotToColorRenderMap.put(slot, new Color(color));
+        return this;
+    }
+
+    /**
+     * @param slot
+     * @param color
+     * @return
+     */
+    public InventoryComponent<T> setSlotToColorRender(int slot, DyeColor color) {
+        if (!this.colorGuiEnabled) {
+            this.colorGuiEnabled = true;
+        }
+        this.slotToColorRenderMap.put(slot, new Color(color.getColorValue()));
+        return this;
+    }
+
+    /**
+     * @param slot
+     * @param color
+     * @return
+     */
+    public InventoryComponent<T> setSlotToColorRender(int slot, Color color) {
+        if (!this.colorGuiEnabled) {
+            this.colorGuiEnabled = true;
+        }
+        this.slotToColorRenderMap.put(slot, color);
+        return this;
+    }
+
+    /**
+     * @param slot Slot to get the Render Stack for
+     * @return Returns the Itemstack to be rendered
      */
     public ItemStack getItemStackForSlotRendering(int slot) {
         return this.slotToStackRenderMap.getOrDefault(slot, ItemStack.EMPTY);
+    }
+
+    /**
+     * @param slot Slot to get the Render Color for
+     * @return Returns the Color to be rendered
+     */
+    public Color getColorForSlotRendering(int slot) {
+        return this.slotToColorRenderMap.get(slot);
     }
 
     /**

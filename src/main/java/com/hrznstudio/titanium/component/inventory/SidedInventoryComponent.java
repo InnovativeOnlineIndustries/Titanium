@@ -40,7 +40,6 @@ public class SidedInventoryComponent<T extends IComponentHarness> extends Invent
     private HashMap<FacingUtil.Sideness, FaceMode> facingModes;
     private HashMap<FacingUtil.Sideness, Integer> slotCache;
     private int position;
-    private boolean colorGuiEnabled;
     private boolean hasFacingAddon;
 
     public SidedInventoryComponent(String name, int xPos, int yPos, int size, int position) {
@@ -52,7 +51,7 @@ public class SidedInventoryComponent<T extends IComponentHarness> extends Invent
             this.facingModes.put(value, FaceMode.ENABLED);
         }
         this.position = position;
-        this.colorGuiEnabled = true;
+        this.setColorGuiEnabled(true);
         this.hasFacingAddon = true;
     }
 
@@ -77,17 +76,13 @@ public class SidedInventoryComponent<T extends IComponentHarness> extends Invent
     }
 
     public SidedInventoryComponent<T> setColor(DyeColor color) {
-        this.color = color.getFireworkColor();
+        this.color = color.getColorValue();
         return this;
     }
 
-    public boolean isColorGuiEnabled() {
-        return colorGuiEnabled;
-    }
-
-    public SidedInventoryComponent<T> setColorGuiEnabled(boolean colorGuiEnabled) {
-        this.colorGuiEnabled = colorGuiEnabled;
-        return this;
+    @Override
+    public Color getColorForSlotRendering(int slot) {
+        return getSlotToColorRenderMap().getOrDefault(slot, new Color(color));
     }
 
     @Override
