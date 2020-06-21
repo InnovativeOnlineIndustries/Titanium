@@ -251,9 +251,9 @@ public class InventoryComponent<T extends IComponentHarness> extends ItemStackHa
     }
 
     /**
-     * @param slot
-     * @param color
-     * @return
+     * @param slot Slot which color should be set.
+     * @param color The color of the slot
+     * @return Returns the inventorycomponent
      */
     public InventoryComponent<T> setSlotToColorRender(int slot, int color) {
         if (!this.colorGuiEnabled) {
@@ -264,26 +264,26 @@ public class InventoryComponent<T extends IComponentHarness> extends ItemStackHa
     }
 
     /**
-     * @param slot
-     * @param color
-     * @return
+     * @param slot Slot which color should be set.
+     * @param color The color of the slot
+     * @return Returns the inventorycomponent
      */
     public InventoryComponent<T> setSlotToColorRender(int slot, DyeColor color) {
         if (!this.colorGuiEnabled) {
-            this.colorGuiEnabled = true;
+            this.setColorGuiEnabled(true);
         }
         this.slotToColorRenderMap.put(slot, new Color(color.getColorValue()));
         return this;
     }
 
     /**
-     * @param slot
-     * @param color
-     * @return
+     * @param slot Slot which color should be set.
+     * @param color The color of the slot
+     * @return Returns the inventorycomponent
      */
     public InventoryComponent<T> setSlotToColorRender(int slot, Color color) {
         if (!this.colorGuiEnabled) {
-            this.colorGuiEnabled = true;
+            this.setColorGuiEnabled(true);
         }
         this.slotToColorRenderMap.put(slot, color);
         return this;
