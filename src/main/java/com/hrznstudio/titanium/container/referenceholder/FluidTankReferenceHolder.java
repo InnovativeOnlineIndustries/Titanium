@@ -16,6 +16,8 @@ import net.minecraftforge.registries.ForgeRegistry;
 
 public class FluidTankReferenceHolder implements IIntArray {
     private final FluidTankComponent<?> fluidTank;
+    private int fluidAmount = -1;
+    private int fluidId = -1;
 
     public FluidTankReferenceHolder(FluidTankComponent<?> fluidTank) {
         this.fluidTank = fluidTank;
@@ -24,7 +26,7 @@ public class FluidTankReferenceHolder implements IIntArray {
     @Override
     public int get(int index) {
         FluidStack fluidStack = this.fluidTank.getFluid();
-        if (fluidStack.isEmpty() && index == 0) {
+        if (fluidStack.isEmpty()) {
             return -1;
         } else if (index == 0) {
             return ((ForgeRegistry<Fluid>) ForgeRegistries.FLUIDS).getID(fluidStack.getFluid());
@@ -35,13 +37,16 @@ public class FluidTankReferenceHolder implements IIntArray {
 
     @Override
     public void set(int index, int value) {
-        if (index == 0 && value == -1) {
-            this.fluidTank.setFluidStack(FluidStack.EMPTY);
-        } else if (index == 0) {
-            this.fluidTank.setFluidStack(new FluidStack(((ForgeRegistry<Fluid>) ForgeRegistries.FLUIDS).getValue(value),
-                this.fluidTank.getFluidAmount()));
-        } else if (!this.fluidTank.getFluid().isEmpty()) {
-            this.fluidTank.getFluid().setAmount(value);
+        if (index == 0) {
+            fluidId = value;
+        } else {
+            fluidAmount = value;
+        }
+
+        if (fluidAmount >= 0 && fluidId >= 0) {
+            fluidTank.setFluidStack(new FluidStack(((ForgeRegistry<Fluid>) ForgeRegistries.FLUIDS).getValue(fluidId), fluidAmount));
+        } else {
+            fluidTank.setFluidStack(FluidStack.EMPTY);
         }
     }
 
