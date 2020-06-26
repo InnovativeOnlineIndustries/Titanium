@@ -69,7 +69,7 @@ public enum ResourceType implements IResourceType, IStringSerializable {
     }
 
     ResourceType() {
-        this.tag = getName();
+        this.tag = func_176610_l(); //GetName
     }
 
     @Override
@@ -83,7 +83,7 @@ public enum ResourceType implements IResourceType, IStringSerializable {
     }
 
     @Override
-    public String getName() {
+    public String func_176610_l() {
         return name().toLowerCase();
     }
 }

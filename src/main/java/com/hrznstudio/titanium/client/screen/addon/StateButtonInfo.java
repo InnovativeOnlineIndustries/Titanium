@@ -23,7 +23,7 @@ public class StateButtonInfo {
         if (tooltip != null) {
             this.tooltip = new String[tooltip.length];
             for (int i = 0; i < tooltip.length; i++) {
-                this.tooltip[i] = new TranslationTextComponent(tooltip[i]).getFormattedText();
+                this.tooltip[i] = new TranslationTextComponent(tooltip[i]).getUnformattedComponentText();
             }
         }
     }

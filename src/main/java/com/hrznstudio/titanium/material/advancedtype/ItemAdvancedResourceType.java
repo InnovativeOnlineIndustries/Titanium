@@ -22,7 +22,7 @@ public enum ItemAdvancedResourceType implements IAdvancedResourceType {
         JsonObject object = new JsonObject();
         object.addProperty("parent", "item/generated");
         JsonObject textures = new JsonObject();
-        textures.addProperty("layer0", new ResourceLocation(Titanium.MODID, "items/resource/" + type.getName()).toString());
+        textures.addProperty("layer0", new ResourceLocation(Titanium.MODID, "items/resource/" + type.func_176610_l()).toString()); //getNAme
         object.add("textures", textures);
         return object;
     });

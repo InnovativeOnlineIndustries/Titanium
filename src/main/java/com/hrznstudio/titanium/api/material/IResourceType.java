@@ -24,6 +24,6 @@ public interface IResourceType extends IStringSerializable {
     IFactory<ForgeRegistryEntry> getInstanceFactory(ResourceMaterial material, @Nullable ResourceTypeProperties properties);
 
     default ITextComponent getTextComponent(ITextComponent material) {
-        return new TranslationTextComponent(String.format("resource.titanium.type.%s", getName()), material);
+        return new TranslationTextComponent(String.format("resource.titanium.type.%s", func_176610_l()), material); //getName
     }
 }
