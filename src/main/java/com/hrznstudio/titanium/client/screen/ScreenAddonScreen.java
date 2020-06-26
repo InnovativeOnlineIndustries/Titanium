@@ -15,6 +15,7 @@ import com.hrznstudio.titanium.client.screen.addon.interfaces.ICanMouseDrag;
 import com.hrznstudio.titanium.client.screen.addon.interfaces.IClickable;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.util.AssetUtil;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
@@ -52,27 +53,27 @@ public abstract class ScreenAddonScreen extends Screen implements IScreenAddonCo
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks) {
+    public void func_230430_a_(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) { //render
         RenderSystem.pushMatrix();
-        renderBackground(mouseX, mouseY, partialTicks);
+        renderBackground(matrixStack, mouseX, mouseY, partialTicks);
         RenderSystem.popMatrix();
-        super.render(mouseX, mouseY, partialTicks);
+        super.func_230430_a_(matrixStack, mouseX, mouseY, partialTicks);
         RenderSystem.pushMatrix();
-        renderForeground(mouseX, mouseY, partialTicks);
+        renderForeground(matrixStack, mouseX, mouseY, partialTicks);
         RenderSystem.popMatrix();
     }
 
-    public void renderBackground(int mouseX, int mouseY, float partialTicks) {
+    public void renderBackground(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         this.checkForMouseDrag(mouseX, mouseY);
         RenderSystem.color4f(1, 1, 1, 1);
         if (drawBackground) {
-            this.renderBackground();
+            this.func_238651_a_(matrixStack, 0);//draw tinted background
             AssetUtil.drawAsset(this, assetProvider.getAsset(AssetTypes.BACKGROUND), x, y);
         }
         addonList.forEach(iGuiAddon -> iGuiAddon.drawBackgroundLayer(this, assetProvider, x, y, mouseX, mouseY, partialTicks));
     }
 
-    public void renderForeground(int mouseX, int mouseY, float partialTicks) {
+    public void renderForeground(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         addonList.forEach(iGuiAddon -> iGuiAddon.drawForegroundLayer(this, assetProvider, x, y, mouseX, mouseY));
         for (IScreenAddon iScreenAddon : addonList) {
             if (iScreenAddon.isInside(this, mouseX - x, mouseY - y) && !iScreenAddon.getTooltipLines().isEmpty()) {
@@ -102,11 +103,16 @@ public abstract class ScreenAddonScreen extends Screen implements IScreenAddonCo
     }
 
     @Override
+    public boolean func_231046_a_(int p_231046_1_, int p_231046_2_, int p_231046_3_) {
+        return super.func_231046_a_(p_231046_1_, p_231046_2_, p_231046_3_);
+    }
+
+    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
         super.mouseClicked(mouseX, mouseY, mouseButton);
         addonList.stream()
-                .filter(iScreenAddon -> iScreenAddon instanceof IClickable && iScreenAddon.isInside(this, mouseX - x, mouseY - y))
-                .forEach(iScreenAddon -> ((IClickable) iScreenAddon).handleClick(this, x, y, mouseX, mouseY, mouseButton));
+            .filter(iScreenAddon -> iScreenAddon instanceof IClickable && iScreenAddon.isInside(this, mouseX - x, mouseY - y))
+            .forEach(iScreenAddon -> ((IClickable) iScreenAddon).handleClick(this, x, y, mouseX, mouseY, mouseButton));
         return false;
     }
 
