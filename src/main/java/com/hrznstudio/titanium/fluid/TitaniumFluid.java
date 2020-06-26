@@ -12,7 +12,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.fluid.FlowingFluid;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.IFluidState;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tags.FluidTags;
@@ -88,7 +88,7 @@ public class TitaniumFluid extends FlowingFluid {
 
     @Override
     @ParametersAreNonnullByDefault
-    protected boolean canDisplace(IFluidState p_215665_1_, IBlockReader p_215665_2_, BlockPos p_215665_3_, Fluid p_215665_4_, Direction p_215665_5_) {
+    protected boolean canDisplace(FluidState p_215665_1_, IBlockReader p_215665_2_, BlockPos p_215665_3_, Fluid p_215665_4_, Direction p_215665_5_) {
         return p_215665_5_ == Direction.DOWN && !p_215665_4_.isIn(FluidTags.WATER);
     }
 
@@ -104,17 +104,17 @@ public class TitaniumFluid extends FlowingFluid {
 
     @Override
     @Nonnull
-    protected BlockState getBlockState(@Nonnull IFluidState state) {
+    protected BlockState getBlockState(@Nonnull FluidState state) {
         return blockFluid.getDefaultState().with(FlowingFluidBlock.LEVEL, getLevelFromState(state));
     }
 
     @Override
-    public boolean isSource(@Nonnull IFluidState state) {
+    public boolean isSource(@Nonnull FluidState state) {
         return false;
     }
 
     @Override
-    public int getLevel(@Nonnull IFluidState p_207192_1_) {
+    public int getLevel(@Nonnull FluidState p_207192_1_) {
         return 0;
     }
 
@@ -155,18 +155,18 @@ public class TitaniumFluid extends FlowingFluid {
         }
 
         @Override
-        protected void fillStateContainer(StateContainer.Builder<Fluid, IFluidState> builder) {
+        protected void fillStateContainer(StateContainer.Builder<Fluid, FluidState> builder) {
             super.fillStateContainer(builder);
             builder.add(LEVEL_1_8);
         }
 
         @Override
-        public int getLevel(@Nonnull IFluidState p_207192_1_) {
+        public int getLevel(@Nonnull FluidState p_207192_1_) {
             return p_207192_1_.get(LEVEL_1_8);
         }
 
         @Override
-        public boolean isSource(@Nonnull IFluidState state) {
+        public boolean isSource(@Nonnull FluidState state) {
             return false;
         }
     }
@@ -178,12 +178,12 @@ public class TitaniumFluid extends FlowingFluid {
         }
 
         @Override
-        public int getLevel(@Nonnull IFluidState p_207192_1_) {
+        public int getLevel(@Nonnull FluidState p_207192_1_) {
             return 8;
         }
 
         @Override
-        public boolean isSource(@Nonnull IFluidState state) {
+        public boolean isSource(@Nonnull FluidState state) {
             return true;
         }
     }

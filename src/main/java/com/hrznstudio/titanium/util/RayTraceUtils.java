@@ -13,8 +13,8 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -23,9 +23,9 @@ import java.util.List;
 public class RayTraceUtils {
 
     public static RayTraceResult rayTraceSimple(World world, LivingEntity living, double blockReachDistance, float partialTicks) {
-        Vec3d vec3d = living.getEyePosition(partialTicks);
-        Vec3d vec3d1 = living.getLook(partialTicks);
-        Vec3d vec3d2 = vec3d.add(vec3d1.x * blockReachDistance, vec3d1.y * blockReachDistance, vec3d1.z * blockReachDistance);
+        Vector3d Vector3d = living.getEyePosition(partialTicks);
+        Vector3d vec3d1 = living.getLook(partialTicks);
+        Vector3d vec3d2 = vec3d.add(vec3d1.x * blockReachDistance, vec3d1.y * blockReachDistance, vec3d1.z * blockReachDistance);
         return world.rayTraceBlocks(new RayTraceContext(vec3d, vec3d2, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, living));
     }
 
@@ -33,9 +33,9 @@ public class RayTraceUtils {
     public static VoxelShape rayTraceVoxelShape(BlockRayTraceResult original, World world, LivingEntity living, double blockReachDistance, float partialTicks) {
         BlockState og = world.getBlockState(original.getPos());
         if (og.getBlock() instanceof BasicBlock && ((BasicBlock) og.getBlock()).hasIndividualRenderVoxelShape()) {
-            Vec3d vec3d = living.getEyePosition(partialTicks);
-            Vec3d vec3d1 = living.getLook(partialTicks);
-            Vec3d vec3d2 = vec3d.add(vec3d1.x * blockReachDistance, vec3d1.y * blockReachDistance, vec3d1.z * blockReachDistance);
+            Vector3d Vector3d = living.getEyePosition(partialTicks);
+            Vector3d vec3d1 = living.getLook(partialTicks);
+            Vector3d vec3d2 = vec3d.add(vec3d1.x * blockReachDistance, vec3d1.y * blockReachDistance, vec3d1.z * blockReachDistance);
             List<VoxelShape> voxelShapes = ((BasicBlock) og.getBlock()).getBoundingBoxes(og, world, ((BlockRayTraceResult) original).getPos());
             VoxelShape closest = voxelShapes.get(0);
             double distance = Double.MAX_VALUE;

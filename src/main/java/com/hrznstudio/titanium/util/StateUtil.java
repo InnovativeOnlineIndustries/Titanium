@@ -7,20 +7,21 @@
 
 package com.hrznstudio.titanium.util;
 
-import net.minecraft.state.IProperty;
+
+import net.minecraft.state.Property;
 
 import java.util.Map;
 
 public class StateUtil {
-    public static String getPropertyString(Map<IProperty<?>, Comparable<?>> values, String... extrasArgs) {
+    public static String getPropertyString(Map<Property<?>, Comparable<?>> values, String... extrasArgs) {
         StringBuilder stringbuilder = new StringBuilder();
 
-        for (Map.Entry<IProperty<?>, Comparable<?>> entry : values.entrySet()) {
+        for (Map.Entry<Property<?>, Comparable<?>> entry : values.entrySet()) {
             if (stringbuilder.length() != 0) {
                 stringbuilder.append(",");
             }
 
-            IProperty<?> iproperty = entry.getKey();
+            Property<?> iproperty = entry.getKey();
             stringbuilder.append(iproperty.getName());
             stringbuilder.append("=");
             stringbuilder.append(getPropertyName(iproperty, entry.getValue()));
@@ -41,7 +42,7 @@ public class StateUtil {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T extends Comparable<T>> String getPropertyName(IProperty<T> property, Comparable<?> comparable) {
+    private static <T extends Comparable<T>> String getPropertyName(Property<T> property, Comparable<?> comparable) {
         return property.getName((T) comparable);
     }
 }

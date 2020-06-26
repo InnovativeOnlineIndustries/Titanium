@@ -27,11 +27,11 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -63,10 +63,10 @@ public abstract class BasicBlock extends Block implements IAlternativeEntries, I
     }
 
     @Nullable
-    protected static DistanceRayTraceResult rayTraceBox(BlockPos pos, Vec3d start, Vec3d end, VoxelShape shape) {
+    protected static DistanceRayTraceResult rayTraceBox(BlockPos pos, Vector3d start, Vector3d end, VoxelShape shape) {
         BlockRayTraceResult bbResult = shape.rayTrace(start, end, pos);
         if (bbResult != null) {
-            Vec3d hitVec = bbResult.getHitVec();
+            Vector3d hitVec = bbResult.getHitVec();
             Direction sideHit = bbResult.getFace();
             double dist = start.distanceTo(hitVec);
             return new DistanceRayTraceResult(hitVec, sideHit, pos, shape, dist);
@@ -82,7 +82,7 @@ public abstract class BasicBlock extends Block implements IAlternativeEntries, I
 
     @Nullable
     @Override
-    public RayTraceResult getRayTraceResult(BlockState state, World world, BlockPos pos, Vec3d start, Vec3d end, RayTraceResult original) {
+    public RayTraceResult getRayTraceResult(BlockState state, World world, BlockPos pos, Vector3d start, Vector3d end, RayTraceResult original) {
         if (hasCustomBoxes(state, world, pos)) {
             return rayTraceBoxesClosest(start, end, pos, getBoundingBoxes(state, world, pos));
         }
@@ -131,7 +131,7 @@ public abstract class BasicBlock extends Block implements IAlternativeEntries, I
     }
 
     @Nullable
-    protected RayTraceResult rayTraceBoxesClosest(Vec3d start, Vec3d end, BlockPos pos, List<VoxelShape> boxes) {
+    protected RayTraceResult rayTraceBoxesClosest(Vector3d start, Vector3d end, BlockPos pos, List<VoxelShape> boxes) {
         List<DistanceRayTraceResult> results = new ArrayList<>();
         for (VoxelShape box : boxes) {
             DistanceRayTraceResult hit = rayTraceBox(pos, start, end, box);

@@ -15,9 +15,8 @@ import net.minecraft.network.play.server.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.DimensionType;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fml.hooks.BasicEventHooks;
 
@@ -32,7 +31,7 @@ public class TeleportationUtils {
         }
 
         MinecraftServer server = entity.getServer();
-        DimensionType sourceDim = entity.world.getDimension().getType();
+        DimensionType sourceDim = entity.world.func_230315_m_();//getDimensionType
 
         if (!entity.isBeingRidden() && !entity.isPassenger()) {
             return handleEntityTeleport(entity, server, sourceDim, dimension, xCoord, yCoord, zCoord, yaw, pitch);

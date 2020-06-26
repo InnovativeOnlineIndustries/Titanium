@@ -22,7 +22,7 @@ import net.minecraft.command.arguments.ResourceLocationArgument;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.DimensionType;
 import net.minecraftforge.fml.network.NetworkDirection;
 
 import java.util.ArrayList;

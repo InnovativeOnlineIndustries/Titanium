@@ -10,13 +10,13 @@ package com.hrznstudio.titanium.api.raytrace;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.vector.Vector3d;
 
 public class DistanceRayTraceResult extends RayTraceResult {
     private double distance;
 
-    public DistanceRayTraceResult(Vec3d hitVecIn, Direction sideHitIn, BlockPos blockPosIn, VoxelShape box, double distance) {
+    public DistanceRayTraceResult(Vector3d hitVecIn, Direction sideHitIn, BlockPos blockPosIn, VoxelShape box, double distance) {
         super(hitVecIn);
         this.hitInfo = box;
         this.distance = distance;

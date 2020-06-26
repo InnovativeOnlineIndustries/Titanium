@@ -9,7 +9,7 @@ package com.hrznstudio.titanium.api.raytrace;
 
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 public class IndexedAxisAlignedBB extends AxisAlignedBB {
     private int index = 0;
@@ -27,7 +27,7 @@ public class IndexedAxisAlignedBB extends AxisAlignedBB {
         super(pos1, pos2);
     }
 
-    public IndexedAxisAlignedBB(Vec3d min, Vec3d max) {
+    public IndexedAxisAlignedBB(Vector3d min, Vector3d max) {
         super(min, max);
     }
 
