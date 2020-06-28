@@ -9,7 +9,6 @@ package com.hrznstudio.titanium.recipe.generator;
 
 import net.minecraft.advancements.criterion.InventoryChangeTrigger;
 import net.minecraft.advancements.criterion.ItemPredicate;
-import net.minecraft.advancements.criterion.MinMaxBounds;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.data.ShapedRecipeBuilder;
 import net.minecraft.item.crafting.Ingredient;
@@ -62,7 +61,7 @@ public class TitaniumShapedRecipeBuilder extends ShapedRecipeBuilder implements 
     public ShapedRecipeBuilder key(Character symbol, Ingredient ingredientIn) {
         if (!this.criterion) {
             this.criterion = true;
-            addCriterion("has_item", new InventoryChangeTrigger.Instance(MinMaxBounds.IntBound.UNBOUNDED, MinMaxBounds.IntBound.UNBOUNDED, MinMaxBounds.IntBound.UNBOUNDED, new ItemPredicate[]{ItemPredicate.Builder.create().item(ingredientIn.getMatchingStacks()[0].getItem()).build()}));
+            addCriterion("has_item", InventoryChangeTrigger.Instance.forItems(ItemPredicate.Builder.create().item(ingredientIn.getMatchingStacks()[0].getItem()).build()));
         }
         return super.key(symbol, ingredientIn);
     }

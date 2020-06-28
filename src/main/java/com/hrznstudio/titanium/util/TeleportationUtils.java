@@ -16,9 +16,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.storage.IWorldInfo;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fml.hooks.BasicEventHooks;
 
@@ -27,13 +27,13 @@ import java.util.LinkedList;
 public class TeleportationUtils {
 
 
-    public static Entity teleportEntity(Entity entity, DimensionType dimension, double xCoord, double yCoord, double zCoord, float yaw, float pitch) {
+    public static Entity teleportEntity(Entity entity, RegistryKey<World> dimension, double xCoord, double yCoord, double zCoord, float yaw, float pitch) {
         if (entity == null || entity.world.isRemote) {
             return entity;
         }
 
         MinecraftServer server = entity.getServer();
-        DimensionType sourceDim = entity.world.func_230315_m_();//getDimensionType
+        RegistryKey<World> sourceDim = entity.world.func_234923_W_();//getDimensionType
 
         if (!entity.isBeingRidden() && !entity.isPassenger()) {
             return handleEntityTeleport(entity, server, sourceDim, dimension, xCoord, yCoord, zCoord, yaw, pitch);
@@ -55,7 +55,7 @@ public class TeleportationUtils {
     /**
      * Convenience method that does not require pitch and yaw.
      */
-    public static Entity teleportEntity(Entity entity, DimensionType dimension, double xCoord, double yCoord, double zCoord) {
+    public static Entity teleportEntity(Entity entity, RegistryKey<World> dimension, double xCoord, double yCoord, double zCoord) {
         return teleportEntity(entity, dimension, xCoord, yCoord, zCoord, entity.rotationYaw, entity.rotationPitch);
     }
 
@@ -93,7 +93,7 @@ public class TeleportationUtils {
         return entity;
     }
 
-    private static Entity teleportEntityInterdimentional(Entity entity, MinecraftServer server, DimensionType sourceDim, DimensionType targetDim, double xCoord, double yCoord, double zCoord, float yaw, float pitch) {
+    private static Entity teleportEntityInterdimentional(Entity entity, MinecraftServer server, RegistryKey<World> sourceDim, RegistryKey<World> targetDim, double xCoord, double yCoord, double zCoord, float yaw, float pitch) {
         if (!entity.isAlive()) {
             return null;
         }
@@ -104,11 +104,11 @@ public class TeleportationUtils {
         //Set the entity dead before calling changeDimension. Still need to call changeDimension for things like minecarts which will drop their contents otherwise.
         if (entity.isAlive() && entity instanceof MinecartEntity) {
             entity.removed = true;
-            entity.changeDimension(targetDim);
+            entity.func_241206_a_(targetWorld);
             entity.removed = false;
         }
 
-        entity.dimension = targetDim;
+        entity.world = targetWorld;
 
         sourceWorld.removeEntity(entity);
         entity.removed = false;
@@ -139,11 +139,11 @@ public class TeleportationUtils {
     private static PlayerEntity teleportPlayerInterdimentional(ServerPlayerEntity player, MinecraftServer server, RegistryKey<World> sourceDim, RegistryKey<World> destination, double xCoord, double yCoord, double zCoord, float yaw, float pitch) {
         ServerWorld sourceWorld = server.getWorld(sourceDim);
         ServerWorld destinationWorld = server.getWorld(destination);
-        WorldInfo sourceInfo = sourceWorld.getWorldInfo();
+        IWorldInfo sourceInfo = sourceWorld.getWorldInfo();
         PlayerList playerList = server.getPlayerList();
 
-        player.dimension = destination;
-        player.connection.sendPacket(new SRespawnPacket(destination,0, sourceInfo.getGenerator(), player.interactionManager.getGameType()));
+        player.world = destinationWorld;
+        //player.connection.sendPacket(new SRespawnPacket(destination,0, sourceInfo.getGenerator(), player.interactionManager.getGameType()));
         player.connection.sendPacket(new SServerDifficultyPacket(sourceInfo.getDifficulty(), sourceInfo.isDifficultyLocked()));
         playerList.updatePermissionLevel(player);
         sourceWorld.removeEntity(player, true);

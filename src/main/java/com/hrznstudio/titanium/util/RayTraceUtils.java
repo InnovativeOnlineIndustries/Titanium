@@ -23,7 +23,7 @@ import java.util.List;
 public class RayTraceUtils {
 
     public static RayTraceResult rayTraceSimple(World world, LivingEntity living, double blockReachDistance, float partialTicks) {
-        Vector3d Vector3d = living.getEyePosition(partialTicks);
+        Vector3d vec3d = living.getEyePosition(partialTicks);
         Vector3d vec3d1 = living.getLook(partialTicks);
         Vector3d vec3d2 = vec3d.add(vec3d1.x * blockReachDistance, vec3d1.y * blockReachDistance, vec3d1.z * blockReachDistance);
         return world.rayTraceBlocks(new RayTraceContext(vec3d, vec3d2, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, living));
@@ -33,7 +33,7 @@ public class RayTraceUtils {
     public static VoxelShape rayTraceVoxelShape(BlockRayTraceResult original, World world, LivingEntity living, double blockReachDistance, float partialTicks) {
         BlockState og = world.getBlockState(original.getPos());
         if (og.getBlock() instanceof BasicBlock && ((BasicBlock) og.getBlock()).hasIndividualRenderVoxelShape()) {
-            Vector3d Vector3d = living.getEyePosition(partialTicks);
+            Vector3d vec3d = living.getEyePosition(partialTicks);
             Vector3d vec3d1 = living.getLook(partialTicks);
             Vector3d vec3d2 = vec3d.add(vec3d1.x * blockReachDistance, vec3d1.y * blockReachDistance, vec3d1.z * blockReachDistance);
             List<VoxelShape> voxelShapes = ((BasicBlock) og.getBlock()).getBoundingBoxes(og, world, ((BlockRayTraceResult) original).getPos());

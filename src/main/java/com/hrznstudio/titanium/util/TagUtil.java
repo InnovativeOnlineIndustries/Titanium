@@ -20,8 +20,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class TagUtil {
+
     public static <T> boolean hasTag(T type, Tag<T> tag) {
-        return tag.contains(type);
+        return tag.func_230235_a_(type); //contains
     }
 
     public static TagCollection<Block> getAllBlockTags(World world) {
@@ -40,15 +41,15 @@ public class TagUtil {
         if (tags.length == 0)
             return Collections.emptyList();
         if (tags.length == 1)
-            return tags[0].getAllElements();
+            return tags[0].func_230236_b_(); //getAllElements
         List<T> list = new ArrayList<>();
         for (Tag<T> tag : tags) {
-            list.addAll(tag.getAllElements());
+            list.addAll(tag.func_230236_b_()); //getAllElements
         }
         return list;
     }
 
     public static <T> Collection<T> getAllEntries(Tag<T> tag) {
-        return tag.getAllElements();
-    }
+        return tag.func_230236_b_();
+    } //getAllElements
 }

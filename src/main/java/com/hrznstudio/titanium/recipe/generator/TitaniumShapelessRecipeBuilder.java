@@ -9,7 +9,6 @@ package com.hrznstudio.titanium.recipe.generator;
 
 import net.minecraft.advancements.criterion.InventoryChangeTrigger;
 import net.minecraft.advancements.criterion.ItemPredicate;
-import net.minecraft.advancements.criterion.MinMaxBounds;
 import net.minecraft.data.ShapelessRecipeBuilder;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.IItemProvider;
@@ -35,7 +34,7 @@ public class TitaniumShapelessRecipeBuilder extends ShapelessRecipeBuilder {
     public ShapelessRecipeBuilder addIngredient(Ingredient ingredientIn, int quantity) {
         if (!this.criterion) {
             this.criterion = true;
-            addCriterion("has_item", new InventoryChangeTrigger.Instance(MinMaxBounds.IntBound.UNBOUNDED, MinMaxBounds.IntBound.UNBOUNDED, MinMaxBounds.IntBound.UNBOUNDED, new ItemPredicate[]{ItemPredicate.Builder.create().item(ingredientIn.getMatchingStacks()[0].getItem()).build()}));
+            addCriterion("has_item", InventoryChangeTrigger.Instance.forItems(ItemPredicate.Builder.create().item(ingredientIn.getMatchingStacks()[0].getItem()).build()));
         }
         return super.addIngredient(ingredientIn, quantity);
     }
