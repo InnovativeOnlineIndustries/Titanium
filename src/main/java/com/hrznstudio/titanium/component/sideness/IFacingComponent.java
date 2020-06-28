@@ -60,7 +60,7 @@ public interface IFacingComponent {
         }
 
         public StateButtonInfo getInfo() {
-            return new StateButtonInfo(index, assetType, this.name().toLowerCase());
+            return new StateButtonInfo(index, assetType, "tooltip.titanium.facing_handler." + this.name().toLowerCase());
         }
 
         public int getIndex() {
