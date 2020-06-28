@@ -82,8 +82,7 @@ public class BasicContainerScreen<T extends Container> extends ContainerScreen<T
         RenderSystem.color4f(1, 1, 1, 1);
         getMinecraft().getTextureManager().bindTexture(IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND).getResourceLocation());
         func_238474_b_(stack, xCenter, yCenter, 0, 0, xSize, ySize);
-        String name = TextFormatting.GRAY + title.getUnformattedComponentText();
-        Minecraft.getInstance().fontRenderer.func_238421_b_(stack, name, xCenter + xSize / 2 - Minecraft.getInstance().fontRenderer.getStringWidth(name) / 2, yCenter + 6, 0xFFFFFF);
+        Minecraft.getInstance().fontRenderer.func_238422_b_(stack, title, xCenter + xSize / 2 - Minecraft.getInstance().fontRenderer.getStringWidth(title.getString()) / 2, yCenter + 6, 0xFFFFFF);
         this.checkForMouseDrag(mouseX, mouseY);
         addons.forEach(iGuiAddon -> {
             if (iGuiAddon instanceof AssetScreenAddon) {
