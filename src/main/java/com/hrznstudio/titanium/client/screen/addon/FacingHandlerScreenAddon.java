@@ -36,6 +36,7 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextProperties;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 
 import java.awt.*;
@@ -194,13 +195,13 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon implements IClick
                         }
 
                         @Override
-                        public List<String> getTooltipLines() {
-                            List<String> strings = new ArrayList<>();
+                        public List<ITextProperties> getTooltipLines() {
+                            List<ITextProperties> strings = new ArrayList<>();
                             IFacingComponent.FaceMode mode = IFacingComponent.FaceMode.values()[getState()];
-                            strings.add(TextFormatting.GOLD + LangUtil.get("tooltip.titanium.facing_handler.direction") +
-                                    TextFormatting.RESET + LangUtil.get("tooltip.titanium.facing_handler." + facing.name().toLowerCase()) + TextFormatting.GRAY + " [" + LangUtil.get("direction.titanium." + FacingUtil.getFacingFromSide(blockDirection, facing)) + "]");
-                            strings.add(TextFormatting.GOLD + LangUtil.get("tooltip.titanium.facing_handler.action") +
-                                    mode.getColor() + LangUtil.get("tooltip.titanium.facing_handler." + getStateInfo().getTooltip()[0]));
+                            strings.add(new StringTextComponent(TextFormatting.GOLD + LangUtil.getString("tooltip.titanium.facing_handler.direction") +
+                                TextFormatting.RESET + LangUtil.getString("tooltip.titanium.facing_handler." + facing.name().toLowerCase()) + TextFormatting.GRAY + " [" + LangUtil.getString("direction.titanium." + FacingUtil.getFacingFromSide(blockDirection, facing)) + "]"));
+                            strings.add(new StringTextComponent(TextFormatting.GOLD + LangUtil.getString("tooltip.titanium.facing_handler.action") +
+                                mode.getColor() + LangUtil.getString("tooltip.titanium.facing_handler." + getStateInfo().getTooltip()[0])));
                             return strings;
                         }
                     };

@@ -14,6 +14,7 @@ import com.hrznstudio.titanium.util.AssetUtil;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.text.ITextProperties;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.energy.IEnergyStorage;
 
@@ -49,8 +50,8 @@ public class EnergyBarScreenAddon extends BasicScreenAddon {
         screen.func_238474_b_(stack, handlerPosX + offset.x, handlerPosY + offset.y + area.height - powerOffset, area.x, area.y + (area.height - powerOffset), area.width, powerOffset);
     }
 
-    public static List<String> getTooltip(int stored, int capacity) {
-        return Arrays.asList(TextFormatting.GOLD + "Power:", new DecimalFormat().format(stored) + TextFormatting.GOLD + "/" + TextFormatting.WHITE + new DecimalFormat().format(capacity) + TextFormatting.DARK_AQUA + " FE");
+    public static List<ITextProperties> getTooltip(int stored, int capacity) {
+        return Arrays.asList(new StringTextComponent(TextFormatting.GOLD + "Power:"), new StringTextComponent(new DecimalFormat().format(stored) + TextFormatting.GOLD + "/" + TextFormatting.WHITE + new DecimalFormat().format(capacity) + TextFormatting.DARK_AQUA + " FE"));
     }
 
     @Override

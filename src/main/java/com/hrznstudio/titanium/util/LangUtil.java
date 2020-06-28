@@ -11,7 +11,12 @@ import net.minecraft.util.text.TranslationTextComponent;
 
 public class LangUtil {
 
-    public static String get(String string, Object... args) {
+    public static TranslationTextComponent get(String string, Object... args) {
+        return new TranslationTextComponent(string, args);
+    }
+
+    public static String getString(String string, Object... args) {
         return new TranslationTextComponent(string, args).getUnformattedComponentText();
     }
+
 }
