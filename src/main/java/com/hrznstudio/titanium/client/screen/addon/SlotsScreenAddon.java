@@ -46,6 +46,19 @@ public class SlotsScreenAddon<T extends IComponentHarness> extends BasicScreenAd
         IAsset slot = IAssetProvider.getAsset(provider, AssetTypes.SLOT);
         Rectangle area = slot.getArea();
         screen.getMinecraft().getTextureManager().bindTexture(slot.getResourceLocation());
+        //Draw background
+        if (drawColor) {
+            for (int slotID = 0; slotID < slots; slotID++) {
+                int posX = positionFunction.apply(slotID).getLeft();
+                int posY = positionFunction.apply(slotID).getRight();
+                Color colored = slotToColorRenderMap.apply(slotID);
+                if (colored != null) {
+                    AbstractGui.func_238467_a_(stack, guiX + handlerPosX + posX - 2, guiY + handlerPosY + posY - 2,
+                        guiX + handlerPosX + posX + area.width, guiY + handlerPosY + posY + area.height, colored.getRGB());
+                    RenderSystem.color4f(1, 1, 1, 1f);
+                }
+            }
+        }
         //Draw slot
         for (int slotID = 0; slotID < slots; slotID++) {
             int posX = positionFunction.apply(slotID).getLeft();
@@ -55,19 +68,6 @@ public class SlotsScreenAddon<T extends IComponentHarness> extends BasicScreenAd
             ItemStack stack1 = slotToStackRenderMap.apply(slotID);
             screen.getMinecraft().getItemRenderer().renderItemIntoGUI(stack1, handlerPosX + posX + guiX, handlerPosY + posY + guiY);
             RenderSystem.disableDepthTest();
-        }
-        //Draw background
-        if (drawColor) {
-            for (int slotID = 0; slotID < slots; slotID++) {
-                int posX = positionFunction.apply(slotID).getLeft();
-                int posY = positionFunction.apply(slotID).getRight();
-                Color colored = slotToColorRenderMap.apply(slotID);
-                if (colored !=  null) {
-                    AbstractGui.func_238467_a_(stack, guiX + handlerPosX + posX - 2, guiY + handlerPosY + posY - 2,
-                        guiX + handlerPosX + posX + area.width, guiY + handlerPosY + posY + area.height, new Color(colored.getRed(), colored.getGreen(), colored.getBlue(), 256/4).getRGB());
-                    RenderSystem.color4f(1, 1, 1, 1f);
-                }
-            }
         }
         //Draw overlay
         if (drawColor) {
