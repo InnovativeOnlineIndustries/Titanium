@@ -46,7 +46,7 @@ public interface IScreenAddon {
      *
      * @return A list of strings
      */
-    default List<ITextProperties> getTooltipLines() {
+    default List<? extends ITextProperties> getTooltipLines() {
         return Collections.emptyList();
     }
 
