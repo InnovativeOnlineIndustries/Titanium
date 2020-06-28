@@ -17,6 +17,7 @@ import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.BiomeManager;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.IWorldInfo;
 import net.minecraftforge.common.ForgeHooks;
@@ -143,7 +144,7 @@ public class TeleportationUtils {
         PlayerList playerList = server.getPlayerList();
 
         player.world = destinationWorld;
-        //player.connection.sendPacket(new SRespawnPacket(destination,0, sourceInfo.getGenerator(), player.interactionManager.getGameType()));
+        player.connection.sendPacket(new SRespawnPacket(destinationWorld.func_234922_V_(), destinationWorld.func_234923_W_(), BiomeManager.func_235200_a_(destinationWorld.getSeed()), player.interactionManager.getGameType(), player.interactionManager.func_241815_c_(), destinationWorld.func_234925_Z_(), destinationWorld.func_241109_A_(), true));
         player.connection.sendPacket(new SServerDifficultyPacket(sourceInfo.getDifficulty(), sourceInfo.isDifficultyLocked()));
         playerList.updatePermissionLevel(player);
         sourceWorld.removeEntity(player, true);
