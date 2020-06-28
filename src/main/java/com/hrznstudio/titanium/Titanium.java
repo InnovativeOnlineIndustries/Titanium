@@ -50,6 +50,7 @@ import net.minecraft.item.crafting.RecipeManager;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.DrawHighlightEvent;
@@ -182,7 +183,7 @@ public class Titanium extends ModuleController {
 
     private void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         event.getPlayer().getServer().execute(() -> {
-            RewardWorldStorage storage = RewardWorldStorage.get(event.getPlayer().getServer().getWorld(DimensionType.OVERWORLD));
+            RewardWorldStorage storage = RewardWorldStorage.get(event.getPlayer().getServer().getWorld(World.field_234918_g_));
             if (!storage.getConfiguredPlayers().contains(event.getPlayer().getUniqueID())) {
                 for (ResourceLocation collectRewardsResourceLocation : RewardManager.get().collectRewardsResourceLocations(event.getPlayer().getUniqueID())) {
                     Reward reward = RewardManager.get().getReward(collectRewardsResourceLocation);

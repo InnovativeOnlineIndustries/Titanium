@@ -74,11 +74,13 @@ public abstract class BasicBlock extends Block implements IAlternativeEntries, I
         return null;
     }
 
-    @Override
-    @SuppressWarnings("deprecation")
-    public float getBlockHardness(BlockState blockState, IBlockReader worldIn, BlockPos pos) {
-        return 1.5F;
-    }
+    // TODO: getBlockHardness is moved to BlockState, couldn't find an answer on how to adress this.
+//    @Override
+//    @SuppressWarnings("deprecation")
+//    public float getBlockHardness(BlockState blockState, IBlockReader worldIn, BlockPos pos) {
+//        return 1.5F;
+//    }
+
 
     @Nullable
     @Override

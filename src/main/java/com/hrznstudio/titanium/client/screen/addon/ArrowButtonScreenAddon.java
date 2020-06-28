@@ -14,6 +14,7 @@ import com.hrznstudio.titanium.component.button.ArrowButtonComponent;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.util.AssetUtil;
 import com.hrznstudio.titanium.util.FacingUtil;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.screen.Screen;
 
 public class ArrowButtonScreenAddon extends BasicButtonAddon {
@@ -37,15 +38,13 @@ public class ArrowButtonScreenAddon extends BasicButtonAddon {
     }
 
     @Override
-    public void drawBackgroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackgroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         asset = provider.getAsset(getAssetFromSideness(button.getDirection()));
-        AssetUtil.drawAsset(screen, asset, guiX + getPosX(), guiY + getPosY());
+        AssetUtil.drawAsset(stack, screen, asset, guiX + getPosX(), guiY + getPosY());
     }
 
     @Override
-    public void drawForegroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
-
-    }
+    public void drawForegroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {}
 
     public IAssetType<IAsset> getAssetFromSideness(FacingUtil.Sideness sideness) {
         switch (sideness) {

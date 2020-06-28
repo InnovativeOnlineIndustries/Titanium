@@ -8,7 +8,9 @@
 package com.hrznstudio.titanium.api.client;
 
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.text.ITextProperties;
 
 import java.util.Collections;
 import java.util.List;
@@ -25,7 +27,7 @@ public interface IScreenAddon {
      * @param mouseY       The current mouse Y
      * @param partialTicks Partial ticks
      */
-    void drawBackgroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks);
+    void drawBackgroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks);
 
     /**
      * Draws the component in the foreground layer
@@ -37,14 +39,14 @@ public interface IScreenAddon {
      * @param mouseX   The current mouse X
      * @param mouseY   The current mouse Y
      */
-    void drawForegroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY);
+    void drawForegroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY);
 
     /**
      * A list of strings that will be drawn as a tooltip when `isInside` returns true
      *
      * @return A list of strings
      */
-    default List<String> getTooltipLines() {
+    default List<ITextProperties> getTooltipLines() {
         return Collections.emptyList();
     }
 

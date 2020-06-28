@@ -10,7 +10,10 @@ package com.hrznstudio.titanium.client.screen.addon;
 import com.hrznstudio.titanium.component.IComponentHarness;
 import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.ITextProperties;
 import net.minecraft.util.text.TextFormatting;
 
 import java.text.DecimalFormat;
@@ -38,24 +41,21 @@ public class ProgressBarScreenAddon<T extends IComponentHarness> extends BasicSc
     }
 
     @Override
-    public void drawBackgroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackgroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         this.provider = provider;
-        progressBar.getBarDirection().render(screen, guiX, guiY, provider, this);
+        progressBar.getBarDirection().render(stack, screen, guiX, guiY, provider, this);
     }
 
     @Override
-    public void drawForegroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
-
-
-    }
+    public void drawForegroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {}
 
     public ProgressBarComponent<T> getProgressBar() {
         return progressBar;
     }
 
     @Override
-    public List<String> getTooltipLines() {
-        List<String> tooltip = new ArrayList<>();
+    public List<ITextProperties> getTooltipLines() {
+        List<ITextProperties> tooltip = new ArrayList<>();
         tooltip.add(TextFormatting.GOLD + "Progress: " + TextFormatting.WHITE + new DecimalFormat().format(progressBar.getProgress()) + TextFormatting.GOLD + "/" + TextFormatting.WHITE + new DecimalFormat().format(progressBar.getMaxProgress()));
         int progress = (progressBar.getMaxProgress() - progressBar.getProgress()) / progressBar.getProgressIncrease();
         if (!progressBar.getIncreaseType()) progress = progressBar.getMaxProgress() - progress;

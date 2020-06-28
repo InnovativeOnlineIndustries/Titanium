@@ -27,6 +27,7 @@ import com.hrznstudio.titanium.network.messages.ButtonClickNetworkMessage;
 import com.hrznstudio.titanium.util.AssetUtil;
 import com.hrznstudio.titanium.util.FacingUtil;
 import com.hrznstudio.titanium.util.LangUtil;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.IHasContainer;
@@ -34,6 +35,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
+import net.minecraft.util.text.ITextProperties;
 import net.minecraft.util.text.TextFormatting;
 
 import java.awt.*;
@@ -88,37 +90,37 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon implements IClick
     }
 
     @Override
-    public void drawBackgroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackgroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         IBackgroundAsset backgroundInfo = provider.getAsset(AssetTypes.BACKGROUND);
         inventoryPoint = backgroundInfo.getInventoryPosition();
         this.xSize = provider.getAsset(AssetTypes.BUTTON_SIDENESS_MANAGER).getArea().width;
         this.ySize = provider.getAsset(AssetTypes.BUTTON_SIDENESS_MANAGER).getArea().height;
         RenderSystem.color4f(1, 1, 1, 1);
-        AssetUtil.drawAsset(screen, provider.getAsset(AssetTypes.BUTTON_SIDENESS_MANAGER), guiX + getPosX(), guiY + getPosY());
+        AssetUtil.drawAsset(stack, screen, provider.getAsset(AssetTypes.BUTTON_SIDENESS_MANAGER), guiX + getPosX(), guiY + getPosY());
         int offset = 2;
-        AbstractGui.fill(guiX + getPosX() + offset, guiY + getPosY() + offset, guiX + getPosX() + getXSize() - offset, guiY + getPosY() + getYSize() - offset, handler.getColor());
+        AbstractGui.func_238467_a_(stack,guiX + getPosX() + offset, guiY + getPosY() + offset, guiX + getPosX() + getXSize() - offset, guiY + getPosY() + getYSize() - offset, handler.getColor());
         RenderSystem.color4f(1, 1, 1, 1);
         if (isClicked()) {
             //draw the overlay for the slots
-            screen.blit(guiX + backgroundInfo.getInventoryPosition().x - 1, guiY + backgroundInfo.getInventoryPosition().y - 1, 16, 213 + 18, 14, 14);
-            screen.blit(guiX + backgroundInfo.getInventoryPosition().x - 1, guiY + backgroundInfo.getInventoryPosition().y - 1, 56, 185, 162, 54);
+            screen.func_238474_b_(stack,guiX + backgroundInfo.getInventoryPosition().x - 1, guiY + backgroundInfo.getInventoryPosition().y - 1, 16, 213 + 18, 14, 14);
+            screen.func_238474_b_(stack,guiX + backgroundInfo.getInventoryPosition().x - 1, guiY + backgroundInfo.getInventoryPosition().y - 1, 56, 185, 162, 54);
         }
     }
 
     @Override
-    public void drawForegroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
+    public void drawForegroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
         if (isInside(screen, mouseX - guiX, mouseY - guiY) || isClicked()) {
             IAsset asset = provider.getAsset(assetType);
             Rectangle area = handler.getRectangle(asset);
-            AssetUtil.drawHorizontalLine(area.x, area.x + area.width, area.y, handler.getColor());
-            AssetUtil.drawHorizontalLine(area.x, area.x + area.width, area.y + area.height, handler.getColor());
-            AssetUtil.drawVerticalLine(area.x, area.y, area.y + area.height, handler.getColor());
-            AssetUtil.drawVerticalLine(area.x + area.width, area.y, area.y + area.height, handler.getColor());
+            AssetUtil.drawHorizontalLine(stack, area.x, area.x + area.width, area.y, handler.getColor());
+            AssetUtil.drawHorizontalLine(stack, area.x, area.x + area.width, area.y + area.height, handler.getColor());
+            AssetUtil.drawVerticalLine(stack, area.x, area.y, area.y + area.height, handler.getColor());
+            AssetUtil.drawVerticalLine(stack, area.x + area.width, area.y, area.y + area.height, handler.getColor());
         }
     }
 
     @Override
-    public List<String> getTooltipLines() {
+    public List<ITextProperties> getTooltipLines() {
         return Collections.singletonList(LangUtil.get("tooltip.titanium.facing_handler." + handler.getName().toLowerCase()));
     }
 

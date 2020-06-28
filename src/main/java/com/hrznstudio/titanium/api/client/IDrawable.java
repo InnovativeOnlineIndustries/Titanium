@@ -7,13 +7,14 @@
 
 package com.hrznstudio.titanium.api.client;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.screen.Screen;
 
 import java.awt.*;
 
 public interface IDrawable {
-    static IDrawable of(IAsset asset) {
-        return new DefaultDrawable(asset);
+    static IDrawable of(IAsset asset, MatrixStack matrixStack) {
+        return new DefaultDrawable(asset, matrixStack);
     }
 
     void draw(Screen gui, Point position, Point mousePosition);

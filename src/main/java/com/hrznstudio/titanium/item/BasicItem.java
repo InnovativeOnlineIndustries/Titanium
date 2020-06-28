@@ -50,7 +50,7 @@ public class BasicItem extends Item {
                 if (key.isDown()) {
                     addTooltipDetails(key, stack, tooltip, flagIn.isAdvanced());
                 } else {
-                    tooltip.add(new StringTextComponent("Hold " + TextFormatting.YELLOW + key.getName() + TextFormatting.GRAY + " for more information"));
+                    tooltip.add(new StringTextComponent("Hold " + TextFormatting.YELLOW + key.func_176610_l() + TextFormatting.GRAY + " for more information"));
                 }
             }
         }
@@ -98,9 +98,10 @@ public class BasicItem extends Item {
             return false;
         }
 
+        // getName
         @Override
         @Nonnull
-        public String getName() {
+        public String func_176610_l() {
             return StringUtils.capitalize(name.toLowerCase());
         }
     }

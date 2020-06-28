@@ -116,7 +116,7 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
     @Override
     @Nonnull
     public ITextComponent getDisplayName() {
-        return new TranslationTextComponent(getBasicTileBlock().getTranslationKey()).setStyle(new Style().setColor(TextFormatting.DARK_GRAY));
+        return new TranslationTextComponent(getBasicTileBlock().getTranslationKey()).func_230530_a_(Style.field_240709_b_.func_240712_a_(TextFormatting.DARK_GRAY));
     }
 
     /*
@@ -245,7 +245,7 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
     }
 
     public Direction getFacingDirection() {
-        return this.world.getBlockState(pos).has(RotatableBlock.FACING_ALL) ? this.world.getBlockState(pos).get(RotatableBlock.FACING_ALL) : (this.world.getBlockState(pos).has(RotatableBlock.FACING_HORIZONTAL) ? this.world.getBlockState(pos).get(RotatableBlock.FACING_HORIZONTAL) : Direction.NORTH);
+        return this.world.getBlockState(pos).func_235901_b_(RotatableBlock.FACING_ALL) ? this.world.getBlockState(pos).get(RotatableBlock.FACING_ALL) : (this.world.getBlockState(pos).func_235901_b_(RotatableBlock.FACING_HORIZONTAL) ? this.world.getBlockState(pos).get(RotatableBlock.FACING_HORIZONTAL) : Direction.NORTH);
     }
 
     @Override

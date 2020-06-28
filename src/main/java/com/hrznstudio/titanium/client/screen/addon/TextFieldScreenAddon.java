@@ -11,10 +11,12 @@ import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.util.AssetUtil;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.util.text.StringTextComponent;
 
 public class TextFieldScreenAddon extends BasicScreenAddon {
     private TextFieldWidget textFieldWidget;
@@ -22,25 +24,24 @@ public class TextFieldScreenAddon extends BasicScreenAddon {
     public TextFieldScreenAddon(int posX, int posY) {
         super(posX, posY);
         textFieldWidget = new TextFieldWidget(Minecraft.getInstance().fontRenderer, posX,
-                posY, 110, 16, "");
+                posY, 110, 16, new StringTextComponent(""));
     }
 
     @Override
-    public void drawBackgroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
-        AssetUtil.drawAsset(screen, this.getAsset(provider), this.getPosX() + guiX, this.getPosY() + guiY);
-        textFieldWidget.render(mouseX, mouseY, partialTicks);
+    public void drawBackgroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+        AssetUtil.drawAsset(stack, screen, this.getAsset(provider), this.getPosX() + guiX, this.getPosY() + guiY);
+        // render
+        textFieldWidget.func_230431_b_(stack, mouseX, mouseY, partialTicks);
     }
 
     @Override
-    public void drawForegroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
-
-    }
+    public void drawForegroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {}
 
     @Override
     public void init(int guiX, int guiY) {
         String storage = textFieldWidget.getText();
         textFieldWidget = new TextFieldWidget(Minecraft.getInstance().fontRenderer, guiX + this.getPosX() + 3,
-                guiY + this.getPosY() + 4, 100, 16, "");
+                guiY + this.getPosY() + 4, 100, 16, new StringTextComponent(""));
         textFieldWidget.setEnableBackgroundDrawing(false);
         textFieldWidget.setText(storage);
     }
@@ -52,7 +53,7 @@ public class TextFieldScreenAddon extends BasicScreenAddon {
 
     @Override
     public int getXSize() {
-        return textFieldWidget.getWidth();
+        return textFieldWidget.getAdjustedWidth();
     }
 
     @Override
@@ -61,16 +62,17 @@ public class TextFieldScreenAddon extends BasicScreenAddon {
     }
 
     public void setActive(boolean active) {
-        textFieldWidget.active = active;
+        textFieldWidget.setEnabled(active);
     }
 
     @Override
     public boolean keyPressed(int key, int scan, int modifiers) {
-        return textFieldWidget.keyPressed(key, scan, modifiers) || textFieldWidget.canWrite();
+        // keypressed
+        return textFieldWidget.func_231046_a_(key, scan, modifiers) || textFieldWidget.canWrite();
     }
 
     private IAsset getAsset(IAssetProvider assetProvider) {
-        return textFieldWidget.active ? assetProvider.getAsset(AssetTypes.TEXT_FIELD_ACTIVE) :
+        return textFieldWidget.isEnabled() ? assetProvider.getAsset(AssetTypes.TEXT_FIELD_ACTIVE) :
                 assetProvider.getAsset(AssetTypes.TEXT_FIELD_INACTIVE);
     }
 

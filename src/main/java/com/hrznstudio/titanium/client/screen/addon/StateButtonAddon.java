@@ -10,8 +10,10 @@ package com.hrznstudio.titanium.client.screen.addon;
 import com.hrznstudio.titanium.component.button.ButtonComponent;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.util.AssetUtil;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.text.ITextProperties;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,24 +30,24 @@ public abstract class StateButtonAddon extends BasicButtonAddon {
 
 
     @Override
-    public void drawBackgroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackgroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         StateButtonInfo buttonInfo = getStateInfo();
         if (buttonInfo != null) {
             RenderSystem.color4f(1, 1, 1, 1);
-            AssetUtil.drawAsset(screen, provider.getAsset(buttonInfo.getAsset()), this.getPosX() + guiX, this.getPosY() + guiY);
+            AssetUtil.drawAsset(stack, screen, provider.getAsset(buttonInfo.getAsset()), this.getPosX() + guiX, this.getPosY() + guiY);
         }
     }
 
     @Override
-    public void drawForegroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
+    public void drawForegroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
         StateButtonInfo buttonInfo = getStateInfo();
         if (buttonInfo != null && isInside(screen, mouseX, mouseY)) {
-            AssetUtil.drawSelectingOverlay(getPosX() + 1, getPosY() + 1, getPosX() + getXSize() - 1, getPosY() + getYSize() - 1);
+            AssetUtil.drawSelectingOverlay(stack,getPosX() + 1, getPosY() + 1, getPosX() + getXSize() - 1, getPosY() + getYSize() - 1);
         }
     }
 
     @Override
-    public List<String> getTooltipLines() {
+    public List<ITextProperties> getTooltipLines() {
         StateButtonInfo buttonInfo = getStateInfo();
         if (buttonInfo != null) {
             return Arrays.asList(buttonInfo.getTooltip());

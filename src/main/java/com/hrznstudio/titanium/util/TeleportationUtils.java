@@ -14,8 +14,10 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.play.server.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerList;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.DimensionType;
+import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fml.hooks.BasicEventHooks;
@@ -60,7 +62,7 @@ public class TeleportationUtils {
     /**
      * This is the base teleport method that figures out how to handle the teleport and makes it happen!
      */
-    private static Entity handleEntityTeleport(Entity entity, MinecraftServer server, DimensionType sourceDim, DimensionType targetDim, double xCoord, double yCoord, double zCoord, float yaw, float pitch) {
+    private static Entity handleEntityTeleport(Entity entity, MinecraftServer server, RegistryKey<World> sourceDim, RegistryKey<World> targetDim, double xCoord, double yCoord, double zCoord, float yaw, float pitch) {
         if (entity == null || entity.world.isRemote) {
             return entity;
         }
@@ -134,7 +136,7 @@ public class TeleportationUtils {
     /**
      * This is the black magic responsible for teleporting players between dimensions!
      */
-    private static PlayerEntity teleportPlayerInterdimentional(ServerPlayerEntity player, MinecraftServer server, DimensionType sourceDim, DimensionType destination, double xCoord, double yCoord, double zCoord, float yaw, float pitch) {
+    private static PlayerEntity teleportPlayerInterdimentional(ServerPlayerEntity player, MinecraftServer server, RegistryKey<World> sourceDim, RegistryKey<World> destination, double xCoord, double yCoord, double zCoord, float yaw, float pitch) {
         ServerWorld sourceWorld = server.getWorld(sourceDim);
         ServerWorld destinationWorld = server.getWorld(destination);
         WorldInfo sourceInfo = sourceWorld.getWorldInfo();
@@ -181,9 +183,9 @@ public class TeleportationUtils {
         public PassengerHelper(Entity entity) {
             this.entity = entity;
             if (entity.isPassenger()) {
-                offsetX = entity.getPosition().getX() - entity.getRidingEntity().getPosition().getX();
-                offsetY = entity.getPosition().getY() - entity.getRidingEntity().getPosition().getY();
-                offsetZ = entity.getPosition().getZ() - entity.getRidingEntity().getPosition().getZ();
+                offsetX = entity.getPosX() - entity.getRidingEntity().getPosX();
+                offsetY = entity.getPosY() - entity.getRidingEntity().getPosY();
+                offsetZ = entity.getPosZ() - entity.getRidingEntity().getPosZ();
             }
             for (Entity passenger : entity.getPassengers()) {
                 passengers.add(new PassengerHelper(passenger));
@@ -202,7 +204,7 @@ public class TeleportationUtils {
          * @param yaw       The target yaw.
          * @param pitch     The target pitch.
          */
-        public void teleport(MinecraftServer server, DimensionType sourceDim, DimensionType targetDim, double xCoord, double yCoord, double zCoord, float yaw, float pitch) {
+        public void teleport(MinecraftServer server, RegistryKey<World> sourceDim, RegistryKey<World> targetDim, double xCoord, double yCoord, double zCoord, float yaw, float pitch) {
             entity.removePassengers();
             entity = handleEntityTeleport(entity, server, sourceDim, targetDim, xCoord, yCoord, zCoord, yaw, pitch);
             for (PassengerHelper passenger : passengers) {
@@ -215,7 +217,7 @@ public class TeleportationUtils {
          */
         public void remountRiders() {
             if (entity.isPassenger()) {
-                entity.setLocationAndAngles(entity.getPosition().getX() + offsetX, entity.getPosition().getY() + offsetY, entity.getPosition().getZ()+ offsetZ, entity.rotationYaw, entity.rotationPitch);
+                entity.setLocationAndAngles(entity.getPosX() + offsetX, entity.getPosY() + offsetY, entity.getPosZ()+ offsetZ, entity.rotationYaw, entity.rotationPitch);
             }
             for (PassengerHelper passenger : passengers) {
                 passenger.entity.startRiding(entity, true);

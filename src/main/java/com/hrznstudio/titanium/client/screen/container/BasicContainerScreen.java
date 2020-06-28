@@ -15,6 +15,7 @@ import com.hrznstudio.titanium.client.screen.addon.AssetScreenAddon;
 import com.hrznstudio.titanium.client.screen.addon.interfaces.ICanMouseDrag;
 import com.hrznstudio.titanium.client.screen.addon.interfaces.IClickable;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
@@ -61,53 +62,61 @@ public class BasicContainerScreen<T extends Container> extends ContainerScreen<T
         this.addons = new ArrayList<>();
     }
 
+    // init
     @Override
-    protected void init() {
-        super.init();
+    protected void func_231160_c_() {
+        super.func_231160_c_();
         this.getAddons().forEach(screenAddon -> screenAddon.init(this.guiLeft, this.guiTop));
     }
 
+    // drawGuiContainerBackgroundLayer
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-        this.renderBackground();
-        xCenter = (width - xSize) / 2;
-        yCenter = (height - ySize) / 2;
+    protected void func_230450_a_(MatrixStack stack, float partialTicks, int mouseX, int mouseY) {
+        // renderBackground
+        this.func_230446_a_(stack);
+        // width
+        xCenter = (field_230708_k_ - xSize) / 2;
+        // height
+        yCenter = (field_230709_l_ - ySize) / 2;
         //BG RENDERING
         RenderSystem.color4f(1, 1, 1, 1);
         getMinecraft().getTextureManager().bindTexture(IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND).getResourceLocation());
-        blit(xCenter, yCenter, 0, 0, xSize, ySize);
-        String name = TextFormatting.GRAY + title.getFormattedText();
-        Minecraft.getInstance().fontRenderer.drawString(name, xCenter + xSize / 2 - Minecraft.getInstance().fontRenderer.getStringWidth(name) / 2, yCenter + 6, 0xFFFFFF);
+        func_238474_b_(stack, xCenter, yCenter, 0, 0, xSize, ySize);
+        String name = TextFormatting.GRAY + title.getUnformattedComponentText();
+        Minecraft.getInstance().fontRenderer.func_238421_b_(stack, name, xCenter + xSize / 2 - Minecraft.getInstance().fontRenderer.getStringWidth(name) / 2, yCenter + 6, 0xFFFFFF);
         this.checkForMouseDrag(mouseX, mouseY);
         addons.forEach(iGuiAddon -> {
             if (iGuiAddon instanceof AssetScreenAddon) {
                 AssetScreenAddon assetGuiAddon = (AssetScreenAddon) iGuiAddon;
                 if (assetGuiAddon.isBackground()) {
-                    iGuiAddon.drawBackgroundLayer(this, assetProvider, xCenter, yCenter, mouseX, mouseY, partialTicks);
+                    iGuiAddon.drawBackgroundLayer(stack, this, assetProvider, xCenter, yCenter, mouseX, mouseY, partialTicks);
                 }
             } else {
-                iGuiAddon.drawBackgroundLayer(this, assetProvider, xCenter, yCenter, mouseX, mouseY, partialTicks);
+                iGuiAddon.drawBackgroundLayer(stack, this, assetProvider, xCenter, yCenter, mouseX, mouseY, partialTicks);
             }
         });
     }
 
+    // drawGuiContainerForegroundLayer
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+    protected void func_230451_b_(MatrixStack stack, int mouseX, int mouseY) {
+        super.func_230451_b_(stack, mouseX, mouseY);
         addons.forEach(iGuiAddon -> {
             if (iGuiAddon instanceof AssetScreenAddon) {
                 AssetScreenAddon assetGuiAddon = (AssetScreenAddon) iGuiAddon;
                 if (assetGuiAddon.isBackground()) {
-                    iGuiAddon.drawForegroundLayer(this, assetProvider, xCenter, yCenter, mouseX, mouseY);
+                    iGuiAddon.drawForegroundLayer(stack, this, assetProvider, xCenter, yCenter, mouseX, mouseY);
                 }
             } else {
-                iGuiAddon.drawForegroundLayer(this, assetProvider, xCenter, yCenter, mouseX, mouseY);
+                iGuiAddon.drawForegroundLayer(stack, this, assetProvider, xCenter, yCenter, mouseX, mouseY);
             }
         });
-        renderHoveredToolTip(mouseX - xCenter, mouseY - yCenter);
+        // renderHoveredToolTip
+        func_230459_a_(stack, mouseX - xCenter, mouseY - yCenter);
         for (IScreenAddon iScreenAddon : addons) {
             if (iScreenAddon.isInside(this, mouseX - xCenter, mouseY - yCenter) && !iScreenAddon.getTooltipLines().isEmpty()) {
-                renderTooltip(iScreenAddon.getTooltipLines(), mouseX - xCenter, mouseY - yCenter);
+                // renderTooltip
+                func_238654_b_(stack, iScreenAddon.getTooltipLines(), mouseX - xCenter, mouseY - yCenter);
             }
         }
     }
@@ -124,19 +133,21 @@ public class BasicContainerScreen<T extends Container> extends ContainerScreen<T
         this.dragY = mouseY;
     }
 
+    // mouseClicked
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
-        super.mouseClicked(mouseX, mouseY, mouseButton);
+    public boolean func_231048_c_(double mouseX, double mouseY, int mouseButton) {
+        super.func_231048_c_(mouseX, mouseY, mouseButton);
         new ArrayList<>(addons).stream().filter(iGuiAddon -> iGuiAddon instanceof IClickable && iGuiAddon.isInside(this, mouseX - xCenter, mouseY - yCenter))
                 .forEach(iGuiAddon -> ((IClickable) iGuiAddon).handleClick(this, xCenter, yCenter, mouseX, mouseY, mouseButton));
         return false;
     }
 
+    // keyPressed
     @Override
-    public boolean keyPressed(int keyCode, int scan, int modifiers) {
+    public boolean func_231046_a_(int keyCode, int scan, int modifiers) {
         return this.getAddons().stream()
                 .anyMatch(screenAddon -> screenAddon.keyPressed(keyCode, scan, modifiers)) ||
-                super.keyPressed(keyCode, scan, modifiers);
+                super.func_231046_a_(keyCode, scan, modifiers);
     }
 
     public int getX() {

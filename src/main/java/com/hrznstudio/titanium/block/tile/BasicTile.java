@@ -10,6 +10,7 @@ package com.hrznstudio.titanium.block.tile;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.nbthandler.NBTManager;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
@@ -41,10 +42,11 @@ public class BasicTile<T extends BasicTile<T>> extends TileEntity {
 
     }
 
+    // TileEntity.Read
     @Override
-    public void read(CompoundNBT compound) {
+    public void func_230337_a_(BlockState state, CompoundNBT compound) {
         NBTManager.getInstance().readTileEntity(this, compound);
-        super.read(compound);
+        super.func_230337_a_(state, compound);
     }
 
     @Override
@@ -66,7 +68,7 @@ public class BasicTile<T extends BasicTile<T>> extends TileEntity {
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        read(pkt.getNbtCompound());
+        func_230337_a_(getBlockState(), pkt.getNbtCompound());
     }
 
     @Override

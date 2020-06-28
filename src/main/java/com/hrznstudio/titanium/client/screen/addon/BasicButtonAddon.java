@@ -13,6 +13,7 @@ import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.component.button.ButtonComponent;
 import com.hrznstudio.titanium.network.locator.ILocatable;
 import com.hrznstudio.titanium.network.messages.ButtonClickNetworkMessage;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.gui.screen.Screen;
@@ -20,6 +21,7 @@ import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.text.ITextProperties;
 
 import java.util.Collections;
 import java.util.List;
@@ -34,17 +36,13 @@ public class BasicButtonAddon extends BasicScreenAddon implements IClickable {
     }
 
     @Override
-    public void drawBackgroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
-
-    }
+    public void drawBackgroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {}
 
     @Override
-    public void drawForegroundLayer(Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
-
-    }
+    public void drawForegroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {}
 
     @Override
-    public List<String> getTooltipLines() {
+    public List<ITextProperties> getTooltipLines() {
         return Collections.emptyList();
     }
 

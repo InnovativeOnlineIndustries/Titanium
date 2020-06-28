@@ -7,21 +7,25 @@
 
 package com.hrznstudio.titanium.api.client;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.Screen;
 
 import java.awt.*;
 
 public class DefaultDrawable implements IDrawable {
     private final IAsset asset;
+    private final MatrixStack matrixStack;
 
-    DefaultDrawable(IAsset asset) {
+    DefaultDrawable(IAsset asset, MatrixStack matrixStack) {
         this.asset = asset;
+        this.matrixStack = matrixStack;
     }
 
     @Override
     public void draw(Screen gui, Point position, Point mousePosition) {
         gui.getMinecraft().getTextureManager().bindTexture(asset.getResourceLocation());
         Rectangle area = asset.getArea();
-        gui.blit(position.x, position.y, area.x, area.y, area.width, area.height);
+        gui.func_238474_b_(matrixStack, position.x, position.y, area.x, area.y, area.width, area.height);
     }
 }
