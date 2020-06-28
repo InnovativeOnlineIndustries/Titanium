@@ -21,8 +21,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.*;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
@@ -99,7 +98,6 @@ public class BasicContainerScreen<T extends Container> extends ContainerScreen<T
     // drawGuiContainerForegroundLayer
     @Override
     protected void func_230451_b_(MatrixStack stack, int mouseX, int mouseY) {
-        super.func_230451_b_(stack, mouseX, mouseY);
         addons.forEach(iGuiAddon -> {
             if (iGuiAddon instanceof AssetScreenAddon) {
                 AssetScreenAddon assetGuiAddon = (AssetScreenAddon) iGuiAddon;
