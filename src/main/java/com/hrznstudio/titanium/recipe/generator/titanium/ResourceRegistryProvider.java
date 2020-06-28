@@ -42,45 +42,6 @@ public class ResourceRegistryProvider implements IDataProvider {
     public ResourceRegistryProvider(DataGenerator generator) {
         this.generator = generator;
         Map<ResourceLocation, List<Block>> typeBlockMap = new HashMap<>();
-        this.itemTagsProvider = new ItemTagsProvider(generator) {
-            @Override
-            protected void registerTags() {
-                Map<ResourceLocation, List<Item>> typeItemMap = new HashMap<>();
-                ResourceRegistry.getMaterials().forEach(material -> material.getGenerated().values().stream().filter(entry -> entry instanceof IResourceHolder).forEach(entry -> {
-                    IResourceHolder resourceHolder = ((IResourceHolder) entry);
-                    String tag = resourceHolder.getType().getTag();
-                    String type = resourceHolder.getMaterial().getMaterialType();
-                    if (entry instanceof Block) {
-                        this.copy(new BlockTags.Wrapper(new ResourceLocation("forge", tag + "/" + type)),
-                                new ItemTags.Wrapper(new ResourceLocation("forge", tag + "/" + type)));
-                        typeBlockMap.compute(new ResourceLocation("forge", tag), (resourceLocation, blocks) -> {
-                            if (blocks == null) {
-                                List<Block> list = NonNullList.create();
-                                list.add((Block) entry);
-                                return list;
-                            } else {
-                                blocks.add((Block) entry);
-                                return blocks;
-                            }
-                        });
-                    } else if (entry instanceof Item) {
-                        this.getBuilder(new ItemTags.Wrapper(new ResourceLocation("forge", tag + "/" + type))).add((Item) entry);
-                        typeItemMap.compute(new ResourceLocation("forge", tag), (resourceLocation, items) -> {
-                            if(items == null) {
-                                List<Item> list = NonNullList.create();
-                                list.add((Item) entry);
-                                return list;
-                            }
-                            else {
-                                items.add((Item)entry);
-                                return items;
-                            }
-                        });
-                    }
-                }));
-                typeItemMap.forEach((tagLocation, itemList) -> this.getBuilder(new ItemTags.Wrapper(tagLocation)).add(itemList.toArray(new Item[itemList.size()])));
-            }
-        };
         this.blockTagsProvider = new BlockTagsProvider(generator) {
             @Override
             protected void registerTags() {
@@ -90,7 +51,7 @@ public class ResourceRegistryProvider implements IDataProvider {
                         String tag = resourceHolder.getType().getTag();
                         String type = resourceHolder.getMaterial().getMaterialType();
                         if (entry instanceof Block) {
-                            this.getBuilder(new BlockTags.Wrapper(new ResourceLocation("forge", tag + "/" + type))).add((Block) entry);
+                            this.func_240522_a_(BlockTags.makeWrapperTag("forge:" + tag + "/" + type)).func_240534_a_((Block) entry);//Builder, add
                             typeBlockMap.compute(new ResourceLocation("forge", tag), (resourceLocation, blocks) -> {
                                 if (blocks == null) {
                                     List<Block> list = NonNullList.create();
@@ -104,7 +65,45 @@ public class ResourceRegistryProvider implements IDataProvider {
                         }
                     });
                 });
-                typeBlockMap.forEach((tagLocation, blockList) -> this.getBuilder(new BlockTags.Wrapper(tagLocation)).add(blockList.toArray(new Block[blockList.size()])));
+                typeBlockMap.forEach((tagLocation, blockList) -> this.func_240522_a_(BlockTags.makeWrapperTag(tagLocation.toString())).func_240534_a_(blockList.toArray(new Block[blockList.size()])));//Builder, add
+            }
+        };
+        this.itemTagsProvider = new ItemTagsProvider(generator, blockTagsProvider) {
+            @Override
+            protected void registerTags() {
+                Map<ResourceLocation, List<Item>> typeItemMap = new HashMap<>();
+                ResourceRegistry.getMaterials().forEach(material -> material.getGenerated().values().stream().filter(entry -> entry instanceof IResourceHolder).forEach(entry -> {
+                    IResourceHolder resourceHolder = ((IResourceHolder) entry);
+                    String tag = resourceHolder.getType().getTag();
+                    String type = resourceHolder.getMaterial().getMaterialType();
+                    if (entry instanceof Block) {
+                        this.func_240521_a_(BlockTags.makeWrapperTag("forge:" + tag + "/" + type), //copy
+                            ItemTags.makeWrapperTag("forge:" + tag + "/" + type));
+                        typeBlockMap.compute(new ResourceLocation("forge", tag), (resourceLocation, blocks) -> {
+                            if (blocks == null) {
+                                List<Block> list = NonNullList.create();
+                                list.add((Block) entry);
+                                return list;
+                            } else {
+                                blocks.add((Block) entry);
+                                return blocks;
+                            }
+                        });
+                    } else if (entry instanceof Item) {
+                        this.func_240522_a_(ItemTags.makeWrapperTag("forge:" + tag + "/" + type)).func_240534_a_((Item) entry); //Builder, add
+                        typeItemMap.compute(new ResourceLocation("forge", tag), (resourceLocation, items) -> {
+                            if (items == null) {
+                                List<Item> list = NonNullList.create();
+                                list.add((Item) entry);
+                                return list;
+                            } else {
+                                items.add((Item) entry);
+                                return items;
+                            }
+                        });
+                    }
+                }));
+                typeItemMap.forEach((tagLocation, itemList) -> this.func_240522_a_(ItemTags.makeWrapperTag(tagLocation.toString())).func_240534_a_(itemList.toArray(new Item[itemList.size()]))); //Builder, add
             }
         };
     }
