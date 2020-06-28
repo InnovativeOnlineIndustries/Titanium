@@ -21,8 +21,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.*;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
@@ -82,8 +81,7 @@ public class BasicContainerScreen<T extends Container> extends ContainerScreen<T
         RenderSystem.color4f(1, 1, 1, 1);
         getMinecraft().getTextureManager().bindTexture(IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND).getResourceLocation());
         func_238474_b_(stack, xCenter, yCenter, 0, 0, xSize, ySize);
-        String name = TextFormatting.GRAY + title.getUnformattedComponentText();
-        Minecraft.getInstance().fontRenderer.func_238421_b_(stack, name, xCenter + xSize / 2 - Minecraft.getInstance().fontRenderer.getStringWidth(name) / 2, yCenter + 6, 0xFFFFFF);
+        Minecraft.getInstance().fontRenderer.func_238422_b_(stack, title, xCenter + xSize / 2 - Minecraft.getInstance().fontRenderer.getStringWidth(title.getString()) / 2, yCenter + 6, 0xFFFFFF);
         this.checkForMouseDrag(mouseX, mouseY);
         addons.forEach(iGuiAddon -> {
             if (iGuiAddon instanceof AssetScreenAddon) {
@@ -100,7 +98,6 @@ public class BasicContainerScreen<T extends Container> extends ContainerScreen<T
     // drawGuiContainerForegroundLayer
     @Override
     protected void func_230451_b_(MatrixStack stack, int mouseX, int mouseY) {
-        super.func_230451_b_(stack, mouseX, mouseY);
         addons.forEach(iGuiAddon -> {
             if (iGuiAddon instanceof AssetScreenAddon) {
                 AssetScreenAddon assetGuiAddon = (AssetScreenAddon) iGuiAddon;
