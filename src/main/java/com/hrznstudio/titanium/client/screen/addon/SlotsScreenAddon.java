@@ -65,7 +65,7 @@ public class SlotsScreenAddon<T extends IComponentHarness> extends BasicScreenAd
                 if (colored !=  null) {
                     AbstractGui.func_238467_a_(stack, guiX + handlerPosX + posX - 2, guiY + handlerPosY + posY - 2,
                         guiX + handlerPosX + posX + area.width, guiY + handlerPosY + posY + area.height, new Color(colored.getRed(), colored.getGreen(), colored.getBlue(), 256/4).getRGB());
-                    RenderSystem.color4f(1, 1, 1, 1f);
+                    RenderSystem.color4f(1, 1, 1, 1);
                 }
             }
         }
