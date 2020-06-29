@@ -32,7 +32,7 @@ public class HeldStackLocatorInstance extends LocatorInstance {
     @Override
     public Optional<?> locale(PlayerEntity playerEntity) {
         return Optional.of(playerEntity.getHeldItem(mainHand ? Hand.MAIN_HAND : Hand.OFF_HAND))
-            .map(ItemStackHarnessRegistry::createItemStackHarness).orElseGet(null);
+            .flatMap(ItemStackHarnessRegistry::createItemStackHarness);
     }
 
     public boolean isMainHand() {
