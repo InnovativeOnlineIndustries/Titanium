@@ -157,7 +157,6 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon implements IClick
                     StateButtonAddon addon = new StateButtonAddon(new ButtonComponent(point.x, point.y, 14, 14), IFacingComponent.FaceMode.NONE.getInfo(), IFacingComponent.FaceMode.ENABLED.getInfo(), IFacingComponent.FaceMode.PULL.getInfo(), IFacingComponent.FaceMode.PUSH.getInfo()) {
                         @Override
                         public int getState() {
-
                             IFacingComponent handler = null;
                             if (container instanceof IObjectContainer) {
                                 Object containedObject = ((IObjectContainer) container).getObject();
@@ -201,7 +200,7 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon implements IClick
                             strings.add(new StringTextComponent(TextFormatting.GOLD + LangUtil.getString("tooltip.titanium.facing_handler.direction") +
                                 TextFormatting.RESET + LangUtil.getString("tooltip.titanium.facing_handler." + facing.name().toLowerCase()) + TextFormatting.GRAY + " [" + LangUtil.getString("direction.titanium." + FacingUtil.getFacingFromSide(blockDirection, facing)) + "]"));
                             strings.add(new StringTextComponent(TextFormatting.GOLD + LangUtil.getString("tooltip.titanium.facing_handler.action") +
-                                mode.getColor() + LangUtil.getString("tooltip.titanium.facing_handler." + getStateInfo().getTooltip()[0])));
+                                mode.getColor() + getStateInfo().getTooltip()[0].getString()));
                             return strings;
                         }
                     };

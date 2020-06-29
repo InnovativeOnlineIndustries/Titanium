@@ -86,7 +86,7 @@ public class TankScreenAddon extends BasicScreenAddon {
 
     @Override
     public List<ITextProperties> getTooltipLines() { ///TODO localize
-        return Arrays.asList(new StringTextComponent(TextFormatting.GOLD + "Fluid: " + TextFormatting.WHITE + (tank.getFluid().isEmpty() ? "Empty" : new TranslationTextComponent(tank.getFluid().getFluid().getAttributes().getTranslationKey(tank.getFluid())).func_230532_e_())), new StringTextComponent(TextFormatting.GOLD + "Amount: " + TextFormatting.WHITE + new DecimalFormat().format(tank.getFluidAmount()) + TextFormatting.GOLD + "/" + TextFormatting.WHITE + new DecimalFormat().format(tank.getCapacity()) + TextFormatting.DARK_AQUA + "mb"));
+        return Arrays.asList(new StringTextComponent(TextFormatting.GOLD + "Fluid: " + TextFormatting.WHITE + (tank.getFluid().isEmpty() ? "Empty" : new TranslationTextComponent(tank.getFluid().getFluid().getAttributes().getTranslationKey(tank.getFluid())).getString())), new StringTextComponent(TextFormatting.GOLD + "Amount: " + TextFormatting.WHITE + new DecimalFormat().format(tank.getFluidAmount()) + TextFormatting.GOLD + "/" + TextFormatting.WHITE + new DecimalFormat().format(tank.getCapacity()) + TextFormatting.DARK_AQUA + "mb"));
     }
 
     @Override

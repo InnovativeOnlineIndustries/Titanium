@@ -16,7 +16,7 @@ public class LangUtil {
     }
 
     public static String getString(String string, Object... args) {
-        return new TranslationTextComponent(string, args).getUnformattedComponentText();
+        return new TranslationTextComponent(string, args).getString();
     }
 
 }
