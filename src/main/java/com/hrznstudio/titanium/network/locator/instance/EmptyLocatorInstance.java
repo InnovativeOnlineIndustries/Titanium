@@ -11,6 +11,7 @@ import com.hrznstudio.titanium.network.locator.LocatorInstance;
 import com.hrznstudio.titanium.network.locator.LocatorTypes;
 import net.minecraft.entity.player.PlayerEntity;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 
 public class EmptyLocatorInstance extends LocatorInstance {
@@ -18,6 +19,7 @@ public class EmptyLocatorInstance extends LocatorInstance {
         super(LocatorTypes.EMPTY);
     }
 
+    @Nonnull
     @Override
     public Optional<?> locale(PlayerEntity playerEntity) {
         return Optional.empty();

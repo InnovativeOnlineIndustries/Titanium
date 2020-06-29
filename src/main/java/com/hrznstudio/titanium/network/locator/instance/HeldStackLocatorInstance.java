@@ -13,6 +13,7 @@ import com.hrznstudio.titanium.network.locator.LocatorTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 
 public class HeldStackLocatorInstance extends LocatorInstance {
@@ -27,6 +28,7 @@ public class HeldStackLocatorInstance extends LocatorInstance {
         this.mainHand = mainHand;
     }
 
+    @Nonnull
     @Override
     public Optional<?> locale(PlayerEntity playerEntity) {
         return Optional.of(playerEntity.getHeldItem(mainHand ? Hand.MAIN_HAND : Hand.OFF_HAND))

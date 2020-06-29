@@ -29,6 +29,7 @@ public abstract class LocatorInstance {
         return type;
     }
 
+    @Nonnull
     public abstract Optional<?> locale(PlayerEntity playerEntity);
 
     public IWorldPosCallable getWorldPosCallable(World world) {

@@ -15,6 +15,7 @@ import net.minecraft.util.IWorldPosCallable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 
 public class TileEntityLocatorInstance extends LocatorInstance {
@@ -29,6 +30,7 @@ public class TileEntityLocatorInstance extends LocatorInstance {
         super(LocatorTypes.TILE_ENTITY);
     }
 
+    @Nonnull
     @Override
     public Optional<?> locale(PlayerEntity playerEntity) {
         return TileUtil.getTileEntity(playerEntity.getEntityWorld(), blockPos);
