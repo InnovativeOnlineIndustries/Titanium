@@ -81,8 +81,8 @@ public class TestTile extends PoweredTile<TestTile> {
         }.setId(0).setPredicate((playerEntity, compoundNBT) -> {
             System.out.println(":pepeD:");
             ++state;
-            System.out.println(getEnvironmentValue(false, FacingUtil.Sideness.TOP));
-            System.out.println(getEnvironmentValue(true, FacingUtil.Sideness.TOP));
+            System.out.println(getEnvironmentValue(false, FacingUtil.getFacingFromSide(this.getFacingDirection(), FacingUtil.Sideness.TOP)));
+            System.out.println(getEnvironmentValue(true, FacingUtil.getFacingFromSide(this.getFacingDirection(), FacingUtil.Sideness.TOP)));
             if (state >= 4) state = 0;
             markForUpdate();
         }));

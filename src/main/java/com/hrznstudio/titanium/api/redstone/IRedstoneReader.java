@@ -1,9 +1,9 @@
 package com.hrznstudio.titanium.api.redstone;
 
-import com.hrznstudio.titanium.util.FacingUtil;
+import net.minecraft.util.Direction;
 
 public interface IRedstoneReader<T extends IRedstoneState> {
 
-    T getEnvironmentValue(boolean strongPower, FacingUtil.Sideness sideness);
+    T getEnvironmentValue(boolean strongPower, Direction direction);
 
 }

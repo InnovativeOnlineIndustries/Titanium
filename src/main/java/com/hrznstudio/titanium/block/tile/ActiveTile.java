@@ -323,12 +323,12 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
     }
 
     @Override
-    public RedstoneEnviroment getEnvironmentValue(boolean strongPower, FacingUtil.Sideness sideness) {
+    public RedstoneEnviroment getEnvironmentValue(boolean strongPower, Direction direction) {
         if (strongPower) {
-            if (sideness == null) {
+            if (direction == null) {
                 return this.world.isBlockPowered(this.pos) ? RedstoneEnviroment.ON : RedstoneEnviroment.OFF;
             }
-            return this.world.isSidePowered(this.pos, FacingUtil.getFacingFromSide(getFacingDirection(), sideness)) ? RedstoneEnviroment.ON : RedstoneEnviroment.OFF;
+            return this.world.isSidePowered(this.pos, direction) ? RedstoneEnviroment.ON : RedstoneEnviroment.OFF;
         } else {
             return this.world.getRedstonePowerFromNeighbors(this.pos) > 0 ? RedstoneEnviroment.ON : RedstoneEnviroment.OFF;
         }
