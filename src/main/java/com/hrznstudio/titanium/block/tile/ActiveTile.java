@@ -11,8 +11,10 @@ import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.api.filter.IFilter;
+import com.hrznstudio.titanium.api.redstone.IRedstoneReader;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.block.RotatableBlock;
+import com.hrznstudio.titanium.block.redstone.RedstoneEnviroment;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.client.screen.asset.IHasAssetProvider;
 import com.hrznstudio.titanium.component.button.ButtonComponent;
@@ -66,8 +68,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> implements IScreenAddonProvider,
-        ITickableTileEntity, INamedContainerProvider, IButtonHandler, IFacingComponentHarness, IContainerAddonProvider,
-        IHasAssetProvider {
+    ITickableTileEntity, INamedContainerProvider, IButtonHandler, IFacingComponentHarness, IContainerAddonProvider,
+    IHasAssetProvider, IRedstoneReader<RedstoneEnviroment> {
 
     private MultiInventoryComponent<T> multiInventoryComponent;
     private MultiProgressBarHandler<T> multiProgressBarHandler;
@@ -319,4 +321,17 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
     public IWorldPosCallable getWorldPosCallable() {
         return this.getWorld() != null ? IWorldPosCallable.of(this.getWorld(), this.getPos()) : IWorldPosCallable.DUMMY;
     }
+
+    @Override
+    public RedstoneEnviroment getEnvironmentValue(boolean strongPower, FacingUtil.Sideness sideness) {
+        if (strongPower) {
+            if (sideness == null) {
+                return this.world.isBlockPowered(this.pos) ? RedstoneEnviroment.ON : RedstoneEnviroment.OFF;
+            }
+            return this.world.isSidePowered(this.pos, FacingUtil.getFacingFromSide(getFacingDirection(), sideness)) ? RedstoneEnviroment.ON : RedstoneEnviroment.OFF;
+        } else {
+            return this.world.getRedstonePowerFromNeighbors(this.pos) > 0 ? RedstoneEnviroment.ON : RedstoneEnviroment.OFF;
+        }
+    }
+
 }

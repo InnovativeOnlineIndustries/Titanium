@@ -14,13 +14,14 @@ import com.hrznstudio.titanium.api.IItemStackQuery;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.block.tile.PoweredTile;
+import com.hrznstudio.titanium.client.screen.addon.EnergyBarScreenAddon;
+import com.hrznstudio.titanium.client.screen.addon.StateButtonAddon;
+import com.hrznstudio.titanium.client.screen.addon.StateButtonInfo;
 import com.hrznstudio.titanium.component.button.ButtonComponent;
 import com.hrznstudio.titanium.component.fluid.FluidTankComponent;
 import com.hrznstudio.titanium.component.inventory.SidedInventoryComponent;
 import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
-import com.hrznstudio.titanium.client.screen.addon.EnergyBarScreenAddon;
-import com.hrznstudio.titanium.client.screen.addon.StateButtonAddon;
-import com.hrznstudio.titanium.client.screen.addon.StateButtonInfo;
+import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
@@ -80,6 +81,8 @@ public class TestTile extends PoweredTile<TestTile> {
         }.setId(0).setPredicate((playerEntity, compoundNBT) -> {
             System.out.println(":pepeD:");
             ++state;
+            System.out.println(getEnvironmentValue(false, FacingUtil.Sideness.TOP));
+            System.out.println(getEnvironmentValue(true, FacingUtil.Sideness.TOP));
             if (state >= 4) state = 0;
             markForUpdate();
         }));
@@ -110,5 +113,4 @@ public class TestTile extends PoweredTile<TestTile> {
         }
         return ActionResultType.PASS;
     }
-
 }
