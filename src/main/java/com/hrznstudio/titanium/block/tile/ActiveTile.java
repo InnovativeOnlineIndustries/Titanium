@@ -12,6 +12,7 @@ import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.api.filter.IFilter;
 import com.hrznstudio.titanium.api.redstone.IRedstoneReader;
+import com.hrznstudio.titanium.api.redstone.IRedstoneState;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.block.RotatableBlock;
 import com.hrznstudio.titanium.block.redstone.RedstoneEnviroment;
@@ -69,7 +70,7 @@ import java.util.List;
 
 public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> implements IScreenAddonProvider,
     ITickableTileEntity, INamedContainerProvider, IButtonHandler, IFacingComponentHarness, IContainerAddonProvider,
-    IHasAssetProvider, IRedstoneReader<RedstoneEnviroment> {
+    IHasAssetProvider, IRedstoneReader {
 
     private MultiInventoryComponent<T> multiInventoryComponent;
     private MultiProgressBarHandler<T> multiProgressBarHandler;
@@ -323,7 +324,7 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
     }
 
     @Override
-    public RedstoneEnviroment getEnvironmentValue(boolean strongPower, Direction direction) {
+    public IRedstoneState getEnvironmentValue(boolean strongPower, Direction direction) {
         if (strongPower) {
             if (direction == null) {
                 return this.world.isBlockPowered(this.pos) ? RedstoneEnviroment.ON : RedstoneEnviroment.OFF;

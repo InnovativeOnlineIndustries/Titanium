@@ -2,8 +2,8 @@ package com.hrznstudio.titanium.api.redstone;
 
 import net.minecraft.util.Direction;
 
-public interface IRedstoneReader<T extends IRedstoneState> {
+public interface IRedstoneReader {
 
-    T getEnvironmentValue(boolean strongPower, Direction direction);
+    IRedstoneState getEnvironmentValue(boolean strongPower, Direction direction);
 
 }
