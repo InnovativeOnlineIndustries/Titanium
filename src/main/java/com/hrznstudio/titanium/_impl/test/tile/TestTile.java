@@ -56,6 +56,7 @@ public class TestTile extends PoweredTile<TestTile> {
     private int state;
     @Save
     private RedstoneManager<RedstoneAction> redstoneManager;
+    private ButtonComponent redstoneButton;
 
     public TestTile() {
         super(TestBlock.TEST);
@@ -97,9 +98,24 @@ public class TestTile extends PoweredTile<TestTile> {
             if (state >= 4) state = 0;
             markForUpdate();
         }));
+        this.addButton(redstoneButton = new ButtonComponent(152, 84, 14, 14) {
+            @Override
+            public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
+                return Collections.singletonList(() -> new StateButtonAddon(redstoneButton, new StateButtonInfo(0, AssetTypes.BUTTON_REDSTONE_IGNORED, "tooltip.titanium.redstone.ignored"), new StateButtonInfo(1, AssetTypes.BUTTON_REDSTONE_NO_REDSTONE, "tooltip.titanium.redstone.no_redstone"), new StateButtonInfo(2, AssetTypes.BUTTON_REDSTONE_REDSTONE, "tooltip.titanium.redstone.redstone"), new StateButtonInfo(3, AssetTypes.BUTTON_REDSTONE_ONCE, "tooltip.titanium.redstone.once")) {
+                    @Override
+                    public int getState() {
+                        return redstoneManager.getAction().getValues().indexOf(redstoneManager.getAction());
+                    }
+                });
+            }
+        }.setId(1).setPredicate((playerEntity, compoundNBT) -> {
+            int next = redstoneManager.getAction().getValues().indexOf(redstoneManager.getAction()) + 1;
+            redstoneManager.setAction(redstoneManager.getAction().getValues().get(next >= redstoneManager.getAction().getValues().size() ? 0 : next));
+            markForUpdate();
+        }));
         first.setColor(DyeColor.LIME);
         second.setColor(DyeColor.CYAN);
-        this.redstoneManager = new RedstoneManager<>(RedstoneAction.ONCE, false);
+        this.redstoneManager = new RedstoneManager<>(RedstoneAction.IGNORE, false);
     }
 
     @Override
