@@ -13,7 +13,7 @@ public enum RedstoneAction implements IRedstoneAction, IEnumValues<RedstoneActio
     IGNORE(state -> true, false),
     NO_REDSTONE(state -> !state.isReceivingRedstone(), false),
     WITH_REDSTONE(IRedstoneState::isReceivingRedstone, false),
-    PULSE(IRedstoneState::isReceivingRedstone, true);
+    ONCE(state -> true, true);
 
     private final Function<IRedstoneState, Boolean> canRun;
     private final boolean startsOnChange;

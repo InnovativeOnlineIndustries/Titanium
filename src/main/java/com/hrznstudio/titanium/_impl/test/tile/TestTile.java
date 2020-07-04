@@ -24,6 +24,7 @@ import com.hrznstudio.titanium.component.fluid.FluidTankComponent;
 import com.hrznstudio.titanium.component.inventory.SidedInventoryComponent;
 import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
 import com.hrznstudio.titanium.util.FacingUtil;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
@@ -31,6 +32,7 @@ import net.minecraft.item.Items;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -67,8 +69,9 @@ public class TestTile extends PoweredTile<TestTile> {
                 .setSlotToColorRender(1, DyeColor.ORANGE));
         this.addGuiAddonFactory(() -> new EnergyBarScreenAddon(4, 10, getEnergyStorage()));
         this.addProgressBar(bar = new ProgressBarComponent<TestTile>(40, 20, 500)
-            .setCanIncrease(tileEntity -> redstoneManager.getAction().canRun(tileEntity.getEnvironmentValue(false, null)))
+            .setCanIncrease(tileEntity -> redstoneManager.getAction().canRun(tileEntity.getEnvironmentValue(false, null)) && redstoneManager.shouldWork())
             .setOnFinishWork(() -> {
+                redstoneManager.finish();
                 System.out.println(redstoneManager.getAction());
                 System.out.println("WOWOOW");
             })
@@ -96,7 +99,7 @@ public class TestTile extends PoweredTile<TestTile> {
         }));
         first.setColor(DyeColor.LIME);
         second.setColor(DyeColor.CYAN);
-        this.redstoneManager = new RedstoneManager<>(RedstoneAction.NO_REDSTONE);
+        this.redstoneManager = new RedstoneManager<>(RedstoneAction.ONCE, false);
     }
 
     @Override
@@ -105,6 +108,12 @@ public class TestTile extends PoweredTile<TestTile> {
         if (Objects.requireNonNull(getWorld()).isRaining()) {
             getWorld().getWorldInfo().setRaining(false);
         }
+    }
+
+    @Override
+    public void onNeighborChanged(Block blockIn, BlockPos fromPos) {
+        super.onNeighborChanged(blockIn, fromPos);
+        redstoneManager.setLastRedstoneState(this.getEnvironmentValue(false, null).isReceivingRedstone());
     }
 
     @Override
