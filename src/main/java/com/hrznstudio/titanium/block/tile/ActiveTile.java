@@ -11,11 +11,8 @@ import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.api.filter.IFilter;
-import com.hrznstudio.titanium.api.redstone.IRedstoneReader;
-import com.hrznstudio.titanium.api.redstone.IRedstoneState;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.block.RotatableBlock;
-import com.hrznstudio.titanium.block.redstone.RedstoneState;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.client.screen.asset.IHasAssetProvider;
 import com.hrznstudio.titanium.component.button.ButtonComponent;
@@ -70,7 +67,7 @@ import java.util.List;
 
 public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> implements IScreenAddonProvider,
     ITickableTileEntity, INamedContainerProvider, IButtonHandler, IFacingComponentHarness, IContainerAddonProvider,
-    IHasAssetProvider, IRedstoneReader {
+    IHasAssetProvider {
 
     private MultiInventoryComponent<T> multiInventoryComponent;
     private MultiProgressBarHandler<T> multiProgressBarHandler;
@@ -321,18 +318,6 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
 
     public IWorldPosCallable getWorldPosCallable() {
         return this.getWorld() != null ? IWorldPosCallable.of(this.getWorld(), this.getPos()) : IWorldPosCallable.DUMMY;
-    }
-
-    @Override
-    public IRedstoneState getEnvironmentValue(boolean strongPower, Direction direction) {
-        if (strongPower) {
-            if (direction == null) {
-                return this.world.isBlockPowered(this.pos) ? RedstoneState.ON : RedstoneState.OFF;
-            }
-            return this.world.isSidePowered(this.pos, direction) ? RedstoneState.ON : RedstoneState.OFF;
-        } else {
-            return this.world.getRedstonePowerFromNeighbors(this.pos) > 0 ? RedstoneState.ON : RedstoneState.OFF;
-        }
     }
 
 }

@@ -13,8 +13,11 @@ import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.IItemStackQuery;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
+import com.hrznstudio.titanium.api.redstone.IRedstoneReader;
+import com.hrznstudio.titanium.api.redstone.IRedstoneState;
 import com.hrznstudio.titanium.block.redstone.RedstoneAction;
 import com.hrznstudio.titanium.block.redstone.RedstoneManager;
+import com.hrznstudio.titanium.block.redstone.RedstoneState;
 import com.hrznstudio.titanium.block.tile.PoweredTile;
 import com.hrznstudio.titanium.client.screen.addon.EnergyBarScreenAddon;
 import com.hrznstudio.titanium.client.screen.addon.StateButtonAddon;
@@ -40,7 +43,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public class TestTile extends PoweredTile<TestTile> {
+public class TestTile extends PoweredTile<TestTile> implements IRedstoneReader {
 
     @Save
     private ProgressBarComponent<TestTile> bar;
@@ -147,4 +150,18 @@ public class TestTile extends PoweredTile<TestTile> {
         }
         return ActionResultType.PASS;
     }
+
+
+    @Override
+    public IRedstoneState getEnvironmentValue(boolean strongPower, Direction direction) {
+        if (strongPower) {
+            if (direction == null) {
+                return this.world.isBlockPowered(this.pos) ? RedstoneState.ON : RedstoneState.OFF;
+            }
+            return this.world.isSidePowered(this.pos, direction) ? RedstoneState.ON : RedstoneState.OFF;
+        } else {
+            return this.world.getRedstonePowerFromNeighbors(this.pos) > 0 ? RedstoneState.ON : RedstoneState.OFF;
+        }
+    }
+
 }
