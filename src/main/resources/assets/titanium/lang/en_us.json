@@ -30,5 +30,5 @@
   "tooltip.titanium.redstone.ignored": "Redstone Mode: Ignored",
   "tooltip.titanium.redstone.no_redstone": "Redstone Mode: Run with no redstone signal",
   "tooltip.titanium.redstone.redstone": "Redstone Mode: Run with redstone signal",
-  "tooltip.titanium.redstone.once": "Redstone Mode: Run Once"
+  "tooltip.titanium.redstone.once": "Redstone Mode: Run on Pulse"
 }
