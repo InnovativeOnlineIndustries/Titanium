@@ -15,7 +15,7 @@ import com.hrznstudio.titanium.api.redstone.IRedstoneReader;
 import com.hrznstudio.titanium.api.redstone.IRedstoneState;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.block.RotatableBlock;
-import com.hrznstudio.titanium.block.redstone.RedstoneEnviroment;
+import com.hrznstudio.titanium.block.redstone.RedstoneState;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.client.screen.asset.IHasAssetProvider;
 import com.hrznstudio.titanium.component.button.ButtonComponent;
@@ -327,11 +327,11 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
     public IRedstoneState getEnvironmentValue(boolean strongPower, Direction direction) {
         if (strongPower) {
             if (direction == null) {
-                return this.world.isBlockPowered(this.pos) ? RedstoneEnviroment.ON : RedstoneEnviroment.OFF;
+                return this.world.isBlockPowered(this.pos) ? RedstoneState.ON : RedstoneState.OFF;
             }
-            return this.world.isSidePowered(this.pos, direction) ? RedstoneEnviroment.ON : RedstoneEnviroment.OFF;
+            return this.world.isSidePowered(this.pos, direction) ? RedstoneState.ON : RedstoneState.OFF;
         } else {
-            return this.world.getRedstonePowerFromNeighbors(this.pos) > 0 ? RedstoneEnviroment.ON : RedstoneEnviroment.OFF;
+            return this.world.getRedstonePowerFromNeighbors(this.pos) > 0 ? RedstoneState.ON : RedstoneState.OFF;
         }
     }
 

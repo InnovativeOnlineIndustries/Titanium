@@ -13,6 +13,8 @@ import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.IItemStackQuery;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
+import com.hrznstudio.titanium.block.redstone.RedstoneAction;
+import com.hrznstudio.titanium.block.redstone.RedstoneManager;
 import com.hrznstudio.titanium.block.tile.PoweredTile;
 import com.hrznstudio.titanium.client.screen.addon.EnergyBarScreenAddon;
 import com.hrznstudio.titanium.client.screen.addon.StateButtonAddon;
@@ -50,22 +52,28 @@ public class TestTile extends PoweredTile<TestTile> {
     private ButtonComponent button;
     @Save
     private int state;
+    @Save
+    private RedstoneManager<RedstoneAction> redstoneManager;
 
     public TestTile() {
         super(TestBlock.TEST);
         this.addInventory(first = (SidedInventoryComponent<TestTile>) new SidedInventoryComponent<TestTile>("test", 80, 30, 1, 0)
-                .setComponentHarness(this)
-                .setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
+            .setComponentHarness(this)
+            .setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
         this.addInventory(second = (SidedInventoryComponent<TestTile>) new SidedInventoryComponent<TestTile>("test2", 80, 60, 2, 1)
-                .setComponentHarness(this)
-                .setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack))
-                .setSlotToItemStackRender(0, new ItemStack(Items.STONE_PICKAXE))
+            .setComponentHarness(this)
+            .setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack))
+            .setSlotToItemStackRender(0, new ItemStack(Items.STONE_PICKAXE))
                 .setSlotToColorRender(1, DyeColor.ORANGE));
         this.addGuiAddonFactory(() -> new EnergyBarScreenAddon(4, 10, getEnergyStorage()));
         this.addProgressBar(bar = new ProgressBarComponent<TestTile>(40, 20, 500)
-                .setCanIncrease(tileEntity -> true)
-                .setOnFinishWork(() -> System.out.println("WOWOOW"))
-                .setBarDirection(ProgressBarComponent.BarDirection.HORIZONTAL_RIGHT)
+            .setCanIncrease(tileEntity -> redstoneManager.getAction().canRun(tileEntity.getEnvironmentValue(false, null)))
+            .setOnFinishWork(() -> {
+                System.out.println(redstoneManager.getAction());
+                System.out.println("WOWOOW");
+            })
+            .setBarDirection(ProgressBarComponent.BarDirection.HORIZONTAL_RIGHT)
+            .setCanReset(testTile -> bar.getProgress() >= bar.getMaxProgress())
                 .setColor(DyeColor.LIME));
         this.addTank(third = new FluidTankComponent<>("testTank", 8000, 130, 30));
         this.addButton(button = new ButtonComponent(-13, 1, 14, 14) {
@@ -81,18 +89,19 @@ public class TestTile extends PoweredTile<TestTile> {
         }.setId(0).setPredicate((playerEntity, compoundNBT) -> {
             System.out.println(":pepeD:");
             ++state;
-            System.out.println(getEnvironmentValue(false, FacingUtil.getFacingFromSide(this.getFacingDirection(), FacingUtil.Sideness.TOP)));
+            System.out.println(getEnvironmentValue(false, null));
             System.out.println(getEnvironmentValue(true, FacingUtil.getFacingFromSide(this.getFacingDirection(), FacingUtil.Sideness.TOP)));
             if (state >= 4) state = 0;
             markForUpdate();
         }));
         first.setColor(DyeColor.LIME);
         second.setColor(DyeColor.CYAN);
+        this.redstoneManager = new RedstoneManager<>(RedstoneAction.NO_REDSTONE);
     }
 
     @Override
     public void tick() {
-        bar.tickBar();
+        super.tick();
         if (Objects.requireNonNull(getWorld()).isRaining()) {
             getWorld().getWorldInfo().setRaining(false);
         }
