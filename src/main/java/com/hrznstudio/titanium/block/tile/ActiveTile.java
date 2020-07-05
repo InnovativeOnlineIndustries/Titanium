@@ -124,16 +124,12 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
             Capability Handling
          */
     public void addInventory(InventoryComponent<T> handler) {
-        if (multiInventoryComponent == null) {
-            multiInventoryComponent = new MultiInventoryComponent<>();
-        }
+        if (multiInventoryComponent == null) multiInventoryComponent = new MultiInventoryComponent<>();
         multiInventoryComponent.add(handler.setComponentHarness(this.getSelf()));
     }
 
     public void addProgressBar(ProgressBarComponent<T> progressBarComponent) {
-        if (multiProgressBarHandler == null) {
-            multiProgressBarHandler = new MultiProgressBarHandler<>();
-        }
+        if (multiProgressBarHandler == null) multiProgressBarHandler = new MultiProgressBarHandler<>();
         multiProgressBarHandler.add(progressBarComponent.setComponentHarness(this.getSelf()));
     }
 
@@ -155,6 +151,11 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
     }
 
     public void addBundle(IComponentBundle bundle) {
+        if (multiInventoryComponent == null) multiInventoryComponent = new MultiInventoryComponent<>();
+        if (multiProgressBarHandler == null) multiProgressBarHandler = new MultiProgressBarHandler<>();
+        if (multiTankComponent == null) multiTankComponent = new MultiTankComponent<T>();
+        if (multiButtonComponent == null) multiButtonComponent = new MultiButtonComponent();
+        if (multiFilterComponent == null) multiFilterComponent = new MultiFilterComponent();
         bundle.accept(multiInventoryComponent, multiProgressBarHandler, multiTankComponent, multiButtonComponent, multiFilterComponent);
         bundle.getScreenAddons().forEach(this::addGuiAddonFactory);
     }
