@@ -10,7 +10,7 @@ package com.hrznstudio.titanium._impl.creative;
 import com.hrznstudio.titanium._impl.creative.tile.CreativeFEGeneratorTile;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.block.BasicTileBlock;
-import com.hrznstudio.titanium.recipe.generator.TitaniumLootTableProvider;
+import com.hrznstudio.titanium.datagenerator.loot.TitaniumLootTableProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 

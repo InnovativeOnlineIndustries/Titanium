@@ -19,6 +19,7 @@ import com.hrznstudio.titanium.client.screen.container.BasicAddonScreen;
 import com.hrznstudio.titanium.command.RewardCommand;
 import com.hrznstudio.titanium.command.RewardGrantCommand;
 import com.hrznstudio.titanium.container.BasicAddonContainer;
+import com.hrznstudio.titanium.datagenerator.loot.TitaniumLootTableProvider;
 import com.hrznstudio.titanium.event.handler.EventManager;
 import com.hrznstudio.titanium.material.ResourceRegistry;
 import com.hrznstudio.titanium.module.Feature;
@@ -30,7 +31,7 @@ import com.hrznstudio.titanium.network.messages.ButtonClickNetworkMessage;
 import com.hrznstudio.titanium.plugin.PluginManager;
 import com.hrznstudio.titanium.recipe.condition.ContentExistsConditionSerializer;
 import com.hrznstudio.titanium.recipe.generator.BlockItemModelGeneratorProvider;
-import com.hrznstudio.titanium.recipe.generator.titanium.DefaultLootTableProvider;
+import com.hrznstudio.titanium.datagenerator.loot.block.BasicBlockLootTables;
 import com.hrznstudio.titanium.recipe.generator.titanium.JsonRecipeSerializerProvider;
 import com.hrznstudio.titanium.recipe.generator.titanium.ResourceRegistryProvider;
 import com.hrznstudio.titanium.recipe.shapelessenchant.ShapelessEnchantSerializer;
@@ -162,7 +163,7 @@ public class Titanium extends ModuleController {
     @Override
     public void addDataProvider(GatherDataEvent event) {
         event.getGenerator().addProvider(new BlockItemModelGeneratorProvider(event.getGenerator(), MODID));
-        event.getGenerator().addProvider(new DefaultLootTableProvider(event.getGenerator(), MODID));
+        event.getGenerator().addProvider(new TitaniumLootTableProvider(event.getGenerator(), MODID));
         event.getGenerator().addProvider(new JsonRecipeSerializerProvider(event.getGenerator(), MODID));
         event.getGenerator().addProvider(new ResourceRegistryProvider(event.getGenerator()));
     }
