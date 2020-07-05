@@ -15,6 +15,7 @@ import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.block.RotatableBlock;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.client.screen.asset.IHasAssetProvider;
+import com.hrznstudio.titanium.component.IComponentBundle;
 import com.hrznstudio.titanium.component.button.ButtonComponent;
 import com.hrznstudio.titanium.component.button.MultiButtonComponent;
 import com.hrznstudio.titanium.component.filter.MultiFilterComponent;
@@ -133,7 +134,7 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
         if (multiProgressBarHandler == null) {
             multiProgressBarHandler = new MultiProgressBarHandler<>();
         }
-        multiProgressBarHandler.addBar(progressBarComponent.setComponentHarness(this.getSelf()));
+        multiProgressBarHandler.add(progressBarComponent.setComponentHarness(this.getSelf()));
     }
 
     public void addTank(FluidTankComponent<T> tank) {
@@ -143,7 +144,7 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
 
     public void addButton(ButtonComponent button) {
         if (multiButtonComponent == null) multiButtonComponent = new MultiButtonComponent();
-        multiButtonComponent.addButton(button);
+        multiButtonComponent.add(button);
     }
 
     public void addFilter(IFilter<?> filter) {
@@ -151,6 +152,11 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
             multiFilterComponent = new MultiFilterComponent();
         }
         multiFilterComponent.add(filter);
+    }
+
+    public void addBundle(IComponentBundle bundle) {
+        bundle.accept(multiInventoryComponent, multiProgressBarHandler, multiTankComponent, multiButtonComponent, multiFilterComponent);
+        bundle.getScreenAddons().forEach(this::addGuiAddonFactory);
     }
 
     @Nonnull

@@ -32,6 +32,7 @@ public class ButtonComponent implements IScreenAddonProvider {
         this.posY = posY;
         this.sizeX = sizeX;
         this.sizeY = sizeY;
+        this.id = -1;
     }
 
     /**

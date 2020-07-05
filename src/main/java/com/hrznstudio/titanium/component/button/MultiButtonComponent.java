@@ -10,13 +10,14 @@ package com.hrznstudio.titanium.component.button;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
+import com.hrznstudio.titanium.component.IComponentHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MultiButtonComponent implements IScreenAddonProvider {
+public class MultiButtonComponent implements IScreenAddonProvider, IComponentHandler<ButtonComponent> {
 
     private List<ButtonComponent> basicButtonAddons;
 
@@ -24,9 +25,6 @@ public class MultiButtonComponent implements IScreenAddonProvider {
         basicButtonAddons = new ArrayList<>();
     }
 
-    public void addButton(ButtonComponent buttonAddon) {
-        basicButtonAddons.add(buttonAddon.setId(basicButtonAddons.size()));
-    }
 
     public void clickButton(int id, PlayerEntity playerEntity, CompoundNBT compound) {
         basicButtonAddons.stream()
@@ -44,4 +42,14 @@ public class MultiButtonComponent implements IScreenAddonProvider {
         return addons;
     }
 
+    @Override
+    public void add(ButtonComponent component) {
+        if (component.getId() == -1) component.setId(basicButtonAddons.size());
+        basicButtonAddons.add(component);
+    }
+
+    @Override
+    public boolean accepts(Object component) {
+        return component instanceof ButtonComponent;
+    }
 }

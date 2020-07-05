@@ -11,11 +11,12 @@ import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.api.filter.IFilter;
+import com.hrznstudio.titanium.component.IComponentHandler;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MultiFilterComponent implements IScreenAddonProvider {
+public class MultiFilterComponent implements IScreenAddonProvider, IComponentHandler<IFilter> {
     public final List<IFilter> filters;
 
     public MultiFilterComponent() {
@@ -35,5 +36,10 @@ public class MultiFilterComponent implements IScreenAddonProvider {
         List<IFactory<? extends IScreenAddon>> addons = new ArrayList<>();
         filters.forEach(filter -> addons.addAll(filter.getScreenAddons()));
         return addons;
+    }
+
+    @Override
+    public boolean accepts(Object component) {
+        return component instanceof IFilter;
     }
 }

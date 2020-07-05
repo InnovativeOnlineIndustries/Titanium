@@ -10,6 +10,7 @@ package com.hrznstudio.titanium.component.fluid;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
+import com.hrznstudio.titanium.component.IComponentHandler;
 import com.hrznstudio.titanium.component.IComponentHarness;
 import com.hrznstudio.titanium.component.sideness.ICapabilityHolder;
 import com.hrznstudio.titanium.component.sideness.IFacingComponent;
@@ -25,7 +26,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class MultiTankComponent<T extends IComponentHarness> implements IScreenAddonProvider, IContainerAddonProvider,
-        ICapabilityHolder<FluidTankComponent<T>, MultiTankComponent.MultiTankCapabilityHandler<T>> {
+    ICapabilityHolder<FluidTankComponent<T>, MultiTankComponent.MultiTankCapabilityHandler<T>>, IComponentHandler<FluidTankComponent<T>> {
 
     private final LinkedHashSet<FluidTankComponent<T>> tanks;
     private final HashMap<FacingUtil.Sideness, LazyOptional<MultiTankCapabilityHandler<T>>> lazyOptionals;
@@ -44,6 +45,11 @@ public class MultiTankComponent<T extends IComponentHarness> implements IScreenA
         this.tanks.add(tank);
         rebuildCapability(new FacingUtil.Sideness[]{null});
         rebuildCapability(FacingUtil.Sideness.values());
+    }
+
+    @Override
+    public boolean accepts(Object component) {
+        return component instanceof FluidTankComponent;
     }
 
     private void rebuildCapability(FacingUtil.Sideness[] sides) {

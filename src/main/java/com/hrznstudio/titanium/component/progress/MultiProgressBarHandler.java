@@ -10,6 +10,7 @@ package com.hrznstudio.titanium.component.progress;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
+import com.hrznstudio.titanium.component.IComponentHandler;
 import com.hrznstudio.titanium.component.IComponentHarness;
 import com.hrznstudio.titanium.container.addon.IContainerAddon;
 import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
@@ -17,7 +18,7 @@ import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MultiProgressBarHandler<T extends IComponentHarness> implements IScreenAddonProvider, IContainerAddonProvider {
+public class MultiProgressBarHandler<T extends IComponentHarness> implements IScreenAddonProvider, IContainerAddonProvider, IComponentHandler<ProgressBarComponent<T>> {
 
     private final List<ProgressBarComponent<T>> progressBarComponents;
 
@@ -25,7 +26,7 @@ public class MultiProgressBarHandler<T extends IComponentHarness> implements ISc
         progressBarComponents = new ArrayList<>();
     }
 
-    public void addBar(ProgressBarComponent<T> bar) {
+    public void add(ProgressBarComponent<T> bar) {
         this.progressBarComponents.add(bar);
     }
 
@@ -53,6 +54,7 @@ public class MultiProgressBarHandler<T extends IComponentHarness> implements ISc
         }
         return list;
     }
+
     @Override
     public List<IFactory<? extends IContainerAddon>> getContainerAddons() {
         List<IFactory<? extends IContainerAddon>> list = new ArrayList<>();
@@ -62,4 +64,8 @@ public class MultiProgressBarHandler<T extends IComponentHarness> implements ISc
         return list;
     }
 
+    @Override
+    public boolean accepts(Object component) {
+        return component instanceof ProgressBarComponent;
+    }
 }
