@@ -9,8 +9,12 @@ package com.hrznstudio.titanium.api.redstone;
 
 import net.minecraft.util.Direction;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public interface IRedstoneReader {
 
-    IRedstoneState getEnvironmentValue(boolean strongPower, Direction direction);
+    @Nonnull
+    IRedstoneState getEnvironmentValue(boolean strongPower, @Nullable Direction direction);
 
 }
