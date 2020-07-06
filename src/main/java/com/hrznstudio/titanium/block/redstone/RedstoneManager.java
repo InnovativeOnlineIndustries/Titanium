@@ -52,7 +52,7 @@ public class RedstoneManager<T extends IEnumValues<T> & IRedstoneAction> impleme
     @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT value = new CompoundNBT();
-        value.putString("Name", action.func_176610_l());
+        value.putString("Name", action.getName());
         value.putBoolean("LastState", lastRedstoneState);
         return value;
     }

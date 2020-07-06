@@ -47,11 +47,11 @@ public enum RedstoneAction implements IRedstoneAction, IEnumValues<RedstoneActio
 
     @Override
     public RedstoneAction getValue(String name) {
-        return this.getValues().stream().filter(t -> t.func_176610_l().equals(name)).findFirst().orElse(IGNORE);
+        return this.getValues().stream().filter(t -> t.getName().equals(name)).findFirst().orElse(IGNORE);
     }
 
     @Override
-    public String func_176610_l() {
+    public String getName() {
         return this.name().toLowerCase();
     }
 }

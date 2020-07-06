@@ -7,12 +7,12 @@
 
 package com.hrznstudio.titanium.api.redstone;
 
-import net.minecraft.util.IStringSerializable;
-
-public interface IRedstoneAction extends IStringSerializable {
+public interface IRedstoneAction {
 
     boolean canRun(IRedstoneState state);
 
     boolean startsOnChange();
+
+    String getName();
 
 }
