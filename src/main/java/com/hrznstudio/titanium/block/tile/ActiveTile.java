@@ -158,6 +158,7 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
         if (multiFilterComponent == null) multiFilterComponent = new MultiFilterComponent();
         bundle.accept(multiInventoryComponent, multiProgressBarHandler, multiTankComponent, multiButtonComponent, multiFilterComponent);
         bundle.getScreenAddons().forEach(this::addGuiAddonFactory);
+        bundle.getContainerAddons().forEach(this::addContainerAddonFactory);
     }
 
     @Nonnull
