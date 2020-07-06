@@ -37,7 +37,9 @@ public class RedstoneManager<T extends IEnumValues<T> & IRedstoneAction> impleme
     }
 
     public void setLastRedstoneState(boolean lastRedstoneState) {
-        if (!this.lastRedstoneState && lastRedstoneState) this.shouldWork = true;
+        if (!this.lastRedstoneState && lastRedstoneState) {
+            this.shouldWork = true;
+        }
         this.lastRedstoneState = lastRedstoneState;
     }
 
