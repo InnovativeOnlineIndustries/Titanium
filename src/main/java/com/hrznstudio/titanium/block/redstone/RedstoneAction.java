@@ -13,7 +13,7 @@ import com.hrznstudio.titanium.api.redstone.IRedstoneState;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 public enum RedstoneAction implements IRedstoneAction, IEnumValues<RedstoneAction> {
 
@@ -22,17 +22,17 @@ public enum RedstoneAction implements IRedstoneAction, IEnumValues<RedstoneActio
     WITH_REDSTONE(IRedstoneState::isReceivingRedstone, false),
     ONCE(state -> true, true);
 
-    private final Function<IRedstoneState, Boolean> canRun;
+    private final Predicate<IRedstoneState> canRun;
     private final boolean startsOnChange;
 
-    RedstoneAction(Function<IRedstoneState, Boolean> canRun, boolean startsOnChange) {
+    RedstoneAction(Predicate<IRedstoneState> canRun, boolean startsOnChange) {
         this.canRun = canRun;
         this.startsOnChange = startsOnChange;
     }
 
     @Override
     public boolean canRun(IRedstoneState state) {
-        return canRun.apply(state);
+        return canRun.test(state);
     }
 
     @Override
