@@ -14,34 +14,29 @@ import net.minecraft.loot.ItemLootEntry;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.util.IItemProvider;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.common.util.NonNullLazy;
 
-import java.util.Optional;
-import java.util.function.Predicate;
+import java.util.List;
 
 public class BasicBlockLootTables extends BlockLootTables {
-    private final Predicate<Block> processBlock;
+    private final NonNullLazy<List<Block>> blocksToProcess;
 
-    public BasicBlockLootTables(String modid) {
-        this(block -> Optional.ofNullable(block.getRegistryName())
-            .filter(registryName -> registryName.getNamespace().equals(modid))
-            .isPresent());
-    }
-
-    public BasicBlockLootTables(Predicate<Block> processBlock) {
-        this.processBlock = processBlock;
+    public BasicBlockLootTables(NonNullLazy<List<Block>> blocksToProcess) {
+        this.blocksToProcess = blocksToProcess;
     }
 
     @Override
     public void addTables() {
-        ForgeRegistries.BLOCKS.getValues()
-            .stream()
-            .filter(processBlock)
+        blocksToProcess.get()
             .forEach(block -> {
                 if (block instanceof IBlockLootTableProvider) {
-                    this.registerLootTable(block, ((IBlockLootTableProvider) block).getLootTableBuilder(this));
+                    this.registerLootTable(block, ((IBlockLootTableProvider) block).getLootTable(this));
                 }
             });
+    }
+
+    public LootTable.Builder droppingNothing() {
+        return LootTable.builder();
     }
 
     public LootTable.Builder droppingSelf(IItemProvider itemProvider) {

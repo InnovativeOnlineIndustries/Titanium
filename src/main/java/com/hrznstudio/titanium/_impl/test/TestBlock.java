@@ -12,8 +12,10 @@ import com.hrznstudio.titanium.annotation.config.ConfigFile;
 import com.hrznstudio.titanium.annotation.config.ConfigVal;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.block.RotatableBlock;
-import com.hrznstudio.titanium.datagenerator.loot.TitaniumLootTableProvider;
+import com.hrznstudio.titanium.datagenerator.loot.block.BasicBlockLootTables;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.loot.LootTable;
 
 import javax.annotation.Nonnull;
 
@@ -26,7 +28,7 @@ public class TestBlock extends RotatableBlock<TestTile> {
     public static TestBlock TEST;
 
     public TestBlock() {
-        super("block_test", Properties.create(Material.ROCK), TestTile.class);
+        super(Properties.create(Material.ROCK), TestTile.class);
     }
 
     @Override
@@ -41,7 +43,7 @@ public class TestBlock extends RotatableBlock<TestTile> {
     }
 
     @Override
-    public void createLootTable(TitaniumLootTableProvider provider) {
-        provider.createEmpty(this);
+    public LootTable.Builder getLootTable(BasicBlockLootTables blockLootTables) {
+        return blockLootTables.droppingNothing();
     }
 }

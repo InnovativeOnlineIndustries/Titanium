@@ -183,7 +183,7 @@ public abstract class BasicBlock extends Block implements IAlternativeEntries, I
         return false;
     }
 
-    public LootTable.Builder getLootTableBuilder(@Nonnull BasicBlockLootTables blockLootTables) {
+    public LootTable.Builder getLootTable(@Nonnull BasicBlockLootTables blockLootTables) {
         return blockLootTables.droppingSelf(this);
     }
 

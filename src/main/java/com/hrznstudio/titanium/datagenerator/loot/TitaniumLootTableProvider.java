@@ -9,6 +9,7 @@ package com.hrznstudio.titanium.datagenerator.loot;
 
 import com.hrznstudio.titanium.datagenerator.loot.block.BasicBlockLootTables;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.LootTableProvider;
 import net.minecraft.data.loot.BlockLootTables;
@@ -16,6 +17,8 @@ import net.minecraft.loot.LootParameterSet;
 import net.minecraft.loot.LootParameterSets;
 import net.minecraft.loot.LootTable;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.util.NonNullLazy;
+import net.minecraftforge.common.util.NonNullSupplier;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -25,11 +28,11 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class TitaniumLootTableProvider extends LootTableProvider {
-    private final String modid;
+    private final NonNullLazy<List<Block>> blocksToProcess;
 
-    public TitaniumLootTableProvider(DataGenerator dataGenerator, String modid) {
+    public TitaniumLootTableProvider(DataGenerator dataGenerator, NonNullLazy<List<Block>> blocks) {
         super(dataGenerator);
-        this.modid = modid;
+        this.blocksToProcess = blocks;
     }
 
     @Override
@@ -41,6 +44,6 @@ public class TitaniumLootTableProvider extends LootTableProvider {
     }
 
     protected BlockLootTables createBlockLootTables() {
-        return new BasicBlockLootTables(modid);
+        return new BasicBlockLootTables(blocksToProcess);
     }
 }

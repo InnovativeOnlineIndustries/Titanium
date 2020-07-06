@@ -14,6 +14,7 @@ import com.hrznstudio.titanium._impl.test.TestBlock;
 import com.hrznstudio.titanium._impl.test.TwentyFourTestBlock;
 import com.hrznstudio.titanium._impl.test.recipe.TestSerializableRecipe;
 import com.hrznstudio.titanium.annotation.plugin.FeaturePlugin;
+import com.hrznstudio.titanium.block.BasicBlock;
 import com.hrznstudio.titanium.capability.CapabilityItemStackHolder;
 import com.hrznstudio.titanium.client.screen.container.BasicAddonScreen;
 import com.hrznstudio.titanium.command.RewardCommand;
@@ -30,8 +31,7 @@ import com.hrznstudio.titanium.network.locator.LocatorTypes;
 import com.hrznstudio.titanium.network.messages.ButtonClickNetworkMessage;
 import com.hrznstudio.titanium.plugin.PluginManager;
 import com.hrznstudio.titanium.recipe.condition.ContentExistsConditionSerializer;
-import com.hrznstudio.titanium.recipe.generator.BlockItemModelGeneratorProvider;
-import com.hrznstudio.titanium.datagenerator.loot.block.BasicBlockLootTables;
+import com.hrznstudio.titanium.datagenerator.model.BlockItemModelGeneratorProvider;
 import com.hrznstudio.titanium.recipe.generator.titanium.JsonRecipeSerializerProvider;
 import com.hrznstudio.titanium.recipe.generator.titanium.ResourceRegistryProvider;
 import com.hrznstudio.titanium.recipe.shapelessenchant.ShapelessEnchantSerializer;
@@ -57,6 +57,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.DrawHighlightEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.extensions.IForgeContainerType;
+import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -68,10 +69,14 @@ import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Mod(Titanium.MODID)
@@ -117,10 +122,10 @@ public class Titanium extends ModuleController {
                 .description("Test module for titanium features")
                 .feature(Feature.builder("blocks")
                         .description("Adds test titanium blocks")
-                        .content(Block.class, TestBlock.TEST = new TestBlock())
-                        .content(Block.class, TwentyFourTestBlock.TEST = new TwentyFourTestBlock())
-                        .content(Block.class, AssetTestBlock.TEST = new AssetTestBlock())
-                        .content(Block.class, MachineTestBlock.TEST = new MachineTestBlock())
+                        .content(Block.class, TestBlock.TEST = (TestBlock) new TestBlock().setRegistryName("block_test"))
+                        .content(Block.class, TwentyFourTestBlock.TEST = (TwentyFourTestBlock) new TwentyFourTestBlock().setRegistryName("block_twenty_four_test"))
+                        .content(Block.class, AssetTestBlock.TEST = (AssetTestBlock) new AssetTestBlock().setRegistryName("block_asset_test"))
+                        .content(Block.class, MachineTestBlock.TEST = (MachineTestBlock) new MachineTestBlock().setRegistryName("machine_test"))
                 )
                 .feature(Feature.builder("events")
                         .description("Adds test titanium events")
@@ -162,8 +167,17 @@ public class Titanium extends ModuleController {
 
     @Override
     public void addDataProvider(GatherDataEvent event) {
-        event.getGenerator().addProvider(new BlockItemModelGeneratorProvider(event.getGenerator(), MODID));
-        event.getGenerator().addProvider(new TitaniumLootTableProvider(event.getGenerator(), MODID));
+        NonNullLazy<List<Block>> blocksToProcess = NonNullLazy.of(() ->
+            ForgeRegistries.BLOCKS.getValues()
+                .stream()
+                .filter(basicBlock -> Optional.ofNullable(basicBlock.getRegistryName())
+                    .map(ResourceLocation::getNamespace)
+                    .filter(MODID::equalsIgnoreCase)
+                    .isPresent())
+                .collect(Collectors.toList())
+        );
+        event.getGenerator().addProvider(new BlockItemModelGeneratorProvider(event.getGenerator(), MODID, blocksToProcess));
+        event.getGenerator().addProvider(new TitaniumLootTableProvider(event.getGenerator(), blocksToProcess));
         event.getGenerator().addProvider(new JsonRecipeSerializerProvider(event.getGenerator(), MODID));
         event.getGenerator().addProvider(new ResourceRegistryProvider(event.getGenerator()));
     }
