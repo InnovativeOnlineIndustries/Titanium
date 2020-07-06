@@ -15,9 +15,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class MultiButtonComponent implements IScreenAddonProvider, IComponentHandler<ButtonComponent> {
+public class MultiButtonComponent implements IScreenAddonProvider, IComponentHandler {
 
     private List<ButtonComponent> basicButtonAddons;
 
@@ -28,8 +29,8 @@ public class MultiButtonComponent implements IScreenAddonProvider, IComponentHan
 
     public void clickButton(int id, PlayerEntity playerEntity, CompoundNBT compound) {
         basicButtonAddons.stream()
-                .filter(buttonAddon -> buttonAddon.getId() == id)
-                .forEach(buttonAddon -> buttonAddon.onButtonClicked(playerEntity, compound));
+            .filter(buttonAddon -> buttonAddon.getId() == id)
+            .forEach(buttonAddon -> buttonAddon.onButtonClicked(playerEntity, compound));
     }
 
     @Override
@@ -43,13 +44,16 @@ public class MultiButtonComponent implements IScreenAddonProvider, IComponentHan
     }
 
     @Override
-    public void add(ButtonComponent component) {
-        if (component.getId() == -1) component.setId(basicButtonAddons.size());
-        basicButtonAddons.add(component);
+    public void add(Object... component) {
+        Arrays.stream(component).filter(this::accepts).map(o -> (ButtonComponent) o).forEach(buttonComponent -> {
+            if (buttonComponent.getId() == -1) {
+                buttonComponent.setId(basicButtonAddons.size());
+            }
+            basicButtonAddons.add(buttonComponent);
+        });
     }
 
-    @Override
-    public boolean accepts(Object component) {
+    private boolean accepts(Object component) {
         return component instanceof ButtonComponent;
     }
 }

@@ -7,10 +7,8 @@
 
 package com.hrznstudio.titanium.component;
 
-public interface IComponentHandler<T> {
+public interface IComponentHandler {
 
-    void add(T... component);
-
-    boolean accepts(Object component);
+    void add(Object... component);
 
 }

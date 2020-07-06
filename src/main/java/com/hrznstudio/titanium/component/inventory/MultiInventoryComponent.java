@@ -26,7 +26,7 @@ import java.util.*;
 
 
 public class MultiInventoryComponent<T extends IComponentHarness> implements IScreenAddonProvider, IContainerAddonProvider,
-    ICapabilityHolder<InventoryComponent<T>, MultiInventoryComponent.MultiInvCapabilityHandler<T>>, IComponentHandler<InventoryComponent<T>> {
+    ICapabilityHolder<MultiInventoryComponent.MultiInvCapabilityHandler<T>>, IComponentHandler {
 
     private final LinkedHashSet<InventoryComponent<T>> inventoryHandlers;
     private final Map<FacingUtil.Sideness, LazyOptional<MultiInvCapabilityHandler<T>>> lazyOptionals;
@@ -41,14 +41,15 @@ public class MultiInventoryComponent<T extends IComponentHarness> implements ISc
     }
 
     @Override
-    public void add(@Nonnull InventoryComponent<T> inventoryComponent) {
-        this.inventoryHandlers.add(inventoryComponent);
-        rebuildCapability(new FacingUtil.Sideness[]{null});
-        rebuildCapability(FacingUtil.Sideness.values());
+    public void add(Object... component) {
+        Arrays.stream(component).filter(this::accepts).forEach(inventoryComponent -> {
+            this.inventoryHandlers.add((InventoryComponent<T>) inventoryComponent);
+            rebuildCapability(new FacingUtil.Sideness[]{null});
+            rebuildCapability(FacingUtil.Sideness.values());
+        });
     }
 
-    @Override
-    public boolean accepts(Object component) {
+    private boolean accepts(Object component) {
         return component instanceof InventoryComponent;
     }
 

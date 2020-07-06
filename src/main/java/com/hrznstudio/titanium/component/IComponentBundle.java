@@ -12,6 +12,6 @@ import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
 
 public interface IComponentBundle extends IScreenAddonProvider, IContainerAddonProvider {
 
-    void accept(IComponentHandler<?>... handler);
+    void accept(IComponentHandler... handler);
 
 }
