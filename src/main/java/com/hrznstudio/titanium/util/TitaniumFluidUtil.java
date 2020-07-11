@@ -16,6 +16,9 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 
+/**
+ * This class exists because @{@link FluidUtil}'s tryEmptyContainer doesn't work properly
+ */
 public class TitaniumFluidUtil {
 
     @Nonnull
