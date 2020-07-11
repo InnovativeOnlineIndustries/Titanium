@@ -62,9 +62,9 @@ public class TestTile extends PoweredTile<TestTile> {
                 .setSlotToColorRender(1, DyeColor.ORANGE));
         this.addGuiAddonFactory(() -> new EnergyBarScreenAddon(4, 10, getEnergyStorage()));
         this.addProgressBar(bar = new ProgressBarComponent<TestTile>(40, 20, 500)
-            .setCanIncrease(tileEntity -> true)
-            .setOnFinishWork(() -> System.out.println("WOWOOW"))
-            .setBarDirection(ProgressBarComponent.BarDirection.ARROW_RIGHT)
+                .setCanIncrease(tileEntity -> true)
+                .setOnFinishWork(() -> System.out.println("WOWOOW"))
+                .setBarDirection(ProgressBarComponent.BarDirection.ARROW_RIGHT)
                 .setColor(DyeColor.LIME));
         this.addTank(third = new FluidTankComponent<>("testTank", 8000, 130, 30));
         this.addButton(button = new ButtonComponent(-13, 1, 14, 14) {
