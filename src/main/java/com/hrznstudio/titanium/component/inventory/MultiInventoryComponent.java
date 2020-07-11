@@ -10,9 +10,10 @@ package com.hrznstudio.titanium.component.inventory;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
+import com.hrznstudio.titanium.component.IComponentHandler;
+import com.hrznstudio.titanium.component.IComponentHarness;
 import com.hrznstudio.titanium.component.sideness.ICapabilityHolder;
 import com.hrznstudio.titanium.component.sideness.IFacingComponent;
-import com.hrznstudio.titanium.component.IComponentHarness;
 import com.hrznstudio.titanium.container.addon.IContainerAddon;
 import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
 import com.hrznstudio.titanium.util.FacingUtil;
@@ -25,7 +26,7 @@ import java.util.*;
 
 
 public class MultiInventoryComponent<T extends IComponentHarness> implements IScreenAddonProvider, IContainerAddonProvider,
-        ICapabilityHolder<InventoryComponent<T>, MultiInventoryComponent.MultiInvCapabilityHandler<T>> {
+    ICapabilityHolder<MultiInventoryComponent.MultiInvCapabilityHandler<T>>, IComponentHandler {
 
     private final LinkedHashSet<InventoryComponent<T>> inventoryHandlers;
     private final Map<FacingUtil.Sideness, LazyOptional<MultiInvCapabilityHandler<T>>> lazyOptionals;
@@ -40,10 +41,16 @@ public class MultiInventoryComponent<T extends IComponentHarness> implements ISc
     }
 
     @Override
-    public void add(@Nonnull InventoryComponent<T> inventoryComponent) {
-        this.inventoryHandlers.add(inventoryComponent);
-        rebuildCapability(new FacingUtil.Sideness[]{null});
-        rebuildCapability(FacingUtil.Sideness.values());
+    public void add(Object... component) {
+        Arrays.stream(component).filter(this::accepts).forEach(inventoryComponent -> {
+            this.inventoryHandlers.add((InventoryComponent<T>) inventoryComponent);
+            rebuildCapability(new FacingUtil.Sideness[]{null});
+            rebuildCapability(FacingUtil.Sideness.values());
+        });
+    }
+
+    private boolean accepts(Object component) {
+        return component instanceof InventoryComponent;
     }
 
     private void rebuildCapability(FacingUtil.Sideness[] sides) {
