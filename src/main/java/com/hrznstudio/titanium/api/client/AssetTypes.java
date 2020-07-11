@@ -25,8 +25,8 @@ public class AssetTypes {
     public static final IAssetType<IAsset> PROGRESS_BAR_BORDER_VERTICAL = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
     public static final IAssetType<IAsset> PROGRESS_BAR_VERTICAL = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
     public static final IAssetType<IAsset> PROGRESS_BAR_BACKGROUND_VERTICAL = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
-    public static final IAssetType<IAsset> PROGRESS_BAR_HORIZONTAL = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
-    public static final IAssetType<IAsset> PROGRESS_BAR_BACKGROUND_HORIZONTAL = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
+    public static final IAssetType<IAsset> PROGRESS_BAR_BACKGROUND_ARROW_DOWN = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
+    public static final IAssetType<IAsset> PROGRESS_BAR_ARROW_DOWN = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
     public static final IAssetType<IAsset> BUTTON_SIDENESS_MANAGER = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
     public static final IAssetType<IAsset> AUGMENT_BACKGROUND = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
     public static final IAssetType<IAsset> BUTTON_ARROW_LEFT = new GenericAssetType<>(IAssetType::getDefaultAsset, IAsset.class);
@@ -36,5 +36,7 @@ public class AssetTypes {
     public static final IAssetType<IAsset> ITEM_BACKGROUND = new GenericAssetType<>(IAssetType::getDefaultAsset, IAsset.class);
     public static final IAssetType<IAsset> TEXT_FIELD_ACTIVE = new GenericAssetType<>(IAssetType::getDefaultAsset, IAsset.class);
     public static final IAssetType<IAsset> TEXT_FIELD_INACTIVE = new GenericAssetType<>(IAssetType::getDefaultAsset, IAsset.class);
+    public static final IAssetType<IAsset> PROGRESS_BAR_BACKGROUND_ARROW_HORIZONTAL = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
+    public static final IAssetType<IAsset> PROGRESS_BAR_ARROW_HORIZONTAL = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
 
 }

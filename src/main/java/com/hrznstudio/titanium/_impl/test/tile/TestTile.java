@@ -14,13 +14,13 @@ import com.hrznstudio.titanium.api.IItemStackQuery;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.block.tile.PoweredTile;
+import com.hrznstudio.titanium.client.screen.addon.EnergyBarScreenAddon;
+import com.hrznstudio.titanium.client.screen.addon.StateButtonAddon;
+import com.hrznstudio.titanium.client.screen.addon.StateButtonInfo;
 import com.hrznstudio.titanium.component.button.ButtonComponent;
 import com.hrznstudio.titanium.component.fluid.FluidTankComponent;
 import com.hrznstudio.titanium.component.inventory.SidedInventoryComponent;
 import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
-import com.hrznstudio.titanium.client.screen.addon.EnergyBarScreenAddon;
-import com.hrznstudio.titanium.client.screen.addon.StateButtonAddon;
-import com.hrznstudio.titanium.client.screen.addon.StateButtonInfo;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
@@ -62,9 +62,9 @@ public class TestTile extends PoweredTile<TestTile> {
                 .setSlotToColorRender(1, DyeColor.ORANGE));
         this.addGuiAddonFactory(() -> new EnergyBarScreenAddon(4, 10, getEnergyStorage()));
         this.addProgressBar(bar = new ProgressBarComponent<TestTile>(40, 20, 500)
-                .setCanIncrease(tileEntity -> true)
-                .setOnFinishWork(() -> System.out.println("WOWOOW"))
-                .setBarDirection(ProgressBarComponent.BarDirection.HORIZONTAL_RIGHT)
+            .setCanIncrease(tileEntity -> true)
+            .setOnFinishWork(() -> System.out.println("WOWOOW"))
+            .setBarDirection(ProgressBarComponent.BarDirection.ARROW_RIGHT)
                 .setColor(DyeColor.LIME));
         this.addTank(third = new FluidTankComponent<>("testTank", 8000, 130, 30));
         this.addButton(button = new ButtonComponent(-13, 1, 14, 14) {
