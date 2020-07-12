@@ -9,6 +9,7 @@ package com.hrznstudio.titanium._impl.creative.tile;
 
 import com.hrznstudio.titanium._impl.creative.CreativeFEGeneratorBlock;
 import com.hrznstudio.titanium.api.IFactory;
+import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.block.tile.PoweredTile;
 import com.hrznstudio.titanium.component.energy.EnergyStorageComponent;
 import net.minecraft.entity.player.PlayerEntity;

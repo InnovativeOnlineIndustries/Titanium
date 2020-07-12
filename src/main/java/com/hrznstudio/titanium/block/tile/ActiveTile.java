@@ -15,6 +15,7 @@ import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.block.RotatableBlock;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.client.screen.asset.IHasAssetProvider;
+import com.hrznstudio.titanium.component.IComponentBundle;
 import com.hrznstudio.titanium.component.button.ButtonComponent;
 import com.hrznstudio.titanium.component.button.MultiButtonComponent;
 import com.hrznstudio.titanium.component.filter.MultiFilterComponent;
@@ -66,8 +67,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> implements IScreenAddonProvider,
-        ITickableTileEntity, INamedContainerProvider, IButtonHandler, IFacingComponentHarness, IContainerAddonProvider,
-        IHasAssetProvider {
+    ITickableTileEntity, INamedContainerProvider, IButtonHandler, IFacingComponentHarness, IContainerAddonProvider,
+    IHasAssetProvider {
 
     private MultiInventoryComponent<T> multiInventoryComponent;
     private MultiProgressBarHandler<T> multiProgressBarHandler;
@@ -123,17 +124,13 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
             Capability Handling
          */
     public void addInventory(InventoryComponent<T> handler) {
-        if (multiInventoryComponent == null) {
-            multiInventoryComponent = new MultiInventoryComponent<>();
-        }
+        if (multiInventoryComponent == null) multiInventoryComponent = new MultiInventoryComponent<>();
         multiInventoryComponent.add(handler.setComponentHarness(this.getSelf()));
     }
 
     public void addProgressBar(ProgressBarComponent<T> progressBarComponent) {
-        if (multiProgressBarHandler == null) {
-            multiProgressBarHandler = new MultiProgressBarHandler<>();
-        }
-        multiProgressBarHandler.addBar(progressBarComponent.setComponentHarness(this.getSelf()));
+        if (multiProgressBarHandler == null) multiProgressBarHandler = new MultiProgressBarHandler<>();
+        multiProgressBarHandler.add(progressBarComponent.setComponentHarness(this.getSelf()));
     }
 
     public void addTank(FluidTankComponent<T> tank) {
@@ -143,7 +140,7 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
 
     public void addButton(ButtonComponent button) {
         if (multiButtonComponent == null) multiButtonComponent = new MultiButtonComponent();
-        multiButtonComponent.addButton(button);
+        multiButtonComponent.add(button);
     }
 
     public void addFilter(IFilter<?> filter) {
@@ -151,6 +148,17 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
             multiFilterComponent = new MultiFilterComponent();
         }
         multiFilterComponent.add(filter);
+    }
+
+    public void addBundle(IComponentBundle bundle) {
+        if (multiInventoryComponent == null) multiInventoryComponent = new MultiInventoryComponent<>();
+        if (multiProgressBarHandler == null) multiProgressBarHandler = new MultiProgressBarHandler<>();
+        if (multiTankComponent == null) multiTankComponent = new MultiTankComponent<T>();
+        if (multiButtonComponent == null) multiButtonComponent = new MultiButtonComponent();
+        if (multiFilterComponent == null) multiFilterComponent = new MultiFilterComponent();
+        bundle.accept(multiInventoryComponent, multiProgressBarHandler, multiTankComponent, multiButtonComponent, multiFilterComponent);
+        bundle.getScreenAddons().forEach(this::addGuiAddonFactory);
+        bundle.getContainerAddons().forEach(this::addContainerAddonFactory);
     }
 
     @Nonnull
@@ -319,4 +327,5 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
     public IWorldPosCallable getWorldPosCallable() {
         return this.getWorld() != null ? IWorldPosCallable.of(this.getWorld(), this.getPos()) : IWorldPosCallable.DUMMY;
     }
+
 }

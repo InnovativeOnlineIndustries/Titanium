@@ -110,6 +110,10 @@ public final class DefaultAssetProvider implements IAssetProvider {
     private final IAsset ITEM_BACKGROUND = () -> new Rectangle(177, 166, 18, 18);
     private final IAsset TEXT_FIELD_ACTIVE = () -> new Rectangle(31, 240, 110, 16);
     private final IAsset TEXT_FIELD_INACTIVE = () -> new Rectangle(142, 240, 110, 16);
+    private final IAsset BUTTON_REDSTONE_IGNORED = () -> new Rectangle(196, 166, 14, 14);
+    private final IAsset BUTTON_REDSTONE_NO_REDSTONE = () -> new Rectangle(226, 166, 14, 14);
+    private final IAsset BUTTON_REDSTONE_REDSTONE = () -> new Rectangle(211, 166, 14, 14);
+    private final IAsset BUTTON_REDSTONE_ONCE = () -> new Rectangle(241, 166, 14, 14);
 
     DefaultAssetProvider() {
     }
@@ -165,6 +169,14 @@ public final class DefaultAssetProvider implements IAssetProvider {
             return assetType.castOrDefault(TEXT_FIELD_ACTIVE);
         if (assetType == AssetTypes.TEXT_FIELD_INACTIVE)
             return assetType.castOrDefault(TEXT_FIELD_INACTIVE);
+        if (assetType == AssetTypes.BUTTON_REDSTONE_IGNORED)
+            return assetType.castOrDefault(BUTTON_REDSTONE_IGNORED);
+        if (assetType == AssetTypes.BUTTON_REDSTONE_NO_REDSTONE)
+            return assetType.castOrDefault(BUTTON_REDSTONE_NO_REDSTONE);
+        if (assetType == AssetTypes.BUTTON_REDSTONE_REDSTONE)
+            return assetType.castOrDefault(BUTTON_REDSTONE_REDSTONE);
+        if (assetType == AssetTypes.BUTTON_REDSTONE_ONCE)
+            return assetType.castOrDefault(BUTTON_REDSTONE_ONCE);
         return null;
     }
 }

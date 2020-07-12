@@ -10,13 +10,15 @@ package com.hrznstudio.titanium.component.button;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
+import com.hrznstudio.titanium.component.IComponentHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class MultiButtonComponent implements IScreenAddonProvider {
+public class MultiButtonComponent implements IScreenAddonProvider, IComponentHandler {
 
     private List<ButtonComponent> basicButtonAddons;
 
@@ -24,14 +26,11 @@ public class MultiButtonComponent implements IScreenAddonProvider {
         basicButtonAddons = new ArrayList<>();
     }
 
-    public void addButton(ButtonComponent buttonAddon) {
-        basicButtonAddons.add(buttonAddon.setId(basicButtonAddons.size()));
-    }
 
     public void clickButton(int id, PlayerEntity playerEntity, CompoundNBT compound) {
         basicButtonAddons.stream()
-                .filter(buttonAddon -> buttonAddon.getId() == id)
-                .forEach(buttonAddon -> buttonAddon.onButtonClicked(playerEntity, compound));
+            .filter(buttonAddon -> buttonAddon.getId() == id)
+            .forEach(buttonAddon -> buttonAddon.onButtonClicked(playerEntity, compound));
     }
 
     @Override
@@ -44,4 +43,17 @@ public class MultiButtonComponent implements IScreenAddonProvider {
         return addons;
     }
 
+    @Override
+    public void add(Object... component) {
+        Arrays.stream(component).filter(this::accepts).map(o -> (ButtonComponent) o).forEach(buttonComponent -> {
+            if (buttonComponent.getId() == -1) {
+                buttonComponent.setId(basicButtonAddons.size());
+            }
+            basicButtonAddons.add(buttonComponent);
+        });
+    }
+
+    private boolean accepts(Object component) {
+        return component instanceof ButtonComponent;
+    }
 }

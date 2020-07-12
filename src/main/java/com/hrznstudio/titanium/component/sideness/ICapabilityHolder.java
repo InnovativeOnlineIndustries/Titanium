@@ -13,11 +13,10 @@ import net.minecraftforge.common.util.LazyOptional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public interface ICapabilityHolder<T, R> {
-    void add(@Nonnull T capability);
+public interface ICapabilityHolder<T> {
 
     @Nonnull
-    LazyOptional<R> getCapabilityForSide(@Nullable FacingUtil.Sideness sideness);
+    LazyOptional<T> getCapabilityForSide(@Nullable FacingUtil.Sideness sideness);
 
     boolean handleFacingChange(String handlerName, FacingUtil.Sideness facing, IFacingComponent.FaceMode mode);
 }

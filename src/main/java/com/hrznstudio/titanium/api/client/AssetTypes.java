@@ -36,5 +36,9 @@ public class AssetTypes {
     public static final IAssetType<IAsset> ITEM_BACKGROUND = new GenericAssetType<>(IAssetType::getDefaultAsset, IAsset.class);
     public static final IAssetType<IAsset> TEXT_FIELD_ACTIVE = new GenericAssetType<>(IAssetType::getDefaultAsset, IAsset.class);
     public static final IAssetType<IAsset> TEXT_FIELD_INACTIVE = new GenericAssetType<>(IAssetType::getDefaultAsset, IAsset.class);
+    public static final IAssetType<IAsset> BUTTON_REDSTONE_ONCE = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
+    public static final IAssetType<IAsset> BUTTON_REDSTONE_REDSTONE = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
+    public static final IAssetType<IAsset> BUTTON_REDSTONE_NO_REDSTONE = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
+    public static final IAssetType<IAsset> BUTTON_REDSTONE_IGNORED = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
 
 }
