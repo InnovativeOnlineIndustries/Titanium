@@ -10,9 +10,10 @@ package com.hrznstudio.titanium.block;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.IRecipeProvider;
 import com.hrznstudio.titanium.api.raytrace.DistanceRayTraceResult;
+import com.hrznstudio.titanium.datagenerator.loot.block.BasicBlockLootTables;
+import com.hrznstudio.titanium.datagenerator.loot.block.IBlockLootTableProvider;
 import com.hrznstudio.titanium.module.api.IAlternativeEntries;
 import com.hrznstudio.titanium.module.api.RegistryManager;
-import com.hrznstudio.titanium.recipe.generator.TitaniumLootTableProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.data.IFinishedRecipe;
@@ -21,6 +22,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootTable;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
@@ -44,22 +46,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-public abstract class BasicBlock extends Block implements IAlternativeEntries, IRecipeProvider {
-
-    public static List<BasicBlock> BLOCKS = new ArrayList<>();
-
+public abstract class BasicBlock extends Block implements IAlternativeEntries, IRecipeProvider, IBlockLootTableProvider {
     private ItemGroup itemGroup = ItemGroup.SEARCH;
     private BlockItem item;
 
     public BasicBlock(Properties properties) {
         super(properties);
-        BLOCKS.add(this);
-    }
-
-    public BasicBlock(String name, Properties properties) {
-        super(properties);
-        setRegistryName(name);
-        BLOCKS.add(this);
     }
 
     @Nullable
@@ -191,8 +183,8 @@ public abstract class BasicBlock extends Block implements IAlternativeEntries, I
         return false;
     }
 
-    public void createLootTable(@Nonnull TitaniumLootTableProvider provider) {
-        provider.createSimple(this);
+    public LootTable.Builder getLootTable(@Nonnull BasicBlockLootTables blockLootTables) {
+        return blockLootTables.droppingSelf(this);
     }
 
 }

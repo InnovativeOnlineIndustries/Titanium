@@ -26,10 +26,6 @@ public abstract class RotatableBlock<T extends BasicTile<T>> extends BasicTileBl
         super(properties, tileClass);
     }
 
-    public RotatableBlock(String name, Properties properties, Class<T> tileClass) {
-        super(name, properties, tileClass);
-    }
-
     @Nonnull
     public RotationType getRotationType() {
         return RotationType.NONE;

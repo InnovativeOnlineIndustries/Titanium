@@ -67,8 +67,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> implements IScreenAddonProvider,
-        ITickableTileEntity, INamedContainerProvider, IButtonHandler, IFacingComponentHarness, IContainerAddonProvider,
-        IHasAssetProvider {
+    ITickableTileEntity, INamedContainerProvider, IButtonHandler, IFacingComponentHarness, IContainerAddonProvider,
+    IHasAssetProvider {
 
     private MultiInventoryComponent<T> multiInventoryComponent;
     private MultiProgressBarHandler<T> multiProgressBarHandler;
@@ -327,4 +327,5 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
     public IWorldPosCallable getWorldPosCallable() {
         return this.getWorld() != null ? IWorldPosCallable.of(this.getWorld(), this.getPos()) : IWorldPosCallable.DUMMY;
     }
+
 }

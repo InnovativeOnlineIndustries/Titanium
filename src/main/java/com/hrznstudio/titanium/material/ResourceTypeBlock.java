@@ -32,7 +32,7 @@ public class ResourceTypeBlock extends BasicBlock implements IJsonFile, IJSONGen
     private final IAdvancedResourceType blockResourceType;
 
     public ResourceTypeBlock(ResourceMaterial material, IResourceType type, IAdvancedResourceType blockType, ResourceTypeProperties<Properties> properties) {
-        super(material.getMaterialType() + "_" + type.func_176610_l(), (properties == null ? ((ResourceTypeProperties<Properties>) ResourceTypeProperties.DEFAULTS.get(Block.class)).get() : properties.get())); //getName
+        super((properties == null ? ((ResourceTypeProperties<Properties>) ResourceTypeProperties.DEFAULTS.get(Block.class)).get() : properties.get())); //getName
         this.resourceMaterial = material;
         this.resourceType = type;
         this.blockResourceType = blockType;

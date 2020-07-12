@@ -37,11 +37,6 @@ public abstract class BasicTileBlock<T extends BasicTile<T>> extends BasicBlock 
         this.tileClass = tileClass;
     }
 
-    public BasicTileBlock(String name, Properties properties, Class<T> tileClass) {
-        super(name, properties);
-        this.tileClass = tileClass;
-    }
-
     @Override
     public void addAlternatives(RegistryManager<?> registry) {
         super.addAlternatives(registry);
