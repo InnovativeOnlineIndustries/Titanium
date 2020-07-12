@@ -12,6 +12,7 @@ import com.hrznstudio.titanium._impl.test.assetsystem.NewAssetProviderTest;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.IItemStackQuery;
 import com.hrznstudio.titanium.block.tile.PoweredTile;
+import com.hrznstudio.titanium.component.energy.EnergyStorageComponent;
 import com.hrznstudio.titanium.component.fluid.SidedFluidTankComponent;
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.hrznstudio.titanium.component.inventory.SidedInventoryComponent;
@@ -76,6 +77,7 @@ public class AssetTestTile extends PoweredTile<AssetTestTile> implements ITickab
         realOutput.setColor(DyeColor.RED);
         fluidInput.setColor(DyeColor.LIGHT_BLUE);
         fluidTank.setColor(DyeColor.BLUE);
+        this.setShowEnergy(false);
     }
 
     @Override
@@ -102,5 +104,11 @@ public class AssetTestTile extends PoweredTile<AssetTestTile> implements ITickab
     @Override
     public IAssetProvider getAssetProvider() {
         return NewAssetProviderTest.TEST_PROVIDER;
+    }
+
+    @Nonnull
+    @Override
+    public EnergyStorageComponent<AssetTestTile> createEnergyStorage() {
+        return new EnergyStorageComponent<>(10000, 0, 0);
     }
 }

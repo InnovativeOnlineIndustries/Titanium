@@ -24,6 +24,7 @@ import com.hrznstudio.titanium.client.screen.addon.StateButtonAddon;
 import com.hrznstudio.titanium.client.screen.addon.StateButtonInfo;
 import com.hrznstudio.titanium.component.button.ButtonComponent;
 import com.hrznstudio.titanium.component.button.RedstoneControlButtonComponent;
+import com.hrznstudio.titanium.component.energy.EnergyStorageComponent;
 import com.hrznstudio.titanium.component.fluid.FluidTankComponent;
 import com.hrznstudio.titanium.component.inventory.SidedInventoryComponent;
 import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
@@ -72,7 +73,6 @@ public class TestTile extends PoweredTile<TestTile> implements IRedstoneReader {
             .setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack))
             .setSlotToItemStackRender(0, new ItemStack(Items.STONE_PICKAXE))
                 .setSlotToColorRender(1, DyeColor.ORANGE));
-        this.addGuiAddonFactory(() -> new EnergyBarScreenAddon(4, 10, getEnergyStorage()));
         this.addProgressBar(bar = new ProgressBarComponent<TestTile>(40, 20, 500)
             .setCanIncrease(tileEntity -> redstoneManager.getAction().canRun(tileEntity.getEnvironmentValue(false, null)) && redstoneManager.shouldWork())
             .setOnFinishWork(() -> {
@@ -140,6 +140,11 @@ public class TestTile extends PoweredTile<TestTile> implements IRedstoneReader {
         return ActionResultType.PASS;
     }
 
+    @Nonnull
+    @Override
+    public EnergyStorageComponent<TestTile> createEnergyStorage() {
+        return new EnergyStorageComponent<>(10000, 4, 10);
+    }
 
     @Override
     public IRedstoneState getEnvironmentValue(boolean strongPower, Direction direction) {

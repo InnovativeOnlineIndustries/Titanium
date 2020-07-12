@@ -37,6 +37,7 @@ public class MachineTestTile extends MachineTile<MachineTestTile> {
                 ++pos;
             }
         }
+        this.setShowEnergy(false);
         this.addBundle(tankBundle = new TankInteractionBundle<>(() -> this.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY), 175, 94, this, 10));
     }
 

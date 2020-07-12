@@ -11,7 +11,7 @@ import com.hrznstudio.titanium._impl.creative.CreativeFEGeneratorBlock;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.block.tile.PoweredTile;
-import com.hrznstudio.titanium.energy.NBTEnergyHandler;
+import com.hrznstudio.titanium.component.energy.EnergyStorageComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
@@ -26,11 +26,6 @@ public class CreativeFEGeneratorTile extends PoweredTile<CreativeFEGeneratorTile
 
     public CreativeFEGeneratorTile() {
         super(CreativeFEGeneratorBlock.INSTANCE);
-    }
-
-    @Override
-    protected IFactory<NBTEnergyHandler> getEnergyHandlerFactory() {
-        return () -> new NBTEnergyHandler(this, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
     }
 
     @Override
@@ -61,5 +56,11 @@ public class CreativeFEGeneratorTile extends PoweredTile<CreativeFEGeneratorTile
             return ActionResultType.SUCCESS;
         }
         return ActionResultType.PASS;
+    }
+
+    @Nonnull
+    @Override
+    public EnergyStorageComponent<CreativeFEGeneratorTile> createEnergyStorage() {
+        return new EnergyStorageComponent<>(Integer.MAX_VALUE, 0, 0);
     }
 }

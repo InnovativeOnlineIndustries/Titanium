@@ -24,7 +24,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 public class TwentyFourTestTile extends PoweredTile<TwentyFourTestTile> implements ITickableTileEntity {
-
     @Save
     private ProgressBarComponent<TwentyFourTestTile> bar;
     @Save
@@ -43,7 +42,6 @@ public class TwentyFourTestTile extends PoweredTile<TwentyFourTestTile> implemen
         this.addInventory(second = new InventoryComponent<TwentyFourTestTile>("test2", 80, 30, 1)
                 .setComponentHarness(this)
                 .setInputFilter(IItemStackQuery.ANYTHING.toSlotFilter()));
-        this.addGuiAddonFactory(() -> new EnergyBarScreenAddon(4, 10, getEnergyStorage()));
         this.addProgressBar(bar = new ProgressBarComponent<TwentyFourTestTile>(20, 20, 500)
                 .setCanIncrease(componentHarness -> true)
                 .setOnFinishWork(() -> System.out.println("WOWOOW")));

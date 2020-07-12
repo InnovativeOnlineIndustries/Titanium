@@ -12,6 +12,7 @@ import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.client.screen.addon.EnergyBarScreenAddon;
+import com.hrznstudio.titanium.component.IComponentHarness;
 import com.hrznstudio.titanium.container.addon.IContainerAddon;
 import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
 import com.hrznstudio.titanium.container.addon.IntReferenceHolderAddon;
@@ -20,12 +21,16 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.energy.EnergyStorage;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
-public class EnergyStorageComponent extends EnergyStorage implements INBTSerializable<CompoundNBT>, IScreenAddonProvider,
-        IContainerAddonProvider {
+public class EnergyStorageComponent<T extends IComponentHarness> extends EnergyStorage implements INBTSerializable<CompoundNBT>,
+    IScreenAddonProvider, IContainerAddonProvider {
+
     private final int xPos;
     private final int yPos;
+
+    private T componentHarness;
 
     public EnergyStorageComponent(int maxCapacity, int xPos, int yPos) {
         this(maxCapacity, maxCapacity, xPos, yPos);
@@ -42,6 +47,24 @@ public class EnergyStorageComponent extends EnergyStorage implements INBTSeriali
     }
 
     @Override
+    public int receiveEnergy(int maxReceive, boolean simulate) {
+        int amount = super.receiveEnergy(maxReceive, simulate);
+        if (!simulate && amount > 0) {
+            this.update();
+        }
+        return amount;
+    }
+
+    @Override
+    public int extractEnergy(int maxExtract, boolean simulate) {
+        int amount = super.extractEnergy(maxExtract, simulate);
+        if (!simulate && amount > 0) {
+            this.update();
+        }
+        return amount;
+    }
+
+    @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = new CompoundNBT();
         nbt.putInt("energy", this.energy);
@@ -54,6 +77,7 @@ public class EnergyStorageComponent extends EnergyStorage implements INBTSeriali
         } else {
             this.energy = Math.max(energy, 0);
         }
+        this.update();
     }
 
     @Override
@@ -62,15 +86,29 @@ public class EnergyStorageComponent extends EnergyStorage implements INBTSeriali
     }
 
     @Override
+    @Nonnull
     public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
-        return Lists.newArrayList(() -> new EnergyBarScreenAddon(xPos, yPos, this));
+        return Lists.newArrayList(
+            () -> new EnergyBarScreenAddon(xPos, yPos, this)
+        );
     }
 
     @Override
+    @Nonnull
     public List<IFactory<? extends IContainerAddon>> getContainerAddons() {
         return Lists.newArrayList(
-                () -> new IntReferenceHolderAddon(new FunctionReferenceHolder(this::setEnergyStored, this::getEnergyStored))
+            () -> new IntReferenceHolderAddon(new FunctionReferenceHolder(this::setEnergyStored, this::getEnergyStored))
         );
+    }
+
+    public void setComponentHarness(T componentHarness) {
+        this.componentHarness = componentHarness;
+    }
+
+    private void update() {
+        if (this.componentHarness != null) {
+            this.componentHarness.markComponentForUpdate(true);
+        }
     }
 }
 

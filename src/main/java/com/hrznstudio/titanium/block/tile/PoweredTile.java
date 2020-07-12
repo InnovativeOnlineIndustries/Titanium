@@ -10,8 +10,10 @@ package com.hrznstudio.titanium.block.tile;
 import com.google.common.collect.Sets;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.IFactory;
+import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.block.BasicTileBlock;
-import com.hrznstudio.titanium.energy.NBTEnergyHandler;
+import com.hrznstudio.titanium.component.energy.EnergyStorageComponent;
+import com.hrznstudio.titanium.container.addon.IContainerAddon;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -20,37 +22,66 @@ import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Set;
 
 public abstract class PoweredTile<T extends PoweredTile<T>> extends ActiveTile<T> {
     @Save
-    private NBTEnergyHandler energyHandler;
-    private LazyOptional<IEnergyStorage> energyCap;
+    private final EnergyStorageComponent<T> energyStorage;
+    private final LazyOptional<IEnergyStorage> lazyEnergyStorage = LazyOptional.of(this::getEnergyStorage);
+
+    private boolean showEnergy = true;
 
     public PoweredTile(BasicTileBlock<T> basicTileBlock) {
         super(basicTileBlock);
-        this.energyHandler = getEnergyHandlerFactory().create();
-        this.energyCap = LazyOptional.of(() -> this.energyHandler);
+        this.energyStorage = this.createEnergyStorage();
+        this.energyStorage.setComponentHarness(this.getSelf());
     }
 
-    protected IFactory<NBTEnergyHandler> getEnergyHandlerFactory() {
-        return () -> new NBTEnergyHandler(this, 10000);
+    @Nonnull
+    public EnergyStorageComponent<T> getEnergyStorage() {
+        return energyStorage;
     }
 
-    public NBTEnergyHandler getEnergyStorage() {
-        return energyHandler;
+    @Nonnull
+    protected EnergyStorageComponent<T> createEnergyStorage() {
+        return new EnergyStorageComponent<>(10000, 4, 10);
     }
 
     public Set<Direction> getValidEnergyFaces() {
         return Sets.newHashSet(Direction.values());
     }
 
+    @Override
+    @Nonnull
+    public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
+        List<IFactory<? extends IScreenAddon>> screenAddons = super.getScreenAddons();
+        if (showEnergy) {
+            screenAddons.addAll(this.getEnergyStorage().getScreenAddons());
+        }
+        return screenAddons;
+    }
+
+    @Override
+    @Nonnull
+    public List<IFactory<? extends IContainerAddon>> getContainerAddons() {
+        List<IFactory<? extends IContainerAddon>> containerAddons = super.getContainerAddons();
+        if (showEnergy) {
+            containerAddons.addAll(this.getEnergyStorage().getContainerAddons());
+        }
+        return containerAddons;
+    }
+
     @Nonnull
     @Override
     public <U> LazyOptional<U> getCapability(@Nonnull Capability<U> cap, @Nullable Direction side) {
         if (cap == CapabilityEnergy.ENERGY) {
-            return energyCap.cast();
+            return lazyEnergyStorage.cast();
         }
         return super.getCapability(cap, side);
+    }
+
+    public void setShowEnergy(boolean showEnergy) {
+        this.showEnergy = showEnergy;
     }
 }
