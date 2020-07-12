@@ -10,13 +10,15 @@ package com.hrznstudio.titanium.block.tile;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.block.BasicTileBlock;
+import com.hrznstudio.titanium.component.energy.EnergyStorageComponent;
 import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
 import com.hrznstudio.titanium.client.screen.addon.EnergyBarScreenAddon;
-import com.hrznstudio.titanium.energy.NBTEnergyHandler;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.energy.CapabilityEnergy;
+
+import javax.annotation.Nonnull;
 
 public abstract class GeneratorTile<T extends GeneratorTile<T>> extends PoweredTile<T> {
 
@@ -25,7 +27,6 @@ public abstract class GeneratorTile<T extends GeneratorTile<T>> extends PoweredT
 
     public GeneratorTile(BasicTileBlock<T> basicTileBlock) {
         super(basicTileBlock);
-        this.addGuiAddonFactory(() -> new EnergyBarScreenAddon(10, 20, getEnergyStorage()));
         this.addProgressBar(progressBar = getProgressBar()
                 .setComponentHarness(this.getSelf())
                 .setCanIncrease(tileEntity -> !isSmart() || this.getEnergyCapacity() - this.getEnergyStorage().getEnergyStored() >= getEnergyProducedEveryTick())
@@ -36,13 +37,8 @@ public abstract class GeneratorTile<T extends GeneratorTile<T>> extends PoweredT
                     markForUpdate();
                 })
                 .setCanReset(tileEntity -> canStart() && progressBar.getProgress() == 0)
-                .setOnTickWork(() -> this.getEnergyStorage().receiveEnergyForced(getEnergyProducedEveryTick()))
+                .setOnTickWork(() -> this.getEnergyStorage().receiveEnergy(getEnergyProducedEveryTick(), false))
         );
-    }
-
-    @Override
-    protected IFactory<NBTEnergyHandler> getEnergyHandlerFactory() {
-        return () -> new NBTEnergyHandler(this, getEnergyCapacity(), 0, getExtractingEnergy());
     }
 
     /**
@@ -110,5 +106,11 @@ public abstract class GeneratorTile<T extends GeneratorTile<T>> extends PoweredT
                 });
             }
         }
+    }
+
+    @Nonnull
+    @Override
+    protected EnergyStorageComponent<T> createEnergyStorage() {
+        return new EnergyStorageComponent<>(10000, 10, 20);
     }
 }

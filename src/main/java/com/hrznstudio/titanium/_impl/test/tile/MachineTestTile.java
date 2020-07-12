@@ -33,6 +33,7 @@ public class MachineTestTile extends MachineTile<MachineTestTile> {
                 ++pos;
             }
         }
+        this.setShowEnergy(false);
     }
 
     @Nonnull
