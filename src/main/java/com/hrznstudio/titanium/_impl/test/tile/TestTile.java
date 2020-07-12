@@ -80,7 +80,7 @@ public class TestTile extends PoweredTile<TestTile> implements IRedstoneReader {
                 System.out.println(redstoneManager.getAction());
                 System.out.println("WOWOOW");
             })
-            .setBarDirection(ProgressBarComponent.BarDirection.HORIZONTAL_RIGHT)
+                .setBarDirection(ProgressBarComponent.BarDirection.ARROW_RIGHT)
             .setCanReset(testTile -> bar.getProgress() >= bar.getMaxProgress())
                 .setColor(DyeColor.LIME));
         this.addTank(third = new FluidTankComponent<>("testTank", 8000, 130, 30));
