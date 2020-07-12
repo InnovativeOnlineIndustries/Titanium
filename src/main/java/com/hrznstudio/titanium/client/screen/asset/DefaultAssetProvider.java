@@ -100,8 +100,8 @@ public final class DefaultAssetProvider implements IAssetProvider {
     private final IAsset BUTTON_SIDENESS_PULL = () -> new Rectangle(196, 31, 14, 14);
     private final IAsset BUTTON_SIDENESS_PUSH = () -> new Rectangle(196, 46, 14, 14);
     private final IAsset BUTTON_SIDENESS_MANAGER = () -> new Rectangle(1, 231, 14, 14);
-    private final IAsset PROGRESS_BAR_HORIZONTAL = () -> new Rectangle(177, 77, 22, 16);
-    private final IAsset PROGRESS_BAR_BACKGROUND_HORIZONTAL = () -> new Rectangle(177, 61, 22, 15);
+    private final IAsset PROGRESS_BAR_ARROW_HORIZONTAL = () -> new Rectangle(177, 77, 22, 16);
+    private final IAsset PROGRESS_BAR_BACKGROUND_ARROW_HORIZONTAL = () -> new Rectangle(177, 61, 22, 15);
     private final IAsset AUGMENT_BACKGROUND = () -> new Rectangle(212, 61, 30, 84);
     private final IAsset BUTTON_ARROW_UP = () -> new Rectangle(177, 151, 14, 14);
     private final IAsset BUTTON_ARROW_RIGHT = () -> new Rectangle(192, 151, 14, 14);
@@ -114,6 +114,8 @@ public final class DefaultAssetProvider implements IAssetProvider {
     private final IAsset BUTTON_REDSTONE_NO_REDSTONE = () -> new Rectangle(226, 166, 14, 14);
     private final IAsset BUTTON_REDSTONE_REDSTONE = () -> new Rectangle(211, 166, 14, 14);
     private final IAsset BUTTON_REDSTONE_ONCE = () -> new Rectangle(241, 166, 14, 14);
+    private final IAsset PROGRESS_BAR_ARROW_DOWN = () -> new Rectangle(221, 211, 15, 23);
+    private final IAsset PROGRESS_BAR_BACKGROUND_ARROW_DOWN = () -> new Rectangle(221, 185, 15, 23);
 
     DefaultAssetProvider() {
     }
@@ -149,10 +151,10 @@ public final class DefaultAssetProvider implements IAssetProvider {
             return assetType.castOrDefault(BUTTON_SIDENESS_PUSH);
         if (assetType == AssetTypes.BUTTON_SIDENESS_MANAGER)
             return assetType.castOrDefault(BUTTON_SIDENESS_MANAGER);
-        if (assetType == AssetTypes.PROGRESS_BAR_BACKGROUND_HORIZONTAL)
-            return assetType.castOrDefault(PROGRESS_BAR_BACKGROUND_HORIZONTAL);
-        if (assetType == AssetTypes.PROGRESS_BAR_HORIZONTAL)
-            return assetType.castOrDefault(PROGRESS_BAR_HORIZONTAL);
+        if (assetType == AssetTypes.PROGRESS_BAR_BACKGROUND_ARROW_HORIZONTAL)
+            return assetType.castOrDefault(PROGRESS_BAR_BACKGROUND_ARROW_HORIZONTAL);
+        if (assetType == AssetTypes.PROGRESS_BAR_ARROW_HORIZONTAL)
+            return assetType.castOrDefault(PROGRESS_BAR_ARROW_HORIZONTAL);
         if (assetType == AssetTypes.AUGMENT_BACKGROUND)
             return assetType.castOrDefault(AUGMENT_BACKGROUND);
         if (assetType == AssetTypes.BUTTON_ARROW_LEFT)
@@ -177,6 +179,10 @@ public final class DefaultAssetProvider implements IAssetProvider {
             return assetType.castOrDefault(BUTTON_REDSTONE_REDSTONE);
         if (assetType == AssetTypes.BUTTON_REDSTONE_ONCE)
             return assetType.castOrDefault(BUTTON_REDSTONE_ONCE);
+        if (assetType == AssetTypes.PROGRESS_BAR_ARROW_DOWN)
+            return assetType.castOrDefault(PROGRESS_BAR_ARROW_DOWN);
+        if (assetType == AssetTypes.PROGRESS_BAR_BACKGROUND_ARROW_DOWN)
+            return assetType.castOrDefault(PROGRESS_BAR_BACKGROUND_ARROW_DOWN);
         return null;
     }
 }
