@@ -10,7 +10,6 @@ package com.hrznstudio.titanium.block.tile;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.IMachine;
-import com.hrznstudio.titanium.api.augment.IAugment;
 import com.hrznstudio.titanium.api.augment.IAugmentType;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
@@ -19,6 +18,7 @@ import com.hrznstudio.titanium.client.screen.addon.AssetScreenAddon;
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.hrznstudio.titanium.component.inventory.SidedInventoryComponent;
 import com.hrznstudio.titanium.component.sideness.IFacingComponent;
+import com.hrznstudio.titanium.item.AugmentController;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
@@ -38,9 +38,9 @@ public abstract class MachineTile<T extends MachineTile<T>> extends PoweredTile<
     public MachineTile(BasicTileBlock<T> basicTileBlock) {
         super(basicTileBlock);
         addInventory(this.augmentInventory = (SidedInventoryComponent<T>) getAugmentFactory()
-                .create()
-                .setComponentHarness(this.getSelf())
-                .setInputFilter((stack, integer) -> stack.getItem() instanceof IAugment && canAcceptAugment((IAugment) stack.getItem())));
+            .create()
+            .setComponentHarness(this.getSelf())
+            .setInputFilter((stack, integer) -> new AugmentController(stack).isAugment() && canAcceptAugment(stack)));
         addGuiAddonFactory(getAugmentBackground());
         for (FacingUtil.Sideness value : FacingUtil.Sideness.values()) {
             augmentInventory.getFacingModes().put(value, IFacingComponent.FaceMode.NONE);
@@ -58,18 +58,18 @@ public abstract class MachineTile<T extends MachineTile<T>> extends PoweredTile<
     }
 
     @Override
-    public boolean canAcceptAugment(IAugment augment) {
-        return augment.canWorkIn(this);
+    public boolean canAcceptAugment(ItemStack augment) {
+        return new AugmentController(augment).isAugment();
     }
 
     @Override
-    public List<IAugment> getInstalledAugments() {
-        return getItemStackAugments().stream().filter(item -> item.getItem() instanceof IAugment).map(stack -> (IAugment) stack.getItem()).collect(Collectors.toList());
+    public List<AugmentController> getInstalledAugments() {
+        return getItemStackAugments().stream().map(AugmentController::new).filter(AugmentController::isAugment).collect(Collectors.toList());
     }
 
     @Override
-    public List<IAugment> getInstalledAugments(IAugmentType filter) {
-        return getInstalledAugments().stream().filter(iAugment -> iAugment.getAugmentType().getType().equals(filter.getType())).collect(Collectors.toList());
+    public List<AugmentController> getInstalledAugments(IAugmentType filter) {
+        return getItemStackAugments().stream().map(AugmentController::new).filter(AugmentController::isAugment).filter(augmentController -> augmentController.hasType(filter)).collect(Collectors.toList());
     }
 
     @Override

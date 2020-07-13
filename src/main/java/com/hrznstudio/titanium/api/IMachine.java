@@ -7,8 +7,9 @@
 
 package com.hrznstudio.titanium.api;
 
-import com.hrznstudio.titanium.api.augment.IAugment;
 import com.hrznstudio.titanium.api.augment.IAugmentType;
+import com.hrznstudio.titanium.item.AugmentController;
+import net.minecraft.item.ItemStack;
 
 import java.util.List;
 
@@ -18,11 +19,11 @@ public interface IMachine {
 
     boolean isPaused();
 
-    boolean canAcceptAugment(IAugment augment);
+    boolean canAcceptAugment(ItemStack augment);
 
-    List<IAugment> getInstalledAugments();
+    List<AugmentController> getInstalledAugments();
 
-    List<IAugment> getInstalledAugments(IAugmentType filter);
+    List<AugmentController> getInstalledAugments(IAugmentType filter);
 
     boolean hasAugmentInstalled(IAugmentType augmentType);
 
