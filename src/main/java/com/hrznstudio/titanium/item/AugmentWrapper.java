@@ -4,13 +4,13 @@ import com.hrznstudio.titanium.api.augment.IAugmentType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 
-public class AugmentController {
+public class AugmentWrapper {
 
     public static final String AUGMENT_NBT = "TitaniumAugment";
 
     private final ItemStack augment;
 
-    public AugmentController(ItemStack augment) {
+    public AugmentWrapper(ItemStack augment) {
         this.augment = augment;
     }
 
@@ -26,7 +26,7 @@ public class AugmentController {
         return hasType(type) ? this.augment.getTag().getCompound(AUGMENT_NBT).getFloat(type.getType()) : 0f;
     }
 
-    public AugmentController setType(IAugmentType type, float amount) {
+    public AugmentWrapper setType(IAugmentType type, float amount) {
         CompoundNBT nbt = this.augment.getOrCreateTag();
         CompoundNBT augmentNBT = nbt.contains(AUGMENT_NBT) ? nbt.getCompound(AUGMENT_NBT) : new CompoundNBT();
         augmentNBT.putFloat(type.getType(), amount);
