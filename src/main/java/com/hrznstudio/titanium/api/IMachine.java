@@ -8,7 +8,6 @@
 package com.hrznstudio.titanium.api;
 
 import com.hrznstudio.titanium.api.augment.IAugmentType;
-import com.hrznstudio.titanium.item.AugmentWrapper;
 import net.minecraft.item.ItemStack;
 
 import java.util.List;
@@ -21,9 +20,9 @@ public interface IMachine {
 
     boolean canAcceptAugment(ItemStack augment);
 
-    List<AugmentWrapper> getInstalledAugments();
+    List<ItemStack> getInstalledAugments();
 
-    List<AugmentWrapper> getInstalledAugments(IAugmentType filter);
+    List<ItemStack> getInstalledAugments(IAugmentType filter);
 
     boolean hasAugmentInstalled(IAugmentType augmentType);
 

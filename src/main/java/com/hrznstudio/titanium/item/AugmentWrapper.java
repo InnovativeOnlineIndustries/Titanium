@@ -15,30 +15,23 @@ public class AugmentWrapper {
 
     public static final String AUGMENT_NBT = "TitaniumAugment";
 
-    private final ItemStack augment;
-
-    public AugmentWrapper(ItemStack augment) {
-        this.augment = augment;
+    public static boolean isAugment(ItemStack augment) {
+        return augment.hasTag() && augment.getTag().contains(AUGMENT_NBT);
     }
 
-    public boolean isAugment() {
-        return this.augment.hasTag() && this.augment.getTag().contains(AUGMENT_NBT);
+    public static boolean hasType(ItemStack augment, IAugmentType type) {
+        return isAugment(augment) && augment.getTag().getCompound(AUGMENT_NBT).contains(type.getType());
     }
 
-    public boolean hasType(IAugmentType type) {
-        return isAugment() && this.augment.getTag().getCompound(AUGMENT_NBT).contains(type.getType());
+    public static float getType(ItemStack augment, IAugmentType type) {
+        return hasType(augment, type) ? augment.getTag().getCompound(AUGMENT_NBT).getFloat(type.getType()) : 0f;
     }
 
-    public float getType(IAugmentType type) {
-        return hasType(type) ? this.augment.getTag().getCompound(AUGMENT_NBT).getFloat(type.getType()) : 0f;
-    }
-
-    public AugmentWrapper setType(IAugmentType type, float amount) {
-        CompoundNBT nbt = this.augment.getOrCreateTag();
+    public static void setType(ItemStack augment, IAugmentType type, float amount) {
+        CompoundNBT nbt = augment.getOrCreateTag();
         CompoundNBT augmentNBT = nbt.contains(AUGMENT_NBT) ? nbt.getCompound(AUGMENT_NBT) : new CompoundNBT();
         augmentNBT.putFloat(type.getType(), amount);
         nbt.put(AUGMENT_NBT, augmentNBT);
-        this.augment.setTag(nbt);
-        return this;
+        augment.setTag(nbt);
     }
 }

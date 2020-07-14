@@ -40,7 +40,7 @@ public abstract class MachineTile<T extends MachineTile<T>> extends PoweredTile<
         addInventory(this.augmentInventory = (SidedInventoryComponent<T>) getAugmentFactory()
             .create()
             .setComponentHarness(this.getSelf())
-            .setInputFilter((stack, integer) -> new AugmentWrapper(stack).isAugment() && canAcceptAugment(stack)));
+            .setInputFilter((stack, integer) -> AugmentWrapper.isAugment(stack) && canAcceptAugment(stack)));
         addGuiAddonFactory(getAugmentBackground());
         for (FacingUtil.Sideness value : FacingUtil.Sideness.values()) {
             augmentInventory.getFacingModes().put(value, IFacingComponent.FaceMode.NONE);
@@ -59,17 +59,17 @@ public abstract class MachineTile<T extends MachineTile<T>> extends PoweredTile<
 
     @Override
     public boolean canAcceptAugment(ItemStack augment) {
-        return new AugmentWrapper(augment).isAugment();
+        return AugmentWrapper.isAugment(augment);
     }
 
     @Override
-    public List<AugmentWrapper> getInstalledAugments() {
-        return getItemStackAugments().stream().map(AugmentWrapper::new).filter(AugmentWrapper::isAugment).collect(Collectors.toList());
+    public List<ItemStack> getInstalledAugments() {
+        return getItemStackAugments().stream().filter(AugmentWrapper::isAugment).collect(Collectors.toList());
     }
 
     @Override
-    public List<AugmentWrapper> getInstalledAugments(IAugmentType filter) {
-        return getItemStackAugments().stream().map(AugmentWrapper::new).filter(AugmentWrapper::isAugment).filter(augmentController -> augmentController.hasType(filter)).collect(Collectors.toList());
+    public List<ItemStack> getInstalledAugments(IAugmentType filter) {
+        return getItemStackAugments().stream().filter(AugmentWrapper::isAugment).filter(stack -> AugmentWrapper.hasType(stack, filter)).collect(Collectors.toList());
     }
 
     @Override
