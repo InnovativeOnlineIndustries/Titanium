@@ -9,6 +9,7 @@ package com.hrznstudio.titanium.api.augment;
 
 public class AugmentTypes {
 
-    public static final IAugmentType SPEED = () -> "speed";
+    public static final IAugmentType SPEED = () -> "Speed";
+    public static final IAugmentType EFFICIENCY = () -> "Efficiency";
 
 }
