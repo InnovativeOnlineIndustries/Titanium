@@ -52,6 +52,7 @@ public class TankInteractionBundle<T extends BasicTile & IComponentHarness> impl
             .setSlotToItemStackRender(0, new ItemStack(Items.BUCKET))
             .setOutputFilter((stack, integer) -> false)
             .setSlotToColorRender(0, DyeColor.BLUE)
+            .setInputFilter((stack, integer) -> stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).isPresent())
             .setComponentHarness(componentHarness);
         this.output = new InventoryComponent<T>("tank_output", posX + 5, posY + 60, 1)
             .setSlotToItemStackRender(0, new ItemStack(Items.BUCKET))
