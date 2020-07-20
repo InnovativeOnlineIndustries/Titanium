@@ -16,13 +16,14 @@ import net.minecraft.data.loot.BlockLootTables;
 import net.minecraft.loot.LootParameterSet;
 import net.minecraft.loot.LootParameterSets;
 import net.minecraft.loot.LootTable;
+import net.minecraft.loot.ValidationTracker;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.NonNullLazy;
-import net.minecraftforge.common.util.NonNullSupplier;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -45,5 +46,10 @@ public class TitaniumLootTableProvider extends LootTableProvider {
 
     protected BlockLootTables createBlockLootTables() {
         return new BasicBlockLootTables(blocksToProcess);
+    }
+
+    @Override
+    protected void validate(Map<ResourceLocation, LootTable> map, ValidationTracker validationtracker) {
+        //super.validate(map, validationtracker);
     }
 }
