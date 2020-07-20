@@ -202,7 +202,7 @@ task makeChangelog(type: GitChangelogTask) {
   file = new File("CHANGELOG.md")
   untaggedName = "Version ${project.version}"
   fromCommit = "6a5a3df3665643ea181873312e3801db7c662686"
-  fromRef = "refs/tags/3.0.0"
+  fromRef = "refs/tags/2.4.0"
   toRef = "release-1.16"
   templateContent = file("changelog.mustache").getText("UTF-8")
 }
