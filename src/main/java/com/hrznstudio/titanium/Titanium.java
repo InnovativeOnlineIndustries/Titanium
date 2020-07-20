@@ -14,13 +14,13 @@ import com.hrznstudio.titanium._impl.test.TestBlock;
 import com.hrznstudio.titanium._impl.test.TwentyFourTestBlock;
 import com.hrznstudio.titanium._impl.test.recipe.TestSerializableRecipe;
 import com.hrznstudio.titanium.annotation.plugin.FeaturePlugin;
-import com.hrznstudio.titanium.block.BasicBlock;
 import com.hrznstudio.titanium.capability.CapabilityItemStackHolder;
 import com.hrznstudio.titanium.client.screen.container.BasicAddonScreen;
 import com.hrznstudio.titanium.command.RewardCommand;
 import com.hrznstudio.titanium.command.RewardGrantCommand;
 import com.hrznstudio.titanium.container.BasicAddonContainer;
 import com.hrznstudio.titanium.datagenerator.loot.TitaniumLootTableProvider;
+import com.hrznstudio.titanium.datagenerator.model.BlockItemModelGeneratorProvider;
 import com.hrznstudio.titanium.event.handler.EventManager;
 import com.hrznstudio.titanium.material.ResourceRegistry;
 import com.hrznstudio.titanium.module.Feature;
@@ -31,7 +31,6 @@ import com.hrznstudio.titanium.network.locator.LocatorTypes;
 import com.hrznstudio.titanium.network.messages.ButtonClickNetworkMessage;
 import com.hrznstudio.titanium.plugin.PluginManager;
 import com.hrznstudio.titanium.recipe.condition.ContentExistsConditionSerializer;
-import com.hrznstudio.titanium.datagenerator.model.BlockItemModelGeneratorProvider;
 import com.hrznstudio.titanium.recipe.generator.titanium.JsonRecipeSerializerProvider;
 import com.hrznstudio.titanium.recipe.generator.titanium.ResourceRegistryProvider;
 import com.hrznstudio.titanium.recipe.shapelessenchant.ShapelessEnchantSerializer;
@@ -213,7 +212,7 @@ public class Titanium extends ModuleController {
     }
 
     private void onServerStart(FMLServerStartingEvent event) {
-        RewardCommand.register(event.getCommandDispatcher());
-        RewardGrantCommand.register(event.getCommandDispatcher());
+        RewardCommand.register(event.getServer().getCommandManager().getDispatcher());
+        RewardGrantCommand.register(event.getServer().getCommandManager().getDispatcher());
     }
 }

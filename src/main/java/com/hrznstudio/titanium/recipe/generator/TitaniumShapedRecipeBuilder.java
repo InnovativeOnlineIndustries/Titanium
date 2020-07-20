@@ -11,7 +11,9 @@ import net.minecraft.advancements.criterion.InventoryChangeTrigger;
 import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.data.ShapedRecipeBuilder;
+import net.minecraft.item.Item;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.ConditionalRecipe;
@@ -55,6 +57,15 @@ public class TitaniumShapedRecipeBuilder extends ShapedRecipeBuilder implements 
         } else {
             this.build(consumerIn, resourceLocation);
         }
+    }
+
+    @Override
+    public ShapedRecipeBuilder key(Character symbol, ITag<Item> tagIn) {
+        if (!this.criterion) {
+            this.criterion = true;
+            addCriterion("has_item", InventoryChangeTrigger.Instance.forItems(ItemPredicate.Builder.create().tag(tagIn).build()));
+        }
+        return super.key(symbol, tagIn);
     }
 
     @Override

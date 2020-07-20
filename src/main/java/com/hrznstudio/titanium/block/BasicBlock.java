@@ -73,15 +73,14 @@ public abstract class BasicBlock extends Block implements IAlternativeEntries, I
 //        return 1.5F;
 //    }
 
-
-    @Nullable
-    @Override
-    public RayTraceResult getRayTraceResult(BlockState state, World world, BlockPos pos, Vector3d start, Vector3d end, RayTraceResult original) {
-        if (hasCustomBoxes(state, world, pos)) {
-            return rayTraceBoxesClosest(start, end, pos, getBoundingBoxes(state, world, pos));
-        }
-        return super.getRayTraceResult(state, world, pos, start, end, original);
-    }
+    //@Nullable
+    //@Override
+    //public RayTraceResult getRayTraceResult(BlockState state, World world, BlockPos pos, Vector3d start, Vector3d end, RayTraceResult original) {
+    //    if (hasCustomBoxes(state, world, pos)) {
+    //        return rayTraceBoxesClosest(start, end, pos, getBoundingBoxes(state, world, pos));
+    //    }
+    //    return super.getRayTraceResult(state, world, pos, start, end, original);
+    //}
 
     @Override
     @Nonnull
