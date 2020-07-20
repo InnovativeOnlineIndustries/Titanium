@@ -45,4 +45,9 @@ public class BasicBlockLootTables extends BlockLootTables {
                 .rolls(ConstantRange.of(1))
                 .addEntry(ItemLootEntry.builder(itemProvider))));
     }
+
+    @Override
+    protected Iterable<Block> getKnownBlocks() {
+        return blocksToProcess.get();
+    }
 }
