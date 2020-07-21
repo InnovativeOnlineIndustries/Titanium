@@ -20,9 +20,7 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.io.IOException;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 /**
@@ -57,7 +55,8 @@ public class GenericSerializer<T extends SerializableRecipe> extends ForgeRegist
                 }
             }
             return recipe;
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | NoSuchFieldException e) {
+        } catch (Exception e) {
+            Titanium.LOGGER.catching(e);
             throw new JsonParseException(e);
         }
     }
@@ -66,14 +65,14 @@ public class GenericSerializer<T extends SerializableRecipe> extends ForgeRegist
     @Override
     public JsonObject write(T recipe) {
         JsonObject object = new JsonObject();
-        for (Field field : recipeClass.getFields()) {
-            if (JSONSerializableDataHandler.acceptField(field, field.getType())) {
-                try {
+        try {
+            for (Field field : recipeClass.getFields()) {
+                if (JSONSerializableDataHandler.acceptField(field, field.getType())) {
                     object.add(field.getName(), JSONSerializableDataHandler.write(field.getType(), field.get(recipe)));
-                } catch (IllegalAccessException e) {
-                    Titanium.LOGGER.catching(e);
                 }
             }
+        } catch (Exception e) {
+            Titanium.LOGGER.catching(e);
         }
         return object;
     }
@@ -90,7 +89,8 @@ public class GenericSerializer<T extends SerializableRecipe> extends ForgeRegist
                 }
             }
             return recipe;
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | IOException e) {
+        } catch (Exception e) {
+            Titanium.LOGGER.error(recipeId);
             Titanium.LOGGER.catching(e);
         }
         return null;
@@ -100,14 +100,14 @@ public class GenericSerializer<T extends SerializableRecipe> extends ForgeRegist
     @Override
     @ParametersAreNonnullByDefault
     public void write(PacketBuffer buffer, T recipe) {
-        for (Field field : recipeClass.getFields()) {
-            if (CompoundSerializableDataHandler.acceptField(field, field.getType())) {
-                try {
+        try {
+            for (Field field : recipeClass.getFields()) {
+                if (CompoundSerializableDataHandler.acceptField(field, field.getType())) {
                     CompoundSerializableDataHandler.writeField(field, field.getType(), buffer, recipe);
-                } catch (IllegalAccessException e) {
-                    Titanium.LOGGER.catching(e);
                 }
             }
+        } catch (Exception e) {
+            Titanium.LOGGER.catching(e);
         }
     }
 

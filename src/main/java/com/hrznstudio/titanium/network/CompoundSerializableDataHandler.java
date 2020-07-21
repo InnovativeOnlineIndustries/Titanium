@@ -16,7 +16,6 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.biome.Biome;
@@ -93,7 +92,7 @@ public class CompoundSerializableDataHandler {
     }
 
     private static void writeFluidStack(PacketBuffer buf, FluidStack stack) {
-        buf.writeCompoundTag(stack.writeToNBT(new CompoundNBT()));
+        buf.writeCompoundTag(stack == null ? FluidStack.EMPTY.writeToNBT(new CompoundNBT()) : stack.writeToNBT(new CompoundNBT()));
     }
 
     public static Biome readBiome(PacketBuffer buffer) {
