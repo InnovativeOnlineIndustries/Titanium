@@ -36,8 +36,8 @@ public class PluginManager {
         this.modid = modid;
         this.type = type;
         this.predicate = predicate;
-        this.plugins = collect();
         this.useModIdFilter = useModIdFilter;
+        this.plugins = collect();
         this.plugins.forEach(aClass -> LOGGER.info("Found FeaturePluginInstance for class " + aClass.getSimpleName() + " for plugin " + ((FeaturePlugin) aClass.getAnnotation(FeaturePlugin.class)).value()));
     }
 
