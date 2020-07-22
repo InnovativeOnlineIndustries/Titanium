@@ -85,7 +85,6 @@ public class Titanium extends ModuleController {
     public static final Logger LOGGER = LogManager.getLogger(MODID);
     public static NetworkHandler NETWORK = new NetworkHandler(MODID);
     public static final PluginManager RESOURCES = new PluginManager(MODID, FeaturePlugin.FeaturePluginType.FEATURE, featurePlugin -> featurePlugin.value().equalsIgnoreCase(ResourceRegistry.PLUGIN_NAME), false);
-    ;
 
     public Titanium() {
         NETWORK.registerMessage(ButtonClickNetworkMessage.class);
