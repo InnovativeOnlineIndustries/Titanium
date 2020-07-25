@@ -41,7 +41,7 @@ public class EnergyBarScreenAddon extends BasicScreenAddon {
         return background;
     }
 
-    public static void drawForeground(MatrixStack stack, Screen screen, IAssetProvider provider, int handlerPosX, int handlerPosY, int guiX, int guiY, long stored, long capacity) {
+    public static void drawForeground(MatrixStack stack, Screen screen, IAssetProvider provider, int handlerPosX, int handlerPosY, int guiX, int guiY, double stored, double capacity) {
         IAsset asset = IAssetProvider.getAsset(provider, AssetTypes.ENERGY_BAR);
         Point offset = asset.getOffset();
         Rectangle area = asset.getArea();
