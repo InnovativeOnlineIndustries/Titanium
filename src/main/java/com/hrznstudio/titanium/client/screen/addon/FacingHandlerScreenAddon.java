@@ -137,11 +137,13 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon implements IClick
 
     @Override
     public void handleClick(Screen screen, int guiX, int guiY, double mouseX, double mouseY, int button) {
+        if (button == 1) return;
         if (screen instanceof IScreenAddonConsumer && screen instanceof IHasContainer) {
             IScreenAddonConsumer screenAddonConsumer = (IScreenAddonConsumer) screen;
             Container container = ((IHasContainer<?>) screen).getContainer();
             Consumer<Boolean> disable = container instanceof IDisableableContainer ?
-                    ((IDisableableContainer) container)::setDisabled : value -> {};
+                ((IDisableableContainer) container)::setDisabled : value -> {
+            };
             for (IScreenAddon addon : new ArrayList<>(((IScreenAddonConsumer) screen).getAddons())) {
                 if (addon instanceof FacingHandlerScreenAddon && addon != this) {
                     ((FacingHandlerScreenAddon) addon).setClicked(screenAddonConsumer, disable, false);
