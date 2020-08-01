@@ -44,6 +44,10 @@ public final class Module {
         return l;
     }
 
+    public Map<String, Feature> getFeatureMap() {
+        return featureMap;
+    }
+
     public boolean isForced() {
         return forced;
     }

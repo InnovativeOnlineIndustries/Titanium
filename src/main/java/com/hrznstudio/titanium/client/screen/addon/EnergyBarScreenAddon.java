@@ -41,12 +41,12 @@ public class EnergyBarScreenAddon extends BasicScreenAddon {
         return background;
     }
 
-    public static void drawForeground(MatrixStack stack, Screen screen, IAssetProvider provider, int handlerPosX, int handlerPosY, int guiX, int guiY, int stored, int capacity) {
+    public static void drawForeground(MatrixStack stack, Screen screen, IAssetProvider provider, int handlerPosX, int handlerPosY, int guiX, int guiY, double stored, double capacity) {
         IAsset asset = IAssetProvider.getAsset(provider, AssetTypes.ENERGY_BAR);
         Point offset = asset.getOffset();
         Rectangle area = asset.getArea();
         screen.getMinecraft().getTextureManager().bindTexture(asset.getResourceLocation());
-        int powerOffset = (int) (stored * area.height / Math.max(capacity, 1));
+        int powerOffset = (int) ((stored / Math.max(capacity, 1)) * area.height);
         screen.func_238474_b_(stack, handlerPosX + offset.x, handlerPosY + offset.y + area.height - powerOffset, area.x, area.y + (area.height - powerOffset), area.width, powerOffset);
     }
 
