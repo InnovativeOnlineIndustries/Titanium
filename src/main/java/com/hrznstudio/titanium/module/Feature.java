@@ -24,14 +24,14 @@ import java.util.function.Supplier;
 public class Feature {
     private final String id;
     private final Map<Class<? extends IForgeRegistryEntry<?>>, List<?>> content;
-    private final List<EventManager.FilteredEventManager<?>> events;
+    private final List<EventManager.ISubscribe> events;
     private final boolean forced;
     private final boolean enabledByDefault;
     private final String description;
     private Module module;
 
     private Feature(String id, Map<Class<? extends IForgeRegistryEntry<?>>, List<?>> content,
-                    List<EventManager.FilteredEventManager<?>> events, boolean forced, boolean enabledByDefault,
+                    List<EventManager.ISubscribe> events, boolean forced, boolean enabledByDefault,
                     String description) {
         this.id = id;
         this.content = content;
@@ -62,6 +62,10 @@ public class Feature {
         return this;
     }
 
+    public Map<Class<? extends IForgeRegistryEntry<?>>, List<?>> getContent() {
+        return content;
+    }
+
     public boolean isForced() {
         return forced;
     }
@@ -75,7 +79,7 @@ public class Feature {
     }
 
     public void initEvents() {
-        events.forEach(EventManager.FilteredEventManager::subscribe);
+        events.forEach(EventManager.ISubscribe::subscribe);
     }
 
     public <T extends IForgeRegistryEntry<T>> List<? extends T> getEntries(Class<T> tClass) {
@@ -85,7 +89,7 @@ public class Feature {
     public final static class Builder implements RegistryManager<Builder> {
         private final String id;
         private final Map<Class<? extends IForgeRegistryEntry<?>>, List<?>> content = new LinkedHashMap<>();
-        private final List<EventManager.FilteredEventManager<?>> events = new LinkedList<>();
+        private final List<EventManager.ISubscribe> events = new LinkedList<>();
         private boolean forced;
         private boolean enabledByDefault = true;
         private String description;
@@ -101,12 +105,12 @@ public class Feature {
             return this;
         }
 
-        public Builder event(EventManager.FilteredEventManager<?> manager) {
+        public Builder event(EventManager.ISubscribe manager) {
             events.add(manager);
             return this;
         }
 
-        public Builder eventClient(Supplier<Supplier<EventManager.FilteredEventManager<?>>> managerSupplier) {
+        public Builder eventClient(Supplier<Supplier<EventManager.ISubscribe>> managerSupplier) {
             SidedHandler.runOn(Dist.CLIENT, () -> () -> events.add(managerSupplier.get().get()));
             return this;
         }

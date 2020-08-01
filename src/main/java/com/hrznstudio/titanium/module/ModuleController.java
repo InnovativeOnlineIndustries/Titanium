@@ -25,6 +25,7 @@ import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -96,14 +97,15 @@ public abstract class ModuleController {
             config.save();
             config.close();
         }
-
-        EventManager.mod(RegistryEvent.Register.class).process(event -> {
-            moduleMap.values().forEach(m -> {
-                List<? extends IForgeRegistryEntry<?>> l = m.getEntries((Class) event.getGenericType());
-                if (!l.isEmpty())
-                    l.forEach(event.getRegistry()::register);
-            });
-        }).subscribe();
+        moduleMap.values().stream().map(module -> module.getFeatureMap().values()).flatMap(Collection::stream).map(feature -> feature.getContent().keySet()).flatMap(Collection::stream).distinct().forEach(aClass -> {
+            EventManager.modGeneric(RegistryEvent.Register.class, aClass).process(register -> {
+                moduleMap.values().forEach(m -> {
+                    List<? extends IForgeRegistryEntry<?>> l = m.getEntries((Class) aClass);
+                    if (!l.isEmpty())
+                        l.forEach(((RegistryEvent.Register) register).getRegistry()::register);
+                });
+            }).subscribe();
+        });
         this.modPluginManager.execute(PluginPhase.INIT);
     }
 
