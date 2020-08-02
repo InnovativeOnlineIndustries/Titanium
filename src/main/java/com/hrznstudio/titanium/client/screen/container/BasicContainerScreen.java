@@ -21,7 +21,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
-import net.minecraft.util.text.*;
+import net.minecraft.util.text.ITextComponent;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
@@ -63,24 +63,24 @@ public class BasicContainerScreen<T extends Container> extends ContainerScreen<T
 
     // init
     @Override
-    protected void func_231160_c_() {
-        super.func_231160_c_();
+    protected void init() {
+        super.init();
         this.getAddons().forEach(screenAddon -> screenAddon.init(this.guiLeft, this.guiTop));
     }
 
     // drawGuiContainerBackgroundLayer
     @Override
-    protected void func_230450_a_(MatrixStack stack, float partialTicks, int mouseX, int mouseY) {
+    protected void drawGuiContainerBackgroundLayer(MatrixStack stack, float partialTicks, int mouseX, int mouseY) {
         // renderBackground
-        this.func_230446_a_(stack);
+        this.renderBackground(stack);
         // width
-        xCenter = (field_230708_k_ - xSize) / 2;
+        xCenter = (width - xSize) / 2;
         // height
-        yCenter = (field_230709_l_ - ySize) / 2;
+        yCenter = (height - ySize) / 2;
         //BG RENDERING
         RenderSystem.color4f(1, 1, 1, 1);
         getMinecraft().getTextureManager().bindTexture(IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND).getResourceLocation());
-        func_238474_b_(stack, xCenter, yCenter, 0, 0, xSize, ySize);
+        blit(stack, xCenter, yCenter, 0, 0, xSize, ySize);
         Minecraft.getInstance().fontRenderer.func_238422_b_(stack, title, xCenter + xSize / 2 - Minecraft.getInstance().fontRenderer.getStringWidth(title.getString()) / 2, yCenter + 6, 0xFFFFFF);
         this.checkForMouseDrag(mouseX, mouseY);
         addons.forEach(iGuiAddon -> {
@@ -97,7 +97,7 @@ public class BasicContainerScreen<T extends Container> extends ContainerScreen<T
 
     // drawGuiContainerForegroundLayer
     @Override
-    protected void func_230451_b_(MatrixStack stack, int mouseX, int mouseY) {
+    protected void drawGuiContainerForegroundLayer(MatrixStack stack, int mouseX, int mouseY) {
         addons.forEach(iGuiAddon -> {
             if (iGuiAddon instanceof AssetScreenAddon) {
                 AssetScreenAddon assetGuiAddon = (AssetScreenAddon) iGuiAddon;
@@ -113,7 +113,7 @@ public class BasicContainerScreen<T extends Container> extends ContainerScreen<T
         for (IScreenAddon iScreenAddon : addons) {
             if (iScreenAddon.isInside(this, mouseX - xCenter, mouseY - yCenter) && !iScreenAddon.getTooltipLines().isEmpty()) {
                 // renderTooltip
-                func_238654_b_(stack, iScreenAddon.getTooltipLines(), mouseX - xCenter, mouseY - yCenter);
+                renderTooltip(stack, iScreenAddon.getTooltipLines(), mouseX - xCenter, mouseY - yCenter);
             }
         }
     }
@@ -132,19 +132,19 @@ public class BasicContainerScreen<T extends Container> extends ContainerScreen<T
 
     // mouseClicked
     @Override
-    public boolean func_231048_c_(double mouseX, double mouseY, int mouseButton) {
-        super.func_231048_c_(mouseX, mouseY, mouseButton);
+    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
+        super.mouseClicked(mouseX, mouseY, mouseButton);
         new ArrayList<>(addons).stream().filter(iGuiAddon -> iGuiAddon instanceof IClickable && iGuiAddon.isInside(this, mouseX - xCenter, mouseY - yCenter))
-                .forEach(iGuiAddon -> ((IClickable) iGuiAddon).handleClick(this, xCenter, yCenter, mouseX, mouseY, mouseButton));
+            .forEach(iGuiAddon -> ((IClickable) iGuiAddon).handleClick(this, xCenter, yCenter, mouseX, mouseY, mouseButton));
         return false;
     }
 
     // keyPressed
     @Override
-    public boolean func_231046_a_(int keyCode, int scan, int modifiers) {
+    public boolean keyPressed(int keyCode, int scan, int modifiers) {
         return this.getAddons().stream()
-                .anyMatch(screenAddon -> screenAddon.keyPressed(keyCode, scan, modifiers)) ||
-                super.func_231046_a_(keyCode, scan, modifiers);
+            .anyMatch(screenAddon -> screenAddon.keyPressed(keyCode, scan, modifiers)) ||
+            super.keyPressed(keyCode, scan, modifiers);
     }
 
     public int getX() {

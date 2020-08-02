@@ -390,13 +390,13 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
                 Point offset = assetBorder.getOffset();
                 Rectangle area = assetBorder.getArea();
                 screen.getMinecraft().getTextureManager().bindTexture(assetBorder.getResourceLocation());
-                screen.func_238474_b_(stack,guiX + addon.getPosX() + offset.x, guiY + addon.getPosY() + offset.y, area.x, area.y, area.width, area.height);
+                screen.blit(stack, guiX + addon.getPosX() + offset.x, guiY + addon.getPosY() + offset.y, area.x, area.y, area.width, area.height);
                 RenderSystem.color4f(addon.getProgressBar().getColor().getColorComponentValues()[0], addon.getProgressBar().getColor().getColorComponentValues()[1], addon.getProgressBar().getColor().getColorComponentValues()[2], 1);
                 IAsset assetBar = IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_BACKGROUND_VERTICAL);
                 offset = assetBar.getOffset();
                 area = assetBar.getArea();
                 screen.getMinecraft().getTextureManager().bindTexture(assetBar.getResourceLocation());
-                screen.func_238474_b_(stack, guiX + addon.getPosX() + offset.x, guiY + addon.getPosY() + offset.y, area.x, area.y, area.width, area.height);
+                screen.blit(stack, guiX + addon.getPosX() + offset.x, guiY + addon.getPosY() + offset.y, area.x, area.y, area.width, area.height);
                 IAsset asset = IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_VERTICAL);
                 offset = asset.getOffset();
                 area = asset.getArea();
@@ -404,12 +404,12 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
                 int progress = addon.getProgressBar().getProgress();
                 int maxProgress = addon.getProgressBar().getMaxProgress();
                 int progressOffset = progress * area.height / Math.max(maxProgress, 1);
-                screen.func_238474_b_(stack, addon.getPosX() + offset.x + guiX,
-                        addon.getPosY() + offset.y + area.height - progressOffset + guiY,
-                        area.x,
-                        area.y + (area.height - progressOffset),
-                        area.width,
-                        progressOffset);
+                screen.blit(stack, addon.getPosX() + offset.x + guiX,
+                    addon.getPosY() + offset.y + area.height - progressOffset + guiY,
+                    area.x,
+                    area.y + (area.height - progressOffset),
+                    area.width,
+                    progressOffset);
                 RenderSystem.color4f(1, 1, 1, 1);
             }
 
@@ -435,7 +435,7 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
                 int maxProgress = addon.getProgressBar().getMaxProgress();
                 int progressOffset = progress * area.width / Math.max(maxProgress, 1);
                 RenderSystem.color4f(addon.getProgressBar().getColor().getColorComponentValues()[0], addon.getProgressBar().getColor().getColorComponentValues()[1], addon.getProgressBar().getColor().getColorComponentValues()[2], 1);
-                screen.func_238474_b_(stack, addon.getPosX() + offset.x + guiX, addon.getPosY() + offset.y + guiY, area.x, area.y, progressOffset, area.height);
+                screen.blit(stack, addon.getPosX() + offset.x + guiX, addon.getPosY() + offset.y + guiY, area.x, area.y, progressOffset, area.height);
                 RenderSystem.color4f(1, 1, 1, 1);
             }
 
@@ -462,7 +462,7 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
                 int maxProgress = addon.getProgressBar().getMaxProgress();
                 int progressOffset = progress * area.height / Math.max(maxProgress, 1);
                 RenderSystem.color4f(addon.getProgressBar().getColor().getColorComponentValues()[0], addon.getProgressBar().getColor().getColorComponentValues()[1], addon.getProgressBar().getColor().getColorComponentValues()[2], 1);
-                screen.func_238474_b_(stack, addon.getPosX() + offset.x + guiX, addon.getPosY() + offset.y + guiY, area.x, area.y, area.width, progressOffset);
+                screen.blit(stack, addon.getPosX() + offset.x + guiX, addon.getPosY() + offset.y + guiY, area.x, area.y, area.width, progressOffset);
                 RenderSystem.color4f(1, 1, 1, 1);
             }
 

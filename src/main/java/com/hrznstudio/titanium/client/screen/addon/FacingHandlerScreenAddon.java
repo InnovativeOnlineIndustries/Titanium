@@ -99,12 +99,12 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon implements IClick
         RenderSystem.color4f(1, 1, 1, 1);
         AssetUtil.drawAsset(stack, screen, provider.getAsset(AssetTypes.BUTTON_SIDENESS_MANAGER), guiX + getPosX(), guiY + getPosY());
         int offset = 2;
-        AbstractGui.func_238467_a_(stack,guiX + getPosX() + offset, guiY + getPosY() + offset, guiX + getPosX() + getXSize() - offset, guiY + getPosY() + getYSize() - offset, handler.getColor());
+        AbstractGui.fill(stack, guiX + getPosX() + offset, guiY + getPosY() + offset, guiX + getPosX() + getXSize() - offset, guiY + getPosY() + getYSize() - offset, handler.getColor());
         RenderSystem.color4f(1, 1, 1, 1);
         if (isClicked()) {
             //draw the overlay for the slots
-            screen.func_238474_b_(stack,guiX + backgroundInfo.getInventoryPosition().x - 1, guiY + backgroundInfo.getInventoryPosition().y - 1, 16, 213 + 18, 14, 14);
-            screen.func_238474_b_(stack,guiX + backgroundInfo.getInventoryPosition().x - 1, guiY + backgroundInfo.getInventoryPosition().y - 1, 56, 185, 162, 54);
+            screen.blit(stack, guiX + backgroundInfo.getInventoryPosition().x - 1, guiY + backgroundInfo.getInventoryPosition().y - 1, 16, 213 + 18, 14, 14);
+            screen.blit(stack, guiX + backgroundInfo.getInventoryPosition().x - 1, guiY + backgroundInfo.getInventoryPosition().y - 1, 56, 185, 162, 54);
         }
     }
 

@@ -22,18 +22,18 @@ public class AssetUtil {
         Point offset = asset.getOffset();
         Rectangle area = asset.getArea();
         screen.getMinecraft().getTextureManager().bindTexture(asset.getResourceLocation());
-        screen.func_238474_b_(stack, xPos + offset.x,
-                yPos + offset.y,
-                area.x,
-                area.y,
-                area.width,
-                area.height);
+        screen.blit(stack, xPos + offset.x,
+            yPos + offset.y,
+            area.x,
+            area.y,
+            area.width,
+            area.height);
     }
 
     public static void drawSelectingOverlay(MatrixStack stack, int x, int y, int width, int height) {
         RenderSystem.disableLighting();
         RenderSystem.disableDepthTest();
-        AbstractGui.func_238467_a_(stack, x, y, width, height, -2130706433);
+        AbstractGui.fill(stack, x, y, width, height, -2130706433);
         RenderSystem.enableLighting();
         RenderSystem.disableDepthTest();
     }
@@ -44,7 +44,7 @@ public class AssetUtil {
             startX = endX;
             endX = i;
         }
-        AbstractGui.func_238467_a_(stack, startX, y, endX + 1, y + 1, color);
+        AbstractGui.fill(stack, startX, y, endX + 1, y + 1, color);
     }
 
     public static void drawVerticalLine(MatrixStack stack, int x, int startY, int endY, int color) {
@@ -53,6 +53,6 @@ public class AssetUtil {
             startY = endY;
             endY = i;
         }
-        AbstractGui.func_238467_a_(stack, x, startY + 1, x + 1, endY, color);
+        AbstractGui.fill(stack, x, startY + 1, x + 1, endY, color);
     }
 }

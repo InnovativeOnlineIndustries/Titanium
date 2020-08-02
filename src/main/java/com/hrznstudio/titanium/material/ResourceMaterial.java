@@ -55,7 +55,7 @@ public class ResourceMaterial {
     }
 
     public ResourceMaterial withProperties(IResourceType type, ResourceTypeProperties properties) {
-        typeProperties.computeIfAbsent(type.func_176610_l(), s -> properties); //getName
+        typeProperties.computeIfAbsent(type.getString(), s -> properties); //getName
         return this;
     }
 
@@ -88,7 +88,7 @@ public class ResourceMaterial {
             ResourceRegistry.injectField(this, type, entry);
             return null;
         }
-        ForgeRegistryEntry entry = type.getInstanceFactory(this, typeProperties.get(type.func_176610_l())).create(); //getName
+        ForgeRegistryEntry entry = type.getInstanceFactory(this, typeProperties.get(type.getString())).create(); //getName
         generated.put(type.getTag(), entry);
         ResourceRegistry.injectField(this, type, entry);
         return entry;

@@ -20,7 +20,6 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.renderer.RenderHelper;
@@ -55,8 +54,8 @@ public class ItemstackFilterScreenAddon extends BasicScreenAddon implements ICli
             if (filterSlot != null) {
                 Color color = new Color(filterSlot.getColor());
                 AssetUtil.drawAsset(stack, screen, Objects.requireNonNull(provider.getAsset(AssetTypes.SLOT)), guiX + filterSlot.getX(), guiY + filterSlot.getY());
-                AbstractGui.func_238467_a_(stack, guiX + filterSlot.getX() + 1, guiY + filterSlot.getY() + 1,
-                        guiX + filterSlot.getX() + 17, guiY + filterSlot.getY() + 17, new Color(color.getRed(), color.getGreen(), color.getBlue(), 256 / 2).getRGB());
+                AbstractGui.fill(stack, guiX + filterSlot.getX() + 1, guiY + filterSlot.getY() + 1,
+                    guiX + filterSlot.getX() + 17, guiY + filterSlot.getY() + 17, new Color(color.getRed(), color.getGreen(), color.getBlue(), 256 / 2).getRGB());
                 RenderSystem.color4f(1, 1, 1, 1);
                 if (!filterSlot.getFilter().isEmpty()) {
                     RenderHelper.enableStandardItemLighting(); //enableGUIStandarItemLightning
@@ -71,10 +70,10 @@ public class ItemstackFilterScreenAddon extends BasicScreenAddon implements ICli
         for (FilterSlot<ItemStack> filterSlot : filter.getFilterSlots()) {
             if (filterSlot != null && mouseX > (guiX + filterSlot.getX() + 1) && mouseX < (guiX + filterSlot.getX() + 16) && mouseY > (guiY + filterSlot.getY() + 1) && mouseY < (guiY + filterSlot.getY() + 16)) {
                 RenderSystem.translated(0, 0, 200);
-                AbstractGui.func_238467_a_(stack, filterSlot.getX() + 1, filterSlot.getY() + 1, filterSlot.getX() + 17, filterSlot.getY() + 17, -2130706433);
+                AbstractGui.fill(stack, filterSlot.getX() + 1, filterSlot.getY() + 1, filterSlot.getX() + 17, filterSlot.getY() + 17, -2130706433);
                 RenderSystem.translated(0, 0, -200);
                 if (!filterSlot.getFilter().isEmpty() && Minecraft.getInstance().player.inventory.getItemStack().isEmpty()) {
-                    screen.func_238654_b_(stack, screen.func_231151_a_(filterSlot.getFilter()), mouseX - guiX, mouseY - guiY);
+                    screen.renderTooltip(stack, screen.getTooltipFromItem(filterSlot.getFilter()), mouseX - guiX, mouseY - guiY);
                     RenderSystem.color4f(1, 1, 1, 1);
                 }
             }

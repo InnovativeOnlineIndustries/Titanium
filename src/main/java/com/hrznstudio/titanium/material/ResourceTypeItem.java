@@ -28,7 +28,7 @@ public class ResourceTypeItem extends BasicItem implements IJsonFile, IJSONGener
     private final IAdvancedResourceType advancedResourceType;
 
     public ResourceTypeItem(ResourceMaterial material, IResourceType type, IAdvancedResourceType advancedResourceType, ResourceTypeProperties<Properties> properties) {
-        super(material.getMaterialType() + "_" + type.func_176610_l(), (properties == null ? ((ResourceTypeProperties<Properties>) ResourceTypeProperties.DEFAULTS.get(Item.class)).get() : properties.get())); //getName
+        super(material.getMaterialType() + "_" + type.getString(), (properties == null ? ((ResourceTypeProperties<Properties>) ResourceTypeProperties.DEFAULTS.get(Item.class)).get() : properties.get())); //getName
         this.material = material;
         this.type = type;
         this.advancedResourceType = advancedResourceType;

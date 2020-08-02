@@ -31,7 +31,7 @@ public class TextFieldScreenAddon extends BasicScreenAddon {
     public void drawBackgroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         AssetUtil.drawAsset(stack, screen, this.getAsset(provider), this.getPosX() + guiX, this.getPosY() + guiY);
         // render
-        textFieldWidget.func_230431_b_(stack, mouseX, mouseY, partialTicks);
+        textFieldWidget.renderButton(stack, mouseX, mouseY, partialTicks);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class TextFieldScreenAddon extends BasicScreenAddon {
     @Override
     public boolean keyPressed(int key, int scan, int modifiers) {
         // keypressed
-        return textFieldWidget.func_231046_a_(key, scan, modifiers) || textFieldWidget.canWrite();
+        return textFieldWidget.keyPressed(key, scan, modifiers) || textFieldWidget.canWrite();
     }
 
     private IAsset getAsset(IAssetProvider assetProvider) {

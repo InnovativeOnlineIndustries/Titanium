@@ -53,8 +53,8 @@ public class SlotsScreenAddon<T extends IComponentHarness> extends BasicScreenAd
                 int posY = positionFunction.apply(slotID).getRight();
                 Color colored = slotToColorRenderMap.apply(slotID);
                 if (colored != null) {
-                    AbstractGui.func_238467_a_(stack, guiX + handlerPosX + posX - 2, guiY + handlerPosY + posY - 2,
-                        guiX + handlerPosX + posX + area.width, guiY + handlerPosY + posY + area.height, new Color(colored.getRed(), colored.getGreen(), colored.getBlue(), 256/4).getRGB());
+                    AbstractGui.fill(stack, guiX + handlerPosX + posX - 2, guiY + handlerPosY + posY - 2,
+                        guiX + handlerPosX + posX + area.width, guiY + handlerPosY + posY + area.height, new Color(colored.getRed(), colored.getGreen(), colored.getBlue(), 256 / 4).getRGB());
                     RenderSystem.color4f(1, 1, 1, 1);
                 }
             }
@@ -76,7 +76,7 @@ public class SlotsScreenAddon<T extends IComponentHarness> extends BasicScreenAd
                 int posY = positionFunction.apply(slotID).getRight();
                 Color colored = slotToColorRenderMap.apply(slotID);
                 if (colored != null) {
-                    AbstractGui.func_238467_a_(stack, guiX + handlerPosX + posX, guiY + handlerPosY + posY,
+                    AbstractGui.fill(stack, guiX + handlerPosX + posX, guiY + handlerPosY + posY,
                         guiX + handlerPosX + posX + area.width - 2, guiY + handlerPosY + posY + area.height - 2, new Color(colored.getRed(), colored.getGreen(), colored.getBlue(), 256 / 2).getRGB());
                     RenderSystem.color4f(1, 1, 1, 1);
                 }

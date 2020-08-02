@@ -47,7 +47,7 @@ public class EnergyBarScreenAddon extends BasicScreenAddon {
         Rectangle area = asset.getArea();
         screen.getMinecraft().getTextureManager().bindTexture(asset.getResourceLocation());
         int powerOffset = (int) ((stored / Math.max(capacity, 1)) * area.height);
-        screen.func_238474_b_(stack, handlerPosX + offset.x, handlerPosY + offset.y + area.height - powerOffset, area.x, area.y + (area.height - powerOffset), area.width, powerOffset);
+        screen.blit(stack, handlerPosX + offset.x, handlerPosY + offset.y + area.height - powerOffset, area.x, area.y + (area.height - powerOffset), area.width, powerOffset);
     }
 
     public static List<ITextComponent> getTooltip(int stored, int capacity) {

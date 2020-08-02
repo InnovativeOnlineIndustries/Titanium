@@ -44,9 +44,9 @@ public class BasicTile<T extends BasicTile<T>> extends TileEntity {
 
     // TileEntity.Read
     @Override
-    public void func_230337_a_(BlockState state, CompoundNBT compound) {
+    public void read(BlockState state, CompoundNBT compound) {
         NBTManager.getInstance().readTileEntity(this, compound);
-        super.func_230337_a_(state, compound);
+        super.read(state, compound);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class BasicTile<T extends BasicTile<T>> extends TileEntity {
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        func_230337_a_(getBlockState(), pkt.getNbtCompound());
+        read(getBlockState(), pkt.getNbtCompound());
     }
 
     @Override

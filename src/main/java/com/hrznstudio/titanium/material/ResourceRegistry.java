@@ -105,7 +105,7 @@ public class ResourceRegistry {
         ResourceRegistry.getMaterials().forEach(material -> {
             if (material.getGeneratorTypes().size() > 0) {
                 material.getGeneratorTypes().values().forEach(type -> {
-                    Feature.Builder feature = Feature.builder(material.getMaterialType() + "." + type.func_176610_l()); //getName
+                    Feature.Builder feature = Feature.builder(material.getMaterialType() + "." + type.getString()); //getName
                     ForgeRegistryEntry entry = material.generate(type);
                     if (entry != null) {
                         feature.content(entry.getRegistryType(), entry);
@@ -141,8 +141,8 @@ public class ResourceRegistry {
     public static void injectField(ResourceMaterial material, IResourceType type, ForgeRegistryEntry entry) {
         if (ANNOTATED_FIELDS.containsKey(material.getMaterialType())) {
             HashMultimap<String, Field> multimap = ANNOTATED_FIELDS.get(material.getMaterialType());
-            if (multimap.containsKey(type.func_176610_l())) { //GET NAME
-                multimap.get(type.func_176610_l()).stream().filter(field -> entry.getRegistryType().isAssignableFrom(field.getType())).forEach(field -> {
+            if (multimap.containsKey(type.getString())) { //GET NAME
+                multimap.get(type.getString()).stream().filter(field -> entry.getRegistryType().isAssignableFrom(field.getType())).forEach(field -> {
                     try {
                         field.set(null, entry);
                     } catch (IllegalAccessException e) {

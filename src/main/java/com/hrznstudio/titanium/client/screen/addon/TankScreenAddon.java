@@ -63,12 +63,12 @@ public class TankScreenAddon extends BasicScreenAddon {
                         Color color = new Color(fluidStack.getFluid().getAttributes().getColor());
                         RenderSystem.color4f(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
                         RenderSystem.enableBlend();
-                        Screen.func_238470_a_(stack, this.getPosX() + guiX + asset.getFluidRenderPadding(Direction.WEST),
-                                this.getPosY() + guiY + asset.getFluidRenderPadding(Direction.UP) + (fluidStack.getFluid().getAttributes().isGaseous() ? area.height - topBottomPadding : (area.height - topBottomPadding) - offset),
-                                0,
-                                (int) (area.getWidth() - asset.getFluidRenderPadding(Direction.EAST) - asset.getFluidRenderPadding(Direction.WEST)),
-                                offset,
-                                sprite);
+                        Screen.blit(stack, this.getPosX() + guiX + asset.getFluidRenderPadding(Direction.WEST),
+                            this.getPosY() + guiY + asset.getFluidRenderPadding(Direction.UP) + (fluidStack.getFluid().getAttributes().isGaseous() ? area.height - topBottomPadding : (area.height - topBottomPadding) - offset),
+                            0,
+                            (int) (area.getWidth() - asset.getFluidRenderPadding(Direction.EAST) - asset.getFluidRenderPadding(Direction.WEST)),
+                            offset,
+                            sprite);
                         RenderSystem.disableBlend();
                         RenderSystem.color4f(1, 1, 1, 1);
                     }

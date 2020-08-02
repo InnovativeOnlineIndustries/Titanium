@@ -105,7 +105,7 @@ public class TeleportationUtils {
         //Set the entity dead before calling changeDimension. Still need to call changeDimension for things like minecarts which will drop their contents otherwise.
         if (entity.isAlive() && entity instanceof MinecartEntity) {
             entity.removed = true;
-            entity.func_241206_a_(targetWorld);
+            entity.changeDimension(targetWorld);
             entity.removed = false;
         }
 
