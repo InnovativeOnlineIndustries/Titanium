@@ -110,6 +110,9 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon implements IClick
 
     @Override
     public void drawForegroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
+        if (isInside(screen, mouseX - guiX, mouseY - guiY)) {
+            AssetUtil.drawSelectingOverlay(stack, getPosX() + 1, getPosY() + 1, getPosX() + getXSize() - 1, getPosY() + getYSize() - 1);
+        }
         if (isInside(screen, mouseX - guiX, mouseY - guiY) || isClicked()) {
             IAsset asset = provider.getAsset(assetType);
             Rectangle area = handler.getRectangle(asset);

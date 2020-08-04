@@ -9,7 +9,6 @@ package com.hrznstudio.titanium.util;
 
 import com.hrznstudio.titanium.api.client.IAsset;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
 
@@ -31,11 +30,7 @@ public class AssetUtil {
     }
 
     public static void drawSelectingOverlay(MatrixStack stack, int x, int y, int width, int height) {
-        RenderSystem.disableLighting();
-        RenderSystem.disableDepthTest();
         AbstractGui.fill(stack, x, y, width, height, -2130706433);
-        RenderSystem.enableLighting();
-        RenderSystem.disableDepthTest();
     }
 
     public static void drawHorizontalLine(MatrixStack stack, int startX, int endX, int y, int color) {
