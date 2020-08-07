@@ -38,6 +38,7 @@ public class BasicContainerScreen<T extends Container> extends ContainerScreen<T
 
     private int dragX;
     private int dragY;
+    private boolean isMouseDragging;
 
     public BasicContainerScreen(T container, PlayerInventory inventory, ITextComponent title) {
         super(container, inventory, title);
@@ -47,6 +48,7 @@ public class BasicContainerScreen<T extends Container> extends ContainerScreen<T
         IAsset background = IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND);
         this.xSize = background.getArea().width;
         this.ySize = background.getArea().height;
+        this.isMouseDragging = false;
         this.addons = new ArrayList<>();
     }
 
@@ -119,15 +121,21 @@ public class BasicContainerScreen<T extends Container> extends ContainerScreen<T
     }
 
     private void checkForMouseDrag(int mouseX, int mouseY) {
-        if (GLFW.glfwGetMouseButton(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS) { //Main Windows
-            for (IScreenAddon iScreenAddon : this.addons) {
-                if (iScreenAddon instanceof ICanMouseDrag /*&& iGuiAddon.isInside(null, mouseX - x, mouseY - y)*/) {
-                    ((ICanMouseDrag) iScreenAddon).drag(mouseX - dragX, mouseY - dragY);
+        if (GLFW.glfwGetMouseButton(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS) {//Main Window
+            if (!this.isMouseDragging) {
+                this.isMouseDragging = true;
+            } else {
+                for (IScreenAddon iScreenAddon : this.addons) {
+                    if (iScreenAddon instanceof ICanMouseDrag && iScreenAddon.isInside(null, mouseX - this.xCenter, mouseY - this.yCenter)) {
+                        ((ICanMouseDrag) iScreenAddon).drag(mouseX - this.xCenter, mouseY - this.yCenter);
+                    }
                 }
             }
+            this.dragX = mouseX;
+            this.dragY = mouseY;
+        } else {
+            this.isMouseDragging = false;
         }
-        this.dragX = mouseX;
-        this.dragY = mouseY;
     }
 
     // mouseClicked

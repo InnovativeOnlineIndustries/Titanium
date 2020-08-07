@@ -116,6 +116,8 @@ public final class DefaultAssetProvider implements IAssetProvider {
     private final IAsset BUTTON_REDSTONE_ONCE = () -> new Rectangle(241, 166, 14, 14);
     private final IAsset PROGRESS_BAR_ARROW_DOWN = () -> new Rectangle(221, 211, 15, 23);
     private final IAsset PROGRESS_BAR_BACKGROUND_ARROW_DOWN = () -> new Rectangle(221, 185, 15, 23);
+    private final IAsset HUE_PICKER = () -> new Rectangle(235, 21, 9, 14);
+    private final IAsset SHADER_PICKER = () -> new Rectangle(245, 21, 9, 9);
 
     DefaultAssetProvider() {
     }
@@ -183,6 +185,10 @@ public final class DefaultAssetProvider implements IAssetProvider {
             return assetType.castOrDefault(PROGRESS_BAR_ARROW_DOWN);
         if (assetType == AssetTypes.PROGRESS_BAR_BACKGROUND_ARROW_DOWN)
             return assetType.castOrDefault(PROGRESS_BAR_BACKGROUND_ARROW_DOWN);
+        if (assetType == AssetTypes.HUE_PICKER)
+            return assetType.castOrDefault(HUE_PICKER);
+        if (assetType == AssetTypes.SHADE_PICKER)
+            return assetType.castOrDefault(SHADER_PICKER);
         return null;
     }
 }

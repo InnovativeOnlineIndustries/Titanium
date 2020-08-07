@@ -16,6 +16,7 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.biome.Biome;
@@ -72,6 +73,7 @@ public class CompoundSerializableDataHandler {
         map(Ingredient[].class, CompoundSerializableDataHandler::readIngredientArray, CompoundSerializableDataHandler::writeIngredientArray);
         map(Biome.class, CompoundSerializableDataHandler::readBiome, CompoundSerializableDataHandler::writeBiome);
         map(Biome[].class, CompoundSerializableDataHandler::readBiomeArray, CompoundSerializableDataHandler::writeBiomeArray);
+        map(ResourceLocation.class, PacketBuffer::readResourceLocation, PacketBuffer::writeResourceLocation);
 
     }
 
