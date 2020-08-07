@@ -7,8 +7,8 @@
 
 package com.hrznstudio.titanium.client.screen.addon;
 
-import com.hrznstudio.titanium.component.button.ButtonComponent;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
+import com.hrznstudio.titanium.component.button.ButtonComponent;
 import com.hrznstudio.titanium.util.AssetUtil;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -41,8 +41,8 @@ public abstract class StateButtonAddon extends BasicButtonAddon {
     @Override
     public void drawForegroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
         StateButtonInfo buttonInfo = getStateInfo();
-        if (buttonInfo != null && isInside(screen, mouseX, mouseY)) {
-            AssetUtil.drawSelectingOverlay(stack,getPosX() + 1, getPosY() + 1, getPosX() + getXSize() - 1, getPosY() + getYSize() - 1);
+        if (buttonInfo != null && isInside(screen, mouseX - guiX, mouseY - guiY)) {
+            AssetUtil.drawSelectingOverlay(stack, getPosX() + 1, getPosY() + 1, getPosX() + getXSize() - 1, getPosY() + getYSize() - 1);
         }
     }
 

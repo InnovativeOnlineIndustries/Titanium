@@ -21,9 +21,11 @@ import net.minecraft.world.biome.BiomeManager;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.IWorldInfo;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.fml.hooks.BasicEventHooks;
 
 import java.util.LinkedList;
+import java.util.function.Function;
 
 public class TeleportationUtils {
 
@@ -36,21 +38,31 @@ public class TeleportationUtils {
         MinecraftServer server = entity.getServer();
         RegistryKey<World> sourceDim = entity.world.func_234923_W_();//getDimensionType
 
-        if (!entity.isBeingRidden() && !entity.isPassenger()) {
-            return handleEntityTeleport(entity, server, sourceDim, dimension, xCoord, yCoord, zCoord, yaw, pitch);
-        }
-
-        Entity rootEntity = entity.getLowestRidingEntity();
-        PassengerHelper passengerHelper = new PassengerHelper(rootEntity);
-        PassengerHelper rider = passengerHelper.getPassenger(entity);
-        if (rider == null) {
-            return entity;
-        }
-        passengerHelper.teleport(server, sourceDim, dimension, xCoord, yCoord, zCoord, yaw, pitch);
-        passengerHelper.remountRiders();
-        passengerHelper.updateClients();
-
-        return rider.entity;
+        return entity.changeDimension(server.getWorld(dimension), new ITeleporter() {
+            @Override
+            public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yawE, Function<Boolean, Entity> repositionEntity) {
+                Entity repositionedEntity = repositionEntity.apply(false);
+                repositionedEntity.setPositionAndRotation(xCoord, yCoord, zCoord, yaw, pitch);
+                repositionedEntity.setPositionAndUpdate(xCoord, yCoord, zCoord);
+                return repositionedEntity;
+            }
+        });
+//
+        //if (!entity.isBeingRidden() && !entity.isPassenger()) {
+        //    return handleEntityTeleport(entity, server, sourceDim, dimension, xCoord, yCoord, zCoord, yaw, pitch);
+        //}
+//
+        //Entity rootEntity = entity.getLowestRidingEntity();
+        //PassengerHelper passengerHelper = new PassengerHelper(rootEntity);
+        //PassengerHelper rider = passengerHelper.getPassenger(entity);
+        //if (rider == null) {
+        //    return entity;
+        //}
+        //passengerHelper.teleport(server, sourceDim, dimension, xCoord, yCoord, zCoord, yaw, pitch);
+        //passengerHelper.remountRiders();
+        //passengerHelper.updateClients();
+//
+        //return rider.entity;
     }
 
     /**

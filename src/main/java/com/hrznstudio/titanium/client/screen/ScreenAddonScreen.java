@@ -95,7 +95,7 @@ public abstract class ScreenAddonScreen extends Screen implements IScreenAddonCo
             } else {
                 for (IScreenAddon iScreenAddon : this.addonList) {
                     if (iScreenAddon instanceof ICanMouseDrag && iScreenAddon.isInside(null, mouseX - x, mouseY - y)) {
-                        ((ICanMouseDrag) iScreenAddon).drag(mouseX - dragX, mouseY - dragY);
+                        ((ICanMouseDrag) iScreenAddon).drag(mouseX - x, mouseY - y);
                     }
                 }
             }

@@ -42,5 +42,6 @@ public class AssetTypes {
     public static final IAssetType<IAsset> BUTTON_REDSTONE_IGNORED = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
     public static final IAssetType<IAsset> PROGRESS_BAR_BACKGROUND_ARROW_HORIZONTAL = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
     public static final IAssetType<IAsset> PROGRESS_BAR_ARROW_HORIZONTAL = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
-
+    public static final IAssetType<IAsset> SHADE_PICKER = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
+    public static final IAssetType<IAsset> HUE_PICKER = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
 }
