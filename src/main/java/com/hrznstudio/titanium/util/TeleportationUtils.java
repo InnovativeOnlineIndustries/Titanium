@@ -36,7 +36,7 @@ public class TeleportationUtils {
         }
 
         MinecraftServer server = entity.getServer();
-        RegistryKey<World> sourceDim = entity.world.func_234923_W_();//getDimensionType
+        RegistryKey<World> sourceDim = entity.world.getDimensionKey();//getDimensionType
 
         return entity.changeDimension(server.getWorld(dimension), new ITeleporter() {
             @Override
@@ -156,7 +156,7 @@ public class TeleportationUtils {
         PlayerList playerList = server.getPlayerList();
 
         player.world = destinationWorld;
-        player.connection.sendPacket(new SRespawnPacket(destinationWorld.func_234922_V_(), destinationWorld.func_234923_W_(), BiomeManager.func_235200_a_(destinationWorld.getSeed()), player.interactionManager.getGameType(), player.interactionManager.func_241815_c_(), destinationWorld.func_234925_Z_(), destinationWorld.func_241109_A_(), true));
+        player.connection.sendPacket(new SRespawnPacket(destinationWorld.func_230315_m_(), destinationWorld.getDimensionKey(), BiomeManager.func_235200_a_(destinationWorld.getSeed()), player.interactionManager.getGameType(), player.interactionManager.func_241815_c_(), destinationWorld.isDebug(), destinationWorld.func_241109_A_(), true));
         player.connection.sendPacket(new SServerDifficultyPacket(sourceInfo.getDifficulty(), sourceInfo.isDifficultyLocked()));
         playerList.updatePermissionLevel(player);
         sourceWorld.removeEntity(player, true);

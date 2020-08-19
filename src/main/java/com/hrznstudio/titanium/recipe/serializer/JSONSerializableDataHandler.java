@@ -21,8 +21,8 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.util.JSONUtils;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -66,7 +66,7 @@ public class JSONSerializableDataHandler {
         }, (element) -> {
             JsonArray array = element.getAsJsonArray();
             ItemStack[] stacks = new ItemStack[array.size()];
-            for(int i = 0; i < array.size(); i++) {
+            for (int i = 0; i < array.size(); i++) {
                 stacks[i] = JSONSerializableDataHandler.readItemStack(array.get(i).getAsJsonObject());
             }
             return stacks;
@@ -75,21 +75,21 @@ public class JSONSerializableDataHandler {
         map(Block.class, type -> new JsonPrimitive(type.getRegistryName().toString()), element -> ForgeRegistries.BLOCKS.getValue(new ResourceLocation(element.getAsString())));
         map(FluidStack.class, JSONSerializableDataHandler::writeFluidStack, JSONSerializableDataHandler::readFluidStack);
 
-        map(Biome.class, JSONSerializableDataHandler::writeBiomeType, JSONSerializableDataHandler::readBiomeType);
-        map(Biome[].class, (biomes) -> {
+        map(RegistryKey.class, JSONSerializableDataHandler::writeRegistryKey, JSONSerializableDataHandler::readRegistryKey);
+        map(RegistryKey[].class, (registryKeys) -> {
             JsonArray array = new JsonArray();
-            for (Biome biome : biomes) {
-                array.add(writeBiomeType(biome));
+            for (RegistryKey registryKey : registryKeys) {
+                array.add(writeRegistryKey(registryKey));
             }
             return array;
         }, element -> {
-            Biome[] biomes = new Biome[element.getAsJsonArray().size()];
+            RegistryKey[] registryKeys = new RegistryKey[element.getAsJsonArray().size()];
             int i = 0;
             for (Iterator<JsonElement> iterator = element.getAsJsonArray().iterator(); iterator.hasNext(); i++) {
                 JsonElement jsonElement = iterator.next();
-                biomes[i] = readBiomeType(jsonElement);
+                registryKeys[i] = readRegistryKey(jsonElement.getAsJsonObject());
             }
-            return biomes;
+            return registryKeys;
         });
         map(Ingredient.class, (type) -> {
             if(Ingredient.EMPTY.equals(type)) {
@@ -189,14 +189,15 @@ public class JSONSerializableDataHandler {
         return stack;
     }
 
-    public static JsonObject writeBiomeType(Biome biome) {
+    public static JsonObject writeRegistryKey(RegistryKey<?> registryKey) {
         JsonObject object = new JsonObject();
-        object.addProperty("biome", biome.getRegistryName().toString());
+        object.addProperty("key", registryKey.getRegistryName().toString());
+        object.addProperty("value", registryKey.func_240901_a_().toString());
         return object;
     }
 
-    public static Biome readBiomeType(JsonElement element) {
-        return ForgeRegistries.BIOMES.getValue(new ResourceLocation(element.getAsString()));
+    public static RegistryKey<?> readRegistryKey(JsonElement object) {
+        return RegistryKey.func_240903_a_(RegistryKey.func_240904_a_(new ResourceLocation(object.getAsJsonObject().get("key").getAsString())), new ResourceLocation(object.getAsJsonObject().get("value").getAsString()));
     }
 
     public interface Writer<T> {

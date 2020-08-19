@@ -35,7 +35,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
-import net.minecraft.util.text.ITextProperties;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 
@@ -124,7 +124,7 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon implements IClick
     }
 
     @Override
-    public List<ITextProperties> getTooltipLines() {
+    public List<ITextComponent> getTooltipLines() {
         return Collections.singletonList(LangUtil.get("tooltip.titanium.facing_handler." + handler.getName().toLowerCase()));
     }
 
@@ -199,8 +199,8 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon implements IClick
                         }
 
                         @Override
-                        public List<ITextProperties> getTooltipLines() {
-                            List<ITextProperties> strings = new ArrayList<>();
+                        public List<ITextComponent> getTooltipLines() {
+                            List<ITextComponent> strings = new ArrayList<>();
                             IFacingComponent.FaceMode mode = IFacingComponent.FaceMode.values()[getState()];
                             strings.add(new StringTextComponent(TextFormatting.GOLD + LangUtil.getString("tooltip.titanium.facing_handler.direction") +
                                 TextFormatting.RESET + LangUtil.getString("tooltip.titanium.facing_handler." + facing.name().toLowerCase()) + TextFormatting.GRAY + " [" + LangUtil.getString("direction.titanium." + FacingUtil.getFacingFromSide(blockDirection, facing)) + "]"));

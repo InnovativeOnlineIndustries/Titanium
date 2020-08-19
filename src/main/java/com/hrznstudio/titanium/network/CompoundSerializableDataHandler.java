@@ -16,10 +16,10 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.biome.Biome;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
@@ -71,8 +71,8 @@ public class CompoundSerializableDataHandler {
         map(Block.class, buf -> ForgeRegistries.BLOCKS.getValue(buf.readResourceLocation()), (buf, block) -> buf.writeResourceLocation(block.getRegistryName()));
         map(Ingredient.IItemList[].class, CompoundSerializableDataHandler::readIItemListArray, CompoundSerializableDataHandler::writeIItemListArray);
         map(Ingredient[].class, CompoundSerializableDataHandler::readIngredientArray, CompoundSerializableDataHandler::writeIngredientArray);
-        map(Biome.class, CompoundSerializableDataHandler::readBiome, CompoundSerializableDataHandler::writeBiome);
-        map(Biome[].class, CompoundSerializableDataHandler::readBiomeArray, CompoundSerializableDataHandler::writeBiomeArray);
+        map(RegistryKey.class, CompoundSerializableDataHandler::readRegistryKey, CompoundSerializableDataHandler::writeRegistryKey);
+        map(RegistryKey[].class, CompoundSerializableDataHandler::readRegistryArray, CompoundSerializableDataHandler::writeRegistryArray);
         map(ResourceLocation.class, PacketBuffer::readResourceLocation, PacketBuffer::writeResourceLocation);
 
     }
@@ -97,12 +97,13 @@ public class CompoundSerializableDataHandler {
         buf.writeCompoundTag(stack == null ? FluidStack.EMPTY.writeToNBT(new CompoundNBT()) : stack.writeToNBT(new CompoundNBT()));
     }
 
-    public static Biome readBiome(PacketBuffer buffer) {
-        return ForgeRegistries.BIOMES.getValue(buffer.readResourceLocation());
+    public static RegistryKey<?> readRegistryKey(PacketBuffer buffer) {
+        return RegistryKey.func_240903_a_(RegistryKey.func_240904_a_(buffer.readResourceLocation()), buffer.readResourceLocation());
     }
 
-    public static void writeBiome(PacketBuffer buffer, Biome biome) {
+    public static void writeRegistryKey(PacketBuffer buffer, RegistryKey<?> biome) {
         buffer.writeResourceLocation(biome.getRegistryName());
+        buffer.writeResourceLocation(biome.func_240901_a_());
     }
 
     private static void writeUpdatePacket(PacketBuffer buf, SUpdateTileEntityPacket packet) {
@@ -128,18 +129,18 @@ public class CompoundSerializableDataHandler {
         }
     }
 
-    public static Biome[] readBiomeArray(PacketBuffer buffer) {
-        Biome[] biomes = new Biome[buffer.readInt()];
-        for (int i = 0; i < biomes.length; i++) {
-            biomes[i] = ForgeRegistries.BIOMES.getValue(buffer.readResourceLocation());
+    public static RegistryKey<?>[] readRegistryArray(PacketBuffer buffer) {
+        RegistryKey[] registryKeys = new RegistryKey[buffer.readInt()];
+        for (int i = 0; i < registryKeys.length; i++) {
+            registryKeys[i] = readRegistryKey(buffer);
         }
-        return biomes;
+        return registryKeys;
     }
 
-    public static void writeBiomeArray(PacketBuffer buffer, Biome[] biomes) {
-        buffer.writeInt(biomes.length);
-        for (Biome biome : biomes) {
-            buffer.writeResourceLocation(biome.getRegistryName());
+    public static void writeRegistryArray(PacketBuffer buffer, RegistryKey<?>[] registryKeys) {
+        buffer.writeInt(registryKeys.length);
+        for (RegistryKey<?> registryKey : registryKeys) {
+            writeRegistryKey(buffer, registryKey);
         }
     }
 

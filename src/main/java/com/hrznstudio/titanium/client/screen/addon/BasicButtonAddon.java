@@ -21,7 +21,7 @@ import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.text.ITextProperties;
+import net.minecraft.util.text.ITextComponent;
 
 import java.util.Collections;
 import java.util.List;
@@ -42,7 +42,7 @@ public class BasicButtonAddon extends BasicScreenAddon implements IClickable {
     public void drawForegroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {}
 
     @Override
-    public List<ITextProperties> getTooltipLines() {
+    public List<ITextComponent> getTooltipLines() {
         return Collections.emptyList();
     }
 
