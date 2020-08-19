@@ -196,7 +196,7 @@ public class Titanium extends ModuleController {
 
     private void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         event.getPlayer().getServer().execute(() -> {
-            RewardWorldStorage storage = RewardWorldStorage.get(event.getPlayer().getServer().getWorld(World.field_234918_g_));
+            RewardWorldStorage storage = RewardWorldStorage.get(event.getPlayer().getServer().getWorld(World.OVERWORLD));
             if (!storage.getConfiguredPlayers().contains(event.getPlayer().getUniqueID())) {
                 for (ResourceLocation collectRewardsResourceLocation : RewardManager.get().collectRewardsResourceLocations(event.getPlayer().getUniqueID())) {
                     Reward reward = RewardManager.get().getReward(collectRewardsResourceLocation);

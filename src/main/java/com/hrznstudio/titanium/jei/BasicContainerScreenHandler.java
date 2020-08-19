@@ -11,16 +11,17 @@ import com.hrznstudio.titanium.client.screen.addon.BasicScreenAddon;
 import com.hrznstudio.titanium.client.screen.container.BasicContainerScreen;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import net.minecraft.client.renderer.Rectangle2d;
+import net.minecraft.inventory.container.Container;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BasicContainerScreenHandler implements IGuiContainerHandler<BasicContainerScreen> {
+public class BasicContainerScreenHandler<T extends Container> implements IGuiContainerHandler<BasicContainerScreen<T>> {
 
     @Override
     @Nonnull
-    public List<Rectangle2d> getGuiExtraAreas(BasicContainerScreen containerScreen) {
+    public List<Rectangle2d> getGuiExtraAreas(BasicContainerScreen<T> containerScreen) {
         List<Rectangle2d> rectangles = new ArrayList<>();
         for (Object o : containerScreen.getAddons()) {
             if (o instanceof BasicScreenAddon) {

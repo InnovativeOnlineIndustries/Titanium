@@ -73,7 +73,7 @@ public class ItemstackFilterScreenAddon extends BasicScreenAddon implements ICli
                 AbstractGui.fill(stack, filterSlot.getX() + 1, filterSlot.getY() + 1, filterSlot.getX() + 17, filterSlot.getY() + 17, -2130706433);
                 RenderSystem.translated(0, 0, -200);
                 if (!filterSlot.getFilter().isEmpty() && Minecraft.getInstance().player.inventory.getItemStack().isEmpty()) {
-                    screen.renderTooltip(stack, screen.getTooltipFromItem(filterSlot.getFilter()), mouseX - guiX, mouseY - guiY);
+                    screen.func_243308_b(stack, screen.getTooltipFromItem(filterSlot.getFilter()), mouseX - guiX, mouseY - guiY);
                     RenderSystem.color4f(1, 1, 1, 1);
                 }
             }

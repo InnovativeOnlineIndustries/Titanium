@@ -13,7 +13,7 @@ import com.hrznstudio.titanium.util.AssetUtil;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.util.text.ITextProperties;
+import net.minecraft.util.text.ITextComponent;
 
 import java.util.Arrays;
 import java.util.List;
@@ -47,7 +47,7 @@ public abstract class StateButtonAddon extends BasicButtonAddon {
     }
 
     @Override
-    public List<ITextProperties> getTooltipLines() {
+    public List<ITextComponent> getTooltipLines() {
         StateButtonInfo buttonInfo = getStateInfo();
         if (buttonInfo != null) {
             return Arrays.asList(buttonInfo.getTooltip());

@@ -81,7 +81,7 @@ public abstract class ScreenAddonScreen extends Screen implements IScreenAddonCo
         for (IScreenAddon iScreenAddon : addonList) {
             if (iScreenAddon.isInside(this, mouseX - x, mouseY - y) && !iScreenAddon.getTooltipLines().isEmpty()) {
                 // renderTooltip
-                renderTooltip(stack, iScreenAddon.getTooltipLines(), mouseX, mouseY);
+                func_243308_b(stack, iScreenAddon.getTooltipLines(), mouseX, mouseY);
             }
         }
     }

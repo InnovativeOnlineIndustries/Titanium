@@ -12,7 +12,7 @@ import com.hrznstudio.titanium.component.IComponentHarness;
 import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.util.text.ITextProperties;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 
@@ -54,8 +54,8 @@ public class ProgressBarScreenAddon<T extends IComponentHarness> extends BasicSc
     }
 
     @Override
-    public List<ITextProperties> getTooltipLines() {
-        List<ITextProperties> tooltip = new ArrayList<>();
+    public List<ITextComponent> getTooltipLines() {
+        List<ITextComponent> tooltip = new ArrayList<>();
         tooltip.add(new StringTextComponent(TextFormatting.GOLD + "Progress: " + TextFormatting.WHITE + new DecimalFormat().format(progressBar.getProgress()) + TextFormatting.GOLD + "/" + TextFormatting.WHITE + new DecimalFormat().format(progressBar.getMaxProgress())));
         int progress = (progressBar.getMaxProgress() - progressBar.getProgress()) / progressBar.getProgressIncrease();
         if (!progressBar.getIncreaseType()) progress = progressBar.getMaxProgress() - progress;

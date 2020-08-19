@@ -10,7 +10,7 @@ package com.hrznstudio.titanium.api.client;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.util.text.ITextProperties;
+import net.minecraft.util.text.ITextComponent;
 
 import java.util.Collections;
 import java.util.List;
@@ -46,7 +46,7 @@ public interface IScreenAddon {
      *
      * @return A list of strings
      */
-    default List<? extends ITextProperties> getTooltipLines() {
+    default List<ITextComponent> getTooltipLines() {
         return Collections.emptyList();
     }
 

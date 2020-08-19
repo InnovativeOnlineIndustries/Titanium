@@ -22,7 +22,6 @@ import net.minecraft.command.arguments.ResourceLocationArgument;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkDirection;
 
@@ -58,7 +57,7 @@ public class RewardCommand {
         }
         if (changed) {
             context.getSource().getServer().execute(() -> {
-                CompoundNBT nbt = RewardWorldStorage.get(context.getSource().getServer().getWorld(World.field_234918_g_)).serializeSimple();
+                CompoundNBT nbt = RewardWorldStorage.get(context.getSource().getServer().getWorld(World.OVERWORLD)).serializeSimple();
                 context.getSource().getServer().getPlayerList().getPlayers().forEach(serverPlayerEntity -> Titanium.NETWORK.get().sendTo(new RewardSyncMessage(nbt), serverPlayerEntity.connection.netManager, NetworkDirection.PLAY_TO_CLIENT));
             });
         }

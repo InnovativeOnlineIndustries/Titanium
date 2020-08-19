@@ -10,8 +10,8 @@ package com.hrznstudio.titanium.util;
 import net.minecraft.block.Block;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
+import net.minecraft.tags.ITagCollection;
 import net.minecraft.tags.Tag;
-import net.minecraft.tags.TagCollection;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -25,16 +25,16 @@ public class TagUtil {
         return tag.contains(type); //contains
     }
 
-    public static TagCollection<Block> getAllBlockTags(World world) {
-        return world.getTags().getBlocks();
+    public static ITagCollection<Block> getAllBlockTags(World world) {
+        return world.getTags().func_241835_a();
     }
 
-    public static TagCollection<Item> getAllItemTags(World world) {
-        return world.getTags().getItems();
+    public static ITagCollection<Item> getAllItemTags(World world) {
+        return world.getTags().func_241836_b();
     }
 
-    public static TagCollection<Fluid> getAllFluidTags(World world) {
-        return world.getTags().getFluids();
+    public static ITagCollection<Fluid> getAllFluidTags(World world) {
+        return world.getTags().func_241837_c();
     }
 
     public static <T> Collection<T> getAllEntries(Tag<T>... tags) {

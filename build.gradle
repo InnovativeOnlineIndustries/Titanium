@@ -39,7 +39,7 @@ license {
 }
 
 minecraft {
-  mappings channel: 'snapshot', version: '20200723-1.16.1'
+  mappings channel: 'snapshot', version: '20200813-1.16.1'
     runs {
         client = {
             // recommended logging data for a userdev environment
@@ -83,13 +83,16 @@ repositories {
     maven {
         url "https://maven.tterrag.com/"
     }
+     maven {
+        url 'https://www.dogforce-games.com/maven/'
+     }
 }
 dependencies {
-  minecraft 'net.minecraftforge:forge:1.16.1-32.0.98'
+  minecraft 'net.minecraftforge:forge:1.16.2-33.0.5'
 
-  compileOnly fg.deobf("mezz.jei:jei-1.16.1:7.0.0.2:api")
+  compileOnly fg.deobf("mezz.jei:jei-1.16.2:7.1.0.11:api")
         // at runtime, use the full JEI jar
-  runtimeOnly fg.deobf("mezz.jei:jei-1.16.1:7.0.0.2")
+  runtimeOnly fg.deobf("mezz.jei:jei-1.16.2:7.1.0.11")
 
 
 }

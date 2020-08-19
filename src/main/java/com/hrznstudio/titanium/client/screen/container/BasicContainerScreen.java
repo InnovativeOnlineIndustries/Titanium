@@ -22,6 +22,7 @@ import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
@@ -83,7 +84,7 @@ public class BasicContainerScreen<T extends Container> extends ContainerScreen<T
         RenderSystem.color4f(1, 1, 1, 1);
         getMinecraft().getTextureManager().bindTexture(IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND).getResourceLocation());
         blit(stack, xCenter, yCenter, 0, 0, xSize, ySize);
-        Minecraft.getInstance().fontRenderer.func_238422_b_(stack, title, xCenter + xSize / 2 - Minecraft.getInstance().fontRenderer.getStringWidth(title.getString()) / 2, yCenter + 6, 0xFFFFFF);
+        Minecraft.getInstance().fontRenderer.drawString(stack, TextFormatting.DARK_GRAY + title.getString(), xCenter + xSize / 2 - Minecraft.getInstance().fontRenderer.getStringWidth(title.getString()) / 2, yCenter + 6, 0xFFFFFF);
         this.checkForMouseDrag(mouseX, mouseY);
         addons.forEach(iGuiAddon -> {
             if (iGuiAddon instanceof AssetScreenAddon) {
@@ -111,11 +112,11 @@ public class BasicContainerScreen<T extends Container> extends ContainerScreen<T
             }
         });
         // renderHoveredToolTip
-        func_230459_a_(stack, mouseX - xCenter, mouseY - yCenter);
+        renderHoveredTooltip(stack, mouseX - xCenter, mouseY - yCenter);
         for (IScreenAddon iScreenAddon : addons) {
             if (iScreenAddon.isInside(this, mouseX - xCenter, mouseY - yCenter) && !iScreenAddon.getTooltipLines().isEmpty()) {
                 // renderTooltip
-                renderTooltip(stack, iScreenAddon.getTooltipLines(), mouseX - xCenter, mouseY - yCenter);
+                func_243308_b(stack, iScreenAddon.getTooltipLines(), mouseX - xCenter, mouseY - yCenter);
             }
         }
     }
