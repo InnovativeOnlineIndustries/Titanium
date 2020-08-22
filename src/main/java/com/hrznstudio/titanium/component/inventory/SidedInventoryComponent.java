@@ -217,4 +217,10 @@ public class SidedInventoryComponent<T extends IComponentHarness> extends Invent
         }
         return -1;
     }
+
+    @Override
+    public SidedInventoryComponent<T> setColorGuiEnabled(boolean colorGuiEnabled) {
+        super.setColorGuiEnabled(true);
+        return this;
+    }
 }

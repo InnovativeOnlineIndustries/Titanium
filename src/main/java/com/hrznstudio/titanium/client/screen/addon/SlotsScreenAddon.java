@@ -45,6 +45,39 @@ public class SlotsScreenAddon<T extends IComponentHarness> extends BasicScreenAd
         return 0;
     }
 
+    public static void drawAsset(Screen screen, IAssetProvider provider, int handlerPosX, int handlerPosY, int guiX, int guiY, int slots, Function<Integer, Pair<Integer, Integer>> positionFunction, boolean drawColor, int color) {
+        IAsset slot = IAssetProvider.getAsset(provider, AssetTypes.SLOT);
+        Rectangle area = slot.getArea();
+        screen.getMinecraft().getTextureManager().bindTexture(slot.getResourceLocation());
+        //Draw background
+        if (drawColor) {
+            for (int slotID = 0; slotID < slots; slotID++) {
+                int posX = positionFunction.apply(slotID).getLeft();
+                int posY = positionFunction.apply(slotID).getRight();
+                AbstractGui.fill(guiX + handlerPosX + posX - 2, guiY + handlerPosY + posY - 2,
+                    guiX + handlerPosX + posX + area.width, guiY + handlerPosY + posY + area.height, new Color(color).getRGB());
+                RenderSystem.color4f(1, 1, 1, 1);
+            }
+        }
+        //Draw slot
+        for (int slotID = 0; slotID < slots; slotID++) {
+            int posX = positionFunction.apply(slotID).getLeft();
+            int posY = positionFunction.apply(slotID).getRight();
+            AssetUtil.drawAsset(screen, slot, handlerPosX + posX + guiX - 1, handlerPosY + posY + guiY - 1);
+        }
+        //Draw overlay
+        if (drawColor) {
+            for (int slotID = 0; slotID < slots; slotID++) {
+                int posX = positionFunction.apply(slotID).getLeft();
+                int posY = positionFunction.apply(slotID).getRight();
+                Color colored = new Color(color);
+                AbstractGui.fill(guiX + handlerPosX + posX, guiY + handlerPosY + posY,
+                    guiX + handlerPosX + posX + area.width - 2, guiY + handlerPosY + posY + area.height - 2, new Color(colored.getRed(), colored.getGreen(), colored.getBlue(), 256 / 2).getRGB());
+                RenderSystem.color4f(1, 1, 1, 1);
+            }
+        }
+    }
+
     public void drawAsset(Screen screen, IAssetProvider provider, int handlerPosX, int handlerPosY, int guiX, int guiY, int slots, Function<Integer, Pair<Integer, Integer>> positionFunction, boolean drawColor) {
         IAsset slot = IAssetProvider.getAsset(provider, AssetTypes.SLOT);
         Rectangle area = slot.getArea();

@@ -205,8 +205,9 @@ public class InventoryComponent<T extends IComponentHarness> extends ItemStackHa
         return onSlotChanged;
     }
 
-    public void setColorGuiEnabled(boolean colorGuiEnabled) {
+    public InventoryComponent<T> setColorGuiEnabled(boolean colorGuiEnabled) {
         this.colorGuiEnabled = colorGuiEnabled;
+        return this;
     }
 
     public boolean isColorGuiEnabled() {
@@ -256,11 +257,8 @@ public class InventoryComponent<T extends IComponentHarness> extends ItemStackHa
      * @return Returns the inventorycomponent
      */
     public InventoryComponent<T> setSlotToColorRender(int slot, int color) {
-        if (!this.colorGuiEnabled) {
-            this.setColorGuiEnabled(true);
-        }
         this.slotToColorRenderMap.put(slot, new Color(color));
-        return this;
+        return this.setColorGuiEnabled(true);
     }
 
     /**
