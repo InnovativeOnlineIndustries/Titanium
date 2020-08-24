@@ -186,6 +186,15 @@ public class MultiInventoryComponent<T extends IComponentHarness> implements ISc
                 throw new RuntimeException("Slot " + slot + " not in valid range - [0," + slotAmount + ")");
         }
 
+        @Override
+        public int getSlotLimit(int slot) {
+            InventoryComponent<T> handler = getFromSlot(slot);
+            if (handler != null) {
+                handler.getSlotLimit(getRelativeSlot(handler, slot));
+            }
+            return super.getSlotLimit(slot);
+        }
+
         public InventoryComponent<T> getFromSlot(int slot) {
             for (InventoryComponent<T> handler : inventoryHandlers) {
                 slot -= handler.getSlots();
