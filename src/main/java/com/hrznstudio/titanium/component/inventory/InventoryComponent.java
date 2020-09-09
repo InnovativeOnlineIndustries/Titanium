@@ -51,7 +51,7 @@ public class InventoryComponent<T extends IComponentHarness> extends ItemStackHa
     private Map<Integer, Color> slotToColorRenderMap;
     private int slotLimit;
     private Function<Integer, Pair<Integer, Integer>> slotPosition;
-    private Predicate<Integer> slotEnabledPredicate;
+    private Predicate<Integer> slotVisiblePredicate;
 
     public InventoryComponent(String name, int xPos, int yPos, int size) {
         this.name = name;
@@ -69,7 +69,7 @@ public class InventoryComponent<T extends IComponentHarness> extends ItemStackHa
         this.slotToColorRenderMap = new HashMap<>();
         this.slotLimit = 64;
         this.slotPosition = integer -> Pair.of(18 * (integer % xSize), 18 * (integer / xSize));
-        this.slotEnabledPredicate = integer -> true;
+        this.slotVisiblePredicate = integer -> true;
     }
 
     /**
@@ -323,18 +323,18 @@ public class InventoryComponent<T extends IComponentHarness> extends ItemStackHa
      *
      * @return predicate
      */
-    public Predicate<Integer> getSlotEnabled() {
-        return slotEnabledPredicate;
+    public Predicate<Integer> getSlotVisiblePredicate() {
+        return slotVisiblePredicate;
     }
 
     /**
-     * Sets the slot enabled predicate that allows to disable slots
+     * Sets the slot enabled predicate that allows to disable/enable slots
      *
-     * @param slotEnabledPredicate a int predicate that checks slot id
+     * @param slotVisiblePredicate a int predicate that checks slot id
      * @return itself
      */
-    public InventoryComponent<T> setSlotEnabledPredicate(Predicate<Integer> slotEnabledPredicate) {
-        this.slotEnabledPredicate = slotEnabledPredicate;
+    public InventoryComponent<T> setSlotVisiblePredicate(Predicate<Integer> slotVisiblePredicate) {
+        this.slotVisiblePredicate = slotVisiblePredicate;
         return this;
     }
 

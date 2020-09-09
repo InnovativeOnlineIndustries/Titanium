@@ -91,7 +91,7 @@ public class SlotsScreenAddon<T extends IComponentHarness> extends BasicScreenAd
 
     @Override
     public void drawBackgroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
-        drawAsset(stack, screen, provider, guiX, guiY, getPosX(), getPosY(), handler.getSlots(), handler.getSlotPosition(), handler::getItemStackForSlotRendering, handler.isColorGuiEnabled(), handler::getColorForSlotRendering, handler.getSlotEnabled());
+        drawAsset(stack, screen, provider, guiX, guiY, getPosX(), getPosY(), handler.getSlots(), handler.getSlotPosition(), handler::getItemStackForSlotRendering, handler.isColorGuiEnabled(), handler::getColorForSlotRendering, handler.getSlotVisiblePredicate());
     }
 
     @Override

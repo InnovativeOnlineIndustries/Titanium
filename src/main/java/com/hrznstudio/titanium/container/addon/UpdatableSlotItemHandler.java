@@ -19,7 +19,7 @@ public class UpdatableSlotItemHandler extends SlotItemHandler {
             Pair<Integer, Integer> pos = ((InventoryComponent<?>) this.getItemHandler()).getSlotPosition().apply(this.getSlotIndex());
             this.xPos = ((InventoryComponent<?>) this.getItemHandler()).getXPos() + pos.getLeft();
             this.yPos = ((InventoryComponent<?>) this.getItemHandler()).getYPos() + pos.getRight();
-            this.enabled = ((InventoryComponent<?>) this.getItemHandler()).getSlotEnabled().test(this.getSlotIndex());
+            this.enabled = ((InventoryComponent<?>) this.getItemHandler()).getSlotVisiblePredicate().test(this.getSlotIndex());
         }
     }
 

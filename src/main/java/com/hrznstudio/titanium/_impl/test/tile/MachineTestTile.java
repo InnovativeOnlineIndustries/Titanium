@@ -31,19 +31,19 @@ public class MachineTestTile extends MachineTile<MachineTestTile> {
 
     public MachineTestTile() {
         super(MachineTestBlock.TEST);
-        //addFilter(this.filter = new ItemStackFilter("filter", 12));
+        addFilter(this.filter = new ItemStackFilter("filter", 12));
         int pos = 0;
         for (int y = 0; y < 4; y++) {
             for (int x = 0; x < 3; x++) {
                 FilterSlot slot = new FilterSlot<>(20 + x * 18, 20 + y * 18, pos, ItemStack.EMPTY);
                 slot.setColor(DyeColor.CYAN);
-                //this.filter.setFilter(pos, slot);
+                this.filter.setFilter(pos, slot);
                 ++pos;
             }
         }
         this.setShowEnergy(false);
         this.addBundle(tankBundle = new TankInteractionBundle<>(() -> this.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY), 175, 94, this, 10));
-        this.addInventory(this.movingSlot = new InventoryComponent<MachineTestTile>("moving_slot", 0, 0, 1).setInputFilter((stack, integer) -> this.movingSlot.getSlotEnabled().test(integer)).setSlotEnabledPredicate(integer -> this.world.getGameTime() % 100 > 40).setSlotPosition(integer -> Pair.of((int) this.world.getGameTime() % 100, 50 + (int) this.world.getGameTime() % 50 - 25)));
+        this.addInventory(this.movingSlot = new InventoryComponent<MachineTestTile>("moving_slot", 0, 0, 1).setInputFilter((stack, integer) -> this.movingSlot.getSlotVisiblePredicate().test(integer)).setSlotVisiblePredicate(integer -> this.world.getGameTime() % 100 > 40).setSlotPosition(integer -> Pair.of((int) this.world.getGameTime() % 100, 50 + (int) this.world.getGameTime() % 50 - 25)));
     }
 
     @Nonnull
