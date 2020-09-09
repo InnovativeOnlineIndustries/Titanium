@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class InventoryComponent<T extends IComponentHarness> extends ItemStackHandler implements IScreenAddonProvider,
         IContainerAddonProvider {
@@ -50,6 +51,7 @@ public class InventoryComponent<T extends IComponentHarness> extends ItemStackHa
     private Map<Integer, Color> slotToColorRenderMap;
     private int slotLimit;
     private Function<Integer, Pair<Integer, Integer>> slotPosition;
+    private Predicate<Integer> slotEnabledPredicate;
 
     public InventoryComponent(String name, int xPos, int yPos, int size) {
         this.name = name;
@@ -67,6 +69,7 @@ public class InventoryComponent<T extends IComponentHarness> extends ItemStackHa
         this.slotToColorRenderMap = new HashMap<>();
         this.slotLimit = 64;
         this.slotPosition = integer -> Pair.of(18 * (integer % xSize), 18 * (integer / xSize));
+        this.slotEnabledPredicate = integer -> true;
     }
 
     /**
@@ -312,6 +315,26 @@ public class InventoryComponent<T extends IComponentHarness> extends ItemStackHa
      */
     public InventoryComponent<T> setSlotLimit(int limit) {
         this.slotLimit = limit;
+        return this;
+    }
+
+    /**
+     * Gets the predicate to check if a slot is enabled
+     *
+     * @return predicate
+     */
+    public Predicate<Integer> getSlotEnabled() {
+        return slotEnabledPredicate;
+    }
+
+    /**
+     * Sets the slot enabled predicate that allows to disable slots
+     *
+     * @param slotEnabledPredicate a int predicate that checks slot id
+     * @return itself
+     */
+    public InventoryComponent<T> setSlotEnabledPredicate(Predicate<Integer> slotEnabledPredicate) {
+        this.slotEnabledPredicate = slotEnabledPredicate;
         return this;
     }
 

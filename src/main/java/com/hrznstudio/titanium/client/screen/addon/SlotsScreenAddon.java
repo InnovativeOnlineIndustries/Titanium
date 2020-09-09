@@ -22,6 +22,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.awt.*;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class SlotsScreenAddon<T extends IComponentHarness> extends BasicScreenAddon {
 
@@ -42,13 +43,14 @@ public class SlotsScreenAddon<T extends IComponentHarness> extends BasicScreenAd
         return 0;
     }
 
-    public static void drawAsset(MatrixStack stack, Screen screen, IAssetProvider provider, int handlerPosX, int handlerPosY, int guiX, int guiY, int slots, Function<Integer, Pair<Integer, Integer>> positionFunction, Function<Integer, ItemStack> slotToStackRenderMap, boolean drawColor, Function<Integer, Color> slotToColorRenderMap) {
+    public static void drawAsset(MatrixStack stack, Screen screen, IAssetProvider provider, int handlerPosX, int handlerPosY, int guiX, int guiY, int slots, Function<Integer, Pair<Integer, Integer>> positionFunction, Function<Integer, ItemStack> slotToStackRenderMap, boolean drawColor, Function<Integer, Color> slotToColorRenderMap, Predicate<Integer> slotEnabled) {
         IAsset slot = IAssetProvider.getAsset(provider, AssetTypes.SLOT);
         Rectangle area = slot.getArea();
         screen.getMinecraft().getTextureManager().bindTexture(slot.getResourceLocation());
         //Draw background
         if (drawColor) {
             for (int slotID = 0; slotID < slots; slotID++) {
+                if (!slotEnabled.test(slotID)) continue;
                 int posX = positionFunction.apply(slotID).getLeft();
                 int posY = positionFunction.apply(slotID).getRight();
                 Color colored = slotToColorRenderMap.apply(slotID);
@@ -61,6 +63,7 @@ public class SlotsScreenAddon<T extends IComponentHarness> extends BasicScreenAd
         }
         //Draw slot
         for (int slotID = 0; slotID < slots; slotID++) {
+            if (!slotEnabled.test(slotID)) continue;
             int posX = positionFunction.apply(slotID).getLeft();
             int posY = positionFunction.apply(slotID).getRight();
             AssetUtil.drawAsset(stack, screen, slot, handlerPosX + posX + guiX - 1, handlerPosY + posY + guiY - 1);
@@ -72,6 +75,7 @@ public class SlotsScreenAddon<T extends IComponentHarness> extends BasicScreenAd
         //Draw overlay
         if (drawColor) {
             for (int slotID = 0; slotID < slots; slotID++) {
+                if (!slotEnabled.test(slotID)) continue;
                 int posX = positionFunction.apply(slotID).getLeft();
                 int posY = positionFunction.apply(slotID).getRight();
                 Color colored = slotToColorRenderMap.apply(slotID);
@@ -87,7 +91,7 @@ public class SlotsScreenAddon<T extends IComponentHarness> extends BasicScreenAd
 
     @Override
     public void drawBackgroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
-        drawAsset(stack, screen, provider, guiX, guiY, getPosX(), getPosY(), handler.getSlots(), handler.getSlotPosition(), handler::getItemStackForSlotRendering, handler.isColorGuiEnabled(), handler::getColorForSlotRendering);
+        drawAsset(stack, screen, provider, guiX, guiY, getPosX(), getPosY(), handler.getSlots(), handler.getSlotPosition(), handler::getItemStackForSlotRendering, handler.isColorGuiEnabled(), handler::getColorForSlotRendering, handler.getSlotEnabled());
     }
 
     @Override

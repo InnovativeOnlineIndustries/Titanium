@@ -13,6 +13,7 @@ import com.hrznstudio.titanium.client.screen.asset.DefaultAssetProvider;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.client.screen.asset.IHasAssetProvider;
 import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
+import com.hrznstudio.titanium.container.addon.UpdatableSlotItemHandler;
 import com.hrznstudio.titanium.container.impl.BasicInventoryContainer;
 import com.hrznstudio.titanium.network.locator.ILocatable;
 import com.hrznstudio.titanium.network.locator.LocatorFactory;
@@ -119,4 +120,9 @@ public class BasicAddonContainer extends BasicInventoryContainer implements IObj
     public LocatorInstance getLocatorInstance() {
         return locatorInstance;
     }
+
+    public void update() {
+        this.inventorySlots.stream().filter(slot -> slot instanceof UpdatableSlotItemHandler).forEach(slot -> ((UpdatableSlotItemHandler) slot).update());
+    }
+
 }
