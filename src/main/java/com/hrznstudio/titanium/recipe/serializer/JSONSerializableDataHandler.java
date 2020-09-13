@@ -77,17 +77,25 @@ public class JSONSerializableDataHandler {
 
         map(RegistryKey.class, JSONSerializableDataHandler::writeRegistryKey, JSONSerializableDataHandler::readRegistryKey);
         map(RegistryKey[].class, (registryKeys) -> {
-            JsonArray array = new JsonArray();
-            for (RegistryKey registryKey : registryKeys) {
-                array.add(writeRegistryKey(registryKey));
+            JsonObject object = new JsonObject();
+            if (registryKeys.length > 0) {
+                object.addProperty("type", registryKeys[0].getRegistryName().toString());
+                JsonArray array = new JsonArray();
+                for (RegistryKey registryKey : registryKeys) {
+                    array.add(registryKey.func_240901_a_().toString());
+                }
+                object.add("values", array);
             }
-            return array;
+            return object;
         }, element -> {
-            RegistryKey[] registryKeys = new RegistryKey[element.getAsJsonArray().size()];
-            int i = 0;
-            for (Iterator<JsonElement> iterator = element.getAsJsonArray().iterator(); iterator.hasNext(); i++) {
-                JsonElement jsonElement = iterator.next();
-                registryKeys[i] = readRegistryKey(jsonElement.getAsJsonObject());
+            RegistryKey[] registryKeys = new RegistryKey[0];
+            if (element.getAsJsonObject().has("type")) {
+                registryKeys = new RegistryKey[element.getAsJsonObject().getAsJsonArray("values").size()];
+                int i = 0;
+                for (Iterator<JsonElement> iterator = element.getAsJsonObject().getAsJsonArray("values").iterator(); iterator.hasNext(); i++) {
+                    JsonElement jsonElement = iterator.next();
+                    registryKeys[i] = RegistryKey.func_240903_a_(RegistryKey.func_240904_a_(new ResourceLocation(element.getAsJsonObject().get("type").getAsString())), new ResourceLocation(jsonElement.getAsString()));
+                }
             }
             return registryKeys;
         });

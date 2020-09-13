@@ -10,6 +10,7 @@ package com.hrznstudio.titanium.client.screen.container;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.container.BasicAddonContainer;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
@@ -18,9 +19,15 @@ public class BasicAddonScreen extends BasicContainerScreen<BasicAddonContainer> 
         super(container, inventory, title, container.getAssetProvider());
         if (container.getProvider() instanceof IScreenAddonProvider) {
             ((IScreenAddonProvider) container.getProvider()).getScreenAddons()
-                    .stream()
-                    .map(IFactory::create)
-                    .forEach(this.getAddons()::add);
+                .stream()
+                .map(IFactory::create)
+                .forEach(this.getAddons()::add);
         }
+    }
+
+    @Override
+    protected void drawGuiContainerBackgroundLayer(MatrixStack stack, float partialTicks, int mouseX, int mouseY) {
+        this.getContainer().update();
+        super.drawGuiContainerBackgroundLayer(stack, partialTicks, mouseX, mouseY);
     }
 }
