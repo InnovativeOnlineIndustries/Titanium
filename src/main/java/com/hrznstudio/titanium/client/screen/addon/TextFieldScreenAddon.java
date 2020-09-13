@@ -58,7 +58,7 @@ public class TextFieldScreenAddon extends BasicScreenAddon {
 
     @Override
     public int getYSize() {
-        return textFieldWidget.getHeight();
+        return textFieldWidget.getHeightRealms();
     }
 
     public void setActive(boolean active) {
