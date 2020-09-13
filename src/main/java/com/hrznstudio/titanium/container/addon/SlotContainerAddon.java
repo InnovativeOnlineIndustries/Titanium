@@ -10,7 +10,6 @@ package com.hrznstudio.titanium.container.addon;
 import com.google.common.collect.Lists;
 import net.minecraft.inventory.container.Slot;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.SlotItemHandler;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
@@ -34,7 +33,7 @@ public class SlotContainerAddon implements IContainerAddon {
         List<Slot> slots = Lists.newArrayList();
         for (int i = 0; i < itemHandler.getSlots(); i++) {
             Pair<Integer, Integer> offset = positionFunction.apply(i);
-            slots.add(new SlotItemHandler(itemHandler, i, xPos + offset.getLeft(), yPos + offset.getRight()));
+            slots.add(new UpdatableSlotItemHandler(itemHandler, i, xPos + offset.getLeft(), yPos + offset.getRight()));
         }
         return slots;
     }
