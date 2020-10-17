@@ -7,6 +7,7 @@
 
 package com.hrznstudio.titanium.recipe.serializer;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
@@ -73,6 +74,19 @@ public class GenericSerializer<T extends SerializableRecipe> extends ForgeRegist
             }
         } catch (Exception e) {
             Titanium.LOGGER.catching(e);
+        }
+        if (recipe.getOutputCondition() != null){
+            JsonObject recipeCondition = new JsonObject();
+            recipeCondition.addProperty("type", "forge:conditional");
+            JsonArray recipes = new JsonArray();
+            JsonObject filteredRecipe = new JsonObject();
+            JsonArray conditions = new JsonArray();
+            conditions.add(recipe.getOutputCondition().getRight().getJson(recipe.getOutputCondition().getLeft()));
+            filteredRecipe.add("conditions", conditions);
+            filteredRecipe.add("recipe", object);
+            recipes.add(filteredRecipe);
+            recipeCondition.add("recipes", recipes);
+            return recipeCondition;
         }
         return object;
     }

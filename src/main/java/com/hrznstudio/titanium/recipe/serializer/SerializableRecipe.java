@@ -13,6 +13,9 @@ import com.hrznstudio.titanium.recipe.generator.IJsonFile;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.crafting.conditions.ICondition;
+import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 
@@ -48,4 +51,10 @@ public abstract class SerializableRecipe implements IRecipe<IInventory>, IJsonFi
     public JsonObject generate() {
         return ((GenericSerializer<SerializableRecipe>) getSerializer()).write(this);
     }
+
+    @Nullable
+    public Pair<ICondition, IConditionSerializer> getOutputCondition(){
+        return null;
+    }
+
 }
