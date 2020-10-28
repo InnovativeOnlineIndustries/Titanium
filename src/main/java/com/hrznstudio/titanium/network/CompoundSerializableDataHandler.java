@@ -98,12 +98,12 @@ public class CompoundSerializableDataHandler {
     }
 
     public static RegistryKey<?> readRegistryKey(PacketBuffer buffer) {
-        return RegistryKey.func_240903_a_(RegistryKey.func_240904_a_(buffer.readResourceLocation()), buffer.readResourceLocation());
+        return RegistryKey.getOrCreateKey(RegistryKey.getOrCreateRootKey(buffer.readResourceLocation()), buffer.readResourceLocation());
     }
 
     public static void writeRegistryKey(PacketBuffer buffer, RegistryKey<?> biome) {
         buffer.writeResourceLocation(biome.getRegistryName());
-        buffer.writeResourceLocation(biome.func_240901_a_());
+        buffer.writeResourceLocation(biome.getLocation());
     }
 
     private static void writeUpdatePacket(PacketBuffer buf, SUpdateTileEntityPacket packet) {

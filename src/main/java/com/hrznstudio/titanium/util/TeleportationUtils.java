@@ -156,7 +156,7 @@ public class TeleportationUtils {
         PlayerList playerList = server.getPlayerList();
 
         player.world = destinationWorld;
-        player.connection.sendPacket(new SRespawnPacket(destinationWorld.func_230315_m_(), destinationWorld.getDimensionKey(), BiomeManager.func_235200_a_(destinationWorld.getSeed()), player.interactionManager.getGameType(), player.interactionManager.func_241815_c_(), destinationWorld.isDebug(), destinationWorld.func_241109_A_(), true));
+        player.connection.sendPacket(new SRespawnPacket(destinationWorld.getDimensionType(), destinationWorld.getDimensionKey(), BiomeManager.getHashedSeed(destinationWorld.getSeed()), player.interactionManager.getGameType(), player.interactionManager.func_241815_c_(), destinationWorld.isDebug(), destinationWorld.func_241109_A_(), true));
         player.connection.sendPacket(new SServerDifficultyPacket(sourceInfo.getDifficulty(), sourceInfo.isDifficultyLocked()));
         playerList.updatePermissionLevel(player);
         sourceWorld.removeEntity(player, true);

@@ -15,6 +15,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -56,7 +57,7 @@ public class ProgressBarScreenAddon<T extends IComponentHarness> extends BasicSc
     @Override
     public List<ITextComponent> getTooltipLines() {
         List<ITextComponent> tooltip = new ArrayList<>();
-        tooltip.add(new StringTextComponent(TextFormatting.GOLD + "Progress: " + TextFormatting.WHITE + new DecimalFormat().format(progressBar.getProgress()) + TextFormatting.GOLD + "/" + TextFormatting.WHITE + new DecimalFormat().format(progressBar.getMaxProgress())));
+        tooltip.add(new StringTextComponent(TextFormatting.GOLD + new TranslationTextComponent("tooltip.titanium.progressbar.progress").getString() +  TextFormatting.WHITE + new DecimalFormat().format(progressBar.getProgress()) + TextFormatting.GOLD + "/" + TextFormatting.WHITE + new DecimalFormat().format(progressBar.getMaxProgress())));
         int progress = (progressBar.getMaxProgress() - progressBar.getProgress()) / progressBar.getProgressIncrease();
         if (!progressBar.getIncreaseType()) progress = progressBar.getMaxProgress() - progress;
         tooltip.add(new StringTextComponent(TextFormatting.GOLD + "ETA: " + TextFormatting.WHITE + new DecimalFormat().format(Math.ceil(progress * progressBar.getTickingTime() / 20D)) + TextFormatting.DARK_AQUA + "s"));

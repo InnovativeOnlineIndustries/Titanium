@@ -82,7 +82,7 @@ public class JSONSerializableDataHandler {
                 object.addProperty("type", registryKeys[0].getRegistryName().toString());
                 JsonArray array = new JsonArray();
                 for (RegistryKey registryKey : registryKeys) {
-                    array.add(registryKey.func_240901_a_().toString());
+                    array.add(registryKey.getLocation().toString());
                 }
                 object.add("values", array);
             }
@@ -94,7 +94,7 @@ public class JSONSerializableDataHandler {
                 int i = 0;
                 for (Iterator<JsonElement> iterator = element.getAsJsonObject().getAsJsonArray("values").iterator(); iterator.hasNext(); i++) {
                     JsonElement jsonElement = iterator.next();
-                    registryKeys[i] = RegistryKey.func_240903_a_(RegistryKey.func_240904_a_(new ResourceLocation(element.getAsJsonObject().get("type").getAsString())), new ResourceLocation(jsonElement.getAsString()));
+                    registryKeys[i] = RegistryKey.getOrCreateKey(RegistryKey.getOrCreateRootKey(new ResourceLocation(element.getAsJsonObject().get("type").getAsString())), new ResourceLocation(jsonElement.getAsString()));
                 }
             }
             return registryKeys;
@@ -200,12 +200,12 @@ public class JSONSerializableDataHandler {
     public static JsonObject writeRegistryKey(RegistryKey<?> registryKey) {
         JsonObject object = new JsonObject();
         object.addProperty("key", registryKey.getRegistryName().toString());
-        object.addProperty("value", registryKey.func_240901_a_().toString());
+        object.addProperty("value", registryKey.getLocation().toString());
         return object;
     }
 
     public static RegistryKey<?> readRegistryKey(JsonElement object) {
-        return RegistryKey.func_240903_a_(RegistryKey.func_240904_a_(new ResourceLocation(object.getAsJsonObject().get("key").getAsString())), new ResourceLocation(object.getAsJsonObject().get("value").getAsString()));
+        return RegistryKey.getOrCreateKey(RegistryKey.getOrCreateRootKey(new ResourceLocation(object.getAsJsonObject().get("key").getAsString())), new ResourceLocation(object.getAsJsonObject().get("value").getAsString()));
     }
 
     public interface Writer<T> {
