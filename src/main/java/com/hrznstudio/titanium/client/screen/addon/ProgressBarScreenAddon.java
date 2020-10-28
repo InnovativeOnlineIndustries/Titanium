@@ -58,9 +58,9 @@ public class ProgressBarScreenAddon<T extends IComponentHarness> extends BasicSc
     public List<ITextComponent> getTooltipLines() {
         List<ITextComponent> tooltip = new ArrayList<>();
         tooltip.add(new StringTextComponent(TextFormatting.GOLD + new TranslationTextComponent("tooltip.titanium.progressbar.progress").getString() +  TextFormatting.WHITE + new DecimalFormat().format(progressBar.getProgress()) + TextFormatting.GOLD + "/" + TextFormatting.WHITE + new DecimalFormat().format(progressBar.getMaxProgress())));
-        int progress = (progressBar.getMaxProgress() - progressBar.getProgress()) / progressBar.getProgressIncrease();
+        int progress = (progressBar.getMaxProgress() - progressBar.getProgress());
         if (!progressBar.getIncreaseType()) progress = progressBar.getMaxProgress() - progress;
-        tooltip.add(new StringTextComponent(TextFormatting.GOLD + "ETA: " + TextFormatting.WHITE + new DecimalFormat().format(Math.ceil(progress * progressBar.getTickingTime() / 20D)) + TextFormatting.DARK_AQUA + "s"));
+        tooltip.add(new StringTextComponent(TextFormatting.GOLD + "ETA: " + TextFormatting.WHITE + new DecimalFormat().format(Math.ceil(progress * progressBar.getTickingTime() / 20D / progressBar.getProgressIncrease())) + TextFormatting.DARK_AQUA + "s"));
         return tooltip;
     }
 }
