@@ -27,15 +27,15 @@ public class TagUtil {
     }
 
     public static ITagCollection<Block> getAllBlockTags(World world) {
-        return world.getTags().func_241835_a();
+        return world.getTags().getBlockTags();
     }
 
     public static ITagCollection<Item> getAllItemTags(World world) {
-        return world.getTags().func_241836_b();
+        return world.getTags().getItemTags();
     }
 
     public static ITagCollection<Fluid> getAllFluidTags(World world) {
-        return world.getTags().func_241837_c();
+        return world.getTags().getFluidTags();
     }
 
     public static <T> Collection<T> getAllEntries(Tag<T>... tags) {
@@ -58,7 +58,7 @@ public class TagUtil {
         if (collection.getRegisteredTags().contains(resourceLocation)) {
             return collection.get(resourceLocation);
         }
-        return collection.func_241834_b(resourceLocation);
+        return collection.getTagByID(resourceLocation);
     }
 
     public static ITag<Item> getItemTag(ResourceLocation resourceLocation) {
@@ -79,6 +79,6 @@ public class TagUtil {
         if (EntityTypeTags.getCollection().getRegisteredTags().contains(resourceLocation)) {
             return EntityTypeTags.getCollection().get(resourceLocation);
         }
-        return EntityTypeTags.func_232896_a_(resourceLocation.toString());
+        return EntityTypeTags.getTagById(resourceLocation.toString());
     }
 }

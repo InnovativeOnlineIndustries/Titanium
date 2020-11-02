@@ -19,20 +19,28 @@ public class ProgressBarReferenceHolder implements IIntArray {
 
     @Override
     public int get(int index) {
-        return index == 0 ? progressBarComponent.getProgress() : progressBarComponent.getMaxProgress();
+        if (index == 0) {
+            return progressBarComponent.getProgress();
+        } else if (index == 1) {
+            return progressBarComponent.getMaxProgress();
+        } else {
+            return progressBarComponent.getProgressIncrease();
+        }
     }
 
     @Override
     public void set(int index, int value) {
         if (index == 0) {
             progressBarComponent.setProgress(value);
-        } else {
+        } else if (index == 1) {
             progressBarComponent.setMaxProgress(value);
+        } else {
+            progressBarComponent.setProgressIncrease(value);
         }
     }
 
     @Override
     public int size() {
-        return 2;
+        return 3;
     }
 }
