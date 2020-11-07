@@ -30,7 +30,7 @@ public class EnergyStorageComponent<T extends IComponentHarness> extends EnergyS
     private final int xPos;
     private final int yPos;
 
-    private T componentHarness;
+    protected T componentHarness;
 
     public EnergyStorageComponent(int maxCapacity, int xPos, int yPos) {
         this(maxCapacity, maxCapacity, xPos, yPos);
@@ -109,6 +109,14 @@ public class EnergyStorageComponent<T extends IComponentHarness> extends EnergyS
         if (this.componentHarness != null) {
             this.componentHarness.markComponentForUpdate(true);
         }
+    }
+
+    public int getX() {
+        return xPos;
+    }
+
+    public int getY() {
+        return yPos;
     }
 }
 
