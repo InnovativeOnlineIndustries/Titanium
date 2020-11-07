@@ -57,6 +57,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 
@@ -275,6 +276,30 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
 
     @Override
     public void handleButtonMessage(int id, PlayerEntity playerEntity, CompoundNBT compound) {
+        if (id == -3){
+            if (!compound.contains("Invalid") && compound.contains("Fill") && !playerEntity.inventory.getItemStack().isEmpty()){
+                boolean fill = compound.getBoolean("Fill");
+                String name = compound.getString("Name");
+                if (multiTankComponent != null) {
+                    for (FluidTankComponent<T> fluidTankComponent : multiTankComponent.getTanks()) {
+                        if (fluidTankComponent.getName().equalsIgnoreCase(name))
+                            playerEntity.inventory.getItemStack().getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(iFluidHandlerItem -> {
+                                if (fill){
+                                    int amount = fluidTankComponent.fill(iFluidHandlerItem.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.EXECUTE);
+                                    iFluidHandlerItem.drain(amount, IFluidHandler.FluidAction.EXECUTE);
+                                } else {
+                                    int amount = iFluidHandlerItem.fill(fluidTankComponent.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.EXECUTE);
+                                    fluidTankComponent.drain(amount, IFluidHandler.FluidAction.EXECUTE);
+                                }
+                                playerEntity.inventory.setItemStack(iFluidHandlerItem.getContainer().copy());
+                                if (playerEntity instanceof ServerPlayerEntity){
+                                    ((ServerPlayerEntity) playerEntity).updateHeldItem();
+                                }
+                            });
+                    }
+                }
+            }
+        }
         if (id == -2) {
             String name = compound.getString("Name");
             if (multiFilterComponent != null) {
