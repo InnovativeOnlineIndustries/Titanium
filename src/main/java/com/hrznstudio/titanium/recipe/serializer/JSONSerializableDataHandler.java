@@ -136,6 +136,14 @@ public class JSONSerializableDataHandler {
             }
             return ingredient;
         });
+        map(CompoundNBT.class, type -> new JsonPrimitive(type.toString()), element -> {
+            try {
+                return JsonToNBT.getTagFromJson(element.getAsString());
+            } catch (CommandSyntaxException e) {
+                Titanium.LOGGER.catching(e);
+            }
+            return new CompoundNBT();
+        });
     }
 
     public static <T> void map(Class<T> type, Writer<T> writer, Reader<T> reader) {
