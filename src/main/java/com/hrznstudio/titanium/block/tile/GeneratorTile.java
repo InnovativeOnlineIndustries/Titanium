@@ -8,11 +8,9 @@
 package com.hrznstudio.titanium.block.tile;
 
 import com.hrznstudio.titanium.annotation.Save;
-import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.component.energy.EnergyStorageComponent;
 import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
-import com.hrznstudio.titanium.client.screen.addon.EnergyBarScreenAddon;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -111,6 +109,6 @@ public abstract class GeneratorTile<T extends GeneratorTile<T>> extends PoweredT
     @Nonnull
     @Override
     protected EnergyStorageComponent<T> createEnergyStorage() {
-        return new EnergyStorageComponent<>(10000, 10, 20);
+        return new EnergyStorageComponent<>(getEnergyCapacity(), 10, 20);
     }
 }
