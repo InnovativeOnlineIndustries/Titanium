@@ -109,6 +109,6 @@ public abstract class GeneratorTile<T extends GeneratorTile<T>> extends PoweredT
     @Nonnull
     @Override
     protected EnergyStorageComponent<T> createEnergyStorage() {
-        return new EnergyStorageComponent<>(getEnergyCapacity(), 10, 20);
+        return new EnergyStorageComponent<>(getEnergyCapacity(),0, getExtractingEnergy(), 10, 20);
     }
 }
