@@ -35,7 +35,7 @@ public abstract class GeneratorTile<T extends GeneratorTile<T>> extends PoweredT
                     markForUpdate();
                 })
                 .setCanReset(tileEntity -> canStart() && progressBar.getProgress() == 0)
-                .setOnTickWork(() -> this.getEnergyStorage().receiveEnergy(getEnergyProducedEveryTick(), false))
+                .setOnTickWork(() -> this.getEnergyStorage().setEnergyStored(getEnergyProducedEveryTick() + this.getEnergyStorage().getEnergyStored()))
         );
     }
 
