@@ -35,7 +35,7 @@ public abstract class GeneratorTile<T extends GeneratorTile<T>> extends PoweredT
                     markForUpdate();
                 })
                 .setCanReset(tileEntity -> canStart() && progressBar.getProgress() == 0)
-                .setOnTickWork(() -> this.getEnergyStorage().receiveEnergy(getEnergyProducedEveryTick(), false))
+                .setOnTickWork(() -> this.getEnergyStorage().setEnergyStored(getEnergyProducedEveryTick() + this.getEnergyStorage().getEnergyStored()))
         );
     }
 
@@ -109,6 +109,6 @@ public abstract class GeneratorTile<T extends GeneratorTile<T>> extends PoweredT
     @Nonnull
     @Override
     protected EnergyStorageComponent<T> createEnergyStorage() {
-        return new EnergyStorageComponent<>(getEnergyCapacity(), 10, 20);
+        return new EnergyStorageComponent<>(getEnergyCapacity(),0, getExtractingEnergy(), 10, 20);
     }
 }
