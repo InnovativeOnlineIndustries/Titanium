@@ -97,10 +97,7 @@ public abstract class GeneratorTile<T extends GeneratorTile<T>> extends PoweredT
             TileEntity checkingTile = this.world.getTileEntity(checking);
             if (checkingTile != null) {
                 checkingTile.getCapability(CapabilityEnergy.ENERGY, facing.getOpposite()).ifPresent(storage -> {
-                    int energy = storage.receiveEnergy(Math.min(this.getEnergyStorage().getEnergyStored(), getExtractingEnergy()), false);
-                    if (energy > 0) {
-                        this.getEnergyStorage().extractEnergy(energy, false);
-                    }
+                    this.getEnergyStorage().extractEnergy(storage.receiveEnergy(this.getEnergyStorage().extractEnergy(this.getExtractingEnergy(), true), false), false);
                 });
             }
         }
