@@ -10,7 +10,9 @@ package com.hrznstudio.titanium.recipe.generator;
 import net.minecraft.advancements.criterion.InventoryChangeTrigger;
 import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.data.ShapelessRecipeBuilder;
+import net.minecraft.item.Item;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.IItemProvider;
 
 public class TitaniumShapelessRecipeBuilder extends ShapelessRecipeBuilder {
@@ -37,5 +39,14 @@ public class TitaniumShapelessRecipeBuilder extends ShapelessRecipeBuilder {
             addCriterion("has_item", InventoryChangeTrigger.Instance.forItems(ItemPredicate.Builder.create().item(ingredientIn.getMatchingStacks()[0].getItem()).build()));
         }
         return super.addIngredient(ingredientIn, quantity);
+    }
+
+    @Override
+    public ShapelessRecipeBuilder addIngredient(ITag<Item> tagIn) {
+        if (!this.criterion) {
+            this.criterion = true;
+            addCriterion("has_item", InventoryChangeTrigger.Instance.forItems(ItemPredicate.Builder.create().tag(tagIn).build()));
+        }
+        return super.addIngredient(tagIn);
     }
 }
