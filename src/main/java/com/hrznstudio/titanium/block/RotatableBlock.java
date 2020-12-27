@@ -14,6 +14,8 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Mirror;
+import net.minecraft.util.Rotation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -41,6 +43,22 @@ public abstract class RotatableBlock<T extends BasicTile<T>> extends BasicTileBl
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> p_206840_1_) {
         super.fillStateContainer(p_206840_1_);
         if (this.getRotationType().getProperties() != null) p_206840_1_.add(this.getRotationType().getProperties());
+    }
+
+    @Override
+    public BlockState rotate(BlockState state, Rotation rot) {
+        if (getRotationType().getProperties().length > 0){
+            return state.with(getRotationType().getProperties()[0], rot.rotate(state.get(getRotationType().getProperties()[0])));
+        }
+        return super.rotate(state, rot);
+    }
+
+    @Override
+    public BlockState mirror(BlockState state, Mirror mirrorIn) {
+        if (getRotationType().getProperties().length > 0){
+            return state.rotate(mirrorIn.toRotation(state.get(getRotationType().getProperties()[0])));
+        }
+        return super.mirror(state, mirrorIn);
     }
 
     public enum RotationType {
