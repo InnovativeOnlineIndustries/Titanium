@@ -91,7 +91,7 @@ public abstract class MachineTile<T extends MachineTile<T>> extends PoweredTile<
     private List<ItemStack> getItemStackAugments() {
         List<ItemStack> augments = new ArrayList<>();
         for (int i = 0; i < augmentInventory.getSlots(); i++) {
-            augments.add(augmentInventory.getStackInSlot(i).copy());
+            augments.add(augmentInventory.getStackInSlot(i));
         }
         return augments;
     }
