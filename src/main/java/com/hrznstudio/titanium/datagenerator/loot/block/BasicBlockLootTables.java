@@ -13,6 +13,7 @@ import net.minecraft.loot.ConstantRange;
 import net.minecraft.loot.ItemLootEntry;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
+import net.minecraft.loot.functions.CopyNbt;
 import net.minecraft.util.IItemProvider;
 import net.minecraftforge.common.util.NonNullLazy;
 
@@ -44,6 +45,13 @@ public class BasicBlockLootTables extends BlockLootTables {
             .addLootPool(withSurvivesExplosion(itemProvider, LootPool.builder()
                 .rolls(ConstantRange.of(1))
                 .addEntry(ItemLootEntry.builder(itemProvider))));
+    }
+
+    public LootTable.Builder droppingSelfWithNbt(IItemProvider itemProvider, CopyNbt.Builder nbtBuilder) {
+        return LootTable.builder()
+            .addLootPool(withSurvivesExplosion(itemProvider, LootPool.builder()
+                .rolls(ConstantRange.of(1))
+                .addEntry(ItemLootEntry.builder(itemProvider).acceptFunction(nbtBuilder))));
     }
 
     @Override
