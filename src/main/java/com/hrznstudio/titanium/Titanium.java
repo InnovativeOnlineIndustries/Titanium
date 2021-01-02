@@ -29,6 +29,7 @@ import com.hrznstudio.titanium.module.ModuleController;
 import com.hrznstudio.titanium.network.NetworkHandler;
 import com.hrznstudio.titanium.network.locator.LocatorTypes;
 import com.hrznstudio.titanium.network.messages.ButtonClickNetworkMessage;
+import com.hrznstudio.titanium.network.messages.TileFieldNetworkMessage;
 import com.hrznstudio.titanium.plugin.PluginManager;
 import com.hrznstudio.titanium.recipe.condition.ContentExistsConditionSerializer;
 import com.hrznstudio.titanium.recipe.generator.titanium.JsonRecipeSerializerProvider;
@@ -89,6 +90,7 @@ public class Titanium extends ModuleController {
     public Titanium() {
         NETWORK.registerMessage(ButtonClickNetworkMessage.class);
         NETWORK.registerMessage(RewardSyncMessage.class);
+        NETWORK.registerMessage(TileFieldNetworkMessage.class);
         SidedHandler.runOn(Dist.CLIENT, () -> () -> EventManager.mod(FMLClientSetupEvent.class).process(this::clientSetup).subscribe());
         EventManager.mod(FMLCommonSetupEvent.class).process(this::commonSetup).subscribe();
         EventManager.forge(PlayerEvent.PlayerLoggedInEvent.class).process(this::onPlayerLoggedIn).subscribe();

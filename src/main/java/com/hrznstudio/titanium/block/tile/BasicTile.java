@@ -7,8 +7,10 @@
 
 package com.hrznstudio.titanium.block.tile;
 
+import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.nbthandler.NBTManager;
+import com.hrznstudio.titanium.network.messages.TileFieldNetworkMessage;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -81,6 +83,17 @@ public class BasicTile<T extends BasicTile<T>> extends TileEntity {
     public void updateNeigh() {
         this.world.notifyNeighborsOfStateChange(this.pos, this.getBlockState().getBlock());
         this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(pos), this.world.getBlockState(pos), 3);
+    }
+
+    public void syncObject(Object object){
+        if (isServer()){
+            CompoundNBT nbt = NBTManager.getInstance().writeTileEntityObject(this, object, new CompoundNBT());
+            Titanium.NETWORK.sendToNearby(this.world, this.pos, 64, new TileFieldNetworkMessage(this.pos, nbt));
+        }
+    }
+
+    public void handleSyncObject(CompoundNBT nbt){
+        NBTManager.getInstance().readTileEntity(this, nbt);
     }
 
     public boolean isClient() {
