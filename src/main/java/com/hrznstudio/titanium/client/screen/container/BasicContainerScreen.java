@@ -86,15 +86,11 @@ public class BasicContainerScreen<T extends Container> extends ContainerScreen<T
         blit(stack, xCenter, yCenter, 0, 0, xSize, ySize);
         Minecraft.getInstance().fontRenderer.drawString(stack, TextFormatting.DARK_GRAY + title.getString(), xCenter + xSize / 2 - Minecraft.getInstance().fontRenderer.getStringWidth(title.getString()) / 2, yCenter + 6, 0xFFFFFF);
         this.checkForMouseDrag(mouseX, mouseY);
-        addons.forEach(iGuiAddon -> {
-            if (iGuiAddon instanceof AssetScreenAddon) {
-                AssetScreenAddon assetGuiAddon = (AssetScreenAddon) iGuiAddon;
-                if (assetGuiAddon.isBackground()) {
-                    iGuiAddon.drawBackgroundLayer(stack, this, assetProvider, xCenter, yCenter, mouseX, mouseY, partialTicks);
-                }
-            } else {
-                iGuiAddon.drawBackgroundLayer(stack, this, assetProvider, xCenter, yCenter, mouseX, mouseY, partialTicks);
-            }
+        addons.stream().filter(IScreenAddon::isBackground).forEach(iGuiAddon -> {
+            iGuiAddon.drawBackgroundLayer(stack, this, assetProvider, xCenter, yCenter, mouseX, mouseY, partialTicks);
+        });
+        addons.stream().filter(iScreenAddon -> !iScreenAddon.isBackground()).forEach(iGuiAddon -> {
+            iGuiAddon.drawBackgroundLayer(stack, this, assetProvider, xCenter, yCenter, mouseX, mouseY, partialTicks);
         });
     }
 
@@ -104,7 +100,7 @@ public class BasicContainerScreen<T extends Container> extends ContainerScreen<T
         addons.forEach(iGuiAddon -> {
             if (iGuiAddon instanceof AssetScreenAddon) {
                 AssetScreenAddon assetGuiAddon = (AssetScreenAddon) iGuiAddon;
-                if (assetGuiAddon.isBackground()) {
+                if (!assetGuiAddon.isBackground()) {
                     iGuiAddon.drawForegroundLayer(stack, this, assetProvider, xCenter, yCenter, mouseX, mouseY);
                 }
             } else {

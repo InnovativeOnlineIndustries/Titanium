@@ -80,4 +80,8 @@ public interface IScreenAddon {
     default void init(int screenX, int screenY) {
 
     }
+
+    default boolean isBackground() {
+        return false;
+    }
 }
