@@ -17,6 +17,7 @@ import javax.annotation.Nullable;
 
 public interface IAssetProvider {
     ResourceLocation DEFAULT_LOCATION = new ResourceLocation(Titanium.MODID, "textures/gui/background.png");
+    ResourceLocation DEFAULT_LOCATION_ALT = new ResourceLocation(Titanium.MODID, "textures/gui/background_alt.png");
 
     DefaultAssetProvider DEFAULT_PROVIDER = new DefaultAssetProvider();
 

@@ -13,6 +13,7 @@ import com.hrznstudio.titanium.api.client.IAssetType;
 import com.hrznstudio.titanium.api.client.assets.types.IBackgroundAsset;
 import com.hrznstudio.titanium.api.client.assets.types.ITankAsset;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
 import java.awt.*;
@@ -103,6 +104,28 @@ public final class DefaultAssetProvider implements IAssetProvider {
     private final IAsset PROGRESS_BAR_ARROW_HORIZONTAL = () -> new Rectangle(177, 77, 22, 16);
     private final IAsset PROGRESS_BAR_BACKGROUND_ARROW_HORIZONTAL = () -> new Rectangle(177, 61, 22, 15);
     private final IAsset AUGMENT_BACKGROUND = () -> new Rectangle(212, 61, 30, 84);
+    private final IAsset AUGMENT_BACKGROUND_LEFT = new IAsset() {
+        @Override
+        public Rectangle getArea() {
+            return  new Rectangle(0,0, 27, 84);
+        }
+
+        @Override
+        public ResourceLocation getResourceLocation() {
+            return DEFAULT_LOCATION_ALT;
+        }
+    };
+    private final IAsset AUGMENT_BACKGROUND_LEFT_TALL = new IAsset() {
+        @Override
+        public Rectangle getArea() {
+            return new Rectangle(0,84, 27, 161);
+        }
+
+        @Override
+        public ResourceLocation getResourceLocation() {
+            return DEFAULT_LOCATION_ALT;
+        }
+    };
     private final IAsset BUTTON_ARROW_UP = () -> new Rectangle(177, 151, 14, 14);
     private final IAsset BUTTON_ARROW_RIGHT = () -> new Rectangle(192, 151, 14, 14);
     private final IAsset BUTTON_ARROW_DOWN = () -> new Rectangle(207, 151, 14, 14);
@@ -189,6 +212,10 @@ public final class DefaultAssetProvider implements IAssetProvider {
             return assetType.castOrDefault(HUE_PICKER);
         if (assetType == AssetTypes.SHADE_PICKER)
             return assetType.castOrDefault(SHADER_PICKER);
+        if (assetType == AssetTypes.AUGMENT_BACKGROUND_LEFT)
+            return assetType.castOrDefault(AUGMENT_BACKGROUND_LEFT);
+        if (assetType == AssetTypes.AUGMENT_BACKGROUND_LEFT_TALL)
+            return assetType.castOrDefault(AUGMENT_BACKGROUND_LEFT_TALL);
         return null;
     }
 }

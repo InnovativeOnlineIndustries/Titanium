@@ -29,6 +29,8 @@ public class AssetTypes {
     public static final IAssetType<IAsset> PROGRESS_BAR_ARROW_DOWN = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
     public static final IAssetType<IAsset> BUTTON_SIDENESS_MANAGER = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
     public static final IAssetType<IAsset> AUGMENT_BACKGROUND = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
+    public static final IAssetType<IAsset> AUGMENT_BACKGROUND_LEFT = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
+    public static final IAssetType<IAsset> AUGMENT_BACKGROUND_LEFT_TALL = new GenericAssetType<>(IAssetProvider.DEFAULT_PROVIDER::getAsset, IAsset.class);
     public static final IAssetType<IAsset> BUTTON_ARROW_LEFT = new GenericAssetType<>(IAssetType::getDefaultAsset, IAsset.class);
     public static final IAssetType<IAsset> BUTTON_ARROW_RIGHT = new GenericAssetType<>(IAssetType::getDefaultAsset, IAsset.class);
     public static final IAssetType<IAsset> BUTTON_ARROW_UP = new GenericAssetType<>(IAssetType::getDefaultAsset, IAsset.class);
