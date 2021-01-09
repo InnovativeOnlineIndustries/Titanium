@@ -1,6 +1,6 @@
 /*
  * This file is part of Titanium
- * Copyright (C) 2020, Horizon Studio <contact@hrznstudio.com>.
+ * Copyright (C) 2021, Horizon Studio <contact@hrznstudio.com>.
  *
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
@@ -12,12 +12,12 @@ import com.hrznstudio.titanium._impl.test.assetsystem.NewAssetProviderTest;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.IItemStackQuery;
 import com.hrznstudio.titanium.block.tile.PoweredTile;
+import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.component.energy.EnergyStorageComponent;
 import com.hrznstudio.titanium.component.fluid.SidedFluidTankComponent;
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.hrznstudio.titanium.component.inventory.SidedInventoryComponent;
 import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
-import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.tileentity.ITickableTileEntity;

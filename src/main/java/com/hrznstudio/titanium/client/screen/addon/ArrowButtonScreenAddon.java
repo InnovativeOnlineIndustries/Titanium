@@ -1,6 +1,6 @@
 /*
  * This file is part of Titanium
- * Copyright (C) 2020, Horizon Studio <contact@hrznstudio.com>.
+ * Copyright (C) 2021, Horizon Studio <contact@hrznstudio.com>.
  *
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
@@ -10,8 +10,8 @@ package com.hrznstudio.titanium.client.screen.addon;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.api.client.IAssetType;
-import com.hrznstudio.titanium.component.button.ArrowButtonComponent;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
+import com.hrznstudio.titanium.component.button.ArrowButtonComponent;
 import com.hrznstudio.titanium.util.AssetUtil;
 import com.hrznstudio.titanium.util.FacingUtil;
 import com.mojang.blaze3d.matrix.MatrixStack;
