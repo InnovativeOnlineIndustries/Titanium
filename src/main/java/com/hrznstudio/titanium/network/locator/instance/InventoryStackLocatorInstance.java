@@ -3,6 +3,7 @@ package com.hrznstudio.titanium.network.locator.instance;
 import com.hrznstudio.titanium.itemstack.ItemStackHarnessRegistry;
 import com.hrznstudio.titanium.network.locator.LocatorInstance;
 import com.hrznstudio.titanium.network.locator.LocatorTypes;
+import com.hrznstudio.titanium.network.locator.PlayerInventoryFinder;
 import net.minecraft.entity.player.PlayerEntity;
 
 import java.util.Optional;
@@ -10,19 +11,21 @@ import java.util.Optional;
 public class InventoryStackLocatorInstance extends LocatorInstance {
 
     private int inventorySlot;
+    private String finder;
 
     public InventoryStackLocatorInstance() {
-        this(0);
+        this("empty", 0);
     }
 
-    public InventoryStackLocatorInstance(int inventorySlot) {
+    public InventoryStackLocatorInstance(String finder, int inventorySlot) {
         super(LocatorTypes.INVENTORY_LOCATOR);
         this.inventorySlot = inventorySlot;
+        this.finder = finder;
     }
 
     @Override
     public Optional<?> locale(PlayerEntity playerEntity) {
-        return Optional.of(playerEntity.inventory.getStackInSlot(inventorySlot))
+        return PlayerInventoryFinder.get(finder).map(playerInventoryFinder -> playerInventoryFinder.getStackGetter().apply(playerEntity, inventorySlot))
                 .map(ItemStackHarnessRegistry::createItemStackHarness).orElseGet(null);
     }
 
