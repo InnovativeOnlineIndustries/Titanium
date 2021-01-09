@@ -35,6 +35,7 @@ public class NBTManager {
         handlerList.add(new FloatNBTHandler());
         handlerList.add(new DoubleNBTHandler());
         handlerList.add(new BooleanNBTHandler());
+        handlerList.add(new ItemStackNBTHandler());
         handlerList.add(new BlockPosNBTHandler());
         handlerList.add(new StringNBTHandler());
         handlerList.add(new EnumDyeColorNBTHandler());
@@ -118,15 +119,42 @@ public class NBTManager {
     public void readTileEntity(TileEntity entity, CompoundNBT compound) {
         if (tileFieldList.containsKey(entity.getClass())) {
             for (Field field : tileFieldList.get(entity.getClass())) {
-                Save save = field.getAnnotation(Save.class);
+                if (compound.contains(field.getName())){
+                    Save save = field.getAnnotation(Save.class);
+                    try {
+                        Object value = handleNBTRead(compound, save.value().isEmpty() ? field.getName() : save.value(), field.get(entity), field);
+                        field.set(entity, value);
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Writes an specific object to be synced to the client
+     * @param entity The tile entity instance
+     * @param object The object to be synced
+     * @param compound The NBTTagCompound to save the values
+     * @return the modified NBTTagCompound.
+     */
+    public CompoundNBT writeTileEntityObject(TileEntity entity, Object object, CompoundNBT compound) {
+        if (tileFieldList.containsKey(entity.getClass())) {
+            for (Field field : tileFieldList.get(entity.getClass())) {
                 try {
-                    Object value = handleNBTRead(compound, save.value().isEmpty() ? field.getName() : save.value(), field.get(entity), field);
-                    field.set(entity, value);
+                    if (field.get(entity).equals(object)) {
+                        Save save = field.getAnnotation(Save.class);
+                        Object obj = field.get(entity);
+                        if (obj == null) continue;
+                        compound = handleNBTWrite(compound, save.value().isEmpty() ? field.getName() : save.value(), obj, field);
+                    }
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
             }
         }
+        return compound;
     }
 
     /**

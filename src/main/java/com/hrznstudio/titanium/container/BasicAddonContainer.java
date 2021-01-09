@@ -20,6 +20,7 @@ import com.hrznstudio.titanium.network.locator.LocatorFactory;
 import com.hrznstudio.titanium.network.locator.LocatorInstance;
 import com.hrznstudio.titanium.network.locator.instance.EmptyLocatorInstance;
 import com.hrznstudio.titanium.network.locator.instance.HeldStackLocatorInstance;
+import com.hrznstudio.titanium.network.locator.instance.InventoryStackLocatorInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
@@ -84,6 +85,18 @@ public class BasicAddonContainer extends BasicInventoryContainer implements IObj
                     return ItemStack.EMPTY;
                 }
             } else if (slotId == 40) {
+                return ItemStack.EMPTY;
+            }
+        }
+        if (locatorInstance instanceof InventoryStackLocatorInstance){
+            int slot = ((InventoryStackLocatorInstance) locatorInstance).getInventorySlot();
+            if (slot < 9){
+                slot += 27;
+            } else {
+                slot -= 9;
+            }
+            if (slot == slotId){
+                this.detectAndSendChanges();
                 return ItemStack.EMPTY;
             }
         }
