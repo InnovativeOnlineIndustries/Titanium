@@ -1,6 +1,6 @@
 /*
  * This file is part of Titanium
- * Copyright (C) 2020, Horizon Studio <contact@hrznstudio.com>.
+ * Copyright (C) 2021, Horizon Studio <contact@hrznstudio.com>.
  *
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
@@ -10,14 +10,11 @@ package com.hrznstudio.titanium.datagenerator.model;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import com.hrznstudio.titanium.block.BasicBlock;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DirectoryCache;
 import net.minecraft.data.IDataProvider;
 import net.minecraftforge.common.util.NonNullLazy;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import java.io.BufferedWriter;
