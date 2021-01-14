@@ -213,4 +213,9 @@ public class MultiInventoryComponent<T extends IComponentHarness> implements ISc
             return 0;
         }
     }
+
+    @Override
+    public Collection<LazyOptional<MultiInvCapabilityHandler<T>>> getLazyOptionals() {
+        return lazyOptionals.values();
+    }
 }
