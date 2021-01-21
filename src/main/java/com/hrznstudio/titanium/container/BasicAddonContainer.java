@@ -73,8 +73,8 @@ public class BasicAddonContainer extends BasicInventoryContainer implements IObj
 
     @Override
     public boolean canInteractWith(PlayerEntity playerIn) {
-        return worldPosCallable.applyOrElse((world, blockPos) -> playerIn.getDistanceSq(blockPos.getX() + 0.5D,
-            blockPos.getY() + 0.5D, blockPos.getZ() + 0.5D) <= 64.0D, true);
+        return !worldPosCallable.applyOrElse((world, blockPos) -> playerIn.getDistanceSq(blockPos.getX() + 0.5D,
+            blockPos.getY() + 0.5D, blockPos.getZ() + 0.5D) <= 64.0D, true) || !(provider instanceof IContainerAddonProvider) || ((IContainerAddonProvider) provider).canInteract();
     }
 
     @Override
