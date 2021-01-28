@@ -20,6 +20,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.data.ExistingFileHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,10 +40,10 @@ public class ResourceRegistryProvider implements IDataProvider {
     private ItemTagsProvider itemTagsProvider;
     private BlockTagsProvider blockTagsProvider;
 
-    public ResourceRegistryProvider(DataGenerator generator) {
+    public ResourceRegistryProvider(DataGenerator generator, String modid, ExistingFileHelper helper) {
         this.generator = generator;
         Map<ResourceLocation, List<Block>> typeBlockMap = new HashMap<>();
-        this.blockTagsProvider = new BlockTagsProvider(generator) {
+        this.blockTagsProvider = new BlockTagsProvider(generator, modid, helper) {
             @Override
             protected void registerTags() {
                 ResourceRegistry.getMaterials().forEach(material -> {
@@ -68,7 +69,7 @@ public class ResourceRegistryProvider implements IDataProvider {
                 typeBlockMap.forEach((tagLocation, blockList) -> this.getOrCreateBuilder(BlockTags.makeWrapperTag(tagLocation.toString())).add(blockList.toArray(new Block[blockList.size()])));//Builder, add
             }
         };
-        this.itemTagsProvider = new ItemTagsProvider(generator, blockTagsProvider) {
+        this.itemTagsProvider = new ItemTagsProvider(generator, blockTagsProvider, modid, helper) {
             @Override
             protected void registerTags() {
                 Map<ResourceLocation, List<Item>> typeItemMap = new HashMap<>();
@@ -77,8 +78,8 @@ public class ResourceRegistryProvider implements IDataProvider {
                     String tag = resourceHolder.getType().getTag();
                     String type = resourceHolder.getMaterial().getMaterialType();
                     if (entry instanceof Block) {
-                        this.copy(BlockTags.makeWrapperTag("forge:" + tag + "/" + type), //copy
-                            ItemTags.makeWrapperTag("forge:" + tag + "/" + type));
+                        this.copy(BlockTags.createOptional(new ResourceLocation("forge:" + tag + "/" + type)), //copy
+                            ItemTags.createOptional(new ResourceLocation("forge:" + tag + "/" + type)));
                         typeBlockMap.compute(new ResourceLocation("forge", tag), (resourceLocation, blocks) -> {
                             if (blocks == null) {
                                 List<Block> list = NonNullList.create();
@@ -90,7 +91,7 @@ public class ResourceRegistryProvider implements IDataProvider {
                             }
                         });
                     } else if (entry instanceof Item) {
-                        this.getOrCreateBuilder(ItemTags.makeWrapperTag("forge:" + tag + "/" + type)).add((Item) entry); //Builder, add
+                        this.getOrCreateBuilder(ItemTags.createOptional(new ResourceLocation("forge:" + tag + "/" + type))).add((Item) entry); //Builder, add
                         typeItemMap.compute(new ResourceLocation("forge", tag), (resourceLocation, items) -> {
                             if (items == null) {
                                 List<Item> list = NonNullList.create();
@@ -103,7 +104,7 @@ public class ResourceRegistryProvider implements IDataProvider {
                         });
                     }
                 }));
-                typeItemMap.forEach((tagLocation, itemList) -> this.getOrCreateBuilder(ItemTags.makeWrapperTag(tagLocation.toString())).add(itemList.toArray(new Item[itemList.size()]))); //Builder, add
+                typeItemMap.forEach((tagLocation, itemList) -> this.getOrCreateBuilder(ItemTags.createOptional(tagLocation)).add(itemList.toArray(new Item[itemList.size()]))); //Builder, add
             }
         };
     }
