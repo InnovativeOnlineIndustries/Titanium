@@ -96,6 +96,11 @@ public class MultiTankComponent<T extends IComponentHarness> implements IScreenA
         return false;
     }
 
+    @Override
+    public Collection<LazyOptional<MultiTankCapabilityHandler<T>>> getLazyOptionals() {
+        return this.lazyOptionals.values();
+    }
+
     public HashSet<FluidTankComponent<T>> getTanks() {
         return tanks;
     }
