@@ -53,6 +53,8 @@ import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.storage.IServerWorldInfo;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidUtil;
@@ -353,4 +355,10 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
         return this.getWorld() != null ? IWorldPosCallable.of(this.getWorld(), this.getPos()) : IWorldPosCallable.DUMMY;
     }
 
+    @Override
+    public void invalidateCaps() {
+        super.invalidateCaps();
+        this.multiInventoryComponent.getLazyOptionals().forEach(LazyOptional::invalidate);
+        this.multiTankComponent.getLazyOptionals().forEach(LazyOptional::invalidate);
+    }
 }
