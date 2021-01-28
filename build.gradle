@@ -88,7 +88,7 @@ repositories {
      }
 }
 dependencies {
-  minecraft 'net.minecraftforge:forge:1.16.4-35.0.0'
+  minecraft 'net.minecraftforge:forge:1.16.5-36.0.1'
 
   compileOnly fg.deobf("mezz.jei:jei-1.16.4:7.6.0.58:api")
         // at runtime, use the full JEI jar
@@ -191,6 +191,7 @@ curseforge {
     releaseType = 'beta'
     addGameVersion '1.16.3'
     addGameVersion '1.16.4'
+    addGameVersion '1.16.5'
 
     mainArtifact(jar){
 

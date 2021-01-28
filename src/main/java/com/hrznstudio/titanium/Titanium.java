@@ -179,7 +179,7 @@ public class Titanium extends ModuleController {
         event.getGenerator().addProvider(new BlockItemModelGeneratorProvider(event.getGenerator(), MODID, blocksToProcess));
         event.getGenerator().addProvider(new TitaniumLootTableProvider(event.getGenerator(), blocksToProcess));
         event.getGenerator().addProvider(new JsonRecipeSerializerProvider(event.getGenerator(), MODID));
-        event.getGenerator().addProvider(new ResourceRegistryProvider(event.getGenerator()));
+        event.getGenerator().addProvider(new ResourceRegistryProvider(event.getGenerator(), MODID,event.getExistingFileHelper()));
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {

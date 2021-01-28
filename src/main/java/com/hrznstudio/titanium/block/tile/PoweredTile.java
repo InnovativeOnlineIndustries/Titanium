@@ -84,4 +84,10 @@ public abstract class PoweredTile<T extends PoweredTile<T>> extends ActiveTile<T
     public void setShowEnergy(boolean showEnergy) {
         this.showEnergy = showEnergy;
     }
+
+    @Override
+    public void invalidateCaps() {
+        super.invalidateCaps();
+        lazyEnergyStorage.invalidate();
+    }
 }

@@ -15,4 +15,9 @@ import java.util.List;
 public interface IContainerAddonProvider {
     @Nonnull
     List<IFactory<? extends IContainerAddon>> getContainerAddons();
+
+    default boolean canInteract(){
+        return true;
+    }
+
 }

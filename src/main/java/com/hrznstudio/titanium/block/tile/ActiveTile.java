@@ -353,4 +353,14 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
         return this.getWorld() != null ? IWorldPosCallable.of(this.getWorld(), this.getPos()) : IWorldPosCallable.DUMMY;
     }
 
+    @Override
+    public void invalidateCaps() {
+        super.invalidateCaps();
+        this.multiInventoryComponent.getLazyOptionals().forEach(LazyOptional::invalidate);
+        this.multiTankComponent.getLazyOptionals().forEach(LazyOptional::invalidate);
+    }
+      
+    public boolean canInteract() {
+        return this.world.getTileEntity(this.pos) == this;
+    }
 }
