@@ -359,7 +359,7 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
         if (this.multiInventoryComponent != null) this.multiInventoryComponent.getLazyOptionals().forEach(LazyOptional::invalidate);
         if (this.multiTankComponent != null) this.multiTankComponent.getLazyOptionals().forEach(LazyOptional::invalidate);
     }
-      
+
     public boolean canInteract() {
         return this.world.getTileEntity(this.pos) == this;
     }

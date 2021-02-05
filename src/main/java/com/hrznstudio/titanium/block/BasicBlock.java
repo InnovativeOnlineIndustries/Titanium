@@ -10,6 +10,8 @@ package com.hrznstudio.titanium.block;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.IRecipeProvider;
 import com.hrznstudio.titanium.api.raytrace.DistanceRayTraceResult;
+import com.hrznstudio.titanium.block.tile.ActiveTile;
+import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.hrznstudio.titanium.datagenerator.loot.block.BasicBlockLootTables;
 import com.hrznstudio.titanium.datagenerator.loot.block.IBlockLootTableProvider;
 import com.hrznstudio.titanium.module.api.IAlternativeEntries;
@@ -36,7 +38,6 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -158,7 +159,7 @@ public abstract class BasicBlock extends Block implements IAlternativeEntries, I
     @Override
     @SuppressWarnings("deprecation")
     public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (state.getBlock() != newState.getBlock()) {
+        if (!state.isIn(newState.getBlock())) {
             InventoryHelper.dropItems(worldIn, pos, getDynamicDrops(state, worldIn, pos, newState, isMoving));
             worldIn.updateComparatorOutputLevel(pos, this);
         }
@@ -168,12 +169,12 @@ public abstract class BasicBlock extends Block implements IAlternativeEntries, I
     public NonNullList<ItemStack> getDynamicDrops(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
         NonNullList<ItemStack> stacks = NonNullList.create();
         TileEntity tileentity = worldIn.getTileEntity(pos);
-        if (tileentity != null) {
-            tileentity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(iItemHandler -> {
-                for (int i = 0; i < iItemHandler.getSlots(); i++) {
-                    stacks.add(iItemHandler.getStackInSlot(i));
+        if (tileentity instanceof ActiveTile) {
+            for (InventoryComponent<?> inventoryHandler : ((ActiveTile<?>) tileentity).getMultiInventoryComponent().getInventoryHandlers()) {
+                for (int i = 0; i < inventoryHandler.getSlots(); i++) {
+                    stacks.add(inventoryHandler.getStackInSlot(i));
                 }
-            });
+            }
         }
         return stacks;
     }
