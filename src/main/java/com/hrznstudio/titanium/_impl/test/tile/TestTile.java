@@ -27,6 +27,7 @@ import com.hrznstudio.titanium.component.energy.EnergyStorageComponent;
 import com.hrznstudio.titanium.component.fluid.FluidTankComponent;
 import com.hrznstudio.titanium.component.inventory.SidedInventoryComponent;
 import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
+import com.hrznstudio.titanium.component.sideness.IFacingComponent;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
@@ -65,8 +66,10 @@ public class TestTile extends PoweredTile<TestTile> implements IRedstoneReader {
     public TestTile() {
         super(TestBlock.TEST);
         this.addInventory(first = (SidedInventoryComponent<TestTile>) new SidedInventoryComponent<TestTile>("test", 80, 30, 1, 0)
+            .setValidFaceModes(IFacingComponent.FaceMode.ENABLED, IFacingComponent.FaceMode.NONE)
             .setComponentHarness(this)
-            .setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
+            .setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack))
+        );
         this.addInventory(second = (SidedInventoryComponent<TestTile>) new SidedInventoryComponent<TestTile>("test2", 80, 60, 2, 1)
             .setComponentHarness(this)
             .setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack))

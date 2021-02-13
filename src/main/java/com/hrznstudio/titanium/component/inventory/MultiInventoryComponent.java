@@ -84,10 +84,10 @@ public class MultiInventoryComponent<T extends IComponentHarness> implements ISc
     }
 
     @Override
-    public boolean handleFacingChange(String handlerName, FacingUtil.Sideness facing, IFacingComponent.FaceMode mode) {
+    public boolean handleFacingChange(String handlerName, FacingUtil.Sideness facing, int mode) {
         for (InventoryComponent<T> inventoryHandler : inventoryHandlers) {
             if (inventoryHandler.getName().equals(handlerName) && inventoryHandler instanceof IFacingComponent) {
-                ((IFacingComponent) inventoryHandler).getFacingModes().put(facing, mode);
+                ((IFacingComponent) inventoryHandler).getFacingModes().put(facing, ((IFacingComponent) inventoryHandler).getValidFacingModes()[mode]);
                 rebuildCapability(new FacingUtil.Sideness[]{facing});
                 return true;
             }

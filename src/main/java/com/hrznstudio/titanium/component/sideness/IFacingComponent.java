@@ -21,6 +21,7 @@ import java.awt.*;
 import java.util.Map;
 
 public interface IFacingComponent {
+
     Map<FacingUtil.Sideness, FaceMode> getFacingModes();
 
     int getColor();
@@ -36,6 +37,8 @@ public interface IFacingComponent {
     boolean work(World world, BlockPos pos, Direction blockFacing, int workAmount);
 
     IFacingComponent setFacingHandlerPos(int x, int y);
+
+    FaceMode[] getValidFacingModes();
 
     enum FaceMode {
         NONE(false, 0, AssetTypes.BUTTON_SIDENESS_DISABLED, TextFormatting.RED),
@@ -59,7 +62,7 @@ public interface IFacingComponent {
             return allowsConnection;
         }
 
-        public StateButtonInfo getInfo() {
+        public StateButtonInfo getInfo(int index) {
             return new StateButtonInfo(index, assetType, "tooltip.titanium.facing_handler." + this.name().toLowerCase());
         }
 

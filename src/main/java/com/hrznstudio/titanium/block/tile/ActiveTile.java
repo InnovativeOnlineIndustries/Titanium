@@ -316,7 +316,7 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
         if (id == -1) {
             String name = compound.getString("Name");
             FacingUtil.Sideness facing = FacingUtil.Sideness.valueOf(compound.getString("Facing"));
-            IFacingComponent.FaceMode faceMode = IFacingComponent.FaceMode.values()[compound.getInt("Next")];
+            int faceMode = compound.getInt("Next");
             if (multiInventoryComponent != null && multiInventoryComponent.handleFacingChange(name, facing, faceMode)) {
                 markForUpdate();
             } else if (multiTankComponent != null && multiTankComponent.handleFacingChange(name, facing, faceMode)) {

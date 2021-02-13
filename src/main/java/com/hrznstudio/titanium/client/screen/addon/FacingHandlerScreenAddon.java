@@ -41,6 +41,7 @@ import net.minecraft.util.text.TextFormatting;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
@@ -159,7 +160,11 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon implements IClick
                 for (FacingUtil.Sideness facing : FacingUtil.Sideness.values()) {
                     if (!handler.getFacingModes().containsKey(facing)) continue;
                     Point point = getPointFromFacing(facing, inventoryPoint);
-                    StateButtonAddon addon = new StateButtonAddon(new ButtonComponent(point.x, point.y, 14, 14), IFacingComponent.FaceMode.NONE.getInfo(), IFacingComponent.FaceMode.ENABLED.getInfo(), IFacingComponent.FaceMode.PULL.getInfo(), IFacingComponent.FaceMode.PUSH.getInfo()) {
+                    List<StateButtonInfo> stateButtonInfo = new ArrayList<>();
+                    for (int i = 0; i < handler.getValidFacingModes().length; i++) {
+                        stateButtonInfo.add(handler.getValidFacingModes()[i].getInfo(i));
+                    }
+                    StateButtonAddon addon = new StateButtonAddon(new ButtonComponent(point.x, point.y, 14, 14), stateButtonInfo.toArray(new StateButtonInfo[0])) {
                         @Override
                         public int getState() {
                             IFacingComponent handler = null;
@@ -175,7 +180,7 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon implements IClick
                                 Titanium.LOGGER.warn("Container is not IObjectContainer. Could not get FacingComponent");
                             }
                             return handler != null && handler.getFacingModes().containsKey(facing) ?
-                                    handler.getFacingModes().get(facing).getIndex() : 0;
+                                    Arrays.asList(handler.getValidFacingModes()).indexOf(handler.getFacingModes().get(facing)) : 0;
                         }
 
                         @Override
@@ -184,8 +189,8 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon implements IClick
                             if (info != null && gui instanceof IHasContainer<?>) {
                                 CompoundNBT compound = new CompoundNBT();
                                 compound.putString("Facing", facing.name());
-                                int faceMode = (getState() + (mouse == 0 ? 1 : -1)) % IFacingComponent.FaceMode.values().length;
-                                if (faceMode < 0) faceMode = IFacingComponent.FaceMode.values().length - 1;
+                                int faceMode = (getState() + (mouse == 0 ? 1 : -1)) % handler.getValidFacingModes().length;
+                                if (faceMode < 0) faceMode = handler.getValidFacingModes().length - 1;
                                 compound.putInt("Next", faceMode);
                                 compound.putString("Name", handler.getName());
                                 if (container instanceof ILocatable) {
@@ -194,14 +199,14 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon implements IClick
                                 } else {
                                     Titanium.LOGGER.warn("Failed to Find Locatable Instance for Container");
                                 }
-                                handler.getFacingModes().put(facing, IFacingComponent.FaceMode.values()[faceMode]);
+                                handler.getFacingModes().put(facing, handler.getValidFacingModes()[faceMode]);
                             }
                         }
 
                         @Override
                         public List<ITextComponent> getTooltipLines() {
                             List<ITextComponent> strings = new ArrayList<>();
-                            IFacingComponent.FaceMode mode = IFacingComponent.FaceMode.values()[getState()];
+                            IFacingComponent.FaceMode mode = handler.getValidFacingModes()[getState()];
                             strings.add(new StringTextComponent(TextFormatting.GOLD + LangUtil.getString("tooltip.titanium.facing_handler.direction") +
                                 TextFormatting.RESET + LangUtil.getString("tooltip.titanium.facing_handler." + facing.name().toLowerCase()) + TextFormatting.GRAY + " [" + LangUtil.getString("direction.titanium." + FacingUtil.getFacingFromSide(blockDirection, facing)) + "]"));
                             strings.add(new StringTextComponent(TextFormatting.GOLD + LangUtil.getString("tooltip.titanium.facing_handler.action") +
