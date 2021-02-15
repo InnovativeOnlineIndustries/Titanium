@@ -41,6 +41,7 @@ public class SidedFluidTankComponent<T extends IComponentHarness> extends FluidT
     private HashMap<FacingUtil.Sideness, FaceMode> facingModes;
     private int pos;
     private boolean hasFacingAddon;
+    private FaceMode[] validFaceModes;
 
     public SidedFluidTankComponent(String name, int amount, int posX, int posY, int pos) {
         super(name, amount, posX, posY);
@@ -51,6 +52,7 @@ public class SidedFluidTankComponent<T extends IComponentHarness> extends FluidT
             this.facingModes.put(facing, FaceMode.ENABLED);
         }
         this.hasFacingAddon = true;
+        this.validFaceModes = FaceMode.values();
     }
 
     public SidedFluidTankComponent<T> disableFacingAddon() {
@@ -131,6 +133,20 @@ public class SidedFluidTankComponent<T extends IComponentHarness> extends FluidT
     public SidedFluidTankComponent<T> setFacingHandlerPos(int x, int y) {
         this.facingHandlerX = x;
         this.facingHandlerY = y;
+        return this;
+    }
+
+
+    @Override
+    public FaceMode[] getValidFacingModes() {
+        return validFaceModes;
+    }
+
+    public SidedFluidTankComponent<T> setValidFaceModes(FaceMode... validFaceModes){
+        this.validFaceModes = validFaceModes;
+        for (FacingUtil.Sideness value : FacingUtil.Sideness.values()) {
+            this.facingModes.put(value, validFaceModes[0]);
+        }
         return this;
     }
 

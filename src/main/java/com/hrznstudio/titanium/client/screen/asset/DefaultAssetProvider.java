@@ -141,6 +141,8 @@ public final class DefaultAssetProvider implements IAssetProvider {
     private final IAsset PROGRESS_BAR_BACKGROUND_ARROW_DOWN = () -> new Rectangle(221, 185, 15, 23);
     private final IAsset HUE_PICKER = () -> new Rectangle(235, 21, 9, 14);
     private final IAsset SHADER_PICKER = () -> new Rectangle(245, 21, 9, 9);
+    private final IAsset BUTTON_LOCKED = () -> new Rectangle(241, 196, 14, 14);
+    private final IAsset BUTTON_UNLOCKED = () -> new Rectangle(241, 181, 14, 14);
 
     DefaultAssetProvider() {
     }
@@ -216,6 +218,10 @@ public final class DefaultAssetProvider implements IAssetProvider {
             return assetType.castOrDefault(AUGMENT_BACKGROUND_LEFT);
         if (assetType == AssetTypes.AUGMENT_BACKGROUND_LEFT_TALL)
             return assetType.castOrDefault(AUGMENT_BACKGROUND_LEFT_TALL);
+        if (assetType == AssetTypes.BUTTON_LOCKED)
+            return assetType.castOrDefault(BUTTON_LOCKED);
+        if (assetType == AssetTypes.BUTTON_UNLOCKED)
+            return assetType.castOrDefault(BUTTON_UNLOCKED);
         return null;
     }
 }

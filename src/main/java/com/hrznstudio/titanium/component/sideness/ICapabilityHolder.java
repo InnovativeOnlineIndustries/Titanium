@@ -19,7 +19,7 @@ public interface ICapabilityHolder<T> {
     @Nonnull
     LazyOptional<T> getCapabilityForSide(@Nullable FacingUtil.Sideness sideness);
 
-    boolean handleFacingChange(String handlerName, FacingUtil.Sideness facing, IFacingComponent.FaceMode mode);
+    boolean handleFacingChange(String handlerName, FacingUtil.Sideness facing, int mode);
 
     Collection<LazyOptional<T>> getLazyOptionals();
 }

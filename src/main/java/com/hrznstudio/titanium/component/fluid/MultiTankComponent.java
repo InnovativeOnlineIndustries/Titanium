@@ -85,10 +85,10 @@ public class MultiTankComponent<T extends IComponentHarness> implements IScreenA
     }
 
     @Override
-    public boolean handleFacingChange(String handlerName, FacingUtil.Sideness facing, IFacingComponent.FaceMode mode) {
+    public boolean handleFacingChange(String handlerName, FacingUtil.Sideness facing, int mode) {
         for (FluidTankComponent<T> tankHandler : tanks) {
             if (tankHandler.getName().equals(handlerName) && tankHandler instanceof IFacingComponent) {
-                ((IFacingComponent) tankHandler).getFacingModes().put(facing, mode);
+                ((IFacingComponent) tankHandler).getFacingModes().put(facing, ((IFacingComponent) tankHandler).getValidFacingModes()[mode]);
                 rebuildCapability(new FacingUtil.Sideness[]{facing});
                 return true;
             }

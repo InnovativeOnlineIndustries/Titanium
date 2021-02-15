@@ -169,7 +169,7 @@ public abstract class BasicBlock extends Block implements IAlternativeEntries, I
     public NonNullList<ItemStack> getDynamicDrops(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
         NonNullList<ItemStack> stacks = NonNullList.create();
         TileEntity tileentity = worldIn.getTileEntity(pos);
-        if (tileentity instanceof ActiveTile) {
+        if (tileentity instanceof ActiveTile && ((ActiveTile<?>) tileentity).getMultiInventoryComponent() != null) {
             for (InventoryComponent<?> inventoryHandler : ((ActiveTile<?>) tileentity).getMultiInventoryComponent().getInventoryHandlers()) {
                 for (int i = 0; i < inventoryHandler.getSlots(); i++) {
                     stacks.add(inventoryHandler.getStackInSlot(i));

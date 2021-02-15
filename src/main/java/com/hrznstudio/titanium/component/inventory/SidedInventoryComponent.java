@@ -41,6 +41,7 @@ public class SidedInventoryComponent<T extends IComponentHarness> extends Invent
     private HashMap<FacingUtil.Sideness, Integer> slotCache;
     private int position;
     private boolean hasFacingAddon;
+    private FaceMode[] validFaceModes;
 
     public SidedInventoryComponent(String name, int xPos, int yPos, int size, int position) {
         super(name, xPos, yPos, size);
@@ -53,6 +54,7 @@ public class SidedInventoryComponent<T extends IComponentHarness> extends Invent
         this.position = position;
         this.setColorGuiEnabled(true);
         this.hasFacingAddon = true;
+        this.validFaceModes = FaceMode.values();
     }
 
     public SidedInventoryComponent<T> disableFacingAddon() {
@@ -153,6 +155,19 @@ public class SidedInventoryComponent<T extends IComponentHarness> extends Invent
     public SidedInventoryComponent<T> setFacingHandlerPos(int x, int y) {
         this.facingHandlerX = x;
         this.facingHandlerY = y;
+        return this;
+    }
+
+    @Override
+    public FaceMode[] getValidFacingModes() {
+        return validFaceModes;
+    }
+
+    public SidedInventoryComponent<T> setValidFaceModes(FaceMode... validFaceModes){
+        this.validFaceModes = validFaceModes;
+        for (FacingUtil.Sideness value : FacingUtil.Sideness.values()) {
+            this.facingModes.put(value, validFaceModes[0]);
+        }
         return this;
     }
 

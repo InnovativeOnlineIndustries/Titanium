@@ -143,7 +143,7 @@ public class NBTManager {
         if (tileFieldList.containsKey(entity.getClass())) {
             for (Field field : tileFieldList.get(entity.getClass())) {
                 try {
-                    if (field.get(entity).equals(object)) {
+                    if (object.equals(field.get(entity))) {
                         Save save = field.getAnnotation(Save.class);
                         Object obj = field.get(entity);
                         if (obj == null) continue;
