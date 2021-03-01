@@ -112,7 +112,7 @@ public class BasicContainerScreen<T extends Container> extends ContainerScreen<T
         for (IScreenAddon iScreenAddon : addons) {
             if (iScreenAddon.isInside(this, mouseX - xCenter, mouseY - yCenter) && !iScreenAddon.getTooltipLines().isEmpty()) {
                 // renderTooltip
-                func_243308_b(stack, iScreenAddon.getTooltipLines(), mouseX - xCenter, mouseY - yCenter);
+                renderWrappedToolTip(stack, iScreenAddon.getTooltipLines(), mouseX - xCenter, mouseY - yCenter, minecraft.fontRenderer);
             }
         }
     }
