@@ -92,13 +92,15 @@ public abstract class GeneratorTile<T extends GeneratorTile<T>> extends PoweredT
     @Override
     public void tick() {
         super.tick();
-        for (Direction facing : Direction.values()) {
-            BlockPos checking = this.pos.offset(facing);
-            TileEntity checkingTile = this.world.getTileEntity(checking);
-            if (checkingTile != null) {
-                checkingTile.getCapability(CapabilityEnergy.ENERGY, facing.getOpposite()).ifPresent(storage -> {
-                    this.getEnergyStorage().extractEnergy(storage.receiveEnergy(this.getEnergyStorage().extractEnergy(this.getExtractingEnergy(), true), false), false);
-                });
+        if (isServer()){
+            for (Direction facing : Direction.values()) {
+                BlockPos checking = this.pos.offset(facing);
+                TileEntity checkingTile = this.world.getTileEntity(checking);
+                if (checkingTile != null) {
+                    checkingTile.getCapability(CapabilityEnergy.ENERGY, facing.getOpposite()).ifPresent(storage -> {
+                        this.getEnergyStorage().extractEnergy(storage.receiveEnergy(this.getEnergyStorage().extractEnergy(this.getExtractingEnergy(), true), false), false);
+                    });
+                }
             }
         }
     }
