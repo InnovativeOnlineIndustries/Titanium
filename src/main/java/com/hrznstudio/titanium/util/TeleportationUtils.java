@@ -7,10 +7,14 @@
 
 package com.hrznstudio.titanium.util;
 
+import net.minecraft.block.PortalInfo;
 import net.minecraft.entity.Entity;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.network.play.server.SSetPassengersPacket;
 import net.minecraft.util.RegistryKey;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerChunkProvider;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.ITeleporter;
 
@@ -21,26 +25,47 @@ public class TeleportationUtils {
 
 
     public static Entity teleportEntity(Entity entity, RegistryKey<World> dimension, double xCoord, double yCoord, double zCoord, float yaw, float pitch) {
-        if (entity == null || entity.world.isRemote) {
-            return entity;
-        }
+        return teleportEntityTo(entity, new BlockPos(xCoord, yCoord, zCoord), dimension, yaw ,pitch);
+    }
 
-        MinecraftServer server = entity.getServer();
-        List<Entity> passengers = entity.getPassengers();
-        return entity.changeDimension(server.getWorld(dimension), new ITeleporter() {
-            @Override
-            public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yawE, Function<Boolean, Entity> repositionEntity) {
-                Entity repositionedEntity = repositionEntity.apply(false);
-                if (repositionedEntity != null){
-                    repositionedEntity.setPositionAndRotation(xCoord, yCoord, zCoord, yaw, pitch);
-                    repositionedEntity.setPositionAndUpdate(xCoord, yCoord, zCoord);
-                    for (Entity passenger : passengers) {
-                        teleportPassenger(destWorld, repositionedEntity, passenger);
-                    }
-                }
-                return repositionedEntity;
+    public static Entity teleportEntityTo(Entity entity, BlockPos target, RegistryKey<World> destinationDimension, float yaw, float pitch) {
+        if (entity.getEntityWorld().getDimensionKey() == destinationDimension) {
+            entity.rotationYaw = yaw;
+            entity.rotationPitch = pitch;
+            entity.setPositionAndUpdate(target.getX() + 0.5, target.getY(), target.getZ() + 0.5);
+
+            if (!entity.getPassengers().isEmpty()) {
+                //Force re-apply any passengers so that players don't get "stuck" outside what they may be riding
+                ((ServerChunkProvider) entity.getEntityWorld().getChunkProvider()).sendToAllTracking(entity, new SSetPassengersPacket(entity));
             }
-        });
+            return entity;
+        } else {
+            ServerWorld newWorld = ((ServerWorld) entity.getEntityWorld()).getServer().getWorld(destinationDimension);
+            if (newWorld != null) {
+                Vector3d destination = new Vector3d(target.getX() + 0.5, target.getY(), target.getZ() + 0.5);
+                //Note: We grab the passengers here instead of in placeEntity as changeDimension starts by removing any passengers
+                List<Entity> passengers = entity.getPassengers();
+                return entity.changeDimension(newWorld, new ITeleporter() {
+                    @Override
+                    public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
+                        Entity repositionedEntity = repositionEntity.apply(false);
+                        if (repositionedEntity != null) {
+                            //Teleport all passengers to the other dimension and then make them start riding the entity again
+                            for (Entity passenger : passengers) {
+                                teleportPassenger(destWorld, repositionedEntity, passenger);
+                            }
+                        }
+                        return repositionedEntity;
+                    }
+
+                    @Override
+                    public PortalInfo getPortalInfo(Entity entity, ServerWorld destWorld, Function<ServerWorld, PortalInfo> defaultPortalInfo) {
+                        return new PortalInfo(destination, entity.getMotion(), pitch, yaw);
+                    }
+                });
+            }
+        }
+        return null;
     }
 
     private static void teleportPassenger(ServerWorld destWorld, Entity repositionedEntity, Entity passenger) {
