@@ -7,10 +7,12 @@
 
 package com.hrznstudio.titanium.util;
 
+import com.hrznstudio.titanium._impl.TagConfig;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tags.*;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -80,5 +82,16 @@ public class TagUtil {
             return EntityTypeTags.getCollection().get(resourceLocation);
         }
         return EntityTypeTags.getTagById(resourceLocation.toString());
+    }
+
+    public static ItemStack getItemWithPreference(ITag<Item> tag){
+        if (tag.getAllElements().isEmpty()) return ItemStack.EMPTY;
+        List<Item> elements = tag.getAllElements();
+        for (String modid : TagConfig.ITEM_PREFERENCE) {
+            for (Item allElement : elements) {
+                if (allElement.getRegistryName().getNamespace().equalsIgnoreCase(modid)) return new ItemStack(allElement);
+            }
+        }
+        return new ItemStack(elements.get(0));
     }
 }

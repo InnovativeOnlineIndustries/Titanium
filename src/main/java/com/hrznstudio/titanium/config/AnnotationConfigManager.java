@@ -66,6 +66,12 @@ public class AnnotationConfigManager {
                         if (configValue == null)
                             configValue = builder.define(value.value().isEmpty() ? field.getName() : value.value(), field.get(null));
                         cachedConfigValues.put(field, configValue);
+                    } if (field.getType().equals(List.class)){
+                        ConfigVal value = field.getAnnotation(ConfigVal.class);
+                        ForgeConfigSpec.ConfigValue configValue = null;
+                        if (!value.comment().isEmpty()) builder.comment(value.comment());
+                        configValue = builder.defineList(value.value().isEmpty() ? field.getName() : value.value() , (List<String>) field.get(null) , (object) -> true);
+                        cachedConfigValues.put(field, configValue);
                     } else {
                         scanClass(field.getType(), builder);
                     }
