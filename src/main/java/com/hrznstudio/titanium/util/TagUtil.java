@@ -84,6 +84,13 @@ public class TagUtil {
         return EntityTypeTags.getTagById(resourceLocation.toString());
     }
 
+    public static ITag<Fluid> getFluidTag(ResourceLocation resourceLocation) {
+        if (FluidTags.getCollection().getRegisteredTags().contains(resourceLocation)) {
+            return FluidTags.getCollection().get(resourceLocation);
+        }
+        return FluidTags.makeWrapperTag(resourceLocation.toString());
+    }
+
     public static ItemStack getItemWithPreference(ITag<Item> tag){
         if (tag.getAllElements().isEmpty()) return ItemStack.EMPTY;
         List<Item> elements = tag.getAllElements();
