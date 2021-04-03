@@ -60,7 +60,7 @@ public class TeleportationUtils {
 
                     @Override
                     public PortalInfo getPortalInfo(Entity entity, ServerWorld destWorld, Function<ServerWorld, PortalInfo> defaultPortalInfo) {
-                        return new PortalInfo(destination, entity.getMotion(), pitch, yaw);
+                        return new PortalInfo(destination, entity.getMotion(), yaw, pitch);
                     }
                 });
             }

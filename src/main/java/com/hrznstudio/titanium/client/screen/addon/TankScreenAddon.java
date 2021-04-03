@@ -72,7 +72,7 @@ public class TankScreenAddon extends BasicScreenAddon implements IClickable {
                     TextureAtlasSprite sprite = ((AtlasTexture) texture).getSprite(flowing);
                     if (sprite != null) {
                         screen.getMinecraft().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-                        Color color = new Color(fluidStack.getFluid().getAttributes().getColor());
+                        Color color = new Color(fluidStack.getFluid().getAttributes().getColor(fluidStack));
                         RenderSystem.color4f(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
                         RenderSystem.enableBlend();
                         Screen.blit(stack, this.getPosX() + guiX + asset.getFluidRenderPadding(Direction.WEST),
