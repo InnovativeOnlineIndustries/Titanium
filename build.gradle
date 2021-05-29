@@ -20,8 +20,10 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 
-//def BUILD_NUMBER = System.getenv("COMMIT") ? "${project.api_version}-${System.getenv("COMMIT")}-SNAPSHOT" : "${project.api_version}"
 version = "${minecraftVersion}-${project.api_version}"
+if (System.getenv('BUILD_NUMBER') != null) {
+  version += "-" + System.getenv('BUILD_NUMBER')
+}
 group = 'com.hrznstudio'
 archivesBaseName = 'titanium'
 def isReleaseBranch = System.getenv("BRANCH") == "release" || System.getenv("BRANCH") == "release-1.15" || System.getenv("BRANCH") == "release-1.16";
@@ -134,6 +136,9 @@ artifacts {
     archives deobfJar
 }
 
+publish.dependsOn(project.tasks.getByName("assemble"))
+publish.mustRunAfter(project.tasks.getByName("build"))
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
@@ -146,10 +151,7 @@ publishing {
     repositories {
         if(isReleaseBranch) {
             maven {
-                url "s3://cdn.hrzn.studio/maven"
-                authentication {
-                    awsIm(AwsImAuthentication)
-                }
+              url "file://" + System.getenv("local_maven")
             }
         } else {
             mavenLocal()
