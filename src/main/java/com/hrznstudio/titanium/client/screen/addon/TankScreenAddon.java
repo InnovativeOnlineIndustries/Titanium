@@ -63,10 +63,10 @@ public class TankScreenAddon extends BasicScreenAddon implements IClickable {
         Rectangle area = asset.getArea();
         if (!tank.getFluid().isEmpty()) {
             FluidStack fluidStack = tank.getFluid();
-            int stored = tank.getFluidAmount();
-            int capacity = tank.getCapacity();
+            double stored = tank.getFluidAmount();
+            double capacity = tank.getCapacity();
             int topBottomPadding = asset.getFluidRenderPadding(Direction.UP) + asset.getFluidRenderPadding(Direction.DOWN);
-            int offset = (stored * (area.height - topBottomPadding) / capacity);
+            int offset = (int) ((stored / capacity) * (area.height - topBottomPadding));
             ResourceLocation flowing = fluidStack.getFluid().getAttributes().getStillTexture(fluidStack);
             if (flowing != null) {
                 Texture texture = screen.getMinecraft().getTextureManager().getTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE); //getAtlasSprite
