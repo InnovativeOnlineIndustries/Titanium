@@ -178,7 +178,7 @@ processResources {
     }
 }
 
-tasks.curseforge.enabled = isReleaseBranch
+//tasks.curseforge.enabled = isReleaseBranch
 //tasks.makeChangelog.enabled = System.getenv("CURSE_API") != null
 
 curseforge {
