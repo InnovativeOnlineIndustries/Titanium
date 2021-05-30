@@ -178,13 +178,13 @@ processResources {
     }
 }
 
-tasks.curseforge.enabled = System.env.CURSE_API != null && isReleaseBranch
+tasks.curseforge.enabled = System.properties['CURSE_API'] != null && isReleaseBranch
 //tasks.makeChangelog.enabled = System.getenv("CURSE_API") != null
 
 curseforge {
-  logger.info("Curse api: " + System.env.CURSE_API)
-  if (System.env.CURSE_API != null) {
-    apiKey = System.env.CURSE_API
+  logger.info("Curse api: " + System.properties['CURSE_API'])
+  if (System.properties['CURSE_API'] != null) {
+    apiKey = System.properties['CURSE_API']
   }
   project {
     id = '287342'
