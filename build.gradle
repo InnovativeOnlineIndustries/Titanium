@@ -182,7 +182,6 @@ processResources {
 //tasks.makeChangelog.enabled = System.getenv("CURSE_API") != null
 
 curseforge {
-  logger.info("Curse api: " + System.env["CURSE_API"])
   apiKey = System.env["CURSE_API"]
   project {
     id = '287342'
