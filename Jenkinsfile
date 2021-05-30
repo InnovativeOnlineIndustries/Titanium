@@ -30,7 +30,7 @@ pipeline {
         sh './gradlew publish'
 
         echo 'Deploying to CurseForge'
-        sh './gradlew curseforge -PCURSE_API=${env.CURSE_API}'
+        sh './gradlew curseforge'
       }
     }
   }
