@@ -79,8 +79,9 @@ public abstract class MachineTile<T extends MachineTile<T>> extends PoweredTile<
 
     public IFactory<InventoryComponent<T>> getAugmentFactory() {
         return () -> new SidedInventoryComponent<T>("augments", 180, 11, 4, 0)
-                .disableFacingAddon()
-                .setColor(DyeColor.PURPLE)
+            .disableFacingAddon()
+            .setColor(DyeColor.PURPLE)
+            .setSlotLimit(1)
                 .setRange(1, 4);
     }
 
