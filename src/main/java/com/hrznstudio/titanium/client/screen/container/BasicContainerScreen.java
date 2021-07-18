@@ -7,6 +7,7 @@
 
 package com.hrznstudio.titanium.client.screen.container;
 
+import com.google.common.collect.Lists;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
@@ -16,6 +17,7 @@ import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -116,13 +118,14 @@ public class BasicContainerScreen<T extends Container> extends ContainerScreen<T
     }
 
     private void checkForMouseDrag(int mouseX, int mouseY) {
-        if (GLFW.glfwGetMouseButton(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS) {//Main Window
+        int pressedButton = GLFW.glfwGetMouseButton(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT);
+        if (pressedButton == GLFW.GLFW_PRESS) {//Main Window
             if (!this.isMouseDragging) {
                 this.isMouseDragging = true;
             } else {
                 for (IScreenAddon iScreenAddon : this.addons) {
-                    if (iScreenAddon.isInside(null, mouseX - this.xCenter, mouseY - this.yCenter)) {
-                        iScreenAddon.drag(mouseX - this.xCenter, mouseY - this.yCenter);
+                    if (iScreenAddon.isInside(this, mouseX - this.xCenter, mouseY - this.yCenter)) {
+                        iScreenAddon.handleMouseDragged(this, mouseX - this.xCenter, mouseY - this.yCenter, pressedButton, dragX, dragY);
                     }
                 }
             }
@@ -131,23 +134,6 @@ public class BasicContainerScreen<T extends Container> extends ContainerScreen<T
         } else {
             this.isMouseDragging = false;
         }
-    }
-
-    // mouseClicked
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
-        super.mouseClicked(mouseX, mouseY, mouseButton);
-        new ArrayList<>(addons).stream().filter(iGuiAddon -> iGuiAddon.isInside(this, mouseX - xCenter, mouseY - yCenter))
-            .forEach(iGuiAddon -> iGuiAddon.handleClick(this, xCenter, yCenter, mouseX, mouseY, mouseButton));
-        return false;
-    }
-
-    // keyPressed
-    @Override
-    public boolean keyPressed(int keyCode, int scan, int modifiers) {
-        return this.getAddons().stream()
-            .anyMatch(screenAddon -> screenAddon.keyPressed(keyCode, scan, modifiers)) ||
-            super.keyPressed(keyCode, scan, modifiers);
     }
 
     public int getX() {
@@ -167,6 +153,11 @@ public class BasicContainerScreen<T extends Container> extends ContainerScreen<T
     @Override
     public List<IScreenAddon> getAddons() {
         return addons;
+    }
+
+    @Override
+    public List<? extends IGuiEventListener> getEventListeners() {
+        return Lists.newArrayList(getAddons());
     }
 
     public void setAddons(List<IScreenAddon> addons) {

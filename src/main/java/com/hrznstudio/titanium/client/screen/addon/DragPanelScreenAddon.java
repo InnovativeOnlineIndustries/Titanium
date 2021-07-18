@@ -7,7 +7,10 @@
 
 package com.hrznstudio.titanium.client.screen.addon;
 
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.math.MathHelper;
+
+import javax.annotation.Nullable;
 
 public abstract class DragPanelScreenAddon extends BasicScreenAddon {
 
@@ -42,10 +45,10 @@ public abstract class DragPanelScreenAddon extends BasicScreenAddon {
     }
 
     @Override
-    public boolean drag(int mouseX, int mouseY) {
-        this.scrollX = MathHelper.clamp(this.scrollX - mouseX, this.minX, this.maxX);
-        this.scrollY = MathHelper.clamp(this.scrollY - mouseY, this.minY, this.maxY);
-        return true;
+    public boolean handleMouseDragged(@Nullable Screen screen, double mouseX, double mouseY, int button, double dragX, double dragY) {
+        this.scrollX = (int) Math.round(MathHelper.clamp(this.scrollX - mouseX, this.minX, this.maxX));
+        this.scrollY = (int) Math.round(MathHelper.clamp(this.scrollY - mouseY, this.minY, this.maxY));
+        return super.handleMouseDragged(screen, mouseX, mouseY, button, dragX, dragY);
     }
 
     public int getScrollX() {

@@ -21,6 +21,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.vector.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -100,16 +101,16 @@ public class ShadePickerAddon extends BasicScreenAddon {
     }
 
     @Override
-    public boolean drag(int mouseX, int mouseY) {
+    public boolean handleMouseDragged(@Nullable Screen screen, double mouseX, double mouseY, int button, double dragX, double dragY) {
         this.saturation = (((float) mouseX - this.getPosX()) / getXSize());
         this.brightness = 1 - (((float) mouseY - this.getPosY()) / getYSize());
         this.saturationConsumer.accept(saturation);
         this.brightnessConsumer.accept(brightness);
-        return true;
+        return super.handleMouseDragged(screen, mouseX, mouseY, button, dragX, dragY);
     }
 
     @Override
-    public boolean handleClick(Screen screen, int guiX, int guiY, double mouseX, double mouseY, int button) {
+    public boolean handleMouseClicked(Screen screen, int guiX, int guiY, double mouseX, double mouseY, int button) {
         this.saturation = (float) ((mouseX - this.getPosX() - guiX) / getXSize());
         this.brightness = 1 - (float) ((mouseY - this.getPosY() - guiY) / getYSize());
         this.saturationConsumer.accept(saturation);

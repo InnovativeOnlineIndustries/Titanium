@@ -80,7 +80,7 @@ public class ItemstackFilterScreenAddon extends BasicScreenAddon {
     }
 
     @Override
-    public boolean handleClick(Screen screen, int guiX, int guiY, double mouseX, double mouseY, int button) {
+    public boolean handleMouseClicked(Screen screen, int guiX, int guiY, double mouseX, double mouseY, int button) {
         if (screen instanceof ContainerScreen && ((ContainerScreen) screen).getContainer() instanceof ILocatable) {
             ILocatable locatable = (ILocatable) ((ContainerScreen) screen).getContainer();
             for (FilterSlot<ItemStack> filterSlot : filter.getFilterSlots()) {

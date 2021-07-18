@@ -139,7 +139,7 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon {
     }
 
     @Override
-    public boolean handleClick(Screen screen, int guiX, int guiY, double mouseX, double mouseY, int button) {
+    public boolean handleMouseClicked(Screen screen, int guiX, int guiY, double mouseX, double mouseY, int button) {
         if (button == 1) return false;
         if (screen instanceof IScreenAddonConsumer && screen instanceof IHasContainer) {
             IScreenAddonConsumer screenAddonConsumer = (IScreenAddonConsumer) screen;
@@ -183,7 +183,7 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon {
                         }
 
                         @Override
-                        public boolean handleClick(Screen gui, int guiX, int guiY, double mouseX, double mouseY, int mouse) {
+                        public boolean handleMouseClicked(Screen gui, int guiX, int guiY, double mouseX, double mouseY, int mouse) {
                             StateButtonInfo info = getStateInfo();
                             if (info != null && gui instanceof IHasContainer<?>) {
                                 CompoundNBT compound = new CompoundNBT();

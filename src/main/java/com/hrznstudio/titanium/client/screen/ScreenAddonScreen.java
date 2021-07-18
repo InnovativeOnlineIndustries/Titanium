@@ -7,6 +7,7 @@
 
 package com.hrznstudio.titanium.client.screen;
 
+import com.google.common.collect.Lists;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
@@ -16,6 +17,7 @@ import com.hrznstudio.titanium.util.AssetUtil;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.text.StringTextComponent;
 import org.lwjgl.glfw.GLFW;
@@ -87,35 +89,31 @@ public abstract class ScreenAddonScreen extends Screen implements IScreenAddonCo
     public abstract List<IFactory<IScreenAddon>> guiAddons();
 
     private void checkForMouseDrag(int mouseX, int mouseY) {
-        if (GLFW.glfwGetMouseButton(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS) {//Main Window
-            if (!this.isMouseDragging) {
-                this.isMouseDragging = true;
+        int pressedButton = GLFW.glfwGetMouseButton(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT);
+        if (pressedButton == GLFW.GLFW_PRESS) {//Main Window
+            if (!this.isDragging()) {
+                this.setDragging(true);
             } else {
                 for (IScreenAddon iScreenAddon : this.addonList) {
                     if (iScreenAddon.isInside(null, mouseX - x, mouseY - y)) {
-                        iScreenAddon.drag(mouseX - x, mouseY - y);
+                        iScreenAddon.handleMouseDragged(this, mouseX - x, mouseY - y, pressedButton, dragX, dragY);
                     }
                 }
             }
             this.dragX = mouseX;
             this.dragY = mouseY;
         } else {
-            this.isMouseDragging = false;
+            this.setDragging(false);
         }
-    }
-
-    // mouseClicked
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
-        super.mouseClicked(mouseX, mouseY, mouseButton);
-        addonList.stream()
-            .filter(iScreenAddon -> iScreenAddon.isInside(this, mouseX - x, mouseY - y))
-            .forEach(iScreenAddon -> iScreenAddon.handleClick(this, x, y, mouseX, mouseY, mouseButton));
-        return false;
     }
 
     @Override
     public List<IScreenAddon> getAddons() {
         return addonList;
+    }
+
+    @Override
+    public List<? extends IGuiEventListener> getEventListeners() {
+        return Lists.newArrayList(getAddons());
     }
 }

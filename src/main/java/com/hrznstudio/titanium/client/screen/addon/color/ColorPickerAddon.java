@@ -10,8 +10,10 @@ package com.hrznstudio.titanium.client.screen.addon.color;
 import com.hrznstudio.titanium.client.screen.addon.BasicScreenAddon;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
+import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
 import java.util.function.Consumer;
@@ -67,25 +69,25 @@ public class ColorPickerAddon extends BasicScreenAddon {
     }
 
     @Override
-    public boolean handleClick(Screen screen, int guiX, int guiY, double mouseX, double mouseY, int button) {
+    public boolean handleMouseClicked(Screen screen, int guiX, int guiY, double mouseX, double mouseY, int button) {
         if (this.huePickerAddon.isInside(screen, mouseX - guiX, mouseY - guiY)) {
-            return this.huePickerAddon.handleClick(screen, guiX, guiY, mouseX, mouseY, button);
+            return this.huePickerAddon.handleMouseClicked(screen, guiX, guiY, mouseX, mouseY, button);
         }
         if (this.shadePickerAddon.isInside(screen, mouseX - guiX, mouseY - guiY)) {
-            return this.shadePickerAddon.handleClick(screen, guiX, guiY, mouseX, mouseY, button);
+            return this.shadePickerAddon.handleMouseClicked(screen, guiX, guiY, mouseX, mouseY, button);
         }
-        return false;
+        return super.handleMouseClicked(screen, guiX, guiY, mouseX, mouseY, button);
     }
 
     @Override
-    public boolean drag(int mouseX, int mouseY) {
+    public boolean handleMouseDragged(Screen screen, double mouseX, double mouseY, int button, double dragX, double dragY) {
         if (this.huePickerAddon.isInside(null, mouseX, mouseY)) {
-            return this.huePickerAddon.drag(mouseX, mouseY);
+            return this.huePickerAddon.handleMouseDragged(screen, mouseX, mouseY, button, mouseX, mouseY);
         }
         if (this.shadePickerAddon.isInside(null, mouseX, mouseY)) {
-            return this.shadePickerAddon.drag(mouseX, mouseY);
+            return this.shadePickerAddon.handleMouseDragged(screen, mouseX, mouseY, button, mouseX, mouseY);
         }
-        return false;
+        return super.handleMouseDragged(screen, mouseX, mouseY, button, dragX, dragY);
     }
 
     private void updateColor() {

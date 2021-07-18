@@ -15,6 +15,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.function.Consumer;
 
@@ -57,17 +58,17 @@ public class HuePickerAddon extends BasicScreenAddon {
     }
 
     @Override
-    public boolean handleClick(Screen screen, int guiX, int guiY, double mouseX, double mouseY, int button) {
+    public boolean handleMouseClicked(Screen screen, int guiX, int guiY, double mouseX, double mouseY, int button) {
         this.hue = (float) ((mouseX - this.getPosX() - guiX) / getXSize());
         consumer.accept(hue);
         return true;
     }
 
     @Override
-    public boolean drag(int mouseX, int mouseY) {
+    public boolean handleMouseDragged(@Nullable Screen screen, double mouseX, double mouseY, int button, double dragX, double dragY) {
         this.hue = ((float) mouseX - this.getPosX()) / getXSize();
         consumer.accept(hue);
-        return true;
+        return super.handleMouseDragged(screen, mouseX, mouseY, button, dragX, dragY);
     }
 
     public void setHue(float hue) {
