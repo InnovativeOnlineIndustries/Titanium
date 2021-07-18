@@ -8,7 +8,6 @@
 package com.hrznstudio.titanium.client.screen.addon;
 
 import com.hrznstudio.titanium.Titanium;
-import com.hrznstudio.titanium.client.screen.addon.interfaces.IClickable;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.component.button.ButtonComponent;
 import com.hrznstudio.titanium.network.locator.ILocatable;
@@ -26,7 +25,7 @@ import net.minecraft.util.text.ITextComponent;
 import java.util.Collections;
 import java.util.List;
 
-public class BasicButtonAddon extends BasicScreenAddon implements IClickable {
+public class BasicButtonAddon extends BasicScreenAddon {
 
     private ButtonComponent button;
 
@@ -39,7 +38,7 @@ public class BasicButtonAddon extends BasicScreenAddon implements IClickable {
     public void drawBackgroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {}
 
     @Override
-    public void drawForegroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {}
+    public void drawForegroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {}
 
     @Override
     public List<ITextComponent> getTooltipLines() {
@@ -47,12 +46,13 @@ public class BasicButtonAddon extends BasicScreenAddon implements IClickable {
     }
 
     @Override
-    public void handleClick(Screen screen, int guiX, int guiY, double mouseX, double mouseY, int button) {
+    public boolean handleClick(Screen screen, int guiX, int guiY, double mouseX, double mouseY, int button) {
         Minecraft.getInstance().getSoundHandler().play(new SimpleSound(SoundEvents.UI_BUTTON_CLICK, SoundCategory.PLAYERS, 1f, 1f, Minecraft.getInstance().player.getPosition())); //getPosition
-        if (screen instanceof ContainerScreen && ((ContainerScreen) screen).getContainer() instanceof ILocatable) {
-            ILocatable locatable = (ILocatable) ((ContainerScreen) screen).getContainer();
+        if (screen instanceof ContainerScreen && ((ContainerScreen<?>) screen).getContainer() instanceof ILocatable) {
+            ILocatable locatable = (ILocatable) ((ContainerScreen<?>) screen).getContainer();
             Titanium.NETWORK.get().sendToServer(new ButtonClickNetworkMessage(locatable.getLocatorInstance(), this.button.getId(), new CompoundNBT()));
         }
+        return true;
     }
 
     @Override

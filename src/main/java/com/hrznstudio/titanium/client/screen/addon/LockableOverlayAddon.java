@@ -37,7 +37,7 @@ public class LockableOverlayAddon extends BasicScreenAddon{
     }
 
     @Override
-    public void drawForegroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
+    public void drawForegroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         if (isInside(screen, mouseX - guiX, mouseY - guiY)) {
             int extra = 4;
             IAsset asset = provider.getAsset(AssetTypes.BUTTON_SIDENESS_MANAGER);

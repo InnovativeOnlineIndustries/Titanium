@@ -12,8 +12,6 @@ import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.client.screen.IScreenAddonConsumer;
 import com.hrznstudio.titanium.client.screen.addon.AssetScreenAddon;
-import com.hrznstudio.titanium.client.screen.addon.interfaces.ICanMouseDrag;
-import com.hrznstudio.titanium.client.screen.addon.interfaces.IClickable;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -101,10 +99,10 @@ public class BasicContainerScreen<T extends Container> extends ContainerScreen<T
             if (iGuiAddon instanceof AssetScreenAddon) {
                 AssetScreenAddon assetGuiAddon = (AssetScreenAddon) iGuiAddon;
                 if (!assetGuiAddon.isBackground()) {
-                    iGuiAddon.drawForegroundLayer(stack, this, assetProvider, xCenter, yCenter, mouseX, mouseY);
+                    iGuiAddon.drawForegroundLayer(stack, this, assetProvider, xCenter, yCenter, mouseX, mouseY, minecraft.getRenderPartialTicks());
                 }
             } else {
-                iGuiAddon.drawForegroundLayer(stack, this, assetProvider, xCenter, yCenter, mouseX, mouseY);
+                iGuiAddon.drawForegroundLayer(stack, this, assetProvider, xCenter, yCenter, mouseX, mouseY, minecraft.getRenderPartialTicks());
             }
         });
         // renderHoveredToolTip
@@ -123,8 +121,8 @@ public class BasicContainerScreen<T extends Container> extends ContainerScreen<T
                 this.isMouseDragging = true;
             } else {
                 for (IScreenAddon iScreenAddon : this.addons) {
-                    if (iScreenAddon instanceof ICanMouseDrag && iScreenAddon.isInside(null, mouseX - this.xCenter, mouseY - this.yCenter)) {
-                        ((ICanMouseDrag) iScreenAddon).drag(mouseX - this.xCenter, mouseY - this.yCenter);
+                    if (iScreenAddon.isInside(null, mouseX - this.xCenter, mouseY - this.yCenter)) {
+                        iScreenAddon.drag(mouseX - this.xCenter, mouseY - this.yCenter);
                     }
                 }
             }
@@ -139,8 +137,8 @@ public class BasicContainerScreen<T extends Container> extends ContainerScreen<T
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
         super.mouseClicked(mouseX, mouseY, mouseButton);
-        new ArrayList<>(addons).stream().filter(iGuiAddon -> iGuiAddon instanceof IClickable && iGuiAddon.isInside(this, mouseX - xCenter, mouseY - yCenter))
-            .forEach(iGuiAddon -> ((IClickable) iGuiAddon).handleClick(this, xCenter, yCenter, mouseX, mouseY, mouseButton));
+        new ArrayList<>(addons).stream().filter(iGuiAddon -> iGuiAddon.isInside(this, mouseX - xCenter, mouseY - yCenter))
+            .forEach(iGuiAddon -> iGuiAddon.handleClick(this, xCenter, yCenter, mouseX, mouseY, mouseButton));
         return false;
     }
 

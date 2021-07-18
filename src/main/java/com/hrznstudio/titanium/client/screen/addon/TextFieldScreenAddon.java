@@ -35,7 +35,7 @@ public class TextFieldScreenAddon extends BasicScreenAddon {
     }
 
     @Override
-    public void drawForegroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {}
+    public void drawForegroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {}
 
     @Override
     public void init(int guiX, int guiY) {

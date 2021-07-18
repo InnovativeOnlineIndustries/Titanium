@@ -9,7 +9,6 @@ package com.hrznstudio.titanium.client.screen.addon;
 
 import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.api.client.assets.types.ITankAsset;
-import com.hrznstudio.titanium.client.screen.addon.interfaces.IClickable;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.component.fluid.FluidTankComponent;
 import com.hrznstudio.titanium.network.locator.ILocatable;
@@ -45,7 +44,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TankScreenAddon extends BasicScreenAddon implements IClickable {
+public class TankScreenAddon extends BasicScreenAddon {
 
     private IFluidTank tank;
     private ITankAsset asset;
@@ -96,7 +95,7 @@ public class TankScreenAddon extends BasicScreenAddon implements IClickable {
     }
 
     @Override
-    public void drawForegroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {}
+    public void drawForegroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {}
 
     @Override
     public List<ITextComponent> getTooltipLines() {
@@ -145,7 +144,7 @@ public class TankScreenAddon extends BasicScreenAddon implements IClickable {
     }
 
     @Override
-    public void handleClick(Screen screen, int guiX, int guiY, double mouseX, double mouseY, int button) {
+    public boolean handleClick(Screen screen, int guiX, int guiY, double mouseX, double mouseY, int button) {
         if (!Minecraft.getInstance().player.inventory.getItemStack().isEmpty() && Minecraft.getInstance().player.inventory.getItemStack().getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).isPresent()){
             Minecraft.getInstance().getSoundHandler().play(new SimpleSound(SoundEvents.UI_BUTTON_CLICK, SoundCategory.PLAYERS, 1f, 1f, Minecraft.getInstance().player.getPosition())); //getPosition
             if (screen instanceof ContainerScreen && ((ContainerScreen) screen).getContainer() instanceof ILocatable) {
@@ -172,7 +171,9 @@ public class TankScreenAddon extends BasicScreenAddon implements IClickable {
                     if (canDrainFromItem && button == 1) compoundNBT.putBoolean("Fill", false);
                 });
                 Titanium.NETWORK.get().sendToServer(new ButtonClickNetworkMessage(locatable.getLocatorInstance(), -3, compoundNBT));
+                return true;
             }
         }
+        return false;
     }
 }

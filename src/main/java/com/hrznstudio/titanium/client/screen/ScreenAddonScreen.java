@@ -11,8 +11,6 @@ import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.api.client.assets.types.IBackgroundAsset;
-import com.hrznstudio.titanium.client.screen.addon.interfaces.ICanMouseDrag;
-import com.hrznstudio.titanium.client.screen.addon.interfaces.IClickable;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.util.AssetUtil;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -77,7 +75,7 @@ public abstract class ScreenAddonScreen extends Screen implements IScreenAddonCo
     }
 
     public void renderForeground(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
-        addonList.forEach(iGuiAddon -> iGuiAddon.drawForegroundLayer(stack, this, assetProvider, x, y, mouseX, mouseY));
+        addonList.forEach(iGuiAddon -> iGuiAddon.drawForegroundLayer(stack, this, assetProvider, x, y, mouseX, mouseY, partialTicks));
         for (IScreenAddon iScreenAddon : addonList) {
             if (iScreenAddon.isInside(this, mouseX - x, mouseY - y) && !iScreenAddon.getTooltipLines().isEmpty()) {
                 // renderTooltip
@@ -94,8 +92,8 @@ public abstract class ScreenAddonScreen extends Screen implements IScreenAddonCo
                 this.isMouseDragging = true;
             } else {
                 for (IScreenAddon iScreenAddon : this.addonList) {
-                    if (iScreenAddon instanceof ICanMouseDrag && iScreenAddon.isInside(null, mouseX - x, mouseY - y)) {
-                        ((ICanMouseDrag) iScreenAddon).drag(mouseX - x, mouseY - y);
+                    if (iScreenAddon.isInside(null, mouseX - x, mouseY - y)) {
+                        iScreenAddon.drag(mouseX - x, mouseY - y);
                     }
                 }
             }
@@ -111,8 +109,8 @@ public abstract class ScreenAddonScreen extends Screen implements IScreenAddonCo
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
         super.mouseClicked(mouseX, mouseY, mouseButton);
         addonList.stream()
-            .filter(iScreenAddon -> iScreenAddon instanceof IClickable && iScreenAddon.isInside(this, mouseX - x, mouseY - y))
-            .forEach(iScreenAddon -> ((IClickable) iScreenAddon).handleClick(this, x, y, mouseX, mouseY, mouseButton));
+            .filter(iScreenAddon -> iScreenAddon.isInside(this, mouseX - x, mouseY - y))
+            .forEach(iScreenAddon -> iScreenAddon.handleClick(this, x, y, mouseX, mouseY, mouseButton));
         return false;
     }
 
