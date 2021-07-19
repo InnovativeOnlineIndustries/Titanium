@@ -13,12 +13,14 @@ import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.client.screen.IScreenAddonConsumer;
 import com.hrznstudio.titanium.client.screen.addon.AssetScreenAddon;
+import com.hrznstudio.titanium.client.screen.addon.WidgetScreenAddon;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.util.text.ITextComponent;
@@ -117,6 +119,27 @@ public class BasicContainerScreen<T extends Container> extends ContainerScreen<T
         }
     }
 
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (this.children != null) {
+            for (IGuiEventListener listener : this.children) {
+                if (listener instanceof WidgetScreenAddon) {
+                    WidgetScreenAddon addon = (WidgetScreenAddon) listener;
+                    Widget widget = addon.getWidget();
+                    if (widget.keyPressed(keyCode, scanCode, modifiers)) {
+                        return true;
+                    }
+                    if (widget.isFocused()) {
+                        if (scanCode == 18) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
     private void checkForMouseDrag(int mouseX, int mouseY) {
         int pressedButton = GLFW.glfwGetMouseButton(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT);
         if (pressedButton == GLFW.GLFW_PRESS) {//Main Window
@@ -157,7 +180,10 @@ public class BasicContainerScreen<T extends Container> extends ContainerScreen<T
 
     @Override
     public List<? extends IGuiEventListener> getEventListeners() {
-        return Lists.newArrayList(getAddons());
+        if (this.children != null) {
+            children.addAll(getAddons());
+        }
+        return this.children;
     }
 
     public void setAddons(List<IScreenAddon> addons) {

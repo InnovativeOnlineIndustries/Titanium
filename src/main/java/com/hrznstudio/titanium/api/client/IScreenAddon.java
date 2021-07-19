@@ -78,9 +78,7 @@ public interface IScreenAddon extends IGuiEventListener {
      * @param yPos Current mouse coordinate Y
      */
     @Override
-    default void mouseMoved(double xPos, double yPos) {
-        Titanium.LOGGER.info("mouseMoved");
-    }
+    default void mouseMoved(double xPos, double yPos) {}
 
     /**
      * Called when a mouse button is clicked
@@ -92,7 +90,6 @@ public interface IScreenAddon extends IGuiEventListener {
      */
     @Override
     default boolean mouseClicked(double mouseX, double mouseY, int button) {
-        Titanium.LOGGER.info("mouseClicked: " + "X:" + mouseX + " Y:" + mouseY + " Button:" + button);
         return false;
     }
 
@@ -106,7 +103,6 @@ public interface IScreenAddon extends IGuiEventListener {
      */
     @Override
     default boolean mouseReleased(double mouseX, double mouseY, int button) {
-        Titanium.LOGGER.info("mouseReleased: " + "X:" + mouseX + " Y:" + mouseY + " Button:" + button);
         return false;
     }
 
@@ -122,7 +118,6 @@ public interface IScreenAddon extends IGuiEventListener {
      */
     @Override
     default boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
-        Titanium.LOGGER.info("mouseDragged: " + "X:" + mouseX + " Y:" + mouseY + " Button:" + button + " DragX:" + dragX + " DragY" + dragY);
         return false;
     }
 
@@ -136,7 +131,6 @@ public interface IScreenAddon extends IGuiEventListener {
      */
     @Override
     default boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-        Titanium.LOGGER.info("mouseScrolled: " + "X:" + mouseX + " Y:" + mouseY + " Delta:" + delta);
         return false;
     }
 
@@ -150,7 +144,6 @@ public interface IScreenAddon extends IGuiEventListener {
      */
     @Override
     default boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        Titanium.LOGGER.info("keyPressed");
         return false;
     }
 
@@ -164,7 +157,6 @@ public interface IScreenAddon extends IGuiEventListener {
      */
     @Override
     default boolean keyReleased(int keyCode, int scanCode, int modifiers) {
-        Titanium.LOGGER.info("keyReleased");
         return false;
     }
 
@@ -177,7 +169,6 @@ public interface IScreenAddon extends IGuiEventListener {
      */
     @Override
     default boolean charTyped(char codePoint, int modifiers) {
-        Titanium.LOGGER.info("charTyped");
         return false;
     }
 
@@ -189,7 +180,6 @@ public interface IScreenAddon extends IGuiEventListener {
      */
     @Override
     default boolean changeFocus(boolean focus) {
-        Titanium.LOGGER.info("changeFocus");
         return false;
     }
 
@@ -202,7 +192,6 @@ public interface IScreenAddon extends IGuiEventListener {
      */
     @Override
     default boolean isMouseOver(double mouseX, double mouseY) {
-        Titanium.LOGGER.info("isMouseOver");
         return false;
     }
 

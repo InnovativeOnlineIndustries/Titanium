@@ -101,9 +101,7 @@ public class WidgetScreenAddon extends BasicScreenAddon{
 
     @Override
     public boolean isMouseOver(double mouseX, double mouseY) {
-        boolean isOver = mouseX > this.getPosX() && mouseX < this.getPosX() + getXSize() && mouseY > this.getPosY() && mouseY < this.getPosY() + getYSize();
-        //Titanium.LOGGER.info(isOver);
-        return isOver;
+        return mouseX > this.getPosX() && mouseX < this.getPosX() + getXSize() && mouseY > this.getPosY() && mouseY < this.getPosY() + getYSize();
     }
 
     public Widget getWidget() {
