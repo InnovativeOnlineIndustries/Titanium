@@ -19,13 +19,16 @@ import com.hrznstudio.titanium.client.screen.addon.WidgetScreenAddon;
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.widget.SoundSlider;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.fml.client.gui.widget.Slider;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -86,7 +89,9 @@ public class TwentyFourTestTile extends PoweredTile<TwentyFourTestTile> implemen
         }
         TextFieldWidget widget = new TextFieldWidget(Minecraft.getInstance().fontRenderer, 0, 0, 120, 20, new StringTextComponent(""));
         widget.setText("This is a Text Widget");
+        SoundSlider soundSlider = new SoundSlider(Minecraft.getInstance(), 0, 0, SoundCategory.HOSTILE, 120);
         addons.add(() -> new WidgetScreenAddon(30, -25, widget));
+        addons.add(() -> new WidgetScreenAddon(30, 185, soundSlider));
         return addons;
     }
 

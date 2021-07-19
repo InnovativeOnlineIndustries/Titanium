@@ -85,7 +85,7 @@ public class BasicContainerScreen<T extends Container> extends ContainerScreen<T
         getMinecraft().getTextureManager().bindTexture(IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND).getResourceLocation());
         blit(stack, xCenter, yCenter, 0, 0, xSize, ySize);
         Minecraft.getInstance().fontRenderer.drawString(stack, TextFormatting.DARK_GRAY + title.getString(), xCenter + xSize / 2 - Minecraft.getInstance().fontRenderer.getStringWidth(title.getString()) / 2, yCenter + 6, 0xFFFFFF);
-        this.checkForMouseDrag(mouseX, mouseY);
+        //this.checkForMouseDrag(mouseX, mouseY);
         addons.stream().filter(IScreenAddon::isBackground).forEach(iGuiAddon -> {
             iGuiAddon.drawBackgroundLayer(stack, this, assetProvider, xCenter, yCenter, mouseX, mouseY, partialTicks);
         });

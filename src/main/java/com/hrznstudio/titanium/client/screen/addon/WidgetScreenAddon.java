@@ -6,8 +6,6 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.Widget;
 
-import javax.annotation.Nullable;
-
 public class WidgetScreenAddon extends BasicScreenAddon{
 
     private final Widget widget;
@@ -15,8 +13,13 @@ public class WidgetScreenAddon extends BasicScreenAddon{
     public WidgetScreenAddon(int posX, int posY, Widget widget) {
         super(posX, posY);
         this.widget = widget;
-        this.widget.x = posX;
-        this.widget.y = posY;
+    }
+
+    @Override
+    public void init(int screenX, int screenY) {
+        Titanium.LOGGER.info("X:" + getPosX() + " Y:" + screenY);
+        this.widget.x = screenX + getPosX();
+        this.widget.y = screenY + getPosY();
     }
 
     @Override
@@ -24,7 +27,11 @@ public class WidgetScreenAddon extends BasicScreenAddon{
 
     @Override
     public void drawForegroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+        widget.x = getPosX();
+        widget.y = getPosY();
         widget.render(stack, mouseX, mouseY, partialTicks);
+        widget.x = guiX + getPosX();
+        widget.y = guiY + getPosY();
     }
 
     @Override
