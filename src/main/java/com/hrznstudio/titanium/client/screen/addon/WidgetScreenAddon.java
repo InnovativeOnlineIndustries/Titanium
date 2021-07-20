@@ -17,7 +17,6 @@ public class WidgetScreenAddon extends BasicScreenAddon{
 
     @Override
     public void init(int screenX, int screenY) {
-        Titanium.LOGGER.info("X:" + getPosX() + " Y:" + screenY);
         this.widget.x = screenX + getPosX();
         this.widget.y = screenY + getPosY();
     }
@@ -75,18 +74,8 @@ public class WidgetScreenAddon extends BasicScreenAddon{
     }
 
     @Override
-    public boolean handleKeyReleased(Screen screen, int keyCode, int scanCode, int modifiers) {
-        return widget.keyPressed(keyCode, scanCode, modifiers);
-    }
-
-    @Override
     public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
         return widget.keyReleased(keyCode, scanCode, modifiers);
-    }
-
-    @Override
-    public boolean handleCharTyped(Screen screen, char codePoint, int modifiers) {
-        return widget.charTyped(codePoint, modifiers);
     }
 
     @Override

@@ -59,6 +59,10 @@ public class TwentyFourTestTile extends PoweredTile<TwentyFourTestTile> implemen
         this.addInventory(third = new InventoryComponent<TwentyFourTestTile>("test3", 80, 60, 1)
                 .setComponentHarness(this)
                 .setInputFilter(IItemStackQuery.ANYTHING.toSlotFilter()));
+        this.addGuiAddonFactory(() -> new WidgetScreenAddon(30, 185, new SoundSlider(Minecraft.getInstance(), 0, 0, SoundCategory.HOSTILE, 120)));
+        TextFieldWidget widget = new TextFieldWidget(Minecraft.getInstance().fontRenderer, 0, 0, 120, 20, new StringTextComponent(""));
+        widget.setText("This is a Text Widget");
+        this.addGuiAddonFactory(() -> new WidgetScreenAddon(30, -25, widget));
     }
 
     @Override
@@ -87,11 +91,6 @@ public class TwentyFourTestTile extends PoweredTile<TwentyFourTestTile> implemen
                 addons.add(() -> new EnergyBarScreenAddon(50, 20, this.getEnergyStorage()));
             }
         }
-        TextFieldWidget widget = new TextFieldWidget(Minecraft.getInstance().fontRenderer, 0, 0, 120, 20, new StringTextComponent(""));
-        widget.setText("This is a Text Widget");
-        SoundSlider soundSlider = new SoundSlider(Minecraft.getInstance(), 0, 0, SoundCategory.HOSTILE, 120);
-        addons.add(() -> new WidgetScreenAddon(30, -25, widget));
-        addons.add(() -> new WidgetScreenAddon(30, 185, soundSlider));
         return addons;
     }
 
