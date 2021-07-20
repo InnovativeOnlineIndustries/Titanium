@@ -7,18 +7,20 @@
 
 package com.hrznstudio.titanium.client.screen.container;
 
+import com.google.common.collect.Lists;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.client.screen.IScreenAddonConsumer;
 import com.hrznstudio.titanium.client.screen.addon.AssetScreenAddon;
-import com.hrznstudio.titanium.client.screen.addon.interfaces.ICanMouseDrag;
-import com.hrznstudio.titanium.client.screen.addon.interfaces.IClickable;
+import com.hrznstudio.titanium.client.screen.addon.WidgetScreenAddon;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.util.text.ITextComponent;
@@ -85,7 +87,7 @@ public class BasicContainerScreen<T extends Container> extends ContainerScreen<T
         getMinecraft().getTextureManager().bindTexture(IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND).getResourceLocation());
         blit(stack, xCenter, yCenter, 0, 0, xSize, ySize);
         Minecraft.getInstance().fontRenderer.drawString(stack, TextFormatting.DARK_GRAY + title.getString(), xCenter + xSize / 2 - Minecraft.getInstance().fontRenderer.getStringWidth(title.getString()) / 2, yCenter + 6, 0xFFFFFF);
-        this.checkForMouseDrag(mouseX, mouseY);
+        //this.checkForMouseDrag(mouseX, mouseY);
         addons.stream().filter(IScreenAddon::isBackground).forEach(iGuiAddon -> {
             iGuiAddon.drawBackgroundLayer(stack, this, assetProvider, xCenter, yCenter, mouseX, mouseY, partialTicks);
         });
@@ -101,10 +103,10 @@ public class BasicContainerScreen<T extends Container> extends ContainerScreen<T
             if (iGuiAddon instanceof AssetScreenAddon) {
                 AssetScreenAddon assetGuiAddon = (AssetScreenAddon) iGuiAddon;
                 if (!assetGuiAddon.isBackground()) {
-                    iGuiAddon.drawForegroundLayer(stack, this, assetProvider, xCenter, yCenter, mouseX, mouseY);
+                    iGuiAddon.drawForegroundLayer(stack, this, assetProvider, xCenter, yCenter, mouseX, mouseY, minecraft.getRenderPartialTicks());
                 }
             } else {
-                iGuiAddon.drawForegroundLayer(stack, this, assetProvider, xCenter, yCenter, mouseX, mouseY);
+                iGuiAddon.drawForegroundLayer(stack, this, assetProvider, xCenter, yCenter, mouseX, mouseY, minecraft.getRenderPartialTicks());
             }
         });
         // renderHoveredToolTip
@@ -117,14 +119,36 @@ public class BasicContainerScreen<T extends Container> extends ContainerScreen<T
         }
     }
 
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (this.children != null) {
+            for (IGuiEventListener listener : this.children) {
+                if (listener instanceof WidgetScreenAddon) {
+                    WidgetScreenAddon addon = (WidgetScreenAddon) listener;
+                    Widget widget = addon.getWidget();
+                    if (widget.keyPressed(keyCode, scanCode, modifiers)) {
+                        return true;
+                    }
+                    if (widget.isFocused()) {
+                        if (scanCode == 18) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
     private void checkForMouseDrag(int mouseX, int mouseY) {
-        if (GLFW.glfwGetMouseButton(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS) {//Main Window
+        int pressedButton = GLFW.glfwGetMouseButton(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT);
+        if (pressedButton == GLFW.GLFW_PRESS) {//Main Window
             if (!this.isMouseDragging) {
                 this.isMouseDragging = true;
             } else {
                 for (IScreenAddon iScreenAddon : this.addons) {
-                    if (iScreenAddon instanceof ICanMouseDrag && iScreenAddon.isInside(null, mouseX - this.xCenter, mouseY - this.yCenter)) {
-                        ((ICanMouseDrag) iScreenAddon).drag(mouseX - this.xCenter, mouseY - this.yCenter);
+                    if (iScreenAddon.isInside(this, mouseX - this.xCenter, mouseY - this.yCenter)) {
+                        iScreenAddon.handleMouseDragged(this, mouseX - this.xCenter, mouseY - this.yCenter, pressedButton, dragX, dragY);
                     }
                 }
             }
@@ -133,23 +157,6 @@ public class BasicContainerScreen<T extends Container> extends ContainerScreen<T
         } else {
             this.isMouseDragging = false;
         }
-    }
-
-    // mouseClicked
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
-        super.mouseClicked(mouseX, mouseY, mouseButton);
-        new ArrayList<>(addons).stream().filter(iGuiAddon -> iGuiAddon instanceof IClickable && iGuiAddon.isInside(this, mouseX - xCenter, mouseY - yCenter))
-            .forEach(iGuiAddon -> ((IClickable) iGuiAddon).handleClick(this, xCenter, yCenter, mouseX, mouseY, mouseButton));
-        return false;
-    }
-
-    // keyPressed
-    @Override
-    public boolean keyPressed(int keyCode, int scan, int modifiers) {
-        return this.getAddons().stream()
-            .anyMatch(screenAddon -> screenAddon.keyPressed(keyCode, scan, modifiers)) ||
-            super.keyPressed(keyCode, scan, modifiers);
     }
 
     public int getX() {
@@ -169,6 +176,14 @@ public class BasicContainerScreen<T extends Container> extends ContainerScreen<T
     @Override
     public List<IScreenAddon> getAddons() {
         return addons;
+    }
+
+    @Override
+    public List<? extends IGuiEventListener> getEventListeners() {
+        if (this.children != null) {
+            children.addAll(getAddons());
+        }
+        return this.children;
     }
 
     public void setAddons(List<IScreenAddon> addons) {

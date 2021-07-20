@@ -21,7 +21,7 @@ public abstract class BasicScreenAddon implements IScreenAddon {
     }
 
     @Override
-    public boolean isInside(Screen container, double mouseX, double mouseY) {
+    public boolean isMouseOver(double mouseX, double mouseY) {
         return mouseX > this.getPosX() && mouseX < this.getPosX() + getXSize() && mouseY > this.getPosY() && mouseY < this.getPosY() + getYSize();
     }
 
