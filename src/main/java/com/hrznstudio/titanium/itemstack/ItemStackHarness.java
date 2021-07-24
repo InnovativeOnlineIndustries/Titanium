@@ -14,9 +14,9 @@ import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.container.addon.IContainerAddon;
 import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
 import com.hrznstudio.titanium.network.IButtonHandler;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 
 import javax.annotation.Nonnull;
@@ -65,7 +65,7 @@ public class ItemStackHarness implements IContainerAddonProvider, IScreenAddonPr
     }
 
     @Override
-    public void handleButtonMessage(int id, PlayerEntity playerEntity, CompoundNBT compound) {
+    public void handleButtonMessage(int id, Player playerEntity, CompoundTag compound) {
         if (buttonHandler != null) {
             buttonHandler.handleButtonMessage(id, playerEntity, compound);
         }

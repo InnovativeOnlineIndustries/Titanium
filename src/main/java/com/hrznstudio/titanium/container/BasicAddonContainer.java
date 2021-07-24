@@ -21,31 +21,31 @@ import com.hrznstudio.titanium.network.locator.LocatorInstance;
 import com.hrznstudio.titanium.network.locator.instance.EmptyLocatorInstance;
 import com.hrznstudio.titanium.network.locator.instance.HeldStackLocatorInstance;
 import com.hrznstudio.titanium.network.locator.instance.InventoryStackLocatorInstance;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ClickType;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.IWorldPosCallable;
-import net.minecraft.world.World;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ObjectHolder;
 
 public class BasicAddonContainer extends BasicInventoryContainer implements IObjectContainer, ILocatable {
     @ObjectHolder("titanium:addon_container")
-    public static ContainerType<BasicAddonContainer> TYPE;
+    public static MenuType<BasicAddonContainer> TYPE;
 
-    private final IWorldPosCallable worldPosCallable;
+    private final ContainerLevelAccess worldPosCallable;
     private final Object provider;
     private final LocatorInstance locatorInstance;
 
-    public BasicAddonContainer(Object provider, LocatorInstance locatorInstance, IWorldPosCallable worldPosCallable,
-                               PlayerInventory playerInventory, int containerId) {
+    public BasicAddonContainer(Object provider, LocatorInstance locatorInstance, ContainerLevelAccess worldPosCallable,
+                               Inventory playerInventory, int containerId) {
         this(provider, locatorInstance, TYPE, worldPosCallable, playerInventory, containerId);
     }
 
-    public BasicAddonContainer(Object provider, LocatorInstance locatorInstance, ContainerType<?> containerType,
-                               IWorldPosCallable worldPosCallable, PlayerInventory playerInventory, int containerId) {
+    public BasicAddonContainer(Object provider, LocatorInstance locatorInstance, MenuType<?> containerType,
+                               ContainerLevelAccess worldPosCallable, Inventory playerInventory, int containerId) {
         super(containerType, playerInventory, containerId, findAssetProvider(provider));
         this.worldPosCallable = worldPosCallable;
         this.provider = provider;
@@ -56,8 +56,8 @@ public class BasicAddonContainer extends BasicInventoryContainer implements IObj
                 .map(IFactory::create)
                 .forEach(containAddon -> {
                     containAddon.getSlots().forEach(this::addSlot);
-                    containAddon.getIntReferenceHolders().forEach(this::trackInt);
-                    containAddon.getIntArrayReferenceHolders().forEach(this::trackIntArray);
+                    containAddon.getIntReferenceHolders().forEach(this::addDataSlot);
+                    containAddon.getIntArrayReferenceHolders().forEach(this::addDataSlots);
                 });
         }
         this.initInventory();
@@ -72,16 +72,16 @@ public class BasicAddonContainer extends BasicInventoryContainer implements IObj
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity playerIn) {
-        return !worldPosCallable.applyOrElse((world, blockPos) -> playerIn.getDistanceSq(blockPos.getX() + 0.5D,
+    public boolean stillValid(Player playerIn) {
+        return !worldPosCallable.evaluate((world, blockPos) -> playerIn.distanceToSqr(blockPos.getX() + 0.5D,
             blockPos.getY() + 0.5D, blockPos.getZ() + 0.5D) <= 64.0D, true) || !(provider instanceof IContainerAddonProvider) || ((IContainerAddonProvider) provider).canInteract();
     }
 
     @Override
-    public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, PlayerEntity player) {
+    public ItemStack clicked(int slotId, int dragType, ClickType clickTypeIn, Player player) {
         if (locatorInstance instanceof HeldStackLocatorInstance) {
             if (((HeldStackLocatorInstance) locatorInstance).isMainHand()) {
-                if (player.inventory.currentItem == (slotId - 27)) {
+                if (player.inventoryMenu.selected == (slotId - 27)) {
                     return ItemStack.EMPTY;
                 }
             } else if (slotId == 40) {
@@ -96,18 +96,18 @@ public class BasicAddonContainer extends BasicInventoryContainer implements IObj
                 slot -= 9;
             }
             if (slot == slotId){
-                this.detectAndSendChanges();
+                this.broadcastChanges();
                 return ItemStack.EMPTY;
             }
         }
-        return super.slotClick(slotId, dragType, clickTypeIn, player);
+        return super.clicked(slotId, dragType, clickTypeIn, player);
     }
 
-    public static BasicAddonContainer create(int id, PlayerInventory inventory, PacketBuffer packetBuffer) {
+    public static BasicAddonContainer create(int id, Inventory inventory, FriendlyByteBuf packetBuffer) {
         LocatorInstance instance = LocatorFactory.readPacketBuffer(packetBuffer);
         if (instance != null) {
-            PlayerEntity playerEntity = inventory.player;
-            World world = playerEntity.getEntityWorld();
+            Player playerEntity = inventory.player;
+            Level world = playerEntity.getCommandSenderWorld();
             BasicAddonContainer container = instance.locale(playerEntity)
                 .map(located -> new BasicAddonContainer(located, instance, instance.getWorldPosCallable(world),
                     inventory, id))
@@ -117,7 +117,7 @@ public class BasicAddonContainer extends BasicInventoryContainer implements IObj
             }
         }
         Titanium.LOGGER.error("Failed to find locate instance to create Container for");
-        return new BasicAddonContainer(new Object(), new EmptyLocatorInstance(), IWorldPosCallable.DUMMY, inventory, id);
+        return new BasicAddonContainer(new Object(), new EmptyLocatorInstance(), ContainerLevelAccess.NULL, inventory, id);
     }
 
     public Object getProvider() {
@@ -135,7 +135,7 @@ public class BasicAddonContainer extends BasicInventoryContainer implements IObj
     }
 
     public void update() {
-        this.inventorySlots.stream().filter(slot -> slot instanceof UpdatableSlotItemHandler).forEach(slot -> ((UpdatableSlotItemHandler) slot).update());
+        this.slots.stream().filter(slot -> slot instanceof UpdatableSlotItemHandler).forEach(slot -> ((UpdatableSlotItemHandler) slot).update());
     }
 
 }

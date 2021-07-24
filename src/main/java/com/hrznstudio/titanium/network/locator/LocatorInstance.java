@@ -8,10 +8,10 @@
 package com.hrznstudio.titanium.network.locator;
 
 import com.hrznstudio.titanium.network.CompoundSerializableDataHandler;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.IWorldPosCallable;
-import net.minecraft.world.World;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
@@ -29,13 +29,13 @@ public abstract class LocatorInstance {
         return type;
     }
 
-    public abstract Optional<?> locale(PlayerEntity playerEntity);
+    public abstract Optional<?> locale(Player playerEntity);
 
-    public IWorldPosCallable getWorldPosCallable(World world) {
-        return IWorldPosCallable.DUMMY;
+    public ContainerLevelAccess getWorldPosCallable(Level world) {
+        return ContainerLevelAccess.NULL;
     }
 
-    public final void fromBytes(PacketBuffer buf) {
+    public final void fromBytes(FriendlyByteBuf buf) {
         try {
             Class<?> clazz = getClass();
             for (Field f : clazz.getDeclaredFields()) {
@@ -49,7 +49,7 @@ public abstract class LocatorInstance {
         }
     }
 
-    public final void toBytes(PacketBuffer buf) {
+    public final void toBytes(FriendlyByteBuf buf) {
         try {
             Class<?> clazz = getClass();
             for (Field f : clazz.getDeclaredFields()) {

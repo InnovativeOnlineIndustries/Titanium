@@ -10,17 +10,18 @@ package com.hrznstudio.titanium.network.messages;
 import com.hrznstudio.titanium.block.tile.BasicTile;
 import com.hrznstudio.titanium.network.Message;
 import net.minecraft.client.Minecraft;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
+
 
 public class TileFieldNetworkMessage extends Message {
 
     private BlockPos pos;
-    private CompoundNBT data;
+    private CompoundTag data;
 
-    public TileFieldNetworkMessage(BlockPos pos, CompoundNBT data) {
+    public TileFieldNetworkMessage(BlockPos pos, CompoundTag data) {
         this.pos = pos;
         this.data = data;
     }
@@ -31,7 +32,7 @@ public class TileFieldNetworkMessage extends Message {
     @Override
     protected void handleMessage(NetworkEvent.Context context) {
         context.enqueueWork(() -> {
-            TileEntity entity = Minecraft.getInstance().player.getEntityWorld().getTileEntity(pos);
+            BlockEntity entity = Minecraft.getInstance().player.getCommandSenderWorld().getBlockEntity(pos);
             if (entity instanceof BasicTile){
                 ((BasicTile<?>) entity).handleSyncObject(data);
             }

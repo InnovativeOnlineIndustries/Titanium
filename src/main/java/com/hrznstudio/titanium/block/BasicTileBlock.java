@@ -7,30 +7,32 @@
 
 package com.hrznstudio.titanium.block;
 
-import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.block.tile.BasicTile;
+import com.hrznstudio.titanium.block.tile.ITickableBlockEntity;
 import com.hrznstudio.titanium.module.api.RegistryManager;
 import com.hrznstudio.titanium.nbthandler.NBTManager;
 import com.hrznstudio.titanium.util.TileUtil;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.ITileEntityProvider;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEventListener;
+import net.minecraft.world.phys.BlockHitResult;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
 
-public abstract class BasicTileBlock<T extends BasicTile<T>> extends BasicBlock implements ITileEntityProvider {
+public abstract class BasicTileBlock<T extends BasicTile<T>> extends BasicBlock implements EntityBlock {
     private final Class<T> tileClass;
-    private TileEntityType tileEntityType;
+    private BlockEntityType tileEntityType;
 
     public BasicTileBlock(Properties properties, Class<T> tileClass) {
         super(properties);
@@ -41,54 +43,68 @@ public abstract class BasicTileBlock<T extends BasicTile<T>> extends BasicBlock 
     public void addAlternatives(RegistryManager<?> registry) {
         super.addAlternatives(registry);
         NBTManager.getInstance().scanTileClassForAnnotations(tileClass);
-        tileEntityType = TileEntityType.Builder.create(getTileEntityFactory()::create, this).build(null);
+        tileEntityType = BlockEntityType.Builder.of(getTileEntityFactory(), this).build(null);
         tileEntityType.setRegistryName(this.getRegistryName());
-        registry.content(TileEntityType.class, tileEntityType);
+        registry.content(BlockEntityType.class, tileEntityType);
     }
 
-    public abstract IFactory<T> getTileEntityFactory();
-
-    @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
+    public abstract BlockEntityType.BlockEntitySupplier<T> getTileEntityFactory();
 
     @Override
     @SuppressWarnings("deprecation")
-    public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean p_220069_6_) {
+    public void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean p_220069_6_) {
         getTile(worldIn, pos).ifPresent(tile -> tile.onNeighborChanged(blockIn, fromPos));
     }
 
 
     @Override
     @SuppressWarnings("deprecation")
-    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult ray) {
+    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand hand, BlockHitResult ray) {
         return getTile(worldIn, pos)
-                .map(tile -> tile.onActivated(player, hand, ray.getFace(), ray.getHitVec().x, ray.getHitVec().y, ray.getHitVec().z))
-                .orElseGet(() -> super.onBlockActivated(state, worldIn, pos, player, hand, ray));
+                .map(tile -> tile.onActivated(player, hand, ray.getDirection(), ray.getLocation().x, ray.getLocation().y, ray.getLocation().z))
+                .orElseGet(() -> super.use(state, worldIn, pos, player, hand, ray));
     }
 
-    @Nullable
-    @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return getTileEntityFactory().create();
-    }
 
-    public Optional<T> getTile(IBlockReader access, BlockPos pos) {
+    public Optional<T> getTile(BlockGetter access, BlockPos pos) {
         return TileUtil.getTileEntity(access, pos, tileClass);
     }
 
-    @Nullable
-    @Override
-    public TileEntity createNewTileEntity(IBlockReader iBlockReader) {
-        return getTileEntityFactory().create();
-    }
 
-    public TileEntityType getTileEntityType() {
+    public BlockEntityType getTileEntityType() {
         return tileEntityType;
     }
 
     public Class<T> getTileClass() {
         return tileClass;
+    }
+
+    @Nullable
+    @Override
+    public <R extends BlockEntity> BlockEntityTicker<R> getTicker(Level p_153212_, BlockState p_153213_, BlockEntityType<R> p_153214_) {
+        return new BlockEntityTicker<R>() {
+            @Override
+            public void tick(Level level, BlockPos pos, BlockState state, R blockEntity) {
+                if (blockEntity instanceof ITickableBlockEntity){
+                    if (level.isClientSide()){
+                        ((ITickableBlockEntity) blockEntity).clientTick(level, pos, state, blockEntity);
+                    }else {
+                        ((ITickableBlockEntity) blockEntity).serverTick(level, pos, state, blockEntity);
+                    }
+                }
+            }
+        };
+    }
+
+    @Nullable
+    @Override
+    public <T extends BlockEntity> GameEventListener getListener(Level p_153210_, T p_153211_) {
+        return EntityBlock.super.getListener(p_153210_, p_153211_);
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(BlockPos p_153215_, BlockState p_153216_) {
+        return null;
     }
 }

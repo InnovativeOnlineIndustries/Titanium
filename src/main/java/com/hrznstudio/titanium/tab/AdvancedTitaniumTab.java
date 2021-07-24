@@ -8,12 +8,13 @@
 package com.hrznstudio.titanium.tab;
 
 import com.google.common.base.Stopwatch;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
 
 import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+
 
 public class AdvancedTitaniumTab extends TitaniumTab {
     private static final ItemStack defaultIconStack = new ItemStack(Blocks.BARRIER);

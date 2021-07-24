@@ -8,8 +8,8 @@
 package com.hrznstudio.titanium.item;
 
 import com.hrznstudio.titanium.api.augment.IAugmentType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 
 public class AugmentWrapper {
 
@@ -28,8 +28,8 @@ public class AugmentWrapper {
     }
 
     public static void setType(ItemStack augment, IAugmentType type, float amount) {
-        CompoundNBT nbt = augment.getOrCreateTag();
-        CompoundNBT augmentNBT = nbt.contains(AUGMENT_NBT) ? nbt.getCompound(AUGMENT_NBT) : new CompoundNBT();
+        CompoundTag nbt = augment.getOrCreateTag();
+        CompoundTag augmentNBT = nbt.contains(AUGMENT_NBT) ? nbt.getCompound(AUGMENT_NBT) : new CompoundTag();
         augmentNBT.putFloat(type.getType(), amount);
         nbt.put(AUGMENT_NBT, augmentNBT);
         augment.setTag(nbt);

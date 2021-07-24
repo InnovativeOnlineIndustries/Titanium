@@ -12,7 +12,7 @@ import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.api.material.IResourceType;
 import com.hrznstudio.titanium.material.IAdvancedResourceType;
 import com.hrznstudio.titanium.material.ResourceMaterial;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -22,7 +22,7 @@ public enum ItemAdvancedResourceType implements IAdvancedResourceType {
         JsonObject object = new JsonObject();
         object.addProperty("parent", "item/generated");
         JsonObject textures = new JsonObject();
-        textures.addProperty("layer0", new ResourceLocation(Titanium.MODID, "items/resource/" + type.getString()).toString()); //getNAme
+        textures.addProperty("layer0", new ResourceLocation(Titanium.MODID, "items/resource/" + type.getSerializedName()).toString()); //getNAme
         object.add("textures", textures);
         return object;
     });

@@ -8,9 +8,10 @@
 package com.hrznstudio.titanium.recipe.condition;
 
 import com.hrznstudio.titanium.Titanium;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.registries.IForgeRegistry;
+
 
 public class ContentExistsCondition implements ICondition {
     public static final ResourceLocation NAME = new ResourceLocation(Titanium.MODID, "content_exists");

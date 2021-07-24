@@ -22,10 +22,10 @@ import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.hrznstudio.titanium.component.inventory.SidedInventoryComponent;
 import com.hrznstudio.titanium.container.addon.IContainerAddon;
 import com.hrznstudio.titanium.util.LangUtil;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import javax.annotation.Nonnull;
@@ -34,7 +34,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.BiPredicate;
 
-public class LockableInventoryBundle<T extends BasicTile & IComponentHarness> implements IComponentBundle, INBTSerializable<CompoundNBT> {
+public class LockableInventoryBundle<T extends BasicTile & IComponentHarness> implements IComponentBundle, INBTSerializable<CompoundTag> {
 
     private InventoryComponent<T> inventory;
     private BiPredicate<ItemStack, Integer> cachedFilter;
@@ -58,8 +58,8 @@ public class LockableInventoryBundle<T extends BasicTile & IComponentHarness> im
             @Override
             public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
                 return Collections.singletonList(() -> new StateButtonAddon(buttonAddon,
-                    new StateButtonInfo(0, AssetTypes.BUTTON_UNLOCKED, TextFormatting.GOLD + LangUtil.getString("tooltip.titanium.locks") +  TextFormatting.WHITE +  " " + LangUtil.getString("tooltip.titanium.facing_handler." + inventory.getName().toLowerCase())),
-                    new StateButtonInfo(1, AssetTypes.BUTTON_LOCKED, TextFormatting.GOLD + LangUtil.getString("tooltip.titanium.unlocks") + TextFormatting.WHITE + " " + LangUtil.getString("tooltip.titanium.facing_handler." + inventory.getName().toLowerCase()))) {
+                    new StateButtonInfo(0, AssetTypes.BUTTON_UNLOCKED, ChatFormatting.GOLD + LangUtil.getString("tooltip.titanium.locks") +  ChatFormatting.WHITE +  " " + LangUtil.getString("tooltip.titanium.facing_handler." + inventory.getName().toLowerCase())),
+                    new StateButtonInfo(1, AssetTypes.BUTTON_LOCKED, ChatFormatting.GOLD + LangUtil.getString("tooltip.titanium.unlocks") + ChatFormatting.WHITE + " " + LangUtil.getString("tooltip.titanium.facing_handler." + inventory.getName().toLowerCase()))) {
                     @Override
                     public int getState() {
                         return LockableInventoryBundle.this.isLocked ? 1 : 0;
@@ -96,11 +96,11 @@ public class LockableInventoryBundle<T extends BasicTile & IComponentHarness> im
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
-        CompoundNBT compoundNBT = new CompoundNBT();
+    public CompoundTag serializeNBT() {
+        CompoundTag compoundNBT = new CompoundTag();
         compoundNBT.put("Inventory", this.inventory.serializeNBT());
         compoundNBT.putBoolean("Locked", this.isLocked);
-        ListNBT nbt = new ListNBT();
+        ListTag nbt = new ListTag();
         for (ItemStack stack : this.filter) {
             nbt.add(stack.serializeNBT());
         }
@@ -109,21 +109,21 @@ public class LockableInventoryBundle<T extends BasicTile & IComponentHarness> im
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
         this.inventory.deserializeNBT(nbt.getCompound("Inventory"));
         this.isLocked = nbt.getBoolean("Locked");
-        ListNBT list = (ListNBT) nbt.get("Filter");
+        ListTag list = (ListTag) nbt.get("Filter");
         this.filter = new ItemStack[list.size()];
         Arrays.fill(this.filter, ItemStack.EMPTY);
         for (int i = 0; i < list.size(); i++) {
-            this.filter[i] = ItemStack.read(list.getCompound(i));
+            this.filter[i] = ItemStack.of(list.getCompound(i));
         }
         updateFilter();
     }
 
     private void updateFilter(){
         if (isLocked){
-            this.inventory.setInputFilter((stack, integer) -> integer < this.filter.length && !this.filter[integer].isEmpty() && this.filter[integer].isItemEqual(stack));
+            this.inventory.setInputFilter((stack, integer) -> integer < this.filter.length && !this.filter[integer].isEmpty() && this.filter[integer].sameItem(stack));
         } else {
             Arrays.fill(this.filter, ItemStack.EMPTY);
             this.inventory.setInputFilter(this.cachedFilter);

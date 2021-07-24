@@ -8,14 +8,14 @@
 package com.hrznstudio.titanium.util;
 
 import com.hrznstudio.titanium._impl.TagConfig;
-import net.minecraft.block.Block;
-import net.minecraft.entity.EntityType;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.*;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluid;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,76 +24,76 @@ import java.util.List;
 
 public class TagUtil {
 
-    public static <T> boolean hasTag(T type, Tag<T> tag) {
+    public static <T> boolean hasTag(T type, SetTag<T> tag) {
         return tag.contains(type); //contains
     }
 
-    public static ITagCollection<Block> getAllBlockTags(World world) {
-        return world.getTags().getBlockTags();
+    public static TagCollection<Block> getAllBlockTags(Level world) {
+        return world.getTagManager().getBlocks();
     }
 
-    public static ITagCollection<Item> getAllItemTags(World world) {
-        return world.getTags().getItemTags();
+    public static TagCollection<Item> getAllItemTags(Level world) {
+        return world.getTagManager().getItems();
     }
 
-    public static ITagCollection<Fluid> getAllFluidTags(World world) {
-        return world.getTags().getFluidTags();
+    public static TagCollection<Fluid> getAllFluidTags(Level world) {
+        return world.getTagManager().getFluids();
     }
 
-    public static <T> Collection<T> getAllEntries(Tag<T>... tags) {
+    public static <T> Collection<T> getAllEntries(SetTag<T>... tags) {
         if (tags.length == 0)
             return Collections.emptyList();
         if (tags.length == 1)
-            return tags[0].getAllElements(); //getAllElements
+            return tags[0].getValues(); //getAllElements
         List<T> list = new ArrayList<>();
-        for (Tag<T> tag : tags) {
-            list.addAll(tag.getAllElements()); //getAllElements
+        for (SetTag<T> tag : tags) {
+            list.addAll(tag.getValues()); //getAllElements
         }
         return list;
     }
 
-    public static <T> Collection<T> getAllEntries(Tag<T> tag) {
-        return tag.getAllElements();
+    public static <T> Collection<T> getAllEntries(SetTag<T> tag) {
+        return tag.getValues();
     } //getAllElements
 
-    public static <T> ITag<T> getOrCreateTag(ITagCollection<T> collection, ResourceLocation resourceLocation) {
-        if (collection.getRegisteredTags().contains(resourceLocation)) {
-            return collection.get(resourceLocation);
+    public static <T> Tag<T> getOrCreateTag(TagCollection<T> collection, ResourceLocation resourceLocation) {
+        if (collection.getAvailableTags().contains(resourceLocation)) {
+            return collection.getTag(resourceLocation);
         }
-        return collection.getTagByID(resourceLocation);
+        return collection.getTagOrEmpty(resourceLocation);
     }
 
-    public static ITag<Item> getItemTag(ResourceLocation resourceLocation) {
-        if (ItemTags.getCollection().getRegisteredTags().contains(resourceLocation)) {
-            return ItemTags.getCollection().get(resourceLocation);
+    public static Tag<Item> getItemTag(ResourceLocation resourceLocation) {
+        if (ItemTags.getAllTags().getAvailableTags().contains(resourceLocation)) {
+            return ItemTags.getAllTags().getTag(resourceLocation);
         }
-        return ItemTags.makeWrapperTag(resourceLocation.toString());
+        return ItemTags.bind(resourceLocation.toString());
     }
 
-    public static ITag<Block> getBlockTag(ResourceLocation resourceLocation) {
-        if (BlockTags.getCollection().getRegisteredTags().contains(resourceLocation)) {
-            return BlockTags.getCollection().get(resourceLocation);
+    public static Tag<Block> getBlockTag(ResourceLocation resourceLocation) {
+        if (BlockTags.getAllTags().getAvailableTags().contains(resourceLocation)) {
+            return BlockTags.getAllTags().getTag(resourceLocation);
         }
-        return BlockTags.makeWrapperTag(resourceLocation.toString());
+        return BlockTags.bind(resourceLocation.toString());
     }
 
-    public static ITag<EntityType<?>> getEntityTypeTag(ResourceLocation resourceLocation) {
-        if (EntityTypeTags.getCollection().getRegisteredTags().contains(resourceLocation)) {
-            return EntityTypeTags.getCollection().get(resourceLocation);
+    public static Tag<EntityType<?>> getEntityTypeTag(ResourceLocation resourceLocation) {
+        if (EntityTypeTags.getAllTags().getAvailableTags().contains(resourceLocation)) {
+            return EntityTypeTags.getAllTags().getTag(resourceLocation);
         }
-        return EntityTypeTags.getTagById(resourceLocation.toString());
+        return EntityTypeTags.bind(resourceLocation.toString());
     }
 
-    public static ITag<Fluid> getFluidTag(ResourceLocation resourceLocation) {
-        if (FluidTags.getCollection().getRegisteredTags().contains(resourceLocation)) {
-            return FluidTags.getCollection().get(resourceLocation);
+    public static Tag<Fluid> getFluidTag(ResourceLocation resourceLocation) {
+        if (FluidTags.getAllTags().getAvailableTags().contains(resourceLocation)) {
+            return FluidTags.getAllTags().getTag(resourceLocation);
         }
-        return FluidTags.makeWrapperTag(resourceLocation.toString());
+        return FluidTags.bind(resourceLocation.toString());
     }
 
-    public static ItemStack getItemWithPreference(ITag<Item> tag){
-        if (tag.getAllElements().isEmpty()) return ItemStack.EMPTY;
-        List<Item> elements = tag.getAllElements();
+    public static ItemStack getItemWithPreference(Tag<Item> tag){
+        if (tag.getValues().isEmpty()) return ItemStack.EMPTY;
+        List<Item> elements = tag.getValues();
         for (String modid : TagConfig.ITEM_PREFERENCE) {
             for (Item allElement : elements) {
                 if (allElement.getRegistryName().getNamespace().equalsIgnoreCase(modid)) return new ItemStack(allElement);

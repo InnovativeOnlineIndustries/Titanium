@@ -14,7 +14,9 @@ import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.component.energy.EnergyStorageComponent;
 import com.hrznstudio.titanium.container.addon.IContainerAddon;
-import net.minecraft.util.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -32,8 +34,8 @@ public abstract class PoweredTile<T extends PoweredTile<T>> extends ActiveTile<T
 
     private boolean showEnergy = true;
 
-    public PoweredTile(BasicTileBlock<T> basicTileBlock) {
-        super(basicTileBlock);
+    public PoweredTile(BasicTileBlock<T> basicTileBlock, BlockPos pos, BlockState state) {
+        super(basicTileBlock, pos, state);
         this.energyStorage = this.createEnergyStorage();
         this.energyStorage.setComponentHarness(this.getSelf());
     }

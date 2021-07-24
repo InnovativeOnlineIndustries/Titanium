@@ -11,8 +11,8 @@ import com.hrznstudio.titanium._impl.test.tile.AssetTestTile;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.block.RotatableBlock;
 import com.hrznstudio.titanium.datagenerator.loot.block.BasicBlockLootTables;
-import net.minecraft.block.material.Material;
-import net.minecraft.loot.LootTable;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.storage.loot.LootTable;
 
 import javax.annotation.Nonnull;
 
@@ -21,7 +21,7 @@ public class AssetTestBlock extends RotatableBlock<AssetTestTile> {
     public static AssetTestBlock TEST;
 
     public AssetTestBlock() {
-        super(Properties.create(Material.ROCK), AssetTestTile.class);
+        super(Properties.of(Material.STONE), AssetTestTile.class);
     }
 
     @Override

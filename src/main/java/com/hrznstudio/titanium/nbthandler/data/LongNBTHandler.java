@@ -9,7 +9,7 @@ package com.hrznstudio.titanium.nbthandler.data;
 
 import com.hrznstudio.titanium.api.INBTHandler;
 import com.hrznstudio.titanium.util.Unboxing;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -36,7 +36,7 @@ public class LongNBTHandler implements INBTHandler<Long> {
      * @return true if the Object was successfully stored in the NBT
      */
     @Override
-    public boolean storeToNBT(@Nonnull CompoundNBT compound, @Nonnull String name, @Nonnull Long object) {
+    public boolean storeToNBT(@Nonnull CompoundTag compound, @Nonnull String name, @Nonnull Long object) {
         compound.putLong(name, object);
         return true;
     }
@@ -49,7 +49,7 @@ public class LongNBTHandler implements INBTHandler<Long> {
      * @return The object if it was successfully stored or null if it wasn't giving the next handlers a chance to store the value.
      */
     @Override
-    public Long readFromNBT(@Nonnull CompoundNBT compound, @Nonnull String name, @Nullable Long current) {
+    public Long readFromNBT(@Nonnull CompoundTag compound, @Nonnull String name, @Nullable Long current) {
         return compound.contains(name) ? compound.getLong(name) : Unboxing.safelyUnbox(current);
     }
 }

@@ -10,12 +10,12 @@ package com.hrznstudio.titanium.client.screen.container;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.container.BasicAddonContainer;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
 public class BasicAddonScreen extends BasicContainerScreen<BasicAddonContainer> {
-    public BasicAddonScreen(BasicAddonContainer container, PlayerInventory inventory, ITextComponent title) {
+    public BasicAddonScreen(BasicAddonContainer container, Inventory inventory, Component title) {
         super(container, inventory, title, container.getAssetProvider());
         if (container.getProvider() instanceof IScreenAddonProvider) {
             ((IScreenAddonProvider) container.getProvider()).getScreenAddons()
@@ -26,8 +26,8 @@ public class BasicAddonScreen extends BasicContainerScreen<BasicAddonContainer> 
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(MatrixStack stack, float partialTicks, int mouseX, int mouseY) {
-        this.getContainer().update();
-        super.drawGuiContainerBackgroundLayer(stack, partialTicks, mouseX, mouseY);
+    protected void renderBg(PoseStack stack, float partialTicks, int mouseX, int mouseY) {
+        this.getMenu().update();
+        super.renderBg(stack, partialTicks, mouseX, mouseY);
     }
 }

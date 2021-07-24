@@ -18,17 +18,19 @@ import com.hrznstudio.titanium.component.fluid.SidedFluidTankComponent;
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.hrznstudio.titanium.component.inventory.SidedInventoryComponent;
 import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.DyeColor;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-public class AssetTestTile extends PoweredTile<AssetTestTile> implements ITickableTileEntity {
+public class AssetTestTile extends PoweredTile<AssetTestTile>{
     @Save
     private SidedInventoryComponent<AssetTestTile> inventory;
     @Save
@@ -81,7 +83,8 @@ public class AssetTestTile extends PoweredTile<AssetTestTile> implements ITickab
     }
 
     @Override
-    public void tick() {
+    public void serverTick(Level level, BlockPos pos, BlockState state, AssetTestTile blockEntity) {
+        super.serverTick(level, pos, state, blockEntity);
         progressBar.tickBar();
     }
 
@@ -93,12 +96,12 @@ public class AssetTestTile extends PoweredTile<AssetTestTile> implements ITickab
 
     @Override
     @ParametersAreNonnullByDefault
-    public ActionResultType onActivated(PlayerEntity player, Hand hand, Direction facing, double hitX, double hitY, double hitZ) {
-        if (super.onActivated(player, hand, facing, hitX, hitY, hitZ) == ActionResultType.PASS) {
+    public InteractionResult onActivated(Player player, InteractionHand hand, Direction facing, double hitX, double hitY, double hitZ) {
+        if (super.onActivated(player, hand, facing, hitX, hitY, hitZ) == InteractionResult.PASS) {
             openGui(player);
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
     @Override

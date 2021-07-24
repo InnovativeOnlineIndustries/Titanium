@@ -7,7 +7,7 @@
 
 package com.hrznstudio.titanium.api.redstone;
 
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

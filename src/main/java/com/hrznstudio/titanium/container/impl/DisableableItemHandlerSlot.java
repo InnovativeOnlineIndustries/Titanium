@@ -7,7 +7,7 @@
 
 package com.hrznstudio.titanium.container.impl;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
@@ -27,12 +27,12 @@ public class DisableableItemHandlerSlot extends SlotItemHandler {
     }
 
     @Override
-    public boolean isEnabled() {
+    public boolean isActive() {
         return !isDisabled.getAsBoolean();
     }
 
     @Override
-    public boolean isItemValid(@Nonnull ItemStack stack) {
+    public boolean mayPlace(@Nonnull ItemStack stack) {
         return !isDisabled.getAsBoolean();
     }
 }

@@ -8,7 +8,7 @@
 package com.hrznstudio.titanium.util;
 
 
-import net.minecraft.state.Property;
+import net.minecraft.world.level.block.state.properties.Property;
 
 import java.util.Map;
 

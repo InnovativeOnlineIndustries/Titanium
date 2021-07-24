@@ -10,10 +10,10 @@ package com.hrznstudio.titanium.client.screen.addon;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.component.button.ButtonComponent;
 import com.hrznstudio.titanium.util.AssetUtil;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.util.text.ITextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,16 +30,16 @@ public abstract class StateButtonAddon extends BasicButtonAddon {
 
 
     @Override
-    public void drawBackgroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackgroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         StateButtonInfo buttonInfo = getStateInfo();
         if (buttonInfo != null) {
-            RenderSystem.color4f(1, 1, 1, 1);
+            RenderSystem.setShaderColor(1, 1, 1, 1);
             AssetUtil.drawAsset(stack, screen, provider.getAsset(buttonInfo.getAsset()), this.getPosX() + guiX, this.getPosY() + guiY);
         }
     }
 
     @Override
-    public void drawForegroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
+    public void drawForegroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
         StateButtonInfo buttonInfo = getStateInfo();
         if (buttonInfo != null && isInside(screen, mouseX - guiX, mouseY - guiY)) {
             AssetUtil.drawSelectingOverlay(stack, getPosX() + 1, getPosY() + 1, getPosX() + getXSize() - 1, getPosY() + getYSize() - 1);
@@ -47,7 +47,7 @@ public abstract class StateButtonAddon extends BasicButtonAddon {
     }
 
     @Override
-    public List<ITextComponent> getTooltipLines() {
+    public List<Component> getTooltipLines() {
         StateButtonInfo buttonInfo = getStateInfo();
         if (buttonInfo != null) {
             return Arrays.asList(buttonInfo.getTooltip());

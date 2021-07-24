@@ -10,8 +10,8 @@ package com.hrznstudio.titanium.network.locator.instance;
 import com.hrznstudio.titanium.itemstack.ItemStackHarnessRegistry;
 import com.hrznstudio.titanium.network.locator.LocatorInstance;
 import com.hrznstudio.titanium.network.locator.LocatorTypes;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Hand;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.Optional;
 
@@ -28,8 +28,8 @@ public class HeldStackLocatorInstance extends LocatorInstance {
     }
 
     @Override
-    public Optional<?> locale(PlayerEntity playerEntity) {
-        return Optional.of(playerEntity.getHeldItem(mainHand ? Hand.MAIN_HAND : Hand.OFF_HAND))
+    public Optional<?> locale(Player playerEntity) {
+        return Optional.of(playerEntity.getItemInHand(mainHand ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND))
             .map(ItemStackHarnessRegistry::createItemStackHarness).orElseGet(null);
     }
 

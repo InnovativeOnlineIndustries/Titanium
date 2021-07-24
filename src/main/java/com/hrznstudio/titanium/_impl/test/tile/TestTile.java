@@ -29,15 +29,15 @@ import com.hrznstudio.titanium.component.inventory.SidedInventoryComponent;
 import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
 import com.hrznstudio.titanium.component.sideness.IFacingComponent;
 import com.hrznstudio.titanium.util.FacingUtil;
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Block;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -115,8 +115,8 @@ public class TestTile extends PoweredTile<TestTile> implements IRedstoneReader {
     @Override
     public void tick() {
         super.tick();
-        if (Objects.requireNonNull(getWorld()).isRaining()) {
-            getWorld().getWorldInfo().setRaining(false);
+        if (Objects.requireNonNull(getLevel()).isRaining()) {
+            getLevel().getLevelData().setRaining(false);
         }
     }
 
@@ -134,12 +134,12 @@ public class TestTile extends PoweredTile<TestTile> implements IRedstoneReader {
 
     @Override
     @ParametersAreNonnullByDefault
-    public ActionResultType onActivated(PlayerEntity player, Hand hand, Direction facing, double hitX, double hitY, double hitZ) {
-        if (super.onActivated(player, hand, facing, hitX, hitY, hitZ) == ActionResultType.PASS) {
+    public InteractionResult onActivated(Player player, InteractionHand hand, Direction facing, double hitX, double hitY, double hitZ) {
+        if (super.onActivated(player, hand, facing, hitX, hitY, hitZ) == InteractionResult.PASS) {
             openGui(player);
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
     @Nonnull
@@ -152,11 +152,11 @@ public class TestTile extends PoweredTile<TestTile> implements IRedstoneReader {
     public IRedstoneState getEnvironmentValue(boolean strongPower, Direction direction) {
         if (strongPower) {
             if (direction == null) {
-                return this.world.isBlockPowered(this.pos) ? RedstoneState.ON : RedstoneState.OFF;
+                return this.level.hasNeighborSignal(this.worldPosition) ? RedstoneState.ON : RedstoneState.OFF;
             }
-            return this.world.isSidePowered(this.pos, direction) ? RedstoneState.ON : RedstoneState.OFF;
+            return this.level.hasSignal(this.worldPosition, direction) ? RedstoneState.ON : RedstoneState.OFF;
         } else {
-            return this.world.getRedstonePowerFromNeighbors(this.pos) > 0 ? RedstoneState.ON : RedstoneState.OFF;
+            return this.level.getBestNeighborSignal(this.worldPosition) > 0 ? RedstoneState.ON : RedstoneState.OFF;
         }
     }
 

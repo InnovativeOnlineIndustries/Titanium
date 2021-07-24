@@ -10,16 +10,16 @@ package com.hrznstudio.titanium.recipe.serializer;
 import com.google.gson.JsonObject;
 import com.hrznstudio.titanium.recipe.generator.IJSONGenerator;
 import com.hrznstudio.titanium.recipe.generator.IJsonFile;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 
-public abstract class SerializableRecipe implements IRecipe<IInventory>, IJsonFile, IJSONGenerator {
+public abstract class SerializableRecipe implements Recipe<Container>, IJsonFile, IJSONGenerator {
 
     public String type = getSerializer().getRegistryName().toString();
     private transient ResourceLocation resourceLocation;

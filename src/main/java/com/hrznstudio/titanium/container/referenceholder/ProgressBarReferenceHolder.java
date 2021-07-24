@@ -8,9 +8,9 @@
 package com.hrznstudio.titanium.container.referenceholder;
 
 import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
-import net.minecraft.util.IIntArray;
+import net.minecraft.world.inventory.ContainerData;
 
-public class ProgressBarReferenceHolder implements IIntArray {
+public class ProgressBarReferenceHolder implements ContainerData {
     private final ProgressBarComponent<?> progressBarComponent;
 
     public ProgressBarReferenceHolder(ProgressBarComponent<?> progressBarComponent) {
@@ -40,7 +40,7 @@ public class ProgressBarReferenceHolder implements IIntArray {
     }
 
     @Override
-    public int size() {
+    public int getCount() {
         return 3;
     }
 }

@@ -7,11 +7,11 @@
 
 package com.hrznstudio.titanium.api;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Block;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.function.BiPredicate;
@@ -69,7 +69,7 @@ public interface IItemStackQuery extends Predicate<ItemStack> {
             return itemStack.hasTag() && matches(itemStack.getTag());
         }
 
-        boolean matches(CompoundNBT compound);
+        boolean matches(CompoundTag compound);
     }
 
     class ItemStackQuery implements IItemStackQueryRecipe {
@@ -81,7 +81,7 @@ public interface IItemStackQuery extends Predicate<ItemStack> {
 
         @Override
         public boolean matches(ItemStack stack) {
-            return ItemStack.areItemStacksEqual(this.stack, stack);
+            return ItemStack.matches(this.stack, stack);
         }
 
         @Override
@@ -123,7 +123,7 @@ public interface IItemStackQuery extends Predicate<ItemStack> {
 
         @Override
         public ItemStack[] getMatchingStacks() {
-            return ingredient.getMatchingStacks();
+            return ingredient.getItems();
         }
 
         public Ingredient getIngredient() {

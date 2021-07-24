@@ -9,7 +9,7 @@ package com.hrznstudio.titanium.network.locator;
 
 import com.google.common.collect.Maps;
 import com.hrznstudio.titanium.Titanium;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.Map;
 
@@ -24,8 +24,8 @@ public class LocatorFactory {
         }
     }
 
-    public static LocatorInstance readPacketBuffer(PacketBuffer packetBuffer) {
-        String name = packetBuffer.readString(64);
+    public static LocatorInstance readPacketBuffer(FriendlyByteBuf packetBuffer) {
+        String name = packetBuffer.readUtf(64);
         LocatorType type = LOCATOR_TYPES.get(name);
         if (type != null) {
             LocatorInstance instance = type.createInstance();
@@ -36,8 +36,8 @@ public class LocatorFactory {
         }
     }
 
-    public static void writePacketBuffer(PacketBuffer buffer, LocatorInstance instance) {
-        buffer.writeString(instance.getType().getName(), 64);
+    public static void writePacketBuffer(FriendlyByteBuf buffer, LocatorInstance instance) {
+        buffer.writeUtf(instance.getType().getName(), 64);
         instance.toBytes(buffer);
     }
 }

@@ -11,8 +11,8 @@ import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.component.IComponentHandler;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,7 +27,7 @@ public class MultiButtonComponent implements IScreenAddonProvider, IComponentHan
     }
 
 
-    public void clickButton(int id, PlayerEntity playerEntity, CompoundNBT compound) {
+    public void clickButton(int id, Player playerEntity, CompoundTag compound) {
         basicButtonAddons.stream()
             .filter(buttonAddon -> buttonAddon.getId() == id)
             .forEach(buttonAddon -> buttonAddon.onButtonClicked(playerEntity, compound));

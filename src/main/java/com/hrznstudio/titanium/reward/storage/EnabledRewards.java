@@ -7,13 +7,13 @@
 
 package com.hrznstudio.titanium.reward.storage;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.HashMap;
 
-public class EnabledRewards implements INBTSerializable<CompoundNBT> {
+public class EnabledRewards implements INBTSerializable<CompoundTag> {
 
     private HashMap<ResourceLocation, String> enabled;
 
@@ -26,15 +26,15 @@ public class EnabledRewards implements INBTSerializable<CompoundNBT> {
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
-        CompoundNBT compoundNBT = new CompoundNBT();
+    public CompoundTag serializeNBT() {
+        CompoundTag compoundNBT = new CompoundTag();
         enabled.forEach((resourceLocation, s) -> compoundNBT.putString(resourceLocation.toString(), s));
         return compoundNBT;
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
         enabled.clear();
-        nbt.keySet().forEach(s -> enabled.put(new ResourceLocation(s), nbt.getString(s)));
+        nbt.getAllKeys().forEach(s -> enabled.put(new ResourceLocation(s), nbt.getString(s)));
     }
 }

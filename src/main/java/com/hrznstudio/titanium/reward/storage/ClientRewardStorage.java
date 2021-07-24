@@ -7,13 +7,13 @@
 
 package com.hrznstudio.titanium.reward.storage;
 
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.HashMap;
 import java.util.UUID;
 
-public class ClientRewardStorage implements INBTSerializable<CompoundNBT> {
+public class ClientRewardStorage implements INBTSerializable<CompoundTag> {
 
     public static final ClientRewardStorage REWARD_STORAGE = new ClientRewardStorage();
 
@@ -24,14 +24,14 @@ public class ClientRewardStorage implements INBTSerializable<CompoundNBT> {
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
+    public CompoundTag serializeNBT() {
         return null;
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
         rewards.clear();
-        nbt.keySet().forEach(s -> {
+        nbt.getAllKeys().forEach(s -> {
             EnabledRewards rewards = new EnabledRewards();
             rewards.deserializeNBT(nbt.getCompound(s));
             this.rewards.put(UUID.fromString(s), rewards);

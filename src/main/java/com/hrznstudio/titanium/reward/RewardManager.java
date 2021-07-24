@@ -7,7 +7,7 @@
 
 package com.hrznstudio.titanium.reward;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.Collection;
 import java.util.HashMap;

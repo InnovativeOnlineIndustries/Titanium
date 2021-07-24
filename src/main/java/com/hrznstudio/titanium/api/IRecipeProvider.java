@@ -7,12 +7,12 @@
 
 package com.hrznstudio.titanium.api;
 
-import net.minecraft.data.IFinishedRecipe;
+import net.minecraft.data.recipes.FinishedRecipe;
 
 import java.util.function.Consumer;
 
 public interface IRecipeProvider {
 
-    void registerRecipe(Consumer<IFinishedRecipe> consumer);
+    void registerRecipe(Consumer<FinishedRecipe> consumer);
 
 }

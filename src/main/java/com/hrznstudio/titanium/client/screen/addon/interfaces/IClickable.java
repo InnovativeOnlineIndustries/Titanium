@@ -7,7 +7,7 @@
 
 package com.hrznstudio.titanium.client.screen.addon.interfaces;
 
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screens.Screen;
 
 public interface IClickable {
 

@@ -34,34 +34,34 @@ import com.hrznstudio.titanium.network.IButtonHandler;
 import com.hrznstudio.titanium.network.locator.LocatorFactory;
 import com.hrznstudio.titanium.network.locator.instance.TileEntityLocatorInstance;
 import com.hrznstudio.titanium.util.FacingUtil;
-import net.minecraft.block.Block;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.BucketItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.IWorldPosCallable;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nonnull;
@@ -71,7 +71,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> implements IScreenAddonProvider,
-    ITickableTileEntity, INamedContainerProvider, IButtonHandler, IFacingComponentHarness, IContainerAddonProvider,
+    ITickableBlockEntity<T>, MenuProvider, IButtonHandler, IFacingComponentHarness, IContainerAddonProvider,
     IHasAssetProvider {
 
     private MultiInventoryComponent<T> multiInventoryComponent;
@@ -84,19 +84,19 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
 
     private List<IFactory<? extends IContainerAddon>> containerAddons;
 
-    public ActiveTile(BasicTileBlock<T> base) {
-        super(base);
+    public ActiveTile(BasicTileBlock<T> base, BlockPos pos, BlockState state) {
+        super(base, pos, state);
         this.guiAddons = new ArrayList<>();
         this.containerAddons = new ArrayList<>();
     }
 
     @Override
     @ParametersAreNonnullByDefault
-    public ActionResultType onActivated(PlayerEntity player, Hand hand, Direction facing, double hitX, double hitY, double hitZ) {
+    public InteractionResult onActivated(Player player, InteractionHand hand, Direction facing, double hitX, double hitY, double hitZ) {
         if (multiTankComponent != null && FluidUtil.interactWithFluidHandler(player, hand, multiTankComponent.getCapabilityForSide(null).orElse(new MultiTankComponent.MultiTankCapabilityHandler(new ArrayList<>())))) {
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
     @Override
@@ -104,24 +104,24 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
 
     }
 
-    public void openGui(PlayerEntity player) {
-        if (player instanceof ServerPlayerEntity) {
-            NetworkHooks.openGui((ServerPlayerEntity) player, this, buffer ->
-                    LocatorFactory.writePacketBuffer(buffer, new TileEntityLocatorInstance(this.pos)));
+    public void openGui(Player player) {
+        if (player instanceof ServerPlayer) {
+            NetworkHooks.openGui((ServerPlayer) player, this, buffer ->
+                LocatorFactory.writePacketBuffer(buffer, new TileEntityLocatorInstance(this.worldPosition)));
         }
     }
 
     @Nullable
     @Override
-    public Container createMenu(int menu, PlayerInventory inventoryPlayer, PlayerEntity entityPlayer) {
-        return new BasicAddonContainer(this, new TileEntityLocatorInstance(this.pos), this.getWorldPosCallable(),
-                inventoryPlayer, menu);
+    public AbstractContainerMenu createMenu(int menu, Inventory inventoryPlayer, Player entityPlayer) {
+        return new BasicAddonContainer(this, new TileEntityLocatorInstance(this.worldPosition), this.getWorldPosCallable(),
+            inventoryPlayer, menu);
     }
 
     @Override
     @Nonnull
-    public ITextComponent getDisplayName() {
-        return new TranslationTextComponent(getBasicTileBlock().getTranslationKey()).setStyle(Style.EMPTY.setFormatting(TextFormatting.DARK_GRAY));
+    public Component getDisplayName() {
+        return new TranslatableComponent(getBasicTileBlock().getDescriptionId()).setStyle(Style.EMPTY.withColor(ChatFormatting.DARK_GRAY));
     }
 
     /*
@@ -220,28 +220,27 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
     }
 
     @Override
-    public void tick() {
-        if (!world.isRemote) {
-            if (multiProgressBarHandler != null) multiProgressBarHandler.update();
-            if (world.getGameTime() % getFacingHandlerWorkTime() == 0) {
-                if (multiInventoryComponent != null) {
-                    for (InventoryComponent<T> inventoryHandler : multiInventoryComponent.getInventoryHandlers()) {
-                        if (inventoryHandler instanceof IFacingComponent) {
-                            if (((IFacingComponent) inventoryHandler).work(this.world, this.pos, this.getFacingDirection(), getFacingHandlerWorkAmount()))
-                                break;
-                        }
+    public void serverTick(Level level, BlockPos pos, BlockState state, T blockEntity) {
+        if (multiProgressBarHandler != null) multiProgressBarHandler.update();
+        if (level.getGameTime() % getFacingHandlerWorkTime() == 0) {
+            if (multiInventoryComponent != null) {
+                for (InventoryComponent<T> inventoryHandler : multiInventoryComponent.getInventoryHandlers()) {
+                    if (inventoryHandler instanceof IFacingComponent) {
+                        if (((IFacingComponent) inventoryHandler).work(this.level, this.worldPosition, this.getFacingDirection(), getFacingHandlerWorkAmount()))
+                            break;
                     }
                 }
-                if (multiTankComponent != null) {
-                    for (FluidTankComponent<T> tank : multiTankComponent.getTanks()) {
-                        if (tank instanceof IFacingComponent) {
-                            if (((IFacingComponent) tank).work(this.world, this.pos, this.getFacingDirection(), getFacingHandlerWorkAmount()))
-                                break;
-                        }
+            }
+            if (multiTankComponent != null) {
+                for (FluidTankComponent<T> tank : multiTankComponent.getTanks()) {
+                    if (tank instanceof IFacingComponent) {
+                        if (((IFacingComponent) tank).work(this.level, this.worldPosition, this.getFacingDirection(), getFacingHandlerWorkAmount()))
+                            break;
                     }
                 }
             }
         }
+
     }
 
     public int getFacingHandlerWorkTime() {
@@ -257,7 +256,7 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
     }
 
     public Direction getFacingDirection() {
-        return this.world.getBlockState(pos).hasProperty(RotatableBlock.FACING_ALL) ? this.world.getBlockState(pos).get(RotatableBlock.FACING_ALL) : (this.world.getBlockState(pos).hasProperty(RotatableBlock.FACING_HORIZONTAL) ? this.world.getBlockState(pos).get(RotatableBlock.FACING_HORIZONTAL) : Direction.NORTH);
+        return this.level.getBlockState(worldPosition).hasProperty(RotatableBlock.FACING_ALL) ? this.level.getBlockState(worldPosition).getValue(RotatableBlock.FACING_ALL) : (this.level.getBlockState(worldPosition).hasProperty(RotatableBlock.FACING_HORIZONTAL) ? this.level.getBlockState(worldPosition).getValue(RotatableBlock.FACING_HORIZONTAL) : Direction.NORTH);
     }
 
     @Override
@@ -278,27 +277,27 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
     }
 
     @Override
-    public void handleButtonMessage(int id, PlayerEntity playerEntity, CompoundNBT compound) {
-        if (id == -3){
-            if (!compound.contains("Invalid") && compound.contains("Fill") && !playerEntity.inventory.getItemStack().isEmpty()){
+    public void handleButtonMessage(int id, Player playerEntity, CompoundTag compound) {
+        if (id == -3) {
+            if (!compound.contains("Invalid") && compound.contains("Fill") && !playerEntity.inventoryMenu.getCarried().isEmpty()) {
                 boolean fill = compound.getBoolean("Fill");
                 String name = compound.getString("Name");
                 if (multiTankComponent != null) {
                     for (FluidTankComponent<T> fluidTankComponent : multiTankComponent.getTanks()) {
                         if (fluidTankComponent.getName().equalsIgnoreCase(name))
-                            playerEntity.inventory.getItemStack().getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(iFluidHandlerItem -> {
+                            playerEntity.inventoryMenu.getCarried().getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(iFluidHandlerItem -> {
                                 if (fill) {
-                                    int amount = Minecraft.getInstance().player.inventory.getItemStack().getItem() instanceof BucketItem ? FluidAttributes.BUCKET_VOLUME : Integer.MAX_VALUE;
+                                    int amount = Minecraft.getInstance().player.inventoryMenu.getCarried().getItem() instanceof BucketItem ? FluidAttributes.BUCKET_VOLUME : Integer.MAX_VALUE;
                                     amount = fluidTankComponent.fill(iFluidHandlerItem.drain(amount, IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.EXECUTE);
                                     iFluidHandlerItem.drain(amount, IFluidHandler.FluidAction.EXECUTE);
                                 } else {
-                                    int amount = Minecraft.getInstance().player.inventory.getItemStack().getItem() instanceof BucketItem ? FluidAttributes.BUCKET_VOLUME : Integer.MAX_VALUE;
+                                    int amount = Minecraft.getInstance().player.inventoryMenu.getCarried().getItem() instanceof BucketItem ? FluidAttributes.BUCKET_VOLUME : Integer.MAX_VALUE;
                                     amount = iFluidHandlerItem.fill(fluidTankComponent.drain(amount, IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.EXECUTE);
                                     fluidTankComponent.drain(amount, IFluidHandler.FluidAction.EXECUTE);
                                 }
-                                playerEntity.inventory.setItemStack(iFluidHandlerItem.getContainer().copy());
-                                if (playerEntity instanceof ServerPlayerEntity){
-                                    ((ServerPlayerEntity) playerEntity).updateHeldItem();
+                                playerEntity.inventoryMenu.setCarried(iFluidHandlerItem.getContainer().copy());
+                                if (playerEntity instanceof ServerPlayer) {
+                                    ((ServerPlayer) playerEntity).broadcastCarriedItem();
                                 }
                             });
                     }
@@ -311,7 +310,7 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
                 for (IFilter<?> filter : multiFilterComponent.getFilters()) {
                     if (filter.getName().equals(name)) {
                         int slot = compound.getInt("Slot");
-                        filter.setFilter(slot, ItemStack.read(compound.getCompound("Filter")));
+                        filter.setFilter(slot, ItemStack.of(compound.getCompound("Filter")));
                         markForUpdate();
                         break;
                     }
@@ -336,13 +335,13 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
     public abstract T getSelf();
 
     @Override
-    public World getComponentWorld() {
-        return getSelf().getWorld();
+    public Level getComponentWorld() {
+        return getSelf().getLevel();
     }
 
     @Override
     public void markComponentDirty() {
-        super.markDirty();
+        super.setChanged();
     }
 
     @Override
@@ -354,18 +353,22 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
         }
     }
 
-    public IWorldPosCallable getWorldPosCallable() {
-        return this.getWorld() != null ? IWorldPosCallable.of(this.getWorld(), this.getPos()) : IWorldPosCallable.DUMMY;
+    public ContainerLevelAccess getWorldPosCallable() {
+        return this.getLevel() != null ? ContainerLevelAccess.create(this.getLevel(), this.getBlockPos()) : ContainerLevelAccess.NULL;
     }
 
     @Override
     public void invalidateCaps() {
         super.invalidateCaps();
-        if (this.multiInventoryComponent != null) this.multiInventoryComponent.getLazyOptionals().forEach(LazyOptional::invalidate);
-        if (this.multiTankComponent != null) this.multiTankComponent.getLazyOptionals().forEach(LazyOptional::invalidate);
+        if (this.multiInventoryComponent != null)
+            this.multiInventoryComponent.getLazyOptionals().forEach(LazyOptional::invalidate);
+        if (this.multiTankComponent != null)
+            this.multiTankComponent.getLazyOptionals().forEach(LazyOptional::invalidate);
     }
 
     public boolean canInteract() {
-        return this.world.getTileEntity(this.pos) == this;
+        return this.level.getBlockEntity(this.worldPosition) == this;
     }
+
+
 }

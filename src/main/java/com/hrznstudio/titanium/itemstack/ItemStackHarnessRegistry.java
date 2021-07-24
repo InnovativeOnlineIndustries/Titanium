@@ -8,8 +8,8 @@
 package com.hrznstudio.titanium.itemstack;
 
 import com.google.common.collect.Maps;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.Map;
 import java.util.Optional;

@@ -13,8 +13,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.DirectoryCache;
-import net.minecraft.data.IDataProvider;
+import net.minecraft.data.DataProvider;
+import net.minecraft.data.HashCache;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-public abstract class TitaniumSerializableProvider implements IDataProvider {
+public abstract class TitaniumSerializableProvider implements DataProvider {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().create();
@@ -43,7 +43,7 @@ public abstract class TitaniumSerializableProvider implements IDataProvider {
     }
 
     @Override
-    public void act(DirectoryCache cache) throws IOException {
+    public void run(HashCache cache) throws IOException {
         add(serializables);
         Path path = this.generator.getOutputFolder();
         Set<Path> set = Sets.newHashSet();
@@ -57,17 +57,17 @@ public abstract class TitaniumSerializableProvider implements IDataProvider {
         });
     }
 
-    protected void saveRecipe(DirectoryCache cache, JsonObject recipeJson, Path output) {
+    protected void saveRecipe(HashCache cache, JsonObject recipeJson, Path output) {
         try {
             String s = GSON.toJson((JsonElement) recipeJson);
-            String s1 = HASH_FUNCTION.hashUnencodedChars(s).toString();
-            if (!Objects.equals(cache.getPreviousHash(output), s1) || !Files.exists(output)) {
+            String s1 = SHA1.hashUnencodedChars(s).toString();
+            if (!Objects.equals(cache.getHash(output), s1) || !Files.exists(output)) {
                 Files.createDirectories(output.getParent());
                 try (BufferedWriter bufferedwriter = Files.newBufferedWriter(output)) {
                     bufferedwriter.write(s);
                 }
             }
-            cache.recordHash(output, s1);
+            cache.putNew(output, s1);
         } catch (IOException ioexception) {
             LOGGER.error("Couldn't save recipe {}", output, ioexception);
         }

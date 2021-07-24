@@ -9,14 +9,14 @@ package com.hrznstudio.titanium.fluid;
 
 import com.hrznstudio.titanium.module.api.IAlternativeEntries;
 import com.hrznstudio.titanium.module.api.RegistryManager;
-import net.minecraft.block.Block;
-import net.minecraft.block.FlowingFluidBlock;
-import net.minecraft.block.material.Material;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.BucketItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.Items;
+import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Material;
 import net.minecraftforge.fluids.FluidAttributes;
 
 public class TitaniumFluidInstance extends net.minecraftforge.registries.ForgeRegistryEntry<TitaniumFluidInstance> implements IAlternativeEntries {
@@ -26,14 +26,14 @@ public class TitaniumFluidInstance extends net.minecraftforge.registries.ForgeRe
     private Item bucketFluid;
     private Block blockFluid;
 
-    public TitaniumFluidInstance(String modid, String fluid, FluidAttributes.Builder attributes, boolean hasBucket, ItemGroup group) {
+    public TitaniumFluidInstance(String modid, String fluid, FluidAttributes.Builder attributes, boolean hasBucket, CreativeModeTab group) {
         this.sourceFluid = (TitaniumFluid) new TitaniumFluid.Source(attributes).setRegistryName(modid, fluid);
         this.flowingFluid = (TitaniumFluid) new TitaniumFluid.Flowing(attributes).setRegistryName(modid, fluid + "_fluid");
         this.sourceFluid = this.sourceFluid.setSourceFluid(sourceFluid).setFlowingFluid(flowingFluid);
         this.flowingFluid = this.flowingFluid.setSourceFluid(sourceFluid).setFlowingFluid(flowingFluid);
         if (hasBucket)
-            this.bucketFluid = new BucketItem(this.sourceFluid, new Item.Properties().containerItem(Items.BUCKET).maxStackSize(1).group(group)).setRegistryName(modid, fluid + "_bucket");
-        this.blockFluid = new FlowingFluidBlock(sourceFluid, Block.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops()) {
+            this.bucketFluid = new BucketItem(this.sourceFluid, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(group)).setRegistryName(modid, fluid + "_bucket");
+        this.blockFluid = new LiquidBlock(sourceFluid, Block.Properties.of(Material.WATER).noCollission().strength(100.0F).noDrops()) {
         }.setRegistryName(modid, fluid + "_block");
         this.sourceFluid.setBlockFluid(blockFluid).setBucketFluid(bucketFluid);
         this.flowingFluid.setBlockFluid(blockFluid).setBucketFluid(bucketFluid);

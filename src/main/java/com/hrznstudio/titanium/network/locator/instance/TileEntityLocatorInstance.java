@@ -10,10 +10,10 @@ package com.hrznstudio.titanium.network.locator.instance;
 import com.hrznstudio.titanium.network.locator.LocatorInstance;
 import com.hrznstudio.titanium.network.locator.LocatorTypes;
 import com.hrznstudio.titanium.util.TileUtil;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.IWorldPosCallable;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.level.Level;
 
 import java.util.Optional;
 
@@ -30,12 +30,12 @@ public class TileEntityLocatorInstance extends LocatorInstance {
     }
 
     @Override
-    public Optional<?> locale(PlayerEntity playerEntity) {
-        return TileUtil.getTileEntity(playerEntity.getEntityWorld(), blockPos);
+    public Optional<?> locale(Player playerEntity) {
+        return TileUtil.getTileEntity(playerEntity.getCommandSenderWorld(), blockPos);
     }
 
     @Override
-    public IWorldPosCallable getWorldPosCallable(World world) {
-        return IWorldPosCallable.of(world, this.blockPos);
+    public ContainerLevelAccess getWorldPosCallable(Level world) {
+        return ContainerLevelAccess.create(world, this.blockPos);
     }
 }

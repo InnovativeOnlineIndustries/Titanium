@@ -13,16 +13,18 @@ import com.hrznstudio.titanium.api.IItemStackQuery;
 import com.hrznstudio.titanium.block.tile.PoweredTile;
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-public class TwentyFourTestTile extends PoweredTile<TwentyFourTestTile> implements ITickableTileEntity {
+public class TwentyFourTestTile extends PoweredTile<TwentyFourTestTile> {
     @Save
     private ProgressBarComponent<TwentyFourTestTile> bar;
     @Save
@@ -51,18 +53,16 @@ public class TwentyFourTestTile extends PoweredTile<TwentyFourTestTile> implemen
 
     @Override
     @ParametersAreNonnullByDefault
-    public ActionResultType onActivated(PlayerEntity player, Hand hand, Direction facing, double hitX, double hitY, double hitZ) {
+    public InteractionResult onActivated(Player player, InteractionHand hand, Direction facing, double hitX, double hitY, double hitZ) {
         openGui(player);
-        return ActionResultType.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
-    public void tick() {
-        super.tick();
-        if (!world.isRemote) {
-            this.getEnergyStorage().receiveEnergy(10, false);
-            markForUpdate();
-        }
+    public void serverTick(Level level, BlockPos pos, BlockState state, TwentyFourTestTile blockEntity) {
+        super.serverTick(level, pos, state, blockEntity);
+        this.getEnergyStorage().receiveEnergy(10, false);
+        markForUpdate();
     }
 
     @Override

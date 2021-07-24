@@ -11,9 +11,11 @@ import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.component.energy.EnergyStorageComponent;
 import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.energy.CapabilityEnergy;
 
 import javax.annotation.Nonnull;
@@ -23,8 +25,8 @@ public abstract class GeneratorTile<T extends GeneratorTile<T>> extends PoweredT
     @Save
     private ProgressBarComponent<T> progressBar;
 
-    public GeneratorTile(BasicTileBlock<T> basicTileBlock) {
-        super(basicTileBlock);
+    public GeneratorTile(BasicTileBlock<T> basicTileBlock, BlockPos pos, BlockState state) {
+        super(basicTileBlock, pos, state);
         this.addProgressBar(progressBar = getProgressBar()
                 .setComponentHarness(this.getSelf())
                 .setCanIncrease(tileEntity -> !isSmart() || this.getEnergyCapacity() - this.getEnergyStorage().getEnergyStored() >= getEnergyProducedEveryTick())
@@ -88,19 +90,16 @@ public abstract class GeneratorTile<T extends GeneratorTile<T>> extends PoweredT
         return true;
     }
 
-
     @Override
-    public void tick() {
-        super.tick();
-        if (isServer()){
-            for (Direction facing : Direction.values()) {
-                BlockPos checking = this.pos.offset(facing);
-                TileEntity checkingTile = this.world.getTileEntity(checking);
-                if (checkingTile != null) {
-                    checkingTile.getCapability(CapabilityEnergy.ENERGY, facing.getOpposite()).ifPresent(storage -> {
-                        this.getEnergyStorage().extractEnergy(storage.receiveEnergy(this.getEnergyStorage().extractEnergy(this.getExtractingEnergy(), true), false), false);
-                    });
-                }
+    public void serverTick(Level level, BlockPos pos, BlockState state, T blockEntity) {
+        super.serverTick(level, pos, state, blockEntity);
+        for (Direction facing : Direction.values()) {
+            BlockPos checking = this.worldPosition.relative(facing);
+            BlockEntity checkingTile = this.level.getBlockEntity(checking);
+            if (checkingTile != null) {
+                checkingTile.getCapability(CapabilityEnergy.ENERGY, facing.getOpposite()).ifPresent(storage -> {
+                    this.getEnergyStorage().extractEnergy(storage.receiveEnergy(this.getEnergyStorage().extractEnergy(this.getExtractingEnergy(), true), false), false);
+                });
             }
         }
     }

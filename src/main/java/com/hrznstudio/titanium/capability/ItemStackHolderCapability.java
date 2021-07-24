@@ -8,7 +8,7 @@
 package com.hrznstudio.titanium.capability;
 
 import com.hrznstudio.titanium.api.capability.IStackHolder;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.function.Supplier;
 

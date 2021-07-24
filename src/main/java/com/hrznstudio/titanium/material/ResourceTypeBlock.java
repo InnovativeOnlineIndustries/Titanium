@@ -16,11 +16,11 @@ import com.hrznstudio.titanium.api.material.IResourceType;
 import com.hrznstudio.titanium.block.BasicBlock;
 import com.hrznstudio.titanium.recipe.generator.IJSONGenerator;
 import com.hrznstudio.titanium.recipe.generator.IJsonFile;
-import net.minecraft.block.Block;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
@@ -72,9 +72,9 @@ public class ResourceTypeBlock extends BasicBlock implements IJsonFile, IJSONGen
 
     @Override
     public IFactory<BlockItem> getItemBlockFactory() {
-        return () -> (BlockItem) new BlockItem(this, new Item.Properties().group(this.getItemGroup())) {
+        return () -> (BlockItem) new BlockItem(this, new Item.Properties().tab(this.getItemGroup())) {
             @Override
-            public ITextComponent getDisplayName(ItemStack p_200295_1_) {
+            public Component getName(ItemStack p_200295_1_) {
                 return resourceType.getTextComponent(resourceMaterial.getTextComponent());
             }
         }.setRegistryName(Objects.requireNonNull(getRegistryName()));

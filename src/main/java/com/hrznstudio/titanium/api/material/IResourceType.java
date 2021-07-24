@@ -10,20 +10,20 @@ package com.hrznstudio.titanium.api.material;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.material.ResourceMaterial;
 import com.hrznstudio.titanium.material.ResourceTypeProperties;
-import net.minecraft.util.IStringSerializable;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.util.StringRepresentable;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 
-public interface IResourceType extends IStringSerializable {
+public interface IResourceType extends StringRepresentable {
 
     String getTag();
 
     IFactory<ForgeRegistryEntry> getInstanceFactory(ResourceMaterial material, @Nullable ResourceTypeProperties properties);
 
-    default ITextComponent getTextComponent(ITextComponent material) {
-        return new TranslationTextComponent(String.format("resource.titanium.type.%s", getString()), material); //getName
+    default Component getTextComponent(Component material) {
+        return new TranslatableComponent(String.format("resource.titanium.type.%s", getSerializedName()), material); //getName
     }
 }

@@ -19,10 +19,10 @@ import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
 import com.hrznstudio.titanium.container.addon.IContainerAddon;
 import com.hrznstudio.titanium.util.TitaniumFluidUtil;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidActionResult;
@@ -35,7 +35,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class TankInteractionBundle<T extends BasicTile & IComponentHarness> implements IComponentBundle, INBTSerializable<CompoundNBT> {
+public class TankInteractionBundle<T extends BasicTile & IComponentHarness> implements IComponentBundle, INBTSerializable<CompoundTag> {
 
     private final Supplier<LazyOptional<IFluidHandler>> fluidHandler;
     private int posX;
@@ -69,7 +69,7 @@ public class TankInteractionBundle<T extends BasicTile & IComponentHarness> impl
                     result = getOutputStack(true);
                     ItemHandlerHelper.insertItem(this.output, result, false);
                     this.input.getStackInSlot(0).shrink(1);
-                    componentHarness.markDirty();
+                    componentHarness.setChanged();
                 }
             })
             .setComponentHarness(componentHarness);
@@ -106,8 +106,8 @@ public class TankInteractionBundle<T extends BasicTile & IComponentHarness> impl
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
-        CompoundNBT compoundNBT = new CompoundNBT();
+    public CompoundTag serializeNBT() {
+        CompoundTag compoundNBT = new CompoundTag();
         compoundNBT.put("Input", this.input.serializeNBT());
         compoundNBT.put("Output", this.output.serializeNBT());
         compoundNBT.put("Bar", this.bar.serializeNBT());
@@ -115,7 +115,7 @@ public class TankInteractionBundle<T extends BasicTile & IComponentHarness> impl
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
         this.input.deserializeNBT(nbt.getCompound("Input"));
         this.output.deserializeNBT(nbt.getCompound("Output"));
         this.bar.deserializeNBT(nbt.getCompound("Bar"));

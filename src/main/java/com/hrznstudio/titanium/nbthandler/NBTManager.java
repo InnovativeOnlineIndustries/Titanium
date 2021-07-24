@@ -11,8 +11,8 @@ import com.google.common.collect.Lists;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.INBTHandler;
 import com.hrznstudio.titanium.nbthandler.data.*;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
@@ -24,7 +24,7 @@ public class NBTManager {
 
     private static NBTManager ourInstance = new NBTManager();
     private List<INBTHandler> handlerList;
-    private HashMap<Class<? extends TileEntity>, List<Field>> tileFieldList;
+    private HashMap<Class<? extends BlockEntity>, List<Field>> tileFieldList;
 
     private NBTManager() {
         handlerList = new ArrayList<>();
@@ -52,7 +52,7 @@ public class NBTManager {
     private static List<Field> getAllDeclaredFields(Class<?> entity) {
         List<Field> currentClassFields = Lists.newArrayList(entity.getDeclaredFields());
         Class<?> parent = entity.getSuperclass();
-        if (TileEntity.class.isAssignableFrom(parent))
+        if (BlockEntity.class.isAssignableFrom(parent))
             currentClassFields.addAll(getAllDeclaredFields(entity.getSuperclass()));
         return currentClassFields;
     }
@@ -62,7 +62,7 @@ public class NBTManager {
      *
      * @param entity The TileEntity class
      */
-    public void scanTileClassForAnnotations(Class<? extends TileEntity> entity) {
+    public void scanTileClassForAnnotations(Class<? extends BlockEntity> entity) {
         List<Field> fields = new ArrayList<>();
         for (Field field : getAllDeclaredFields(entity)) {
             if (field.isAnnotationPresent(Save.class) && checkForHandler(field)) {
@@ -94,7 +94,7 @@ public class NBTManager {
      * @param compound The NBTTagCompound to save the values.
      * @return the modified NBTTagCompound.
      */
-    public CompoundNBT writeTileEntity(TileEntity entity, CompoundNBT compound) {
+    public CompoundTag writeTileEntity(BlockEntity entity, CompoundTag compound) {
         if (tileFieldList.containsKey(entity.getClass())) {
             for (Field field : tileFieldList.get(entity.getClass())) {
                 Save save = field.getAnnotation(Save.class);
@@ -116,7 +116,7 @@ public class NBTManager {
      * @param entity   The tile entity instance.
      * @param compound The NBTTagCompound to save the values.
      */
-    public void readTileEntity(TileEntity entity, CompoundNBT compound) {
+    public void readTileEntity(BlockEntity entity, CompoundTag compound) {
         if (tileFieldList.containsKey(entity.getClass())) {
             for (Field field : tileFieldList.get(entity.getClass())) {
                 if (compound.contains(field.getName())){
@@ -139,7 +139,7 @@ public class NBTManager {
      * @param compound The NBTTagCompound to save the values
      * @return the modified NBTTagCompound.
      */
-    public CompoundNBT writeTileEntityObject(TileEntity entity, Object object, CompoundNBT compound) {
+    public CompoundTag writeTileEntityObject(BlockEntity entity, Object object, CompoundTag compound) {
         if (tileFieldList.containsKey(entity.getClass())) {
             for (Field field : tileFieldList.get(entity.getClass())) {
                 try {
@@ -165,7 +165,7 @@ public class NBTManager {
      * @param value    The value to store in the NBTTagCompound.
      * @return the modified NBTTagCompound.
      */
-    private CompoundNBT handleNBTWrite(CompoundNBT compound, String name, Object value, Field field) {
+    private CompoundTag handleNBTWrite(CompoundTag compound, String name, Object value, Field field) {
         for (INBTHandler handler : handlerList) {
             if (handler.isClassValid(value == null ? field.getType() : value.getClass())) {
                 if (handler.storeToNBT(compound, name, value)) return compound;
@@ -182,7 +182,7 @@ public class NBTManager {
      * @param value    The current value.
      * @return
      */
-    private Object handleNBTRead(CompoundNBT compound, String name, @Nullable Object value, Field field) {
+    private Object handleNBTRead(CompoundTag compound, String name, @Nullable Object value, Field field) {
         for (INBTHandler handler : handlerList) {
             if (handler.isClassValid(value == null ? field.getType() : value.getClass())) {
                 if (!compound.contains(name)) continue;
@@ -199,7 +199,7 @@ public class NBTManager {
         return handlerList;
     }
 
-    public HashMap<Class<? extends TileEntity>, List<Field>> getTileFieldList() {
+    public HashMap<Class<? extends BlockEntity>, List<Field>> getTileFieldList() {
         return tileFieldList;
     }
 }

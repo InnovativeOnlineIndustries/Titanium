@@ -8,10 +8,10 @@
 package com.hrznstudio.titanium.item;
 
 import com.hrznstudio.titanium.energy.EnergyStorageItemStack;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
@@ -22,15 +22,13 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-//import net.minecraft.util.text.TextFormatting;
-
 public class EnergyItem extends BasicItem {
     private final int capacity;
     private final int input;
     private final int output;
 
     public EnergyItem(String name, int capacity, int input, int output, Properties properties) {
-        super(name, properties.maxStackSize(1));
+        super(name, properties.stacksTo(1));
         this.capacity = capacity;
         this.input = input;
         this.output = output;
@@ -58,7 +56,7 @@ public class EnergyItem extends BasicItem {
     }
 
     @Override
-    public void addTooltipDetails(@Nullable Key key, @Nonnull ItemStack stack, @Nonnull List<ITextComponent> tooltip, boolean advanced) {
+    public void addTooltipDetails(@Nullable Key key, @Nonnull ItemStack stack, @Nonnull List<Component> tooltip, boolean advanced) {
         super.addTooltipDetails(key, stack, tooltip, advanced);
         if (key == Key.SHIFT) {
             //getEnergyStorage(stack).ifPresent(storage -> tooltip.add(new TextComponentString(TextFormatting.YELLOW + "Energy: " + TextFormatting.RED + storage.getEnergyStored() + TextFormatting.YELLOW + "/" + TextFormatting.RED + storage.getMaxEnergyStored() + TextFormatting.RESET))); TODO
@@ -86,7 +84,7 @@ public class EnergyItem extends BasicItem {
 
     @Nullable
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt) {
+    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
         return new CapabilityProvider(new EnergyStorageItemStack(stack, capacity, input, output));
     }
 

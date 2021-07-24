@@ -13,14 +13,10 @@ import com.hrznstudio.titanium.client.screen.addon.interfaces.ICanMouseDrag;
 import com.hrznstudio.titanium.client.screen.addon.interfaces.IClickable;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.util.AssetUtil;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldVertexBufferUploader;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.math.vector.Matrix4f;
+import com.mojang.blaze3d.vertex.*;
+import com.mojang.math.Matrix4f;
+import net.minecraft.client.gui.screens.Screen;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -56,17 +52,17 @@ public class ShadePickerAddon extends BasicScreenAddon implements IClickable, IC
     }
 
     @Override
-    public void drawBackgroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackgroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         drawTiledGradient(stack, this.getPosX() + guiX, this.getPosY() + guiY, getXSize(), getYSize());
         AssetUtil.drawAsset(stack, screen, provider.getAsset(AssetTypes.SHADE_PICKER), guiX + (int) (this.getPosX() + this.saturation * this.getXSize()) - 4, (int) (guiY + this.getPosY() + (1 - this.brightness) * this.getYSize()) - 4);
     }
 
     @Override
-    public void drawForegroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
+    public void drawForegroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
 
     }
 
-    private void drawTiledGradient(MatrixStack matrix, int x, int y, int width, int height) {
+    private void drawTiledGradient(PoseStack matrix, int x, int y, int width, int height) {
         int tileWidth = Math.round((float) width / S_TILES);
         int tileHeight = Math.round((float) height / V_TILES);
         for (int i = 0; i < 10; i++) {
@@ -80,21 +76,21 @@ public class ShadePickerAddon extends BasicScreenAddon implements IClickable, IC
     }
 
 
-    private void drawGradient(MatrixStack matrix, int x, int y, int width, int height, Color tl, Color tr, Color bl, Color br) {
+    private void drawGradient(PoseStack matrix, int x, int y, int width, int height, Color tl, Color tr, Color bl, Color br) {
         RenderSystem.disableTexture();
         RenderSystem.enableBlend();
         RenderSystem.disableAlphaTest();
         RenderSystem.defaultBlendFunc();
         RenderSystem.shadeModel(GL11.GL_SMOOTH);
-        BufferBuilder buffer = Tessellator.getInstance().getBuffer();
-        Matrix4f matrix4f = matrix.getLast().getMatrix();
-        buffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-        buffer.pos(matrix4f, x, y + height, 0).color(bl.getRed() / 255f, bl.getGreen() / 255f, bl.getBlue() / 255f, bl.getAlpha() / 255f).endVertex();
-        buffer.pos(matrix4f, x + width, y + height, 0).color(br.getRed() / 255f, br.getGreen() / 255f, br.getBlue() / 255f, br.getAlpha() / 255f).endVertex();
-        buffer.pos(matrix4f, x + width, y, 0).color(tr.getRed() / 255f, tr.getGreen() / 255f, tr.getBlue() / 255f, tr.getAlpha() / 255f).endVertex();
-        buffer.pos(matrix4f, x, y, 0).color(tl.getRed() / 255f, tl.getGreen() / 255f, tl.getBlue() / 255f, tl.getAlpha() / 255f).endVertex();
-        buffer.finishDrawing();
-        WorldVertexBufferUploader.draw(buffer);
+        BufferBuilder buffer = Tesselator.getInstance().getBuilder();
+        Matrix4f matrix4f = matrix.last().pose();
+        buffer.begin(7, DefaultVertexFormat.POSITION_COLOR);
+        buffer.vertex(matrix4f, x, y + height, 0).color(bl.getRed() / 255f, bl.getGreen() / 255f, bl.getBlue() / 255f, bl.getAlpha() / 255f).endVertex();
+        buffer.vertex(matrix4f, x + width, y + height, 0).color(br.getRed() / 255f, br.getGreen() / 255f, br.getBlue() / 255f, br.getAlpha() / 255f).endVertex();
+        buffer.vertex(matrix4f, x + width, y, 0).color(tr.getRed() / 255f, tr.getGreen() / 255f, tr.getBlue() / 255f, tr.getAlpha() / 255f).endVertex();
+        buffer.vertex(matrix4f, x, y, 0).color(tl.getRed() / 255f, tl.getGreen() / 255f, tl.getBlue() / 255f, tl.getAlpha() / 255f).endVertex();
+        buffer.end();
+        BufferUploader.end(buffer);
         RenderSystem.shadeModel(GL11.GL_FLAT);
         RenderSystem.disableBlend();
         RenderSystem.enableAlphaTest();

@@ -9,9 +9,9 @@ package com.hrznstudio.titanium.client;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
-import net.minecraft.client.renderer.model.IUnbakedModel;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraftforge.client.model.IModelLoader;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 import net.minecraftforge.common.MinecraftForge;
@@ -23,10 +23,10 @@ import java.util.Map;
 
 @ParametersAreNonnullByDefault
 public class TitaniumModelLoader implements IModelLoader {
-    private final Map<ResourceLocation, IUnbakedModel> MODEL_MAP = new HashMap<>();
+    private final Map<ResourceLocation, UnbakedModel> MODEL_MAP = new HashMap<>();
 
     @Override
-    public void onResourceManagerReload(IResourceManager resourceManager) {
+    public void onResourceManagerReload(ResourceManager resourceManager) {
         MODEL_MAP.clear();
         MinecraftForge.EVENT_BUS.post(new TitaniumModelEvent(this));
     }
@@ -43,15 +43,15 @@ public class TitaniumModelLoader implements IModelLoader {
             this.loader = loader;
         }
 
-        public void register(ResourceLocation resourceLocation, IUnbakedModel model) {
+        public void register(ResourceLocation resourceLocation, UnbakedModel model) {
             loader.MODEL_MAP.put(resourceLocation, model);
         }
 
-        public void register(String location, IUnbakedModel model) {
+        public void register(String location, UnbakedModel model) {
             register(new ResourceLocation(location), model);
         }
 
-        public void register(String domain, String location, IUnbakedModel model) {
+        public void register(String domain, String location, UnbakedModel model) {
             register(new ResourceLocation(domain, location), model);
         }
     }

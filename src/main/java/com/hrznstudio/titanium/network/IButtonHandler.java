@@ -7,10 +7,10 @@
 
 package com.hrznstudio.titanium.network;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.player.Player;
 
 @FunctionalInterface
 public interface IButtonHandler {
-    void handleButtonMessage(int id, PlayerEntity playerEntity, CompoundNBT compound);
+    void handleButtonMessage(int id, Player playerEntity, CompoundTag compound);
 }

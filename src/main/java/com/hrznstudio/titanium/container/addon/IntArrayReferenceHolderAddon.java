@@ -8,19 +8,20 @@
 package com.hrznstudio.titanium.container.addon;
 
 import com.google.common.collect.Lists;
-import net.minecraft.util.IIntArray;
+import net.minecraft.world.inventory.ContainerData;
 
 import java.util.List;
 
-public class IntArrayReferenceHolderAddon implements IContainerAddon {
-    private final IIntArray[] referenceHolders;
 
-    public IntArrayReferenceHolderAddon(IIntArray... referenceHolders) {
+public class IntArrayReferenceHolderAddon implements IContainerAddon {
+    private final ContainerData[] referenceHolders;
+
+    public IntArrayReferenceHolderAddon(ContainerData... referenceHolders) {
         this.referenceHolders = referenceHolders;
     }
 
     @Override
-    public List<IIntArray> getIntArrayReferenceHolders() {
+    public List<ContainerData> getIntArrayReferenceHolders() {
         return Lists.newArrayList(referenceHolders);
     }
 }

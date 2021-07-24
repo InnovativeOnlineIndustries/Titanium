@@ -11,17 +11,18 @@ import com.hrznstudio.titanium.network.IButtonHandler;
 import com.hrznstudio.titanium.network.Message;
 import com.hrznstudio.titanium.network.locator.LocatorInstance;
 import com.hrznstudio.titanium.util.CastingUtil;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.Optional;
+
 
 public class ButtonClickNetworkMessage extends Message {
     private LocatorInstance locatorInstance;
     private int id;
-    private CompoundNBT data;
+    private CompoundTag data;
 
-    public ButtonClickNetworkMessage(LocatorInstance locatorInstance, int id, CompoundNBT data) {
+    public ButtonClickNetworkMessage(LocatorInstance locatorInstance, int id, CompoundTag data) {
         this.locatorInstance = locatorInstance;
         this.id = id;
         this.data = data;

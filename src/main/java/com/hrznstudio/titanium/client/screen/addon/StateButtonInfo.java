@@ -9,20 +9,20 @@ package com.hrznstudio.titanium.client.screen.addon;
 
 import com.hrznstudio.titanium.api.client.IAssetType;
 import com.hrznstudio.titanium.util.LangUtil;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 public class StateButtonInfo {
 
     private final int state;
     private final IAssetType asset;
-    private ITextComponent[] tooltip;
+    private Component[] tooltip;
 
     public StateButtonInfo(int state, IAssetType asset, String... tooltip) {
         this.state = state;
         this.asset = asset;
-        this.tooltip = new ITextComponent[0];
+        this.tooltip = new Component[0];
         if (tooltip != null) {
-            this.tooltip = new ITextComponent[tooltip.length];
+            this.tooltip = new Component[tooltip.length];
             for (int i = 0; i < tooltip.length; i++) {
                 this.tooltip[i] = LangUtil.get(tooltip[i]);
             }
@@ -37,7 +37,7 @@ public class StateButtonInfo {
         return asset;
     }
 
-    public ITextComponent[] getTooltip() {
+    public Component[] getTooltip() {
         return tooltip;
     }
 

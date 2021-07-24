@@ -12,7 +12,7 @@ import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.api.material.IResourceType;
 import com.hrznstudio.titanium.material.IAdvancedResourceType;
 import com.hrznstudio.titanium.material.ResourceMaterial;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;

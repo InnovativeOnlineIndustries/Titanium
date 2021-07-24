@@ -27,17 +27,17 @@ import com.hrznstudio.titanium.network.messages.ButtonClickNetworkMessage;
 import com.hrznstudio.titanium.util.AssetUtil;
 import com.hrznstudio.titanium.util.FacingUtil;
 import com.hrznstudio.titanium.util.LangUtil;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.gui.IHasContainer;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.MenuAccess;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -92,16 +92,16 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon implements IClick
     }
 
     @Override
-    public void drawBackgroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackgroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         IBackgroundAsset backgroundInfo = provider.getAsset(AssetTypes.BACKGROUND);
         inventoryPoint = backgroundInfo.getInventoryPosition();
         this.xSize = provider.getAsset(AssetTypes.BUTTON_SIDENESS_MANAGER).getArea().width;
         this.ySize = provider.getAsset(AssetTypes.BUTTON_SIDENESS_MANAGER).getArea().height;
-        RenderSystem.color4f(1, 1, 1, 1);
+        RenderSystem.setShaderColor(1, 1, 1, 1);
         AssetUtil.drawAsset(stack, screen, provider.getAsset(AssetTypes.BUTTON_SIDENESS_MANAGER), guiX + getPosX(), guiY + getPosY());
         int offset = 2;
-        AbstractGui.fill(stack, guiX + getPosX() + offset, guiY + getPosY() + offset, guiX + getPosX() + getXSize() - offset, guiY + getPosY() + getYSize() - offset, handler.getColor());
-        RenderSystem.color4f(1, 1, 1, 1);
+        GuiComponent.fill(stack, guiX + getPosX() + offset, guiY + getPosY() + offset, guiX + getPosX() + getXSize() - offset, guiY + getPosY() + getYSize() - offset, handler.getColor());
+        RenderSystem.setShaderColor(1, 1, 1, 1);
         if (isClicked()) {
             //draw the overlay for the slots
             screen.blit(stack, guiX + backgroundInfo.getInventoryPosition().x - 1, guiY + backgroundInfo.getInventoryPosition().y - 1, 16, 213 + 18, 14, 14);
@@ -110,7 +110,7 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon implements IClick
     }
 
     @Override
-    public void drawForegroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
+    public void drawForegroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
         if (isInside(screen, mouseX - guiX, mouseY - guiY)) {
             AssetUtil.drawSelectingOverlay(stack, getPosX() + 1, getPosY() + 1, getPosX() + getXSize() - 1, getPosY() + getYSize() - 1);
         }
@@ -125,7 +125,7 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon implements IClick
     }
 
     @Override
-    public List<ITextComponent> getTooltipLines() {
+    public List<Component> getTooltipLines() {
         return Collections.singletonList(LangUtil.get("tooltip.titanium.facing_handler." + handler.getName().toLowerCase()));
     }
 
@@ -142,9 +142,9 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon implements IClick
     @Override
     public void handleClick(Screen screen, int guiX, int guiY, double mouseX, double mouseY, int button) {
         if (button == 1) return;
-        if (screen instanceof IScreenAddonConsumer && screen instanceof IHasContainer) {
+        if (screen instanceof IScreenAddonConsumer && screen instanceof MenuAccess) {
             IScreenAddonConsumer screenAddonConsumer = (IScreenAddonConsumer) screen;
-            Container container = ((IHasContainer<?>) screen).getContainer();
+            AbstractContainerMenu container = ((MenuAccess<?>) screen).getMenu();
             Consumer<Boolean> disable = container instanceof IDisableableContainer ?
                 ((IDisableableContainer) container)::setDisabled : value -> {
             };
@@ -186,8 +186,8 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon implements IClick
                         @Override
                         public void handleClick(Screen gui, int guiX, int guiY, double mouseX, double mouseY, int mouse) {
                             StateButtonInfo info = getStateInfo();
-                            if (info != null && gui instanceof IHasContainer<?>) {
-                                CompoundNBT compound = new CompoundNBT();
+                            if (info != null && gui instanceof MenuAccess<?>) {
+                                CompoundTag compound = new CompoundTag();
                                 compound.putString("Facing", facing.name());
                                 int faceMode = (getState() + (mouse == 0 ? 1 : -1)) % handler.getValidFacingModes().length;
                                 if (faceMode < 0) faceMode = handler.getValidFacingModes().length - 1;
@@ -204,12 +204,12 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon implements IClick
                         }
 
                         @Override
-                        public List<ITextComponent> getTooltipLines() {
-                            List<ITextComponent> strings = new ArrayList<>();
+                        public List<Component> getTooltipLines() {
+                            List<Component> strings = new ArrayList<>();
                             IFacingComponent.FaceMode mode = handler.getValidFacingModes()[getState()];
-                            strings.add(new StringTextComponent(TextFormatting.GOLD + LangUtil.getString("tooltip.titanium.facing_handler.direction") +
-                                TextFormatting.RESET + LangUtil.getString("tooltip.titanium.facing_handler." + facing.name().toLowerCase()) + TextFormatting.GRAY + " [" + LangUtil.getString("direction.titanium." + FacingUtil.getFacingFromSide(blockDirection, facing)) + "]"));
-                            strings.add(new StringTextComponent(TextFormatting.GOLD + LangUtil.getString("tooltip.titanium.facing_handler.action") +
+                            strings.add(new TextComponent(ChatFormatting.GOLD + LangUtil.getString("tooltip.titanium.facing_handler.direction") +
+                                ChatFormatting.RESET + LangUtil.getString("tooltip.titanium.facing_handler." + facing.name().toLowerCase()) + ChatFormatting.GRAY + " [" + LangUtil.getString("direction.titanium." + FacingUtil.getFacingFromSide(blockDirection, facing)) + "]"));
+                            strings.add(new TextComponent(ChatFormatting.GOLD + LangUtil.getString("tooltip.titanium.facing_handler.action") +
                                 mode.getColor() + getStateInfo().getTooltip()[0].getString()));
                             return strings;
                         }

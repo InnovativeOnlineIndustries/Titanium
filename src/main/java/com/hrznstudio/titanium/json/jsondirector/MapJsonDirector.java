@@ -7,7 +7,7 @@
 
 package com.hrznstudio.titanium.json.jsondirector;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.Map;
 

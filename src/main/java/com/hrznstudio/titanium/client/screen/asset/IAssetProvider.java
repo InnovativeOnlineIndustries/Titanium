@@ -10,10 +10,11 @@ package com.hrznstudio.titanium.client.screen.asset;
 import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.api.client.IAssetType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 
 public interface IAssetProvider {
     ResourceLocation DEFAULT_LOCATION = new ResourceLocation(Titanium.MODID, "textures/gui/background.png");

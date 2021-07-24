@@ -8,7 +8,7 @@
 package com.hrznstudio.titanium.client.screen.addon;
 
 import com.hrznstudio.titanium.client.screen.addon.interfaces.ICanMouseDrag;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
 
 public abstract class DragPanelScreenAddon extends BasicScreenAddon implements ICanMouseDrag {
 
@@ -44,8 +44,8 @@ public abstract class DragPanelScreenAddon extends BasicScreenAddon implements I
 
     @Override
     public void drag(int x, int y) {
-        this.scrollX = MathHelper.clamp(this.scrollX - x, this.minX, this.maxX);
-        this.scrollY = MathHelper.clamp(this.scrollY - y, this.minY, this.maxY);
+        this.scrollX = Mth.clamp(this.scrollX - x, this.minX, this.maxX);
+        this.scrollY = Mth.clamp(this.scrollY - y, this.minY, this.maxY);
     }
 
     public int getScrollX() {

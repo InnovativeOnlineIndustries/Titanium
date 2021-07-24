@@ -20,7 +20,7 @@ import com.hrznstudio.titanium.container.addon.IContainerAddon;
 import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
 import com.hrznstudio.titanium.container.addon.IntArrayReferenceHolderAddon;
 import com.hrznstudio.titanium.container.referenceholder.FluidTankReferenceHolder;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FluidTankComponent<T extends IComponentHarness> extends FluidTank implements IScreenAddonProvider,
-        IContainerAddonProvider, INBTSerializable<CompoundNBT> {
+        IContainerAddonProvider, INBTSerializable<CompoundTag> {
 
     private final int posX;
     private final int posY;
@@ -184,12 +184,12 @@ public class FluidTankComponent<T extends IComponentHarness> extends FluidTank i
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
-        return this.writeToNBT(new CompoundNBT());
+    public CompoundTag serializeNBT() {
+        return this.writeToNBT(new CompoundTag());
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
         this.readFromNBT(nbt);
     }
 

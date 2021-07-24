@@ -11,11 +11,11 @@ import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.util.AssetUtil;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import java.awt.*;
@@ -33,7 +33,7 @@ public class EnergyBarScreenAddon extends BasicScreenAddon {
         this.handler = handler;
     }
 
-    public static IAsset drawBackground(MatrixStack stack, Screen screen, IAssetProvider provider, int handlerPosX, int handlerPosY, int guiX, int guiY) {
+    public static IAsset drawBackground(PoseStack stack, Screen screen, IAssetProvider provider, int handlerPosX, int handlerPosY, int guiX, int guiY) {
         IAsset background = IAssetProvider.getAsset(provider, AssetTypes.ENERGY_BACKGROUND);
         Point offset = background.getOffset();
         Rectangle area = background.getArea();
@@ -41,17 +41,17 @@ public class EnergyBarScreenAddon extends BasicScreenAddon {
         return background;
     }
 
-    public static void drawForeground(MatrixStack stack, Screen screen, IAssetProvider provider, int handlerPosX, int handlerPosY, int guiX, int guiY, double stored, double capacity) {
+    public static void drawForeground(PoseStack stack, Screen screen, IAssetProvider provider, int handlerPosX, int handlerPosY, int guiX, int guiY, double stored, double capacity) {
         IAsset asset = IAssetProvider.getAsset(provider, AssetTypes.ENERGY_BAR);
         Point offset = asset.getOffset();
         Rectangle area = asset.getArea();
-        screen.getMinecraft().getTextureManager().bindTexture(asset.getResourceLocation());
+        screen.getMinecraft().getTextureManager().bindForSetup(asset.getResourceLocation());
         int powerOffset = (int) ((stored / Math.max(capacity, 1)) * area.height);
         screen.blit(stack, handlerPosX + offset.x, handlerPosY + offset.y + area.height - powerOffset, area.x, area.y + (area.height - powerOffset), area.width, powerOffset);
     }
 
-    public static List<ITextComponent> getTooltip(int stored, int capacity) {
-        return Arrays.asList(new StringTextComponent(TextFormatting.GOLD + "Power:"), new StringTextComponent(new DecimalFormat().format(stored) + TextFormatting.GOLD + "/" + TextFormatting.WHITE + new DecimalFormat().format(capacity) + TextFormatting.DARK_AQUA + " FE"));
+    public static List<Component> getTooltip(int stored, int capacity) {
+        return Arrays.asList(new TextComponent(ChatFormatting.GOLD + "Power:"), new TextComponent(new DecimalFormat().format(stored) + ChatFormatting.GOLD + "/" + ChatFormatting.WHITE + new DecimalFormat().format(capacity) + ChatFormatting.DARK_AQUA + " FE"));
     }
 
     @Override
@@ -65,17 +65,17 @@ public class EnergyBarScreenAddon extends BasicScreenAddon {
     }
 
     @Override
-    public void drawBackgroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackgroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         background = drawBackground(stack, screen, provider, getPosX(), getPosY(), guiX, guiY);
     }
 
     @Override
-    public void drawForegroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
+    public void drawForegroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
         drawForeground(stack, screen, provider, getPosX(), getPosY(), guiX, guiY, handler.getEnergyStored(), handler.getMaxEnergyStored());
     }
 
     @Override
-    public List<ITextComponent> getTooltipLines() {
+    public List<Component> getTooltipLines() {
         return getTooltip(handler.getEnergyStored(), handler.getMaxEnergyStored());
     }
 }

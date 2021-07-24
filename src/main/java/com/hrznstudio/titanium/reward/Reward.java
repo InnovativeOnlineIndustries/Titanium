@@ -9,7 +9,7 @@ package com.hrznstudio.titanium.reward;
 
 import com.google.gson.JsonParser;
 import com.hrznstudio.titanium.util.URLUtil;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 
 import java.io.IOException;

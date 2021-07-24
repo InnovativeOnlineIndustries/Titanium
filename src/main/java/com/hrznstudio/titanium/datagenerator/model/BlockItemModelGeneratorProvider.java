@@ -10,10 +10,10 @@ package com.hrznstudio.titanium.datagenerator.model;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.DirectoryCache;
-import net.minecraft.data.IDataProvider;
+import net.minecraft.data.DataProvider;
+import net.minecraft.data.HashCache;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.util.NonNullLazy;
 
 import javax.annotation.Nonnull;
@@ -23,7 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-public class BlockItemModelGeneratorProvider implements IDataProvider {
+public class BlockItemModelGeneratorProvider implements DataProvider {
 
     private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().create();
     private final DataGenerator generator;
@@ -43,7 +43,7 @@ public class BlockItemModelGeneratorProvider implements IDataProvider {
     }
 
     @Override
-    public void act(@Nonnull DirectoryCache cache) throws IOException {
+    public void run(@Nonnull HashCache cache) throws IOException {
         Path path = this.generator.getOutputFolder();
         Path output = path.resolve("assets/" + modid + "/models/item/");
         Files.createDirectories(output);

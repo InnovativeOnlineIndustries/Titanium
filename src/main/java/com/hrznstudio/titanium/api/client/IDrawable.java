@@ -7,13 +7,13 @@
 
 package com.hrznstudio.titanium.api.client;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.gui.screen.Screen;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.screens.Screen;
 
 import java.awt.*;
 
 public interface IDrawable {
-    static IDrawable of(IAsset asset, MatrixStack matrixStack) {
+    static IDrawable of(IAsset asset, PoseStack matrixStack) {
         return new DefaultDrawable(asset, matrixStack);
     }
 

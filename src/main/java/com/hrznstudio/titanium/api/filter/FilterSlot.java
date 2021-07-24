@@ -7,7 +7,7 @@
 
 package com.hrznstudio.titanium.api.filter;
 
-import net.minecraft.item.DyeColor;
+import net.minecraft.world.item.DyeColor;
 
 public class FilterSlot<T extends Object> {
 

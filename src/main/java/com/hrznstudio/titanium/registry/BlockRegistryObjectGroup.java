@@ -7,11 +7,13 @@
 
 package com.hrznstudio.titanium.registry;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 
 import javax.annotation.Nonnull;
@@ -19,15 +21,16 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class BlockRegistryObjectGroup<B extends Block, I extends Item, T extends TileEntity> implements Supplier<B> {
+
+public class BlockRegistryObjectGroup<B extends Block, I extends Item, T extends BlockEntity> implements Supplier<B> {
     private final String name;
     private final Supplier<B> blockCreator;
     private final Function<B, I> itemCreator;
-    private final Supplier<T> tileSupplier;
+    private final BlockEntityType.BlockEntitySupplier<T> tileSupplier;
 
     private RegistryObject<B> block;
     private RegistryObject<I> item;
-    private RegistryObject<TileEntityType<T>> tileEntity;
+    private RegistryObject<BlockEntityType<T>> tileEntity;
 
     public BlockRegistryObjectGroup(String name, Supplier<B> blockCreator, Function<B, I> itemCreator) {
         this(name, blockCreator, itemCreator, null);
@@ -37,7 +40,12 @@ public class BlockRegistryObjectGroup<B extends Block, I extends Item, T extends
         this.name = name;
         this.blockCreator = blockCreator;
         this.itemCreator = itemCreator;
-        this.tileSupplier = tileSupplier;
+        this.tileSupplier = new BlockEntityType.BlockEntitySupplier<T>() {
+            @Override
+            public T create(BlockPos p_155268_, BlockState p_155269_) {
+                return tileSupplier.get();
+            }
+        };
     }
 
     @Nonnull
@@ -51,7 +59,7 @@ public class BlockRegistryObjectGroup<B extends Block, I extends Item, T extends
     }
 
     @Nonnull
-    public TileEntityType<T> getTileEntityType() {
+    public BlockEntityType<T> getTileEntityType() {
         return Objects.requireNonNull(tileEntity).get();
     }
 
@@ -63,11 +71,11 @@ public class BlockRegistryObjectGroup<B extends Block, I extends Item, T extends
 
     public BlockRegistryObjectGroup<B, I, T> register(DeferredRegister<Block> blockRegistry,
                                                       DeferredRegister<Item> itemRegistry,
-                                                      DeferredRegister<TileEntityType<?>> tileEntityTypeRegistry) {
+                                                      DeferredRegister<BlockEntityType<?>> tileEntityTypeRegistry) {
         this.register(blockRegistry, itemRegistry);
         if (tileSupplier != null) {
             //noinspection ConstantConditions
-            tileEntity = tileEntityTypeRegistry.register(name, () -> TileEntityType.Builder.create(tileSupplier, this.getBlock())
+            tileEntity = tileEntityTypeRegistry.register(name, () -> BlockEntityType.Builder.of(tileSupplier, this.getBlock())
                     .build(null));
         }
         return this;

@@ -7,16 +7,16 @@
 
 package com.hrznstudio.titanium.item;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IStringSerializable;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.glfw.GLFW;
 
@@ -28,7 +28,7 @@ import java.util.List;
 @ParametersAreNonnullByDefault
 public class BasicItem extends Item {
 
-    private ItemGroup itemGroup = ItemGroup.SEARCH;
+    private CreativeModeTab itemGroup = CreativeModeTab.TAB_SEARCH;
 
     public BasicItem(Properties properties) {
         super(properties);
@@ -40,8 +40,8 @@ public class BasicItem extends Item {
     }
 
     @Override
-    public final void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+    public final void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
         if (hasTooltipDetails(null)) {
             addTooltipDetails(null, stack, tooltip, flagIn.isAdvanced());
         }
@@ -50,13 +50,13 @@ public class BasicItem extends Item {
                 if (key.isDown()) {
                     addTooltipDetails(key, stack, tooltip, flagIn.isAdvanced());
                 } else {
-                    tooltip.add(new StringTextComponent("Hold " + TextFormatting.YELLOW + key.getString() + TextFormatting.GRAY + " for more information"));
+                    tooltip.add(new TextComponent("Hold " + ChatFormatting.YELLOW + key.getSerializedName() + ChatFormatting.GRAY + " for more information"));
                 }
             }
         }
     }
 
-    public void addTooltipDetails(@Nullable Key key, ItemStack stack, List<ITextComponent> tooltip, boolean advanced) {
+    public void addTooltipDetails(@Nullable Key key, ItemStack stack, List<Component> tooltip, boolean advanced) {
 
     }
 
@@ -64,11 +64,11 @@ public class BasicItem extends Item {
         return false;
     }
 
-    public void setItemGroup(ItemGroup itemGroup) {
+    public void setItemGroup(CreativeModeTab itemGroup) {
         this.itemGroup = itemGroup;
     }
 
-    public enum Key implements IStringSerializable {
+    public enum Key implements StringRepresentable {
         SHIFT(GLFW.GLFW_KEY_RIGHT_SHIFT, GLFW.GLFW_KEY_LEFT_SHIFT),
         CTRL(GLFW.GLFW_KEY_RIGHT_CONTROL, GLFW.GLFW_KEY_LEFT_CONTROL),
         ALT(GLFW.GLFW_KEY_RIGHT_ALT, GLFW.GLFW_KEY_LEFT_ALT);
@@ -82,7 +82,7 @@ public class BasicItem extends Item {
         }
 
         Key(int[] keysWin, String macName, int[] keysMac) {
-            if (Minecraft.IS_RUNNING_ON_MAC) {
+            if (Minecraft.ON_OSX) {
                 this.keys = keysMac;
                 this.name = macName;
             } else {
@@ -93,7 +93,7 @@ public class BasicItem extends Item {
 
         public boolean isDown() {
             for (int key : keys)
-                if (GLFW.glfwGetKey(Minecraft.getInstance().getMainWindow().getHandle(), key) == GLFW.GLFW_PRESS) //Main windows
+                if (GLFW.glfwGetKey(Minecraft.getInstance().getWindow().getWindow(), key) == GLFW.GLFW_PRESS) //Main windows
                     return true;
             return false;
         }
@@ -101,7 +101,7 @@ public class BasicItem extends Item {
         // getName
         @Override
         @Nonnull
-        public String getString() {
+        public String getSerializedName() {
             return StringUtils.capitalize(name.toLowerCase());
         }
     }

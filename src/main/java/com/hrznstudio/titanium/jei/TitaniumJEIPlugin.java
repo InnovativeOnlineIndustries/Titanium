@@ -12,9 +12,10 @@ import com.hrznstudio.titanium.client.screen.container.BasicContainerScreen;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
+
 
 @JeiPlugin
 public class TitaniumJEIPlugin implements IModPlugin {

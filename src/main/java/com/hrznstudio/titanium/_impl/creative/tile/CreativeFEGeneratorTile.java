@@ -10,11 +10,11 @@ package com.hrznstudio.titanium._impl.creative.tile;
 import com.hrznstudio.titanium._impl.creative.CreativeFEGeneratorBlock;
 import com.hrznstudio.titanium.block.tile.PoweredTile;
 import com.hrznstudio.titanium.component.energy.EnergyStorageComponent;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.energy.CapabilityEnergy;
 
 import javax.annotation.Nonnull;
@@ -29,10 +29,10 @@ public class CreativeFEGeneratorTile extends PoweredTile<CreativeFEGeneratorTile
     @Override
     public void tick() {
         super.tick();
-        if (!world.isRemote) {
+        if (!level.isClientSide) {
             this.getEnergyStorage().receiveEnergy(Integer.MAX_VALUE, false);
             for (Direction direction : Direction.values()) {
-                TileEntity tile = this.world.getTileEntity(this.getPos().offset(direction));
+                BlockEntity tile = this.level.getBlockEntity(this.getBlockPos().relative(direction));
                 if (tile != null)
                     tile.getCapability(CapabilityEnergy.ENERGY, direction.getOpposite()).ifPresent(iEnergyStorage -> iEnergyStorage.receiveEnergy(Integer.MAX_VALUE, false));
             }
@@ -48,12 +48,12 @@ public class CreativeFEGeneratorTile extends PoweredTile<CreativeFEGeneratorTile
 
     @Override
     @ParametersAreNonnullByDefault
-    public ActionResultType onActivated(PlayerEntity player, Hand hand, Direction facing, double hitX, double hitY, double hitZ) {
-        if (super.onActivated(player, hand, facing, hitX, hitY, hitZ) == ActionResultType.PASS) {
+    public InteractionResult onActivated(Player player, InteractionHand hand, Direction facing, double hitX, double hitY, double hitZ) {
+        if (super.onActivated(player, hand, facing, hitX, hitY, hitZ) == InteractionResult.PASS) {
             openGui(player);
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
     @Nonnull

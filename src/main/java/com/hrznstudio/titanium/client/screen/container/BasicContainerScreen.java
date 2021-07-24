@@ -15,23 +15,23 @@ import com.hrznstudio.titanium.client.screen.addon.AssetScreenAddon;
 import com.hrznstudio.titanium.client.screen.addon.interfaces.ICanMouseDrag;
 import com.hrznstudio.titanium.client.screen.addon.interfaces.IClickable;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BasicContainerScreen<T extends Container> extends ContainerScreen<T> implements IScreenAddonConsumer {
+public class BasicContainerScreen<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> implements IScreenAddonConsumer {
     private final T container;
-    private final ITextComponent title;
+    private final Component title;
     private IAssetProvider assetProvider;
     private int xCenter;
     private int yCenter;
@@ -41,26 +41,26 @@ public class BasicContainerScreen<T extends Container> extends ContainerScreen<T
     private int dragY;
     private boolean isMouseDragging;
 
-    public BasicContainerScreen(T container, PlayerInventory inventory, ITextComponent title) {
+    public BasicContainerScreen(T container, Inventory inventory, Component title) {
         super(container, inventory, title);
         this.container = container;
         this.title = title;
         this.assetProvider = IAssetProvider.DEFAULT_PROVIDER;
         IAsset background = IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND);
-        this.xSize = background.getArea().width;
-        this.ySize = background.getArea().height;
+        this.imageWidth = background.getArea().width;
+        this.imageHeight = background.getArea().height;
         this.isMouseDragging = false;
         this.addons = new ArrayList<>();
     }
 
-    public BasicContainerScreen(T container, PlayerInventory inventory, ITextComponent title, IAssetProvider provider) {
+    public BasicContainerScreen(T container, Inventory inventory, Component title, IAssetProvider provider) {
         super(container, inventory, title);
         this.container = container;
         this.title = title;
         this.assetProvider = provider;
         IAsset background = IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND);
-        this.xSize = background.getArea().width;
-        this.ySize = background.getArea().height;
+        this.imageWidth = background.getArea().width;
+        this.imageHeight = background.getArea().height;
         this.addons = new ArrayList<>();
     }
 
@@ -68,23 +68,23 @@ public class BasicContainerScreen<T extends Container> extends ContainerScreen<T
     @Override
     protected void init() {
         super.init();
-        this.getAddons().forEach(screenAddon -> screenAddon.init(this.guiLeft, this.guiTop));
+        this.getAddons().forEach(screenAddon -> screenAddon.init(this.leftPos, this.topPos));
     }
 
     // drawGuiContainerBackgroundLayer
     @Override
-    protected void drawGuiContainerBackgroundLayer(MatrixStack stack, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(PoseStack stack, float partialTicks, int mouseX, int mouseY) {
         // renderBackground
         this.renderBackground(stack);
         // width
-        xCenter = (width - xSize) / 2;
+        xCenter = (width - imageWidth) / 2;
         // height
-        yCenter = (height - ySize) / 2;
+        yCenter = (height - imageHeight) / 2;
         //BG RENDERING
-        RenderSystem.color4f(1, 1, 1, 1);
-        getMinecraft().getTextureManager().bindTexture(IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND).getResourceLocation());
-        blit(stack, xCenter, yCenter, 0, 0, xSize, ySize);
-        Minecraft.getInstance().fontRenderer.drawString(stack, TextFormatting.DARK_GRAY + title.getString(), xCenter + xSize / 2 - Minecraft.getInstance().fontRenderer.getStringWidth(title.getString()) / 2, yCenter + 6, 0xFFFFFF);
+        RenderSystem.setShaderColor(1, 1, 1, 1);
+        getMinecraft().getTextureManager().bindForSetup(IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND).getResourceLocation());
+        blit(stack, xCenter, yCenter, 0, 0, imageWidth, imageHeight);
+        Minecraft.getInstance().font.draw(stack, ChatFormatting.DARK_GRAY + title.getString(), xCenter + imageWidth / 2 - Minecraft.getInstance().font.width(title.getString()) / 2, yCenter + 6, 0xFFFFFF);
         this.checkForMouseDrag(mouseX, mouseY);
         addons.stream().filter(IScreenAddon::isBackground).forEach(iGuiAddon -> {
             iGuiAddon.drawBackgroundLayer(stack, this, assetProvider, xCenter, yCenter, mouseX, mouseY, partialTicks);
@@ -96,7 +96,7 @@ public class BasicContainerScreen<T extends Container> extends ContainerScreen<T
 
     // drawGuiContainerForegroundLayer
     @Override
-    protected void drawGuiContainerForegroundLayer(MatrixStack stack, int mouseX, int mouseY) {
+    protected void renderLabels(PoseStack stack, int mouseX, int mouseY) {
         addons.forEach(iGuiAddon -> {
             if (iGuiAddon instanceof AssetScreenAddon) {
                 AssetScreenAddon assetGuiAddon = (AssetScreenAddon) iGuiAddon;
@@ -108,17 +108,17 @@ public class BasicContainerScreen<T extends Container> extends ContainerScreen<T
             }
         });
         // renderHoveredToolTip
-        renderHoveredTooltip(stack, mouseX - xCenter, mouseY - yCenter);
+        renderTooltip(stack, mouseX - xCenter, mouseY - yCenter);
         for (IScreenAddon iScreenAddon : addons) {
             if (iScreenAddon.isInside(this, mouseX - xCenter, mouseY - yCenter) && !iScreenAddon.getTooltipLines().isEmpty()) {
                 // renderTooltip
-                renderWrappedToolTip(stack, iScreenAddon.getTooltipLines(), mouseX - xCenter, mouseY - yCenter, minecraft.fontRenderer);
+                renderWrappedToolTip(stack, iScreenAddon.getTooltipLines(), mouseX - xCenter, mouseY - yCenter, minecraft.font);
             }
         }
     }
 
     private void checkForMouseDrag(int mouseX, int mouseY) {
-        if (GLFW.glfwGetMouseButton(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS) {//Main Window
+        if (GLFW.glfwGetMouseButton(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS) {//Main Window
             if (!this.isMouseDragging) {
                 this.isMouseDragging = true;
             } else {
@@ -162,7 +162,7 @@ public class BasicContainerScreen<T extends Container> extends ContainerScreen<T
 
     @Override
     @Nonnull
-    public T getContainer() {
+    public T getMenu() {
         return container;
     }
 

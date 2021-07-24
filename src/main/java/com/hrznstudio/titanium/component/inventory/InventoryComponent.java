@@ -16,8 +16,8 @@ import com.hrznstudio.titanium.component.IComponentHarness;
 import com.hrznstudio.titanium.container.addon.IContainerAddon;
 import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
 import com.hrznstudio.titanium.container.addon.SlotContainerAddon;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 import org.apache.commons.lang3.tuple.Pair;
@@ -274,7 +274,7 @@ public class InventoryComponent<T extends IComponentHarness> extends ItemStackHa
         if (!this.colorGuiEnabled) {
             this.setColorGuiEnabled(true);
         }
-        this.slotToColorRenderMap.put(slot, new Color(color.getColorValue()));
+        this.slotToColorRenderMap.put(slot, new Color(color.getMaterialColor().col));
         return this;
     }
 

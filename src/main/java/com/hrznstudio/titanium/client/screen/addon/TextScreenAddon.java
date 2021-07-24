@@ -8,9 +8,9 @@
 package com.hrznstudio.titanium.client.screen.addon;
 
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screens.Screen;
 
 public class TextScreenAddon extends BasicScreenAddon {
 
@@ -40,18 +40,18 @@ public class TextScreenAddon extends BasicScreenAddon {
     }
 
     @Override
-    public void drawBackgroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackgroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         if (shadow) {
             //drawStringWithShadow
-            Minecraft.getInstance().fontRenderer.drawStringWithShadow(stack, getText(), guiX + getPosX(), guiY + getPosY(), color);
+            Minecraft.getInstance().font.drawShadow(stack, getText(), guiX + getPosX(), guiY + getPosY(), color);
         } else {
             //drawString
-            Minecraft.getInstance().fontRenderer.drawString(stack, getText(), guiX + getPosX(), guiY + getPosY(), color);
+            Minecraft.getInstance().font.draw(stack, getText(), guiX + getPosX(), guiY + getPosY(), color);
         }
     }
 
     @Override
-    public void drawForegroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {}
+    public void drawForegroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {}
 
     public String getText() {
         return text;

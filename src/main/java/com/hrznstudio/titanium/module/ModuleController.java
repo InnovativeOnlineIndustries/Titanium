@@ -18,10 +18,10 @@ import com.hrznstudio.titanium.util.AnnotationUtil;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
+import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.io.File;
@@ -114,11 +114,11 @@ public abstract class ModuleController {
             ConfigFile annotation = (ConfigFile) aClass.getAnnotation(ConfigFile.class);
             addConfig(AnnotationConfigManager.Type.of(annotation.type(), aClass).setName(annotation.value()));
         });
-        EventManager.mod(ModConfig.Loading.class).process(ev -> {
+        EventManager.mod(ModConfigEvent.Loading.class).process(ev -> {
             configManager.inject();
             this.modPluginManager.execute(PluginPhase.CONFIG_LOAD);
         }).subscribe();
-        EventManager.mod(ModConfig.Reloading.class).process(ev -> {
+        EventManager.mod(ModConfigEvent.Reloading.class).process(ev -> {
             configManager.inject();
             this.modPluginManager.execute(PluginPhase.CONFIG_RELOAD);
         }).subscribe();

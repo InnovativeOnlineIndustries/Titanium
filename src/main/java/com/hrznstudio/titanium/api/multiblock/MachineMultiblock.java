@@ -7,15 +7,16 @@
 
 package com.hrznstudio.titanium.api.multiblock;
 
-import jdk.nashorn.internal.ir.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
 import java.util.function.Predicate;
+
 
 public class MachineMultiblock implements IMultiblock {
 
@@ -40,11 +41,11 @@ public class MachineMultiblock implements IMultiblock {
     }
 
     @Override
-    public boolean isStructureMultiblock(World world, BlockPos pos, BlockState state, Direction playerFacing) {
+    public boolean isStructureMultiblock(Level world, BlockPos pos, BlockState state, Direction playerFacing) {
         for (int x = 0; x < getStructureBlocks().length; ++x) {
             for (int z = 0; z < getStructureBlocks()[0][0].length; ++z) {
                 for (int y = 0; y < getStructureBlocks()[0].length; ++y) {
-                    BlockPos blockPos = pos.offset(Direction.DOWN, controller.getY()).offset(playerFacing.rotateY(), x).offset(Direction.UP, y).offset(playerFacing, z);
+                    BlockPos blockPos = pos.relative(Direction.DOWN, controller.getY()).relative(playerFacing.getClockWise(), x).relative(Direction.UP, y).relative(playerFacing, z);
                     BlockState test = world.getBlockState(blockPos);
                     if (!getStructureBlocks()[x][y][z].test(test)) { //TODO Check for controller blocks
                         return false;
@@ -56,12 +57,12 @@ public class MachineMultiblock implements IMultiblock {
     }
 
     @Override
-    public void createStructureMultiblock(World world, BlockPos pos, BlockState state, Direction playerFacing) {
+    public void createStructureMultiblock(Level world, BlockPos pos, BlockState state, Direction playerFacing) {
 
     }
 
     @Override
-    public void destroyMultiblock(World world, BlockPos pos, BlockState state, Direction facing) {
+    public void destroyMultiblock(Level world, BlockPos pos, BlockState state, Direction facing) {
 
     }
 

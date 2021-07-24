@@ -7,46 +7,46 @@
 
 package com.hrznstudio.titanium.recipe.generator;
 
-import net.minecraft.advancements.criterion.InventoryChangeTrigger;
-import net.minecraft.advancements.criterion.ItemPredicate;
-import net.minecraft.data.ShapelessRecipeBuilder;
-import net.minecraft.item.Item;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.advancements.critereon.InventoryChangeTrigger;
+import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.data.recipes.ShapelessRecipeBuilder;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
 
 public class TitaniumShapelessRecipeBuilder extends ShapelessRecipeBuilder {
 
     private boolean criterion;
 
-    public TitaniumShapelessRecipeBuilder(IItemProvider resultIn, int countIn) {
+    public TitaniumShapelessRecipeBuilder(ItemLike resultIn, int countIn) {
         super(resultIn, countIn);
         this.criterion = false;
     }
 
-    public static TitaniumShapelessRecipeBuilder shapelessRecipe(IItemProvider resultIn) {
+    public static TitaniumShapelessRecipeBuilder shapelessRecipe(ItemLike resultIn) {
         return new TitaniumShapelessRecipeBuilder(resultIn, 1);
     }
 
-    public static TitaniumShapelessRecipeBuilder shapelessRecipe(IItemProvider resultIn, int countIn) {
+    public static TitaniumShapelessRecipeBuilder shapelessRecipe(ItemLike resultIn, int countIn) {
         return new TitaniumShapelessRecipeBuilder(resultIn, countIn);
     }
 
     @Override
-    public ShapelessRecipeBuilder addIngredient(Ingredient ingredientIn, int quantity) {
+    public ShapelessRecipeBuilder requires(Ingredient ingredientIn, int quantity) {
         if (!this.criterion) {
             this.criterion = true;
-            addCriterion("has_item", InventoryChangeTrigger.Instance.forItems(ItemPredicate.Builder.create().item(ingredientIn.getMatchingStacks()[0].getItem()).build()));
+            unlockedBy("has_item", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(ingredientIn.getItems()[0].getItem()).build()));
         }
-        return super.addIngredient(ingredientIn, quantity);
+        return super.requires(ingredientIn, quantity);
     }
 
     @Override
-    public ShapelessRecipeBuilder addIngredient(ITag<Item> tagIn) {
+    public ShapelessRecipeBuilder requires(Tag<Item> tagIn) {
         if (!this.criterion) {
             this.criterion = true;
-            addCriterion("has_item", InventoryChangeTrigger.Instance.forItems(ItemPredicate.Builder.create().tag(tagIn).build()));
+            unlockedBy("has_item", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(tagIn).build()));
         }
-        return super.addIngredient(tagIn);
+        return super.requires(tagIn);
     }
 }

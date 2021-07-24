@@ -8,49 +8,49 @@
 package com.hrznstudio.titanium.util;
 
 import com.hrznstudio.titanium.block.BasicBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
 public class RayTraceUtils {
 
-    public static RayTraceResult rayTraceSimple(World world, LivingEntity living, double blockReachDistance, float partialTicks) {
-        Vector3d vec3d = living.getEyePosition(partialTicks);
-        Vector3d vec3d1 = living.getLook(partialTicks);
-        Vector3d vec3d2 = vec3d.add(vec3d1.x * blockReachDistance, vec3d1.y * blockReachDistance, vec3d1.z * blockReachDistance);
-        return world.rayTraceBlocks(new RayTraceContext(vec3d, vec3d2, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, living));
+    public static HitResult rayTraceSimple(Level world, LivingEntity living, double blockReachDistance, float partialTicks) {
+        Vec3 vec3d = living.getEyePosition(partialTicks);
+        Vec3 vec3d1 = living.getViewVector(partialTicks);
+        Vec3 vec3d2 = vec3d.add(vec3d1.x * blockReachDistance, vec3d1.y * blockReachDistance, vec3d1.z * blockReachDistance);
+        return world.clip(new ClipContext(vec3d, vec3d2, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, living));
     }
 
     @Nullable
-    public static VoxelShape rayTraceVoxelShape(BlockRayTraceResult original, World world, LivingEntity living, double blockReachDistance, float partialTicks) {
-        BlockState og = world.getBlockState(original.getPos());
+    public static VoxelShape rayTraceVoxelShape(BlockHitResult original, Level world, LivingEntity living, double blockReachDistance, float partialTicks) {
+        BlockState og = world.getBlockState(original.getBlockPos());
         if (og.getBlock() instanceof BasicBlock && ((BasicBlock) og.getBlock()).hasIndividualRenderVoxelShape()) {
-            Vector3d vec3d = living.getEyePosition(partialTicks);
-            Vector3d vec3d1 = living.getLook(partialTicks);
-            Vector3d vec3d2 = vec3d.add(vec3d1.x * blockReachDistance, vec3d1.y * blockReachDistance, vec3d1.z * blockReachDistance);
-            List<VoxelShape> voxelShapes = ((BasicBlock) og.getBlock()).getBoundingBoxes(og, world, ((BlockRayTraceResult) original).getPos());
+            Vec3 vec3d = living.getEyePosition(partialTicks);
+            Vec3 vec3d1 = living.getViewVector(partialTicks);
+            Vec3 vec3d2 = vec3d.add(vec3d1.x * blockReachDistance, vec3d1.y * blockReachDistance, vec3d1.z * blockReachDistance);
+            List<VoxelShape> voxelShapes = ((BasicBlock) og.getBlock()).getBoundingBoxes(og, world, ((BlockHitResult) original).getBlockPos());
             if (voxelShapes.size() > 0){
-                VoxelShape closest = VoxelShapes.empty();
+                VoxelShape closest = Shapes.empty();
                 double distance = Double.MAX_VALUE;
                 for (VoxelShape voxelShape : voxelShapes) {
-                    BlockRayTraceResult result = voxelShape.rayTrace(vec3d, vec3d2, ((BlockRayTraceResult) original).getPos());
-                    if (result != null && vec3d.distanceTo(result.getHitVec()) < distance) {
+                    BlockHitResult result = voxelShape.clip(vec3d, vec3d2, ((BlockHitResult) original).getBlockPos());
+                    if (result != null && vec3d.distanceTo(result.getLocation()) < distance) {
                         closest = voxelShape;
-                        distance = vec3d.distanceTo(result.getHitVec());
+                        distance = vec3d.distanceTo(result.getLocation());
                     }
                 }
                 return closest;
             }
         }
-        return VoxelShapes.empty();
+        return Shapes.empty();
     }
 }

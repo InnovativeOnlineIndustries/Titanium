@@ -15,31 +15,31 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.ISuggestionProvider;
-import net.minecraft.command.arguments.ResourceLocationArgument;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkDirection;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.commands.arguments.ResourceLocationArgument;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.fmllegacy.network.NetworkDirection;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RewardCommand {
 
-    public static void register(CommandDispatcher<CommandSource> dispatcher) {
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("titanium-rewards")
                 .then(Commands.argument("action", StringArgumentType.word())
                         .suggests((context, builder) -> {
-                            return ISuggestionProvider.suggest(new String[]{"enable", "disable"}, builder);
+                            return SharedSuggestionProvider.suggest(new String[]{"enable", "disable"}, builder);
                         }).then(Commands.argument("reward", new ResourceLocationArgument())
                                 .suggests((context, builder) -> {
-                                    return ISuggestionProvider.suggest(getAvailableResourceLocations(context).stream().map(ResourceLocation::toString), builder);
+                                    return SharedSuggestionProvider.suggest(getAvailableResourceLocations(context).stream().map(ResourceLocation::toString), builder);
                                 }).then(Commands.argument("option", StringArgumentType.word()).suggests((context, builder) -> {
-                                    return ISuggestionProvider.suggest(RewardManager.get().getReward(context.getArgument("reward", ResourceLocation.class)).getOptions(), builder);
+                                    return SharedSuggestionProvider.suggest(RewardManager.get().getReward(context.getArgument("reward", ResourceLocation.class)).getOptions(), builder);
                                 })
                                         .executes(context -> {
                                             execute(context);
@@ -48,7 +48,7 @@ public class RewardCommand {
 
     }
 
-    private static void execute(CommandContext<CommandSource> context) {
+    private static void execute(CommandContext<CommandSourceStack> context) {
         boolean changed = false;
         if (context.getArgument("action", String.class).equalsIgnoreCase("enable")) {
             changed = addReward(context);
@@ -57,19 +57,19 @@ public class RewardCommand {
         }
         if (changed) {
             context.getSource().getServer().execute(() -> {
-                CompoundNBT nbt = RewardWorldStorage.get(context.getSource().getServer().getWorld(World.OVERWORLD)).serializeSimple();
-                context.getSource().getServer().getPlayerList().getPlayers().forEach(serverPlayerEntity -> Titanium.NETWORK.get().sendTo(new RewardSyncMessage(nbt), serverPlayerEntity.connection.netManager, NetworkDirection.PLAY_TO_CLIENT));
+                CompoundTag nbt = RewardWorldStorage.get(context.getSource().getServer().getLevel(Level.OVERWORLD)).serializeSimple();
+                context.getSource().getServer().getPlayerList().getPlayers().forEach(serverPlayerEntity -> Titanium.NETWORK.get().sendTo(new RewardSyncMessage(nbt), serverPlayerEntity.connection.connection, NetworkDirection.PLAY_TO_CLIENT));
             });
         }
     }
 
-    private static boolean removeReward(CommandContext<CommandSource> context) {
-        CommandSource source = context.getSource();
-        RewardWorldStorage rewardWorldStorage = RewardWorldStorage.get(source.getWorld());
+    private static boolean removeReward(CommandContext<CommandSourceStack> context) {
+        CommandSourceStack source = context.getSource();
+        RewardWorldStorage rewardWorldStorage = RewardWorldStorage.get(source.getLevel());
         try {
-            rewardWorldStorage.remove(source.asPlayer().getUniqueID(), context.getArgument("reward", ResourceLocation.class));
-            rewardWorldStorage.markDirty();
-            context.getSource().sendFeedback(new TranslationTextComponent("titanium.rewards.remove_success"), true);
+            rewardWorldStorage.remove(source.getPlayerOrException().getUUID(), context.getArgument("reward", ResourceLocation.class));
+            rewardWorldStorage.setDirty();
+            context.getSource().sendSuccess(new TranslatableComponent("titanium.rewards.remove_success"), true);
             return true;
         } catch (CommandSyntaxException e) {
             e.printStackTrace();
@@ -77,16 +77,16 @@ public class RewardCommand {
         return false;
     }
 
-    private static boolean addReward(CommandContext<CommandSource> context) {
+    private static boolean addReward(CommandContext<CommandSourceStack> context) {
         try {
-            CommandSource source = context.getSource();
+            CommandSourceStack source = context.getSource();
             ResourceLocation resourceLocation = context.getArgument("reward", ResourceLocation.class);
-            if (RewardManager.get().getReward(resourceLocation) == null || !RewardManager.get().getReward(resourceLocation).isPlayerValid(source.asPlayer().getUniqueID()))
+            if (RewardManager.get().getReward(resourceLocation) == null || !RewardManager.get().getReward(resourceLocation).isPlayerValid(source.getPlayerOrException().getUUID()))
                 return false;
-            RewardWorldStorage rewardWorldStorage = RewardWorldStorage.get(source.getWorld());
-            rewardWorldStorage.add(source.asPlayer().getUniqueID(), context.getArgument("reward", ResourceLocation.class), context.getArgument("option", String.class));
-            rewardWorldStorage.markDirty();
-            context.getSource().sendFeedback(new TranslationTextComponent("titanium.rewards.enabled_success"), true);
+            RewardWorldStorage rewardWorldStorage = RewardWorldStorage.get(source.getLevel());
+            rewardWorldStorage.add(source.getPlayerOrException().getUUID(), context.getArgument("reward", ResourceLocation.class), context.getArgument("option", String.class));
+            rewardWorldStorage.setDirty();
+            context.getSource().sendSuccess(new TranslatableComponent("titanium.rewards.enabled_success"), true);
             return true;
         } catch (CommandSyntaxException e) {
             e.printStackTrace();
@@ -94,12 +94,12 @@ public class RewardCommand {
         return false;
     }
 
-    private static List<ResourceLocation> getAvailableResourceLocations(CommandContext<CommandSource> context) {
-        CommandSource source = context.getSource();
-        RewardWorldStorage rewardWorldStorage = RewardWorldStorage.get(source.getWorld());
+    private static List<ResourceLocation> getAvailableResourceLocations(CommandContext<CommandSourceStack> context) {
+        CommandSourceStack source = context.getSource();
+        RewardWorldStorage rewardWorldStorage = RewardWorldStorage.get(source.getLevel());
         List<ResourceLocation> resourceLocations = new ArrayList<>(rewardWorldStorage.getFreeRewards());
         try {
-            resourceLocations.addAll(RewardManager.get().collectRewardsResourceLocations(context.getSource().asPlayer().getUniqueID()));
+            resourceLocations.addAll(RewardManager.get().collectRewardsResourceLocations(context.getSource().getPlayerOrException().getUUID()));
         } catch (CommandSyntaxException e) {
             e.printStackTrace();
         }

@@ -13,10 +13,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.network.CompoundSerializableDataHandler;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
@@ -30,24 +30,24 @@ import java.util.Map;
  *
  * @param <T>
  */
-public class GenericSerializer<T extends SerializableRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T>, IRecipeSerializerReversed<T> {
+public class GenericSerializer<T extends SerializableRecipe> extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<T>, IRecipeSerializerReversed<T> {
     private final Class<T> recipeClass;
-    private final IRecipeType<T> recipeType;
+    private final RecipeType<T> recipeType;
 
-    public GenericSerializer(IRecipeType<T> recipeType, Class<T> recipeClass) {
+    public GenericSerializer(RecipeType<T> recipeType, Class<T> recipeClass) {
         this.recipeType = recipeType;
         this.recipeClass = recipeClass;
     }
 
     public GenericSerializer(ResourceLocation resourceLocation, Class<T> recipeClass) {
-        this(IRecipeType.register(resourceLocation.toString()), recipeClass);
+        this(RecipeType.register(resourceLocation.toString()), recipeClass);
         this.setRegistryName(resourceLocation);
     }
 
     // Reading the recipe from the json file
     @Override
     @Nonnull
-    public T read(@Nonnull ResourceLocation recipeId, JsonObject json) {
+    public T fromJson(@Nonnull ResourceLocation recipeId, JsonObject json) {
         try {
             T recipe = recipeClass.getConstructor(ResourceLocation.class).newInstance(recipeId);
             for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
@@ -94,7 +94,7 @@ public class GenericSerializer<T extends SerializableRecipe> extends ForgeRegist
     // Reading from a packet buffer
     @Override
     @ParametersAreNonnullByDefault
-    public T read(ResourceLocation recipeId, PacketBuffer buffer) {
+    public T fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
         try {
             T recipe = recipeClass.getConstructor(ResourceLocation.class).newInstance(recipeId);
             for (Field field : recipeClass.getFields()) {
@@ -113,7 +113,7 @@ public class GenericSerializer<T extends SerializableRecipe> extends ForgeRegist
     // Writes a recipe to a buffer
     @Override
     @ParametersAreNonnullByDefault
-    public void write(PacketBuffer buffer, T recipe) {
+    public void toNetwork(FriendlyByteBuf buffer, T recipe) {
         try {
             for (Field field : recipeClass.getFields()) {
                 if (CompoundSerializableDataHandler.acceptField(field, field.getType())) {
@@ -125,7 +125,7 @@ public class GenericSerializer<T extends SerializableRecipe> extends ForgeRegist
         }
     }
 
-    public IRecipeType<T> getRecipeType() {
+    public RecipeType<T> getRecipeType() {
         return recipeType;
     }
 

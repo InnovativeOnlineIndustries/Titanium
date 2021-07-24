@@ -7,17 +7,17 @@
 
 package com.hrznstudio.titanium.reward.storage;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.storage.WorldSavedData;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.saveddata.SavedData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-public class RewardWorldStorage extends WorldSavedData {
+public class RewardWorldStorage extends SavedData {
 
     public static String NAME = "TitaniumReward";
     private HashMap<UUID, EnabledRewards> rewards;
@@ -35,8 +35,8 @@ public class RewardWorldStorage extends WorldSavedData {
         this(NAME);
     }
 
-    public static RewardWorldStorage get(ServerWorld world) {
-        return world.getSavedData().getOrCreate(RewardWorldStorage::new, NAME);
+    public static RewardWorldStorage get(ServerLevel world) {
+        return world.getDataStorage().computeIfAbsent(RewardWorldStorage::new, NAME);
     }
 
     public void remove(UUID uuid, ResourceLocation resourceLocation) {
@@ -60,38 +60,38 @@ public class RewardWorldStorage extends WorldSavedData {
     }
 
     @Override
-    public void read(CompoundNBT nbt) {
-        CompoundNBT compoundNBT = nbt.getCompound(NAME);
+    public void load(CompoundTag nbt) {
+        CompoundTag compoundNBT = nbt.getCompound(NAME);
         rewards.clear();
-        compoundNBT.keySet().forEach(s -> {
+        compoundNBT.getAllKeys().forEach(s -> {
             EnabledRewards rewards = new EnabledRewards();
             rewards.deserializeNBT(compoundNBT.getCompound(s));
             this.rewards.put(UUID.fromString(s), rewards);
         });
         freeRewards.clear();
-        CompoundNBT free = nbt.getCompound("FreeRewards");
-        free.keySet().forEach(s -> freeRewards.add(new ResourceLocation(s)));
+        CompoundTag free = nbt.getCompound("FreeRewards");
+        free.getAllKeys().forEach(s -> freeRewards.add(new ResourceLocation(s)));
         configuredPlayers.clear();
-        CompoundNBT configured = nbt.getCompound("ConfiguredPlayers");
-        configured.keySet().forEach(s -> configuredPlayers.add(UUID.fromString(s)));
+        CompoundTag configured = nbt.getCompound("ConfiguredPlayers");
+        configured.getAllKeys().forEach(s -> configuredPlayers.add(UUID.fromString(s)));
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound) {
-        CompoundNBT compoundNBT = new CompoundNBT();
+    public CompoundTag save(CompoundTag compound) {
+        CompoundTag compoundNBT = new CompoundTag();
         rewards.forEach((uuid, enabledRewards) -> compoundNBT.put(uuid.toString(), enabledRewards.serializeNBT()));
         compound.put(NAME, compoundNBT);
-        CompoundNBT free = new CompoundNBT();
+        CompoundTag free = new CompoundTag();
         freeRewards.forEach(resourceLocation -> free.putBoolean(resourceLocation.toString(), true));
         compound.put("FreeRewards", free);
-        CompoundNBT configured = new CompoundNBT();
+        CompoundTag configured = new CompoundTag();
         configuredPlayers.forEach(uuid -> configured.putBoolean(uuid.toString(), true));
         compound.put("ConfiguredPlayers", configured);
         return compound;
     }
 
-    public CompoundNBT serializeSimple() {
-        CompoundNBT compoundNBT = new CompoundNBT();
+    public CompoundTag serializeSimple() {
+        CompoundTag compoundNBT = new CompoundTag();
         rewards.forEach((uuid, enabledRewards) -> compoundNBT.put(uuid.toString(), enabledRewards.serializeNBT()));
         return compoundNBT;
     }

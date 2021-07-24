@@ -20,12 +20,14 @@ import com.hrznstudio.titanium.component.inventory.SidedInventoryComponent;
 import com.hrznstudio.titanium.component.sideness.IFacingComponent;
 import com.hrznstudio.titanium.item.AugmentWrapper;
 import com.hrznstudio.titanium.util.FacingUtil;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,8 +37,8 @@ public abstract class MachineTile<T extends MachineTile<T>> extends PoweredTile<
     @Save
     private SidedInventoryComponent<T> augmentInventory;
 
-    public MachineTile(BasicTileBlock<T> basicTileBlock) {
-        super(basicTileBlock);
+    public MachineTile(BasicTileBlock<T> basicTileBlock, BlockPos pos, BlockState state) {
+        super(basicTileBlock, pos, state);
         addInventory(this.augmentInventory = (SidedInventoryComponent<T>) getAugmentFactory()
             .create()
             .setComponentHarness(this.getSelf())
@@ -98,12 +100,12 @@ public abstract class MachineTile<T extends MachineTile<T>> extends PoweredTile<
     }
 
     @Override
-    public ActionResultType onActivated(PlayerEntity playerIn, Hand hand, Direction facing, double hitX, double hitY, double hitZ) {
-        if (super.onActivated(playerIn, hand, facing, hitX, hitY, hitZ) == ActionResultType.SUCCESS) {
-            return ActionResultType.SUCCESS;
+    public InteractionResult onActivated(Player playerIn, InteractionHand hand, Direction facing, double hitX, double hitY, double hitZ) {
+        if (super.onActivated(playerIn, hand, facing, hitX, hitY, hitZ) == InteractionResult.SUCCESS) {
+            return InteractionResult.SUCCESS;
         }
         openGui(playerIn);
-        return ActionResultType.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
 }

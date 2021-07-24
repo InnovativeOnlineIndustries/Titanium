@@ -16,28 +16,28 @@ import com.hrznstudio.titanium.datagenerator.loot.block.BasicBlockLootTables;
 import com.hrznstudio.titanium.datagenerator.loot.block.IBlockLootTableProvider;
 import com.hrznstudio.titanium.module.api.IAlternativeEntries;
 import com.hrznstudio.titanium.module.api.RegistryManager;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootTable;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.shapes.IBooleanFunction;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.Containers;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -48,7 +48,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 public abstract class BasicBlock extends Block implements IAlternativeEntries, IRecipeProvider, IBlockLootTableProvider {
-    private ItemGroup itemGroup = ItemGroup.SEARCH;
+    private CreativeModeTab itemGroup = CreativeModeTab.TAB_SEARCH;
     private BlockItem item;
 
     public BasicBlock(Properties properties) {
@@ -56,11 +56,11 @@ public abstract class BasicBlock extends Block implements IAlternativeEntries, I
     }
 
     @Nullable
-    protected static DistanceRayTraceResult rayTraceBox(BlockPos pos, Vector3d start, Vector3d end, VoxelShape shape) {
-        BlockRayTraceResult bbResult = shape.rayTrace(start, end, pos);
+    protected static DistanceRayTraceResult rayTraceBox(BlockPos pos, Vec3 start, Vec3 end, VoxelShape shape) {
+        BlockHitResult bbResult = shape.clip(start, end, pos);
         if (bbResult != null) {
-            Vector3d hitVec = bbResult.getHitVec();
-            Direction sideHit = bbResult.getFace();
+            Vec3 hitVec = bbResult.getLocation();
+            Direction sideHit = bbResult.getDirection();
             double dist = start.distanceTo(hitVec);
             return new DistanceRayTraceResult(hitVec, sideHit, pos, shape, dist);
         }
@@ -86,11 +86,11 @@ public abstract class BasicBlock extends Block implements IAlternativeEntries, I
     @Override
     @Nonnull
     @SuppressWarnings("deprecation")
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext selectionContext) {
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext selectionContext) {
         if (hasCustomBoxes(state, world, pos)) {
-            VoxelShape shape = VoxelShapes.empty();
+            VoxelShape shape = Shapes.empty();
             for (VoxelShape shape1 : getBoundingBoxes(state, world, pos)) {
-                shape = VoxelShapes.combineAndSimplify(shape, shape1, IBooleanFunction.OR);
+                shape = Shapes.join(shape, shape1, BooleanOp.OR);
             }
             return shape;
         }
@@ -98,7 +98,7 @@ public abstract class BasicBlock extends Block implements IAlternativeEntries, I
     }
 
     public IFactory<BlockItem> getItemBlockFactory() {
-        return () -> (BlockItem) new BlockItem(this, new Item.Properties().group(this.itemGroup)).setRegistryName(Objects.requireNonNull(getRegistryName()));
+        return () -> (BlockItem) new BlockItem(this, new Item.Properties().tab(this.itemGroup)).setRegistryName(Objects.requireNonNull(getRegistryName()));
     }
 
     @Override
@@ -116,23 +116,23 @@ public abstract class BasicBlock extends Block implements IAlternativeEntries, I
         this.item = item;
     }
 
-    public List<VoxelShape> getBoundingBoxes(BlockState state, IBlockReader source, BlockPos pos) {
+    public List<VoxelShape> getBoundingBoxes(BlockState state, BlockGetter source, BlockPos pos) {
         return Collections.emptyList();
     }
 
-    public boolean hasCustomBoxes(BlockState state, IBlockReader source, BlockPos pos) {
+    public boolean hasCustomBoxes(BlockState state, BlockGetter source, BlockPos pos) {
         return false;
     }
 
     @Nullable
-    protected RayTraceResult rayTraceBoxesClosest(Vector3d start, Vector3d end, BlockPos pos, List<VoxelShape> boxes) {
+    protected HitResult rayTraceBoxesClosest(Vec3 start, Vec3 end, BlockPos pos, List<VoxelShape> boxes) {
         List<DistanceRayTraceResult> results = new ArrayList<>();
         for (VoxelShape box : boxes) {
             DistanceRayTraceResult hit = rayTraceBox(pos, start, end, box);
             if (hit != null)
                 results.add(hit);
         }
-        RayTraceResult closestHit = null;
+        HitResult closestHit = null;
         double curClosest = Double.MAX_VALUE;
         for (DistanceRayTraceResult hit : results) {
             if (curClosest > hit.getDistance()) {
@@ -143,32 +143,32 @@ public abstract class BasicBlock extends Block implements IAlternativeEntries, I
         return closestHit;
     }
 
-    public ItemGroup getItemGroup() {
+    public CreativeModeTab getItemGroup() {
         return itemGroup;
     }
 
-    public void setItemGroup(ItemGroup itemGroup) {
+    public void setItemGroup(CreativeModeTab itemGroup) {
         this.itemGroup = itemGroup;
     }
 
     @Override
-    public void registerRecipe(Consumer<IFinishedRecipe> consumer) {
+    public void registerRecipe(Consumer<FinishedRecipe> consumer) {
 
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (!state.isIn(newState.getBlock())) {
-            InventoryHelper.dropItems(worldIn, pos, getDynamicDrops(state, worldIn, pos, newState, isMoving));
-            worldIn.updateComparatorOutputLevel(pos, this);
+    public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (!state.is(newState.getBlock())) {
+            Containers.dropContents(worldIn, pos, getDynamicDrops(state, worldIn, pos, newState, isMoving));
+            worldIn.updateNeighbourForOutputSignal(pos, this);
         }
-        super.onReplaced(state, worldIn, pos, newState, isMoving);
+        super.onRemove(state, worldIn, pos, newState, isMoving);
     }
 
-    public NonNullList<ItemStack> getDynamicDrops(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+    public NonNullList<ItemStack> getDynamicDrops(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
         NonNullList<ItemStack> stacks = NonNullList.create();
-        TileEntity tileentity = worldIn.getTileEntity(pos);
+        BlockEntity tileentity = worldIn.getBlockEntity(pos);
         if (tileentity instanceof ActiveTile && ((ActiveTile<?>) tileentity).getMultiInventoryComponent() != null) {
             for (InventoryComponent<?> inventoryHandler : ((ActiveTile<?>) tileentity).getMultiInventoryComponent().getInventoryHandlers()) {
                 for (int i = 0; i < inventoryHandler.getSlots(); i++) {

@@ -13,9 +13,9 @@ import com.hrznstudio.titanium.client.screen.addon.interfaces.ICanMouseDrag;
 import com.hrznstudio.titanium.client.screen.addon.interfaces.IClickable;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.util.AssetUtil;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.gui.screen.Screen;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.screens.Screen;
 
 import java.awt.*;
 import java.util.function.Consumer;
@@ -42,19 +42,19 @@ public class HuePickerAddon extends BasicScreenAddon implements IClickable, ICan
     }
 
     @Override
-    public void drawBackgroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackgroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         drawColorBar(stack, this.getPosX() + guiX, this.getPosY() + guiY, this.getXSize(), this.getYSize());
         AssetUtil.drawAsset(stack, screen, provider.getAsset(AssetTypes.HUE_PICKER), guiX + (int) (this.getPosX() + this.hue * this.getXSize()) - 3, guiY + this.getPosY() - 3);
     }
 
     @Override
-    public void drawForegroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
+    public void drawForegroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
 
     }
 
-    private void drawColorBar(MatrixStack matrix, int x, int y, int width, int height) {
+    private void drawColorBar(PoseStack matrix, int x, int y, int width, int height) {
         for (int i = 0; i < width; ++i) {
-            AbstractGui.fill(matrix, x + i, y, x + i + 1, y + height, Color.getHSBColor(((float) i / width), 1f, 1f).getRGB());
+            GuiComponent.fill(matrix, x + i, y, x + i + 1, y + height, Color.getHSBColor(((float) i / width), 1f, 1f).getRGB());
         }
     }
 

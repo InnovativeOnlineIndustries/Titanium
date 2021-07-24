@@ -7,8 +7,8 @@
 
 package com.hrznstudio.titanium.network;
 
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -17,7 +17,7 @@ public abstract class Message implements Serializable {
 
     protected abstract void handleMessage(NetworkEvent.Context context);
 
-    public final void fromBytes(PacketBuffer buf) {
+    public final void fromBytes(FriendlyByteBuf buf) {
         try {
             Class<?> clazz = getClass();
             for (Field f : clazz.getDeclaredFields()) {
@@ -31,7 +31,7 @@ public abstract class Message implements Serializable {
         }
     }
 
-    public final void toBytes(PacketBuffer buf) {
+    public final void toBytes(FriendlyByteBuf buf) {
         try {
             Class<?> clazz = getClass();
             for (Field f : clazz.getDeclaredFields()) {

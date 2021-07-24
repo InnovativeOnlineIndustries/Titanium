@@ -8,58 +8,58 @@
 package com.hrznstudio.titanium.container;
 
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
-public class BasicContainer extends Container {
+public class BasicContainer extends AbstractContainerMenu {
     private IAssetProvider assetProvider;
 
-    public BasicContainer(int id, PlayerInventory inventory, PacketBuffer buffer) {
-        this(inventory.player.openContainer.getType(), id);
+    public BasicContainer(int id, Inventory inventory, FriendlyByteBuf buffer) {
+        this(inventory.player.containerMenu.getType(), id);
     }
 
-    public BasicContainer(ContainerType type, int id) {
+    public BasicContainer(MenuType type, int id) {
         super(type, id);
         this.assetProvider = IAssetProvider.DEFAULT_PROVIDER;
     }
 
-    public BasicContainer(ContainerType type, int id, IAssetProvider assetProvider) {
+    public BasicContainer(MenuType type, int id, IAssetProvider assetProvider) {
         super(type, id);
         this.assetProvider = assetProvider;
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity playerIn) {
+    public boolean stillValid(Player playerIn) {
         return false;
     }
 
     @Override
-    public ItemStack transferStackInSlot(PlayerEntity player, int index) {
+    public ItemStack quickMoveStack(Player player, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
-        Slot slot = inventorySlots.get(index);
-        if (slot != null && slot.getHasStack()) {
-            ItemStack itemstack1 = slot.getStack();
+        Slot slot = slots.get(index);
+        if (slot != null && slot.hasItem()) {
+            ItemStack itemstack1 = slot.getItem();
             itemstack = itemstack1.copy();
 
-            int containerSlots = inventorySlots.size() - player.inventory.mainInventory.size();
+            int containerSlots = slots.size() - player.inventoryMenu.items.size();
 
             if (index < containerSlots) {
-                if (!this.mergeItemStack(itemstack1, containerSlots, inventorySlots.size(), true)) {
+                if (!this.moveItemStackTo(itemstack1, containerSlots, slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (!this.mergeItemStack(itemstack1, 0, containerSlots, false)) {
+            } else if (!this.moveItemStackTo(itemstack1, 0, containerSlots, false)) {
                 return ItemStack.EMPTY;
             }
 
             if (itemstack1.getCount() == 0) {
-                slot.putStack(ItemStack.EMPTY);
+                slot.set(ItemStack.EMPTY);
             } else {
-                slot.onSlotChanged();
+                slot.setChanged();
             }
 
             if (itemstack1.getCount() == itemstack.getCount()) {

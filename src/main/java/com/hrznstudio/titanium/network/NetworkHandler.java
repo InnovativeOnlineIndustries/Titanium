@@ -7,15 +7,15 @@
 
 package com.hrznstudio.titanium.network;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkDirection;
-import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraftforge.fmllegacy.network.NetworkDirection;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkRegistry;
+import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -56,9 +56,9 @@ public class NetworkHandler {
                 });
     }
 
-    public void sendToNearby(World world, BlockPos pos, int distance, Message message) {
-        world.getEntitiesWithinAABB(ServerPlayerEntity.class, new AxisAlignedBB(pos).grow(distance)).forEach(playerEntity -> {
-            network.sendTo(message, playerEntity.connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
+    public void sendToNearby(Level world, BlockPos pos, int distance, Message message) {
+        world.getEntitiesOfClass(ServerPlayer.class, new AABB(pos).inflate(distance)).forEach(playerEntity -> {
+            network.sendTo(message, playerEntity.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
         });
     }
 }

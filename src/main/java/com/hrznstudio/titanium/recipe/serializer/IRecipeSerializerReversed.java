@@ -8,8 +8,8 @@
 package com.hrznstudio.titanium.recipe.serializer;
 
 import com.google.gson.JsonObject;
-import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.world.item.crafting.Recipe;
 
-public interface IRecipeSerializerReversed<T extends IRecipe<?>> {
+public interface IRecipeSerializerReversed<T extends Recipe<?>> {
     JsonObject write(T recipe);
 }

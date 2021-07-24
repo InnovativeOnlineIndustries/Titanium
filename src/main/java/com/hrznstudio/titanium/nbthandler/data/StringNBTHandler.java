@@ -8,7 +8,7 @@
 package com.hrznstudio.titanium.nbthandler.data;
 
 import com.hrznstudio.titanium.api.INBTHandler;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -20,13 +20,13 @@ public class StringNBTHandler implements INBTHandler<String> {
     }
 
     @Override
-    public boolean storeToNBT(@Nonnull CompoundNBT compound, @Nonnull String name, @Nonnull String object) {
+    public boolean storeToNBT(@Nonnull CompoundTag compound, @Nonnull String name, @Nonnull String object) {
         compound.putString(name, object);
         return true;
     }
 
     @Override
-    public String readFromNBT(@Nonnull CompoundNBT compound, @Nonnull String name, @Nullable String current) {
+    public String readFromNBT(@Nonnull CompoundTag compound, @Nonnull String name, @Nullable String current) {
         return compound.contains(name) ? compound.getString(name) : current;
     }
 }

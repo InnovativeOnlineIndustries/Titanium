@@ -13,8 +13,8 @@ import com.hrznstudio.titanium.api.filter.FilterAction;
 import com.hrznstudio.titanium.api.filter.FilterSlot;
 import com.hrznstudio.titanium.api.filter.IFilter;
 import com.hrznstudio.titanium.client.screen.addon.ItemstackFilterScreenAddon;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,12 +22,12 @@ import java.util.List;
 
 @SuppressWarnings("unchecked")
 public class ItemStackFilter implements IFilter<ItemStack> {
-    private static FilterAction<ItemStack> SIMPLE = new FilterAction<>((itemStackIFilter, stack) -> Arrays.stream(itemStackIFilter.getFilterSlots()).anyMatch(itemStackFilterSlot -> stack.isItemEqual(itemStackFilterSlot.getFilter())));
-    private static FilterAction<ItemStack> IGNORE_DURABILITY = new FilterAction<>((itemStackIFilter, stack) -> Arrays.stream(itemStackIFilter.getFilterSlots()).anyMatch(itemStackFilterSlot -> stack.isItemEqualIgnoreDurability(itemStackFilterSlot.getFilter())));
-    private static FilterAction<ItemStack> DURABILITY_LESS_50 = new FilterAction<>((itemStackIFilter, stack) -> Arrays.stream(itemStackIFilter.getFilterSlots()).anyMatch(itemStackFilterSlot -> stack.isItemEqual(itemStackFilterSlot.getFilter())) && stack.getDamage() < stack.getMaxDamage() / 50);
-    private static FilterAction<ItemStack> DAMAGED = new FilterAction<>((itemStackIFilter, stack) -> Arrays.stream(itemStackIFilter.getFilterSlots()).anyMatch(itemStackFilterSlot -> stack.isItemEqual(itemStackFilterSlot.getFilter())) && stack.getDamage() < stack.getMaxDamage());
-    private static FilterAction<ItemStack> NOT_DAMAGED = new FilterAction<>((itemStackIFilter, stack) -> Arrays.stream(itemStackIFilter.getFilterSlots()).anyMatch(itemStackFilterSlot -> stack.isItemEqual(itemStackFilterSlot.getFilter())) && stack.getDamage() == stack.getMaxDamage());
-    private static FilterAction<ItemStack> DURABILITY_MORE_50 = new FilterAction<>((itemStackIFilter, stack) -> Arrays.stream(itemStackIFilter.getFilterSlots()).anyMatch(itemStackFilterSlot -> stack.isItemEqual(itemStackFilterSlot.getFilter())) && stack.getDamage() > stack.getMaxDamage() / 50);
+    private static FilterAction<ItemStack> SIMPLE = new FilterAction<>((itemStackIFilter, stack) -> Arrays.stream(itemStackIFilter.getFilterSlots()).anyMatch(itemStackFilterSlot -> stack.sameItem(itemStackFilterSlot.getFilter())));
+    private static FilterAction<ItemStack> IGNORE_DURABILITY = new FilterAction<>((itemStackIFilter, stack) -> Arrays.stream(itemStackIFilter.getFilterSlots()).anyMatch(itemStackFilterSlot -> stack.sameItemStackIgnoreDurability(itemStackFilterSlot.getFilter())));
+    private static FilterAction<ItemStack> DURABILITY_LESS_50 = new FilterAction<>((itemStackIFilter, stack) -> Arrays.stream(itemStackIFilter.getFilterSlots()).anyMatch(itemStackFilterSlot -> stack.sameItem(itemStackFilterSlot.getFilter())) && stack.getDamageValue() < stack.getMaxDamage() / 50);
+    private static FilterAction<ItemStack> DAMAGED = new FilterAction<>((itemStackIFilter, stack) -> Arrays.stream(itemStackIFilter.getFilterSlots()).anyMatch(itemStackFilterSlot -> stack.sameItem(itemStackFilterSlot.getFilter())) && stack.getDamageValue() < stack.getMaxDamage());
+    private static FilterAction<ItemStack> NOT_DAMAGED = new FilterAction<>((itemStackIFilter, stack) -> Arrays.stream(itemStackIFilter.getFilterSlots()).anyMatch(itemStackFilterSlot -> stack.sameItem(itemStackFilterSlot.getFilter())) && stack.getDamageValue() == stack.getMaxDamage());
+    private static FilterAction<ItemStack> DURABILITY_MORE_50 = new FilterAction<>((itemStackIFilter, stack) -> Arrays.stream(itemStackIFilter.getFilterSlots()).anyMatch(itemStackFilterSlot -> stack.sameItem(itemStackFilterSlot.getFilter())) && stack.getDamageValue() > stack.getMaxDamage() / 50);
     private static FilterAction<ItemStack>[] ACTIONS = new FilterAction[]{SIMPLE, IGNORE_DURABILITY, DURABILITY_LESS_50, DAMAGED, NOT_DAMAGED, DURABILITY_MORE_50};
     private final FilterSlot<ItemStack>[] filter;
 
@@ -99,10 +99,10 @@ public class ItemStackFilter implements IFilter<ItemStack> {
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
-        CompoundNBT compoundNBT = new CompoundNBT();
+    public CompoundTag serializeNBT() {
+        CompoundTag compoundNBT = new CompoundTag();
         compoundNBT.putInt("Pointer", pointer);
-        CompoundNBT filter = new CompoundNBT();
+        CompoundTag filter = new CompoundTag();
         for (FilterSlot<ItemStack> itemStackFilterSlot : this.filter) {
             if (itemStackFilterSlot != null && !itemStackFilterSlot.getFilter().isEmpty())
                 filter.put(itemStackFilterSlot.getFilterID() + "", itemStackFilterSlot.getFilter().serializeNBT());
@@ -113,14 +113,14 @@ public class ItemStackFilter implements IFilter<ItemStack> {
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
         pointer = nbt.getInt("Pointer");
-        CompoundNBT filter = nbt.getCompound("Filter");
+        CompoundTag filter = nbt.getCompound("Filter");
         for (FilterSlot<ItemStack> filterSlot : this.filter) {
             filterSlot.setFilter(ItemStack.EMPTY);
         }
-        for (String key : filter.keySet()) {
-            this.filter[Integer.parseInt(key)].setFilter(ItemStack.read(filter.getCompound(key)));
+        for (String key : filter.getAllKeys()) {
+            this.filter[Integer.parseInt(key)].setFilter(ItemStack.of(filter.getCompound(key)));
         }
         this.type = Type.valueOf(nbt.getString("Type"));
     }

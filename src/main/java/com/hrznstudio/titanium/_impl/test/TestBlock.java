@@ -13,8 +13,8 @@ import com.hrznstudio.titanium.annotation.config.ConfigVal;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.block.RotatableBlock;
 import com.hrznstudio.titanium.datagenerator.loot.block.BasicBlockLootTables;
-import net.minecraft.block.material.Material;
-import net.minecraft.loot.LootTable;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.storage.loot.LootTable;
 
 import javax.annotation.Nonnull;
 
@@ -27,7 +27,7 @@ public class TestBlock extends RotatableBlock<TestTile> {
     public static TestBlock TEST;
 
     public TestBlock() {
-        super(Properties.create(Material.ROCK), TestTile.class);
+        super(Properties.of(Material.STONE), TestTile.class);
     }
 
     @Override

@@ -7,15 +7,15 @@
 
 package com.hrznstudio.titanium.recipe.generator;
 
-import net.minecraft.advancements.criterion.InventoryChangeTrigger;
-import net.minecraft.advancements.criterion.ItemPredicate;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.data.ShapedRecipeBuilder;
-import net.minecraft.item.Item;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.advancements.critereon.InventoryChangeTrigger;
+import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.crafting.ConditionalRecipe;
 import net.minecraftforge.common.crafting.conditions.IConditionBuilder;
 
@@ -28,7 +28,7 @@ public class TitaniumShapedRecipeBuilder extends ShapedRecipeBuilder implements 
     private boolean build;
     private boolean criterion;
 
-    public TitaniumShapedRecipeBuilder(IItemProvider resultIn, int countIn) {
+    public TitaniumShapedRecipeBuilder(ItemLike resultIn, int countIn) {
         super(resultIn, countIn);
         this.resourceLocation = resultIn.asItem().getRegistryName();
         this.build = false;
@@ -38,43 +38,43 @@ public class TitaniumShapedRecipeBuilder extends ShapedRecipeBuilder implements 
                 ));
     }
 
-    public static TitaniumShapedRecipeBuilder shapedRecipe(IItemProvider resultIn) {
+    public static TitaniumShapedRecipeBuilder shapedRecipe(ItemLike resultIn) {
         return shapedRecipe(resultIn, 1);
     }
 
     /**
      * Creates a new builder for a shaped recipe.
      */
-    public static TitaniumShapedRecipeBuilder shapedRecipe(IItemProvider resultIn, int countIn) {
+    public static TitaniumShapedRecipeBuilder shapedRecipe(ItemLike resultIn, int countIn) {
         return new TitaniumShapedRecipeBuilder(resultIn, countIn);
     }
 
     @Override
-    public void build(Consumer<IFinishedRecipe> consumerIn) {
+    public void save(Consumer<FinishedRecipe> consumerIn) {
         if (!this.build) {
             this.build = true;
-            this.conditional.addRecipe(this::build).build(consumerIn, resourceLocation);
+            this.conditional.addRecipe(this::save).build(consumerIn, resourceLocation);
         } else {
-            this.build(consumerIn, resourceLocation);
+            this.save(consumerIn, resourceLocation);
         }
     }
 
     @Override
-    public ShapedRecipeBuilder key(Character symbol, ITag<Item> tagIn) {
+    public ShapedRecipeBuilder define(Character symbol, Tag<Item> tagIn) {
         if (!this.criterion) {
             this.criterion = true;
-            addCriterion("has_item", InventoryChangeTrigger.Instance.forItems(ItemPredicate.Builder.create().tag(tagIn).build()));
+            unlockedBy("has_item", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(tagIn).build()));
         }
-        return super.key(symbol, tagIn);
+        return super.define(symbol, tagIn);
     }
 
     @Override
-    public ShapedRecipeBuilder key(Character symbol, Ingredient ingredientIn) {
+    public ShapedRecipeBuilder define(Character symbol, Ingredient ingredientIn) {
         if (!this.criterion) {
             this.criterion = true;
-            addCriterion("has_item", InventoryChangeTrigger.Instance.forItems(ItemPredicate.Builder.create().item(ingredientIn.getMatchingStacks()[0].getItem()).build()));
+            unlockedBy("has_item", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(ingredientIn.getItems()[0].getItem()).build()));
         }
-        return super.key(symbol, ingredientIn);
+        return super.define(symbol, ingredientIn);
     }
 
     public TitaniumShapedRecipeBuilder setName(ResourceLocation resourceLocation) {

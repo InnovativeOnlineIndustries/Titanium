@@ -15,11 +15,11 @@ import com.hrznstudio.titanium.client.screen.addon.interfaces.ICanMouseDrag;
 import com.hrznstudio.titanium.client.screen.addon.interfaces.IClickable;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.util.AssetUtil;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.TextComponent;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
@@ -38,7 +38,7 @@ public abstract class ScreenAddonScreen extends Screen implements IScreenAddonCo
     private int dragY;
 
     public ScreenAddonScreen(IAssetProvider assetProvider, boolean drawBackground) {
-        super(new StringTextComponent(""));
+        super(new TextComponent(""));
         this.assetProvider = assetProvider;
         this.drawBackground = drawBackground;
     }
@@ -56,19 +56,19 @@ public abstract class ScreenAddonScreen extends Screen implements IScreenAddonCo
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) { //render
-        RenderSystem.pushMatrix();
+    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) { //render
+        matrixStack.pushPose();
         renderBackground(matrixStack, mouseX, mouseY, partialTicks);
-        RenderSystem.popMatrix();
+        matrixStack.popPose();
         super.render(matrixStack, mouseX, mouseY, partialTicks);
-        RenderSystem.pushMatrix();
+        matrixStack.pushPose();
         renderForeground(matrixStack, mouseX, mouseY, partialTicks);
-        RenderSystem.popMatrix();
+        matrixStack.popPose();
     }
 
-    public void renderBackground(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
+    public void renderBackground(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
         this.checkForMouseDrag(mouseX, mouseY);
-        RenderSystem.color4f(1, 1, 1, 1);
+        RenderSystem.setShaderColor(1, 1, 1, 1);
         if (drawBackground) {
             this.renderBackground(stack, 0);//draw tinted background
             AssetUtil.drawAsset(stack, this, assetProvider.getAsset(AssetTypes.BACKGROUND), x, y);
@@ -76,12 +76,12 @@ public abstract class ScreenAddonScreen extends Screen implements IScreenAddonCo
         addonList.forEach(iGuiAddon -> iGuiAddon.drawBackgroundLayer(stack, this, assetProvider, x, y, mouseX, mouseY, partialTicks));
     }
 
-    public void renderForeground(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
+    public void renderForeground(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
         addonList.forEach(iGuiAddon -> iGuiAddon.drawForegroundLayer(stack, this, assetProvider, x, y, mouseX, mouseY));
         for (IScreenAddon iScreenAddon : addonList) {
             if (iScreenAddon.isInside(this, mouseX - x, mouseY - y) && !iScreenAddon.getTooltipLines().isEmpty()) {
                 // renderTooltip
-                renderWrappedToolTip(stack, iScreenAddon.getTooltipLines(), mouseX, mouseY, minecraft.fontRenderer);
+                renderWrappedToolTip(stack, iScreenAddon.getTooltipLines(), mouseX, mouseY, minecraft.font);
             }
         }
     }
@@ -89,7 +89,7 @@ public abstract class ScreenAddonScreen extends Screen implements IScreenAddonCo
     public abstract List<IFactory<IScreenAddon>> guiAddons();
 
     private void checkForMouseDrag(int mouseX, int mouseY) {
-        if (GLFW.glfwGetMouseButton(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS) {//Main Window
+        if (GLFW.glfwGetMouseButton(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS) {//Main Window
             if (!this.isMouseDragging) {
                 this.isMouseDragging = true;
             } else {

@@ -7,8 +7,8 @@
 
 package com.hrznstudio.titanium.network.locator;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.HashMap;
 import java.util.Optional;
@@ -21,28 +21,28 @@ public class PlayerInventoryFinder {
     public static HashMap<String, PlayerInventoryFinder> FINDERS = new HashMap<>();
 
     static {
-        FINDERS.put(MAIN, new PlayerInventoryFinder(playerEntity -> playerEntity.inventory.mainInventory.size(), (playerEntity, integer) -> playerEntity.inventory.mainInventory.get(integer), (playerEntity, slot, stack) -> playerEntity.inventory.mainInventory.set(slot, stack)));
+        FINDERS.put(MAIN, new PlayerInventoryFinder(playerEntity -> playerEntity.inventory.items.size(), (playerEntity, integer) -> playerEntity.inventory.items.get(integer), (playerEntity, slot, stack) -> playerEntity.inventory.items.set(slot, stack)));
     }
 
     public static Optional<PlayerInventoryFinder> get(String name){
         return Optional.ofNullable(FINDERS.get(name));
     }
 
-    private final Function<PlayerEntity, Integer> slotAmountGetter;
-    private final BiFunction<PlayerEntity, Integer, ItemStack> stackGetter;
+    private final Function<Player, Integer> slotAmountGetter;
+    private final BiFunction<Player, Integer, ItemStack> stackGetter;
     private final IStackModifier stackSetter;
 
-    public PlayerInventoryFinder(Function<PlayerEntity, Integer> slotAmountGetter, BiFunction<PlayerEntity, Integer, ItemStack> stackGetter, IStackModifier stackSetter) {
+    public PlayerInventoryFinder(Function<Player, Integer> slotAmountGetter, BiFunction<Player, Integer, ItemStack> stackGetter, IStackModifier stackSetter) {
         this.slotAmountGetter = slotAmountGetter;
         this.stackGetter = stackGetter;
         this.stackSetter = stackSetter;
     }
 
-    public Function<PlayerEntity, Integer> getSlotAmountGetter() {
+    public Function<Player, Integer> getSlotAmountGetter() {
         return slotAmountGetter;
     }
 
-    public BiFunction<PlayerEntity, Integer, ItemStack> getStackGetter() {
+    public BiFunction<Player, Integer, ItemStack> getStackGetter() {
         return stackGetter;
     }
 
@@ -52,7 +52,7 @@ public class PlayerInventoryFinder {
 
     public interface IStackModifier{
 
-        void consume(PlayerEntity playerEntity, int slot, ItemStack stack);
+        void consume(Player playerEntity, int slot, ItemStack stack);
 
     }
 

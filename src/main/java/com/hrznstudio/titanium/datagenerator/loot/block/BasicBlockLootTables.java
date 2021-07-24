@@ -7,19 +7,19 @@
 
 package com.hrznstudio.titanium.datagenerator.loot.block;
 
-import net.minecraft.block.Block;
-import net.minecraft.data.loot.BlockLootTables;
-import net.minecraft.loot.ConstantRange;
-import net.minecraft.loot.ItemLootEntry;
-import net.minecraft.loot.LootPool;
-import net.minecraft.loot.LootTable;
-import net.minecraft.loot.functions.CopyNbt;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.data.loot.BlockLoot;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.functions.CopyNbtFunction;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraftforge.common.util.NonNullLazy;
 
 import java.util.List;
 
-public class BasicBlockLootTables extends BlockLootTables {
+public class BasicBlockLootTables extends BlockLoot {
     private final NonNullLazy<List<Block>> blocksToProcess;
 
     public BasicBlockLootTables(NonNullLazy<List<Block>> blocksToProcess) {
@@ -31,27 +31,27 @@ public class BasicBlockLootTables extends BlockLootTables {
         blocksToProcess.get()
             .forEach(block -> {
                 if (block instanceof IBlockLootTableProvider) {
-                    this.registerLootTable(block, ((IBlockLootTableProvider) block).getLootTable(this));
+                    this.add(block, ((IBlockLootTableProvider) block).getLootTable(this));
                 }
             });
     }
 
     public LootTable.Builder droppingNothing() {
-        return LootTable.builder();
+        return LootTable.lootTable();
     }
 
-    public LootTable.Builder droppingSelf(IItemProvider itemProvider) {
-        return LootTable.builder()
-            .addLootPool(withSurvivesExplosion(itemProvider, LootPool.builder()
-                .rolls(ConstantRange.of(1))
-                .addEntry(ItemLootEntry.builder(itemProvider))));
+    public LootTable.Builder droppingSelf(ItemLike itemProvider) {
+        return LootTable.lootTable()
+            .withPool(applyExplosionCondition(itemProvider, LootPool.lootPool()
+                .setRolls(ConstantValue.exactly(1))
+                .add(LootItem.lootTableItem(itemProvider))));
     }
 
-    public LootTable.Builder droppingSelfWithNbt(IItemProvider itemProvider, CopyNbt.Builder nbtBuilder) {
-        return LootTable.builder()
-            .addLootPool(withSurvivesExplosion(itemProvider, LootPool.builder()
-                .rolls(ConstantRange.of(1))
-                .addEntry(ItemLootEntry.builder(itemProvider).acceptFunction(nbtBuilder))));
+    public LootTable.Builder droppingSelfWithNbt(ItemLike itemProvider, CopyNbtFunction.Builder nbtBuilder) {
+        return LootTable.lootTable()
+            .withPool(applyExplosionCondition(itemProvider, LootPool.lootPool()
+                .setRolls(ConstantValue.exactly(1))
+                .add(LootItem.lootTableItem(itemProvider).apply(nbtBuilder))));
     }
 
     @Override

@@ -8,31 +8,31 @@
 package com.hrznstudio.titanium.container.impl;
 
 import com.hrznstudio.titanium.container.IDisableableContainer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.Container;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.function.BooleanSupplier;
 
 public class DisableableSlot extends Slot {
     private final BooleanSupplier isDisabled;
 
-    public DisableableSlot(IInventory inventoryIn, int index, int xPosition, int yPosition, IDisableableContainer disableableContainer) {
+    public DisableableSlot(Container inventoryIn, int index, int xPosition, int yPosition, IDisableableContainer disableableContainer) {
         this(inventoryIn, index, xPosition, yPosition, disableableContainer::isDisabled);
     }
 
-    public DisableableSlot(IInventory inventoryIn, int index, int xPosition, int yPosition, BooleanSupplier isDisabled) {
+    public DisableableSlot(Container inventoryIn, int index, int xPosition, int yPosition, BooleanSupplier isDisabled) {
         super(inventoryIn, index, xPosition, yPosition);
         this.isDisabled = isDisabled;
     }
 
     @Override
-    public boolean isEnabled() {
+    public boolean isActive() {
         return !isDisabled.getAsBoolean();
     }
 
     @Override
-    public boolean isItemValid(ItemStack stack) {
+    public boolean mayPlace(ItemStack stack) {
         return !isDisabled.getAsBoolean();
     }
 }

@@ -18,12 +18,12 @@ import com.hrznstudio.titanium.component.IComponentHarness;
 import com.hrznstudio.titanium.component.sideness.IFacingComponent;
 import com.hrznstudio.titanium.component.sideness.SidedComponentManager;
 import com.hrznstudio.titanium.util.FacingUtil;
-import net.minecraft.item.DyeColor;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -97,11 +97,11 @@ public class SidedFluidTankComponent<T extends IComponentHarness> extends FluidT
 
 
     @Override
-    public boolean work(World world, BlockPos pos, Direction blockFacing, int workAmount) {
+    public boolean work(Level world, BlockPos pos, Direction blockFacing, int workAmount) {
         for (FacingUtil.Sideness sideness : facingModes.keySet()) {
             if (facingModes.get(sideness).equals(FaceMode.PUSH)) {
                 Direction real = FacingUtil.getFacingFromSide(blockFacing, sideness);
-                TileEntity entity = world.getTileEntity(pos.offset(real));
+                BlockEntity entity = world.getBlockEntity(pos.relative(real));
                 if (entity != null) {
                     boolean hasWorked = entity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, real.getOpposite())
                             .map(iFluidHandler -> transfer(this, iFluidHandler, workAmount))
@@ -115,7 +115,7 @@ public class SidedFluidTankComponent<T extends IComponentHarness> extends FluidT
         for (FacingUtil.Sideness sideness : facingModes.keySet()) {
             if (facingModes.get(sideness).equals(FaceMode.PULL)) {
                 Direction real = FacingUtil.getFacingFromSide(blockFacing, sideness);
-                TileEntity entity = world.getTileEntity(pos.offset(real));
+                BlockEntity entity = world.getBlockEntity(pos.relative(real));
                 if (entity != null) {
                     boolean hasWorked = entity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, real.getOpposite())
                             .map(iFluidHandler -> transfer(iFluidHandler, this, workAmount))
@@ -168,10 +168,10 @@ public class SidedFluidTankComponent<T extends IComponentHarness> extends FluidT
     }
 
     @Override
-    public FluidTank readFromNBT(CompoundNBT nbt) {
+    public FluidTank readFromNBT(CompoundTag nbt) {
         if (nbt.contains("FacingModes")) {
-            CompoundNBT compound = nbt.getCompound("FacingModes");
-            for (String face : compound.keySet()) {
+            CompoundTag compound = nbt.getCompound("FacingModes");
+            for (String face : compound.getAllKeys()) {
                 facingModes.put(FacingUtil.Sideness.valueOf(face), FaceMode.valueOf(compound.getString(face)));
             }
         }
@@ -179,9 +179,9 @@ public class SidedFluidTankComponent<T extends IComponentHarness> extends FluidT
     }
 
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT comp) {
-        CompoundNBT nbt = super.writeToNBT(comp);
-        CompoundNBT compound = new CompoundNBT();
+    public CompoundTag writeToNBT(CompoundTag comp) {
+        CompoundTag nbt = super.writeToNBT(comp);
+        CompoundTag compound = new CompoundTag();
         for (FacingUtil.Sideness facing : facingModes.keySet()) {
             compound.putString(facing.name(), facingModes.get(facing).name());
         }

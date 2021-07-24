@@ -8,7 +8,7 @@
 package com.hrznstudio.titanium.nbthandler.data;
 
 import com.hrznstudio.titanium.api.INBTHandler;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -21,13 +21,13 @@ public class UUIDNBTHandler implements INBTHandler<UUID> {
     }
 
     @Override
-    public boolean storeToNBT(@Nonnull CompoundNBT compound, @Nonnull String name, @Nonnull UUID object) {
-        compound.putUniqueId(name, object);
+    public boolean storeToNBT(@Nonnull CompoundTag compound, @Nonnull String name, @Nonnull UUID object) {
+        compound.putUUID(name, object);
         return true;
     }
 
     @Override
-    public UUID readFromNBT(@Nonnull CompoundNBT compound, @Nonnull String name, @Nullable UUID current) {
-        return compound.contains(name) ? compound.getUniqueId(name) : current;
+    public UUID readFromNBT(@Nonnull CompoundTag compound, @Nonnull String name, @Nullable UUID current) {
+        return compound.contains(name) ? compound.getUUID(name) : current;
     }
 }

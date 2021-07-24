@@ -11,12 +11,12 @@ import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.material.IResourceType;
 import com.hrznstudio.titanium.material.advancedtype.BlockAdvancedResourceType;
 import com.hrznstudio.titanium.material.advancedtype.ItemAdvancedResourceType;
-import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.StringRepresentable;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 
-public enum ResourceType implements IResourceType, IStringSerializable {
+public enum ResourceType implements IResourceType, StringRepresentable {
     INGOT("ingots"),
     DUST("dusts"),
     NUGGET("nuggets"),
@@ -69,7 +69,7 @@ public enum ResourceType implements IResourceType, IStringSerializable {
     }
 
     ResourceType() {
-        this.tag = getString(); //GetName
+        this.tag = getSerializedName(); //GetName
     }
 
     @Override
@@ -83,7 +83,7 @@ public enum ResourceType implements IResourceType, IStringSerializable {
     }
 
     @Override
-    public String getString() {
+    public String getSerializedName() {
         return name().toLowerCase();
     }
 }

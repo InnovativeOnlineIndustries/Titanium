@@ -13,19 +13,19 @@ import com.hrznstudio.titanium.reward.storage.RewardWorldStorage;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.ISuggestionProvider;
-import net.minecraft.command.arguments.ResourceLocationArgument;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.commands.arguments.ResourceLocationArgument;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 
 public class RewardGrantCommand {
 
-    public static void register(CommandDispatcher<CommandSource> dispatcher) {
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("titanium-rewards-grant")
                 .then(Commands.argument("reward", new ResourceLocationArgument()).suggests((context, builder) -> {
-                    return ISuggestionProvider.suggest(RewardManager.get().getGiver(context.getSource().asPlayer().getUniqueID(), context.getSource().getName()).getRewards().stream().map(reward -> reward.getResourceLocation().toString()), builder);
+                    return SharedSuggestionProvider.suggest(RewardManager.get().getGiver(context.getSource().getPlayerOrException().getUUID(), context.getSource().getTextName()).getRewards().stream().map(reward -> reward.getResourceLocation().toString()), builder);
                 })
                         .executes(context -> {
                             execute(context);
@@ -33,14 +33,14 @@ public class RewardGrantCommand {
                         })));
     }
 
-    private static void execute(CommandContext<CommandSource> context) throws CommandSyntaxException {
+    private static void execute(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ResourceLocation resourceLocation = context.getArgument("reward", ResourceLocation.class);
-        for (Reward reward : RewardManager.get().getGiver(context.getSource().asPlayer().getUniqueID(), context.getSource().getName()).getRewards()) {
+        for (Reward reward : RewardManager.get().getGiver(context.getSource().getPlayerOrException().getUUID(), context.getSource().getTextName()).getRewards()) {
             if (reward.getResourceLocation().equals(resourceLocation)) {
-                RewardWorldStorage rewardWorldStorage = RewardWorldStorage.get(context.getSource().getWorld());
+                RewardWorldStorage rewardWorldStorage = RewardWorldStorage.get(context.getSource().getLevel());
                 rewardWorldStorage.addFree(resourceLocation);
-                rewardWorldStorage.markDirty();
-                context.getSource().sendFeedback(new TranslationTextComponent("titanium.rewards.granted_success"), true);
+                rewardWorldStorage.setDirty();
+                context.getSource().sendSuccess(new TranslatableComponent("titanium.rewards.granted_success"), true);
                 return;
             }
         }

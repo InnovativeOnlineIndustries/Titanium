@@ -11,9 +11,9 @@ import com.hrznstudio.titanium.client.screen.addon.BasicScreenAddon;
 import com.hrznstudio.titanium.client.screen.addon.interfaces.ICanMouseDrag;
 import com.hrznstudio.titanium.client.screen.addon.interfaces.IClickable;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.gui.screen.Screen;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.screens.Screen;
 
 import java.awt.*;
 import java.util.function.Consumer;
@@ -56,14 +56,14 @@ public class ColorPickerAddon extends BasicScreenAddon implements IClickable, IC
     }
 
     @Override
-    public void drawBackgroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackgroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         this.shadePickerAddon.drawBackgroundLayer(stack, screen, provider, guiX, guiY, mouseX, mouseY, partialTicks);
         this.huePickerAddon.drawBackgroundLayer(stack, screen, provider, guiX, guiY, mouseX, mouseY, partialTicks);
-        AbstractGui.fill(stack, guiX + this.getPosX() + 110, guiY + this.getPosY(), guiX + this.getPosX() + this.getXSize(), guiY + this.getPosY() + this.shadePickerAddon.getYSize(), Color.HSBtoRGB(hue, saturation, brightness));
+        GuiComponent.fill(stack, guiX + this.getPosX() + 110, guiY + this.getPosY(), guiX + this.getPosX() + this.getXSize(), guiY + this.getPosY() + this.shadePickerAddon.getYSize(), Color.HSBtoRGB(hue, saturation, brightness));
     }
 
     @Override
-    public void drawForegroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
+    public void drawForegroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
         this.shadePickerAddon.drawForegroundLayer(stack, screen, provider, guiX, guiY, mouseX, mouseY);
         this.huePickerAddon.drawForegroundLayer(stack, screen, provider, guiX, guiY, mouseX, mouseY);
     }

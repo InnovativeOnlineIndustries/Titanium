@@ -7,12 +7,12 @@
 
 package com.hrznstudio.titanium.tab;
 
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.function.Supplier;
 
-public class TitaniumTab extends ItemGroup {
+public class TitaniumTab extends CreativeModeTab {
     protected Supplier<ItemStack> stackSupplier;
 
     public TitaniumTab(String label, Supplier<ItemStack> stackSupplier) {
@@ -21,12 +21,12 @@ public class TitaniumTab extends ItemGroup {
     }
 
     @Override
-    public ItemStack createIcon() {
+    public ItemStack makeIcon() {
         return stackSupplier.get();
     }
 
     @Override
-    public ItemStack getIcon() {
+    public ItemStack getIconItem() {
         return stackSupplier.get();
     }
 }

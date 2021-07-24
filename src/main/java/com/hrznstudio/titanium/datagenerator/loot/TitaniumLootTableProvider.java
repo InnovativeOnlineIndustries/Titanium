@@ -9,15 +9,15 @@ package com.hrznstudio.titanium.datagenerator.loot;
 
 import com.hrznstudio.titanium.datagenerator.loot.block.BasicBlockLootTables;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.LootTableProvider;
-import net.minecraft.data.loot.BlockLootTables;
-import net.minecraft.loot.LootParameterSet;
-import net.minecraft.loot.LootParameterSets;
-import net.minecraft.loot.LootTable;
-import net.minecraft.loot.ValidationTracker;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.data.loot.BlockLoot;
+import net.minecraft.data.loot.LootTableProvider;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.ValidationContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraftforge.common.util.NonNullLazy;
 
 import javax.annotation.Nonnull;
@@ -38,18 +38,18 @@ public class TitaniumLootTableProvider extends LootTableProvider {
 
     @Override
     @Nonnull
-    protected List<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>>, LootParameterSet>> getTables() {
+    protected List<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>>, LootContextParamSet>> getTables() {
         return Collections.singletonList(
-            Pair.of(this::createBlockLootTables, LootParameterSets.BLOCK)
+            Pair.of(this::createBlockLootTables, LootContextParamSets.BLOCK)
         );
     }
 
-    protected BlockLootTables createBlockLootTables() {
+    protected BlockLoot createBlockLootTables() {
         return new BasicBlockLootTables(blocksToProcess);
     }
 
     @Override
-    protected void validate(Map<ResourceLocation, LootTable> map, ValidationTracker validationtracker) {
+    protected void validate(Map<ResourceLocation, LootTable> map, ValidationContext validationtracker) {
         //super.validate(map, validationtracker);
     }
 }

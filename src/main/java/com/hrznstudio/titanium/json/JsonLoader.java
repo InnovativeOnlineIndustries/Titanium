@@ -10,18 +10,18 @@ package com.hrznstudio.titanium.json;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.hrznstudio.titanium.json.jsondirector.IJsonDirector;
-import net.minecraft.client.resources.JsonReloadListener;
-import net.minecraft.profiler.IProfiler;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.Tuple;
+import net.minecraft.util.profiling.ProfilerFiller;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Map;
 
 @ParametersAreNonnullByDefault
-public class JsonLoader<T> extends JsonReloadListener {
+public class JsonLoader<T> extends SimpleJsonResourceReloadListener {
     private final IJsonDirector<T> director;
     private final String type;
     private final Logger logger;
@@ -40,7 +40,7 @@ public class JsonLoader<T> extends JsonReloadListener {
     }
 
     @Override
-    protected void apply(Map<ResourceLocation, JsonElement> ts, IResourceManager resourceManagerIn, IProfiler profilerIn) {
+    protected void apply(Map<ResourceLocation, JsonElement> ts, ResourceManager resourceManagerIn, ProfilerFiller profilerIn) {
         director.clear();
         ts.entrySet()
             .parallelStream()

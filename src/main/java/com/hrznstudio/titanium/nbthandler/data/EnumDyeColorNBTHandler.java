@@ -7,7 +7,7 @@
 
 package com.hrznstudio.titanium.nbthandler.data;
 
-import net.minecraft.item.DyeColor;
+import net.minecraft.world.item.DyeColor;
 
 public class EnumDyeColorNBTHandler extends EnumNBTHandler<DyeColor> {
 

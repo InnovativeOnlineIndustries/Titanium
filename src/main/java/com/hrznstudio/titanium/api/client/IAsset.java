@@ -8,7 +8,7 @@
 package com.hrznstudio.titanium.api.client;
 
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 import java.awt.*;
 

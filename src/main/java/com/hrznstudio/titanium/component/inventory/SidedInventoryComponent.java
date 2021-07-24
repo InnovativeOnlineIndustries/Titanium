@@ -17,13 +17,13 @@ import com.hrznstudio.titanium.component.IComponentHarness;
 import com.hrznstudio.titanium.component.sideness.IFacingComponent;
 import com.hrznstudio.titanium.component.sideness.SidedComponentManager;
 import com.hrznstudio.titanium.util.FacingUtil;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -78,7 +78,7 @@ public class SidedInventoryComponent<T extends IComponentHarness> extends Invent
     }
 
     public SidedInventoryComponent<T> setColor(DyeColor color) {
-        this.color = color.getColorValue();
+        this.color = color.getMaterialColor().col;
         return this;
     }
 
@@ -119,11 +119,11 @@ public class SidedInventoryComponent<T extends IComponentHarness> extends Invent
     }
 
     @Override
-    public boolean work(World world, BlockPos pos, Direction blockFacing, int workAmount) {
+    public boolean work(Level world, BlockPos pos, Direction blockFacing, int workAmount) {
         for (FacingUtil.Sideness sideness : facingModes.keySet()) {
             if (facingModes.get(sideness).equals(FaceMode.PUSH)) {
                 Direction real = FacingUtil.getFacingFromSide(blockFacing, sideness);
-                TileEntity entity = world.getTileEntity(pos.offset(real));
+                BlockEntity entity = world.getBlockEntity(pos.relative(real));
                 if (entity != null) {
                     boolean hasWorked = entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, real.getOpposite())
                             .map(iItemHandler -> transfer(sideness, this, iItemHandler, workAmount))
@@ -137,7 +137,7 @@ public class SidedInventoryComponent<T extends IComponentHarness> extends Invent
         for (FacingUtil.Sideness sideness : facingModes.keySet()) {
             if (facingModes.get(sideness).equals(FaceMode.PULL)) {
                 Direction real = FacingUtil.getFacingFromSide(blockFacing, sideness);
-                TileEntity entity = world.getTileEntity(pos.offset(real));
+                BlockEntity entity = world.getBlockEntity(pos.relative(real));
                 if (entity != null) {
                     boolean hasWorked = entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, real.getOpposite())
                             .map(iItemHandler -> transfer(sideness, iItemHandler, this, workAmount))
@@ -172,9 +172,9 @@ public class SidedInventoryComponent<T extends IComponentHarness> extends Invent
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
-        CompoundNBT nbt = super.serializeNBT();
-        CompoundNBT compound = new CompoundNBT();
+    public CompoundTag serializeNBT() {
+        CompoundTag nbt = super.serializeNBT();
+        CompoundTag compound = new CompoundTag();
         for (FacingUtil.Sideness facing : facingModes.keySet()) {
             compound.putString(facing.name(), facingModes.get(facing).name());
         }
@@ -183,11 +183,11 @@ public class SidedInventoryComponent<T extends IComponentHarness> extends Invent
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
         super.deserializeNBT(nbt);
         if (nbt.contains("FacingModes")) {
-            CompoundNBT compound = nbt.getCompound("FacingModes");
-            for (String face : compound.keySet()) {
+            CompoundTag compound = nbt.getCompound("FacingModes");
+            for (String face : compound.getAllKeys()) {
                 facingModes.put(FacingUtil.Sideness.valueOf(face), FaceMode.valueOf(compound.getString(face)));
             }
         }

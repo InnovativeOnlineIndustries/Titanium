@@ -15,9 +15,9 @@ import com.hrznstudio.titanium.api.material.IResourceType;
 import com.hrznstudio.titanium.item.BasicItem;
 import com.hrznstudio.titanium.recipe.generator.IJSONGenerator;
 import com.hrznstudio.titanium.recipe.generator.IJsonFile;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
 
@@ -28,7 +28,7 @@ public class ResourceTypeItem extends BasicItem implements IJsonFile, IJSONGener
     private final IAdvancedResourceType advancedResourceType;
 
     public ResourceTypeItem(ResourceMaterial material, IResourceType type, IAdvancedResourceType advancedResourceType, ResourceTypeProperties<Properties> properties) {
-        super(material.getMaterialType() + "_" + type.getString(), (properties == null ? ((ResourceTypeProperties<Properties>) ResourceTypeProperties.DEFAULTS.get(Item.class)).get() : properties.get())); //getName
+        super(material.getMaterialType() + "_" + type.getSerializedName(), (properties == null ? ((ResourceTypeProperties<Properties>) ResourceTypeProperties.DEFAULTS.get(Item.class)).get() : properties.get())); //getName
         this.material = material;
         this.type = type;
         this.advancedResourceType = advancedResourceType;
@@ -64,7 +64,7 @@ public class ResourceTypeItem extends BasicItem implements IJsonFile, IJSONGener
     }
 
     @Override
-    public ITextComponent getDisplayName(ItemStack p_200295_1_) {
+    public Component getName(ItemStack p_200295_1_) {
         return type.getTextComponent(material.getTextComponent());
     }
 }

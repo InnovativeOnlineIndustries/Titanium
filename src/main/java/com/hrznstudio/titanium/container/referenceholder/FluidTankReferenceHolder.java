@@ -8,13 +8,13 @@
 package com.hrznstudio.titanium.container.referenceholder;
 
 import com.hrznstudio.titanium.component.fluid.FluidTankComponent;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.util.IIntArray;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistry;
 
-public class FluidTankReferenceHolder implements IIntArray {
+public class FluidTankReferenceHolder implements ContainerData {
     private final FluidTankComponent<?> fluidTank;
     private int fluidAmount = -1;
     private int fluidId = -1;
@@ -51,7 +51,7 @@ public class FluidTankReferenceHolder implements IIntArray {
     }
 
     @Override
-    public int size() {
+    public int getCount() {
         return 2;
     }
 }

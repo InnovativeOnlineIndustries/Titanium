@@ -8,7 +8,7 @@
 package com.hrznstudio.titanium.client.screen.addon;
 
 import com.hrznstudio.titanium.api.client.IScreenAddon;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screens.Screen;
 
 public abstract class BasicScreenAddon implements IScreenAddon {
 

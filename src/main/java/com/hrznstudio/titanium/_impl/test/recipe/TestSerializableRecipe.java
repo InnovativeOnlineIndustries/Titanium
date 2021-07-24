@@ -10,15 +10,15 @@ package com.hrznstudio.titanium._impl.test.recipe;
 import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.recipe.serializer.GenericSerializer;
 import com.hrznstudio.titanium.recipe.serializer.SerializableRecipe;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,11 +30,11 @@ public class TestSerializableRecipe extends SerializableRecipe {
     public static final List<TestSerializableRecipe> RECIPES = new ArrayList<>();
 
     static {
-        new TestSerializableRecipe(new ResourceLocation(Titanium.MODID, "saplings_to_sticks"), Ingredient.fromStacks(new ItemStack(Items.OAK_SAPLING)), new ItemStack(Items.STICK, 3), Blocks.STONE);
-        new TestSerializableRecipe(new ResourceLocation(Titanium.MODID, "dirt_to_diamod"), Ingredient.fromStacks(new ItemStack(Blocks.DIRT)), new ItemStack(Items.DIAMOND, 1), Blocks.DIRT);
+        new TestSerializableRecipe(new ResourceLocation(Titanium.MODID, "saplings_to_sticks"), Ingredient.of(new ItemStack(Items.OAK_SAPLING)), new ItemStack(Items.STICK, 3), Blocks.STONE);
+        new TestSerializableRecipe(new ResourceLocation(Titanium.MODID, "dirt_to_diamod"), Ingredient.of(new ItemStack(Blocks.DIRT)), new ItemStack(Items.DIAMOND, 1), Blocks.DIRT);
         ItemStack pick = new ItemStack(Items.DIAMOND_PICKAXE, 1);
-        pick.setDamage(100);
-        new TestSerializableRecipe(new ResourceLocation(Titanium.MODID, "dirt_to_used"), Ingredient.fromStacks(new ItemStack(Blocks.STONE)), pick, Blocks.DIRT);
+        pick.setDamageValue(100);
+        new TestSerializableRecipe(new ResourceLocation(Titanium.MODID, "dirt_to_used"), Ingredient.of(new ItemStack(Blocks.STONE)), pick, Blocks.DIRT);
     }
 
     public Ingredient input;
@@ -54,22 +54,22 @@ public class TestSerializableRecipe extends SerializableRecipe {
     }
 
     @Override
-    public boolean matches(IInventory inv, World worldIn) {
-        return this.input.test(inv.getStackInSlot(0));
+    public boolean matches(Container inv, Level worldIn) {
+        return this.input.test(inv.getItem(0));
     }
 
     @Override
-    public ItemStack getCraftingResult(IInventory inv) {
+    public ItemStack assemble(Container inv) {
         return this.output.copy();
     }
 
     @Override
-    public boolean canFit(int width, int height) {
+    public boolean canCraftInDimensions(int width, int height) {
         return false;
     }
 
     @Override
-    public ItemStack getRecipeOutput() {
+    public ItemStack getResultItem() {
         return this.output;
     }
 
@@ -79,7 +79,7 @@ public class TestSerializableRecipe extends SerializableRecipe {
     }
 
     @Override
-    public IRecipeType<?> getType() {
+    public RecipeType<?> getType() {
         return SERIALIZER.getRecipeType();
     }
 

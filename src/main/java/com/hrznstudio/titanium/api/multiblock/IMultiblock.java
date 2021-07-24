@@ -7,11 +7,11 @@
 
 package com.hrznstudio.titanium.api.multiblock;
 
-import jdk.nashorn.internal.ir.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.util.function.Predicate;
@@ -22,10 +22,10 @@ public interface IMultiblock extends IForgeRegistryEntry<Block> {
 
     boolean isController(int x, int y, int z);
 
-    boolean isStructureMultiblock(World world, BlockPos pos, BlockState state, Direction playerFacing);
+    boolean isStructureMultiblock(Level world, BlockPos pos, BlockState state, Direction playerFacing);
 
-    void createStructureMultiblock(World world, BlockPos pos, BlockState state, Direction playerFacing);
+    void createStructureMultiblock(Level world, BlockPos pos, BlockState state, Direction playerFacing);
 
-    void destroyMultiblock(World world, BlockPos pos, BlockState state, Direction facing);
+    void destroyMultiblock(Level world, BlockPos pos, BlockState state, Direction facing);
 
 }

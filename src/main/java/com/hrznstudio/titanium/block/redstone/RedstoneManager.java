@@ -9,10 +9,10 @@ package com.hrznstudio.titanium.block.redstone;
 
 import com.hrznstudio.titanium.api.IEnumValues;
 import com.hrznstudio.titanium.api.redstone.IRedstoneAction;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
 
-public class RedstoneManager<T extends IEnumValues<T> & IRedstoneAction> implements INBTSerializable<CompoundNBT> {
+public class RedstoneManager<T extends IEnumValues<T> & IRedstoneAction> implements INBTSerializable<CompoundTag> {
 
     private T action;
     private boolean lastRedstoneState;
@@ -52,15 +52,15 @@ public class RedstoneManager<T extends IEnumValues<T> & IRedstoneAction> impleme
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
-        CompoundNBT value = new CompoundNBT();
+    public CompoundTag serializeNBT() {
+        CompoundTag value = new CompoundTag();
         value.putString("Name", action.getName());
         value.putBoolean("LastState", lastRedstoneState);
         return value;
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
         this.action = this.action.getValue(nbt.getString("Name"));
         this.lastRedstoneState = nbt.getBoolean("LastState");
     }

@@ -11,29 +11,29 @@ import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.container.BasicContainer;
 import com.hrznstudio.titanium.container.IDisableableContainer;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
 
 import java.awt.*;
 
 public class BasicInventoryContainer extends BasicContainer implements IDisableableContainer {
     private boolean isDisabled = false;
-    private PlayerInventory inventory;
+    private Inventory inventory;
     private boolean hasPlayerInventory;
 
-    public BasicInventoryContainer(int id, PlayerInventory inventory, PacketBuffer buffer) {
+    public BasicInventoryContainer(int id, Inventory inventory, FriendlyByteBuf buffer) {
         super(id, inventory, buffer);
     }
 
-    public BasicInventoryContainer(ContainerType type, PlayerInventory inventory, int id) {
+    public BasicInventoryContainer(MenuType type, Inventory inventory, int id) {
         super(type, id);
         this.inventory = inventory;
         addPlayerChestInventory();
     }
 
-    public BasicInventoryContainer(ContainerType type, PlayerInventory inventory, int id, IAssetProvider assetProvider) {
+    public BasicInventoryContainer(MenuType type, Inventory inventory, int id, IAssetProvider assetProvider) {
         super(type, id, assetProvider);
         this.inventory = inventory;
     }
@@ -63,7 +63,7 @@ public class BasicInventoryContainer extends BasicContainer implements IDisablea
         }
     }
 
-    public PlayerInventory getPlayerInventory() {
+    public Inventory getPlayerInventory() {
         return inventory;
     }
 

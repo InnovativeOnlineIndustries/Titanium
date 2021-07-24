@@ -8,8 +8,8 @@
 package com.hrznstudio.titanium.material;
 
 import com.hrznstudio.titanium.api.material.IResourceType;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
@@ -55,7 +55,7 @@ public class ResourceMaterial {
     }
 
     public ResourceMaterial withProperties(IResourceType type, ResourceTypeProperties properties) {
-        typeProperties.computeIfAbsent(type.getString(), s -> properties); //getName
+        typeProperties.computeIfAbsent(type.getSerializedName(), s -> properties); //getName
         return this;
     }
 
@@ -88,13 +88,13 @@ public class ResourceMaterial {
             ResourceRegistry.injectField(this, type, entry);
             return null;
         }
-        ForgeRegistryEntry entry = type.getInstanceFactory(this, typeProperties.get(type.getString())).create(); //getName
+        ForgeRegistryEntry entry = type.getInstanceFactory(this, typeProperties.get(type.getSerializedName())).create(); //getName
         generated.put(type.getTag(), entry);
         ResourceRegistry.injectField(this, type, entry);
         return entry;
     }
 
-    public ITextComponent getTextComponent() {
-        return new TranslationTextComponent(String.format("resource.titanium.material.%s", type));
+    public Component getTextComponent() {
+        return new TranslatableComponent(String.format("resource.titanium.material.%s", type));
     }
 }

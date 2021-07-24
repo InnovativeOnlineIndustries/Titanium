@@ -8,7 +8,7 @@
 package com.hrznstudio.titanium.nbthandler.data;
 
 import com.hrznstudio.titanium.api.INBTHandler;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nonnull;
@@ -22,13 +22,13 @@ public class TankNBTHandler implements INBTHandler<FluidTank> {
     }
 
     @Override
-    public boolean storeToNBT(@Nonnull CompoundNBT compound, @Nonnull String name, @Nonnull FluidTank object) {
-        compound.put(name, object.writeToNBT(new CompoundNBT()));
+    public boolean storeToNBT(@Nonnull CompoundTag compound, @Nonnull String name, @Nonnull FluidTank object) {
+        compound.put(name, object.writeToNBT(new CompoundTag()));
         return true;
     }
 
     @Override
-    public FluidTank readFromNBT(@Nonnull CompoundNBT compound, @Nonnull String name, @Nullable FluidTank currentValue) {
+    public FluidTank readFromNBT(@Nonnull CompoundTag compound, @Nonnull String name, @Nullable FluidTank currentValue) {
         if (compound.contains(name)) {
             currentValue.readFromNBT(compound.getCompound(name));
             return currentValue;

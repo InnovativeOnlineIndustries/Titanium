@@ -40,21 +40,21 @@ import com.hrznstudio.titanium.reward.RewardManager;
 import com.hrznstudio.titanium.reward.RewardSyncMessage;
 import com.hrznstudio.titanium.reward.storage.RewardWorldStorage;
 import com.hrznstudio.titanium.util.SidedHandler;
-import net.minecraft.block.Block;
-import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.RecipeManager;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.DrawHighlightEvent;
+import net.minecraftforge.client.event.DrawSelectionEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.common.util.NonNullLazy;
@@ -62,12 +62,12 @@ import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
-import net.minecraftforge.fml.network.NetworkDirection;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+import net.minecraftforge.fmllegacy.network.NetworkDirection;
+import net.minecraftforge.fmlserverevents.FMLServerStartingEvent;
+import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
@@ -113,8 +113,8 @@ public class Titanium extends ModuleController {
     protected void initModules() {
         addModule(Module.builder("core").force()
                 .feature(Feature.builder("core").force()
-                        .content(ContainerType.class, (ContainerType) IForgeContainerType.create(BasicAddonContainer::create).setRegistryName(new ResourceLocation(Titanium.MODID, "addon_container")))
-                        .content(IRecipeSerializer.class, (IRecipeSerializer)new ShapelessEnchantSerializer().setRegistryName(new ResourceLocation(Titanium.MODID, "shapeless_enchant")))
+                        .content(MenuType.class, (MenuType) IForgeContainerType.create(BasicAddonContainer::create).setRegistryName(new ResourceLocation(Titanium.MODID, "addon_container")))
+                        .content(RecipeSerializer.class, (RecipeSerializer)new ShapelessEnchantSerializer().setRegistryName(new ResourceLocation(Titanium.MODID, "shapeless_enchant")))
                 )
         );
         addModule(Module.builder("test_module")
@@ -133,18 +133,18 @@ public class Titanium extends ModuleController {
                 )
                 .feature(Feature.builder("recipe")
                         .description("Testing of recipe stuff")
-                        .content(IRecipeSerializer.class, (IRecipeSerializer) TestSerializableRecipe.SERIALIZER)
+                        .content(RecipeSerializer.class, (RecipeSerializer) TestSerializableRecipe.SERIALIZER)
                         .event(EventManager.mod(FMLCommonSetupEvent.class).process(event -> Registry.register(Registry.RECIPE_TYPE, TestSerializableRecipe.SERIALIZER.getRegistryName(), TestSerializableRecipe.SERIALIZER.getRecipeType())))
                         .event(EventManager.forge(PlayerInteractEvent.LeftClickBlock.class)
-                                .filter(leftClickBlock -> !leftClickBlock.getWorld().isRemote && leftClickBlock.getPlayer() != null)
+                                .filter(leftClickBlock -> !leftClickBlock.getWorld().isClientSide && leftClickBlock.getPlayer() != null)
                                 .process(leftClickBlock -> {
-                                    Map<IRecipeType<?>, Map<ResourceLocation, IRecipe<?>>> recipes = ObfuscationReflectionHelper.getPrivateValue(RecipeManager.class, leftClickBlock.getWorld().getRecipeManager(), "field_199522_d");
+                                    Map<RecipeType<?>, Map<ResourceLocation, Recipe<?>>> recipes = ObfuscationReflectionHelper.getPrivateValue(RecipeManager.class, leftClickBlock.getWorld().getRecipeManager(), "recipes");
                                     recipes.get(TestSerializableRecipe.SERIALIZER.getRecipeType()).values().stream()
                                             .map(iRecipe -> (TestSerializableRecipe) iRecipe)
-                                            .filter(testSerializableRecipe -> testSerializableRecipe.isValid(leftClickBlock.getPlayer().getHeldItem(leftClickBlock.getHand()), leftClickBlock.getWorld().getBlockState(leftClickBlock.getPos()).getBlock()))
+                                            .filter(testSerializableRecipe -> testSerializableRecipe.isValid(leftClickBlock.getPlayer().getItemInHand(leftClickBlock.getHand()), leftClickBlock.getWorld().getBlockState(leftClickBlock.getPos()).getBlock()))
                                             .findFirst().ifPresent(testSerializableRecipe -> {
-                                        leftClickBlock.getPlayer().getHeldItem(leftClickBlock.getHand()).shrink(1);
-                                        ItemHandlerHelper.giveItemToPlayer(leftClickBlock.getPlayer(), testSerializableRecipe.getRecipeOutput().copy());
+                                        leftClickBlock.getPlayer().getItemInHand(leftClickBlock.getHand()).shrink(1);
+                                        ItemHandlerHelper.giveItemToPlayer(leftClickBlock.getPlayer(), testSerializableRecipe.getResultItem().copy());
                                         leftClickBlock.setCanceled(true);
                                     });
                                 }))
@@ -190,30 +190,30 @@ public class Titanium extends ModuleController {
 
     @OnlyIn(Dist.CLIENT)
     private void clientSetup(FMLClientSetupEvent event) {
-        EventManager.forge(DrawHighlightEvent.HighlightBlock.class).process(TitaniumClient::blockOverlayEvent).subscribe();
+        EventManager.forge(DrawSelectionEvent.HighlightBlock.class).process(TitaniumClient::blockOverlayEvent).subscribe();
         TitaniumClient.registerModelLoader();
         RewardManager.get().getRewards().values().forEach(rewardGiver -> rewardGiver.getRewards().forEach(reward -> reward.register(Dist.CLIENT)));
-        ScreenManager.registerFactory(BasicAddonContainer.TYPE, BasicAddonScreen::new);
+        MenuScreens.register(BasicAddonContainer.TYPE, BasicAddonScreen::new);
     }
 
     private void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         event.getPlayer().getServer().execute(() -> {
-            RewardWorldStorage storage = RewardWorldStorage.get(event.getPlayer().getServer().getWorld(World.OVERWORLD));
-            if (!storage.getConfiguredPlayers().contains(event.getPlayer().getUniqueID())) {
-                for (ResourceLocation collectRewardsResourceLocation : RewardManager.get().collectRewardsResourceLocations(event.getPlayer().getUniqueID())) {
+            RewardWorldStorage storage = RewardWorldStorage.get(event.getPlayer().getServer().getLevel(Level.OVERWORLD));
+            if (!storage.getConfiguredPlayers().contains(event.getPlayer().getUUID())) {
+                for (ResourceLocation collectRewardsResourceLocation : RewardManager.get().collectRewardsResourceLocations(event.getPlayer().getUUID())) {
                     Reward reward = RewardManager.get().getReward(collectRewardsResourceLocation);
-                    storage.add(event.getPlayer().getUniqueID(), reward.getResourceLocation(), reward.getOptions()[0]);
+                    storage.add(event.getPlayer().getUUID(), reward.getResourceLocation(), reward.getOptions()[0]);
                 }
-                storage.getConfiguredPlayers().add(event.getPlayer().getUniqueID());
-                storage.markDirty();
+                storage.getConfiguredPlayers().add(event.getPlayer().getUUID());
+                storage.setDirty();
             }
-            CompoundNBT nbt = storage.serializeSimple();
-            event.getPlayer().getServer().getPlayerList().getPlayers().forEach(serverPlayerEntity -> Titanium.NETWORK.get().sendTo(new RewardSyncMessage(nbt), serverPlayerEntity.connection.netManager, NetworkDirection.PLAY_TO_CLIENT));
+            CompoundTag nbt = storage.serializeSimple();
+            event.getPlayer().getServer().getPlayerList().getPlayers().forEach(serverPlayerEntity -> Titanium.NETWORK.get().sendTo(new RewardSyncMessage(nbt), serverPlayerEntity.connection.connection, NetworkDirection.PLAY_TO_CLIENT));
         });
     }
 
     private void onServerStart(FMLServerStartingEvent event) {
-        RewardCommand.register(event.getServer().getCommandManager().getDispatcher());
-        RewardGrantCommand.register(event.getServer().getCommandManager().getDispatcher());
+        RewardCommand.register(event.getServer().getCommands().getDispatcher());
+        RewardGrantCommand.register(event.getServer().getCommands().getDispatcher());
     }
 }

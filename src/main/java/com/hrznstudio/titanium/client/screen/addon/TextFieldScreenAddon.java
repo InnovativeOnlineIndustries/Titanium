@@ -11,39 +11,41 @@ import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.util.AssetUtil;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.IGuiEventListener;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.TextComponent;
+
+
 
 public class TextFieldScreenAddon extends BasicScreenAddon {
-    private TextFieldWidget textFieldWidget;
+    private EditBox textFieldWidget;
 
     public TextFieldScreenAddon(int posX, int posY) {
         super(posX, posY);
-        textFieldWidget = new TextFieldWidget(Minecraft.getInstance().fontRenderer, posX,
-                posY, 110, 16, new StringTextComponent(""));
+        textFieldWidget = new EditBox(Minecraft.getInstance().font, posX,
+                posY, 110, 16, new TextComponent(""));
     }
 
     @Override
-    public void drawBackgroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackgroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         AssetUtil.drawAsset(stack, screen, this.getAsset(provider), this.getPosX() + guiX, this.getPosY() + guiY);
         // render
         textFieldWidget.renderButton(stack, mouseX, mouseY, partialTicks);
     }
 
     @Override
-    public void drawForegroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {}
+    public void drawForegroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {}
 
     @Override
     public void init(int guiX, int guiY) {
-        String storage = textFieldWidget.getText();
-        textFieldWidget = new TextFieldWidget(Minecraft.getInstance().fontRenderer, guiX + this.getPosX() + 3,
-                guiY + this.getPosY() + 4, 100, 16, new StringTextComponent(""));
-        textFieldWidget.setEnableBackgroundDrawing(false);
-        textFieldWidget.setText(storage);
+        String storage = textFieldWidget.getValue();
+        textFieldWidget = new EditBox(Minecraft.getInstance().font, guiX + this.getPosX() + 3,
+                guiY + this.getPosY() + 4, 100, 16, new TextComponent(""));
+        textFieldWidget.setBordered(false);
+        textFieldWidget.setValue(storage);
     }
 
     @Override
@@ -53,34 +55,34 @@ public class TextFieldScreenAddon extends BasicScreenAddon {
 
     @Override
     public int getXSize() {
-        return textFieldWidget.getAdjustedWidth();
+        return textFieldWidget.getInnerWidth();
     }
 
     @Override
     public int getYSize() {
-        return textFieldWidget.getHeightRealms();
+        return textFieldWidget.getHeight();
     }
 
     public void setActive(boolean active) {
-        textFieldWidget.setEnabled(active);
+        textFieldWidget.setEditable(active);
     }
 
     @Override
     public boolean keyPressed(int key, int scan, int modifiers) {
         // keypressed
-        return textFieldWidget.keyPressed(key, scan, modifiers) || textFieldWidget.canWrite();
+        return textFieldWidget.keyPressed(key, scan, modifiers) || textFieldWidget.canConsumeInput();
     }
 
     private IAsset getAsset(IAssetProvider assetProvider) {
-        return textFieldWidget.isEnabled() ? assetProvider.getAsset(AssetTypes.TEXT_FIELD_ACTIVE) :
+        return textFieldWidget.isEditable() ? assetProvider.getAsset(AssetTypes.TEXT_FIELD_ACTIVE) :
                 assetProvider.getAsset(AssetTypes.TEXT_FIELD_INACTIVE);
     }
 
-    public IGuiEventListener getGuiListener() {
+    public GuiEventListener getGuiListener() {
         return this.textFieldWidget;
     }
 
     public String getText() {
-        return this.textFieldWidget.getText();
+        return this.textFieldWidget.getValue();
     }
 }

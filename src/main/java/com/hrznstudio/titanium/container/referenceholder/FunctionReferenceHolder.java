@@ -7,12 +7,12 @@
 
 package com.hrznstudio.titanium.container.referenceholder;
 
-import net.minecraft.util.IntReferenceHolder;
+import net.minecraft.world.inventory.DataSlot;
 
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 
-public class FunctionReferenceHolder extends IntReferenceHolder {
+public class FunctionReferenceHolder extends DataSlot {
     private final IntConsumer setter;
     private final IntSupplier getter;
 

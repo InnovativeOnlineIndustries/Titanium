@@ -11,8 +11,8 @@ import com.hrznstudio.titanium._impl.test.tile.TwentyFourTestTile;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.block.RotatableBlock;
 import com.hrznstudio.titanium.datagenerator.loot.block.BasicBlockLootTables;
-import net.minecraft.block.material.Material;
-import net.minecraft.loot.LootTable;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.storage.loot.LootTable;
 
 import javax.annotation.Nonnull;
 
@@ -21,7 +21,7 @@ public class TwentyFourTestBlock extends RotatableBlock<TwentyFourTestTile> {
     public static TwentyFourTestBlock TEST;
 
     public TwentyFourTestBlock() {
-        super(Properties.create(Material.ROCK), TwentyFourTestTile.class);
+        super(Properties.of(Material.STONE), TwentyFourTestTile.class);
     }
 
     @Override

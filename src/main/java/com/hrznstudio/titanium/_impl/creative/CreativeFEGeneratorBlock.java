@@ -12,9 +12,9 @@ import com.hrznstudio.titanium._impl.creative.tile.CreativeFEGeneratorTile;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.datagenerator.loot.block.BasicBlockLootTables;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.loot.LootTable;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.storage.loot.LootTable;
 
 public class CreativeFEGeneratorBlock extends BasicTileBlock<CreativeFEGeneratorTile> {
 
@@ -22,7 +22,7 @@ public class CreativeFEGeneratorBlock extends BasicTileBlock<CreativeFEGenerator
         .setRegistryName(Titanium.MODID, "creative_fe_generator");
 
     public CreativeFEGeneratorBlock() {
-        super(Block.Properties.from(Blocks.BEDROCK), CreativeFEGeneratorTile.class);
+        super(Block.Properties.copy(Blocks.BEDROCK), CreativeFEGeneratorTile.class);
     }
 
     @Override

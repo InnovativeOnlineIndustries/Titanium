@@ -7,11 +7,12 @@
 
 package com.hrznstudio.titanium.component;
 
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
+
 
 public interface IComponentHarness {
 
-    World getComponentWorld();
+    Level getComponentWorld();
 
     /**
      * Allows a Component to force an updated

@@ -11,8 +11,8 @@ import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.client.screen.addon.BasicButtonAddon;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.Collections;
 import java.util.List;
@@ -25,7 +25,7 @@ public class ButtonComponent implements IScreenAddonProvider {
     private final int sizeX;
     private final int sizeY;
     private int id;
-    private BiConsumer<PlayerEntity, CompoundNBT> serverPredicate;
+    private BiConsumer<Player, CompoundTag> serverPredicate;
 
     public ButtonComponent(int posX, int posY, int sizeX, int sizeY) {
         this.posX = posX;
@@ -41,12 +41,12 @@ public class ButtonComponent implements IScreenAddonProvider {
      * @param serverPredicate A predicate that has a NBTTagCompound with client information
      * @return itself
      */
-    public ButtonComponent setPredicate(BiConsumer<PlayerEntity, CompoundNBT> serverPredicate) {
+    public ButtonComponent setPredicate(BiConsumer<Player, CompoundTag> serverPredicate) {
         this.serverPredicate = serverPredicate;
         return this;
     }
 
-    public void onButtonClicked(PlayerEntity entity, CompoundNBT information) {
+    public void onButtonClicked(Player entity, CompoundTag information) {
         if (serverPredicate != null) {
             serverPredicate.accept(entity, information);
         }

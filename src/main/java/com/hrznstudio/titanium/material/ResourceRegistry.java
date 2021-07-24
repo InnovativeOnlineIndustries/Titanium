@@ -20,10 +20,10 @@ import com.hrznstudio.titanium.plugin.PluginPhase;
 import com.hrznstudio.titanium.tab.AdvancedTitaniumTab;
 import com.hrznstudio.titanium.util.AnnotationUtil;
 import com.hrznstudio.titanium.util.SidedHandler;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -55,7 +55,7 @@ public class ResourceRegistry {
                         if (entry instanceof Block) {
                             item.getBlockColors().register((state, world, pos, tint) -> ((IHasColor) entry).getColor(tint), (Block) entry);
                         } else if (entry instanceof Item) {
-                            item.getItemColors().register((stack, tint) -> ((IHasColor) entry).getColor(tint), (IItemProvider) entry);
+                            item.getItemColors().register((stack, tint) -> ((IHasColor) entry).getColor(tint), (ItemLike) entry);
                         }
                     });
                 });
@@ -91,7 +91,7 @@ public class ResourceRegistry {
         ResourceRegistry.getMaterials().forEach(material -> {
             if (material.getGeneratorTypes().size() > 0) {
                 material.getGeneratorTypes().values().forEach(type -> {
-                    Feature.Builder feature = Feature.builder(material.getMaterialType() + "." + type.getString()); //getName
+                    Feature.Builder feature = Feature.builder(material.getMaterialType() + "." + type.getSerializedName()); //getName
                     ForgeRegistryEntry entry = material.generate(type);
                     if (entry != null) {
                         feature.content(entry.getRegistryType(), entry);
@@ -112,8 +112,8 @@ public class ResourceRegistry {
         //    }
         //});
         ResourceRegistry.getMaterials().stream().map(material -> material.getGenerated().values()).flatMap(Collection::stream).
-                filter(forgeRegistryEntry -> forgeRegistryEntry instanceof IItemProvider && ForgeRegistries.ITEMS.containsKey(forgeRegistryEntry.getRegistryName())).
-                forEach(forgeRegistryEntry -> ResourceRegistry.RESOURCES.addIconStack(new ItemStack(((IItemProvider) forgeRegistryEntry).asItem())));
+                filter(forgeRegistryEntry -> forgeRegistryEntry instanceof ItemLike && ForgeRegistries.ITEMS.containsKey(forgeRegistryEntry.getRegistryName())).
+                forEach(forgeRegistryEntry -> ResourceRegistry.RESOURCES.addIconStack(new ItemStack(((ItemLike) forgeRegistryEntry).asItem())));
     }
 
     public static ResourceMaterial getOrCreate(String type) {
@@ -127,8 +127,8 @@ public class ResourceRegistry {
     public static void injectField(ResourceMaterial material, IResourceType type, ForgeRegistryEntry entry) {
         if (ANNOTATED_FIELDS.containsKey(material.getMaterialType())) {
             HashMultimap<String, Field> multimap = ANNOTATED_FIELDS.get(material.getMaterialType());
-            if (multimap.containsKey(type.getString())) { //GET NAME
-                multimap.get(type.getString()).stream().filter(field -> entry.getRegistryType().isAssignableFrom(field.getType())).forEach(field -> {
+            if (multimap.containsKey(type.getSerializedName())) { //GET NAME
+                multimap.get(type.getSerializedName()).stream().filter(field -> entry.getRegistryType().isAssignableFrom(field.getType())).forEach(field -> {
                     try {
                         field.set(null, entry);
                     } catch (IllegalAccessException e) {

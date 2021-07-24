@@ -14,8 +14,8 @@ import com.hrznstudio.titanium.block.tile.MachineTile;
 import com.hrznstudio.titanium.component.bundle.TankInteractionBundle;
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.hrznstudio.titanium.filter.ItemStackFilter;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -43,7 +43,7 @@ public class MachineTestTile extends MachineTile<MachineTestTile> {
         }
         this.setShowEnergy(false);
         this.addBundle(tankBundle = new TankInteractionBundle<>(() -> this.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY), 175, 94, this, 10));
-        this.addInventory(this.movingSlot = new InventoryComponent<MachineTestTile>("moving_slot", 0, 0, 1).setInputFilter((stack, integer) -> this.movingSlot.getSlotVisiblePredicate().test(integer)).setSlotVisiblePredicate(integer -> this.world.getGameTime() % 100 > 40).setSlotPosition(integer -> Pair.of((int) this.world.getGameTime() % 100, 50 + (int) this.world.getGameTime() % 50 - 25)));
+        this.addInventory(this.movingSlot = new InventoryComponent<MachineTestTile>("moving_slot", 0, 0, 1).setInputFilter((stack, integer) -> this.movingSlot.getSlotVisiblePredicate().test(integer)).setSlotVisiblePredicate(integer -> this.level.getGameTime() % 100 > 40).setSlotPosition(integer -> Pair.of((int) this.level.getGameTime() % 100, 50 + (int) this.level.getGameTime() % 50 - 25)));
     }
 
     @Nonnull

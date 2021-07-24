@@ -7,7 +7,7 @@
 
 package com.hrznstudio.titanium.api;
 
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -30,7 +30,7 @@ public interface INBTHandler<T> {
      * @param object   The object value to be stored.
      * @return true if the Object was successfully stored in the NBT
      */
-    boolean storeToNBT(@Nonnull CompoundNBT compound, @Nonnull String name, @Nonnull T object);
+    boolean storeToNBT(@Nonnull CompoundTag compound, @Nonnull String name, @Nonnull T object);
 
     /**
      * Reads the value from the NBT to be stored in the Field.
@@ -40,5 +40,5 @@ public interface INBTHandler<T> {
      * @param currentValue The current value of the object
      * @return The object if it was successfully stored or null if it wasn't giving the next handlers a chance to store the value.
      */
-    T readFromNBT(@Nonnull CompoundNBT compound, @Nonnull String name, @Nullable T currentValue);
+    T readFromNBT(@Nonnull CompoundTag compound, @Nonnull String name, @Nullable T currentValue);
 }
