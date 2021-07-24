@@ -10,11 +10,14 @@ package com.hrznstudio.titanium._impl.creative.tile;
 import com.hrznstudio.titanium._impl.creative.CreativeFEGeneratorBlock;
 import com.hrznstudio.titanium.block.tile.PoweredTile;
 import com.hrznstudio.titanium.component.energy.EnergyStorageComponent;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.energy.CapabilityEnergy;
 
 import javax.annotation.Nonnull;
@@ -22,22 +25,20 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 public class CreativeFEGeneratorTile extends PoweredTile<CreativeFEGeneratorTile> {
 
-    public CreativeFEGeneratorTile() {
-        super(CreativeFEGeneratorBlock.INSTANCE);
+    public CreativeFEGeneratorTile(BlockPos pos, BlockState state) {
+        super(CreativeFEGeneratorBlock.INSTANCE, pos, state);
     }
 
     @Override
-    public void tick() {
-        super.tick();
-        if (!level.isClientSide) {
-            this.getEnergyStorage().receiveEnergy(Integer.MAX_VALUE, false);
-            for (Direction direction : Direction.values()) {
-                BlockEntity tile = this.level.getBlockEntity(this.getBlockPos().relative(direction));
-                if (tile != null)
-                    tile.getCapability(CapabilityEnergy.ENERGY, direction.getOpposite()).ifPresent(iEnergyStorage -> iEnergyStorage.receiveEnergy(Integer.MAX_VALUE, false));
-            }
-            markForUpdate();
+    public void serverTick(Level level, BlockPos pos, BlockState state, CreativeFEGeneratorTile blockEntity) {
+        super.serverTick(level, pos, state, blockEntity);
+        this.getEnergyStorage().receiveEnergy(Integer.MAX_VALUE, false);
+        for (Direction direction : Direction.values()) {
+            BlockEntity tile = this.level.getBlockEntity(this.getBlockPos().relative(direction));
+            if (tile != null)
+                tile.getCapability(CapabilityEnergy.ENERGY, direction.getOpposite()).ifPresent(iEnergyStorage -> iEnergyStorage.receiveEnergy(Integer.MAX_VALUE, false));
         }
+        markForUpdate();
     }
 
     @Override

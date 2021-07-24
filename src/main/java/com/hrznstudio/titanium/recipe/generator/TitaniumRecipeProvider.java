@@ -20,8 +20,8 @@ public abstract class TitaniumRecipeProvider extends RecipeProvider {
     }
 
     @Override
-    protected void buildShapelessRecipes(Consumer<FinishedRecipe> consumer) {
-        register(consumer);
+    protected void buildCraftingRecipes(Consumer<FinishedRecipe> p_176532_) {
+        register(p_176532_);
     }
 
     public abstract void register(Consumer<FinishedRecipe> consumer);

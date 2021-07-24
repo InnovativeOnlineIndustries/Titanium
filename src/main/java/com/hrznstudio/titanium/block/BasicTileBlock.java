@@ -82,15 +82,12 @@ public abstract class BasicTileBlock<T extends BasicTile<T>> extends BasicBlock 
     @Nullable
     @Override
     public <R extends BlockEntity> BlockEntityTicker<R> getTicker(Level p_153212_, BlockState p_153213_, BlockEntityType<R> p_153214_) {
-        return new BlockEntityTicker<R>() {
-            @Override
-            public void tick(Level level, BlockPos pos, BlockState state, R blockEntity) {
-                if (blockEntity instanceof ITickableBlockEntity){
-                    if (level.isClientSide()){
-                        ((ITickableBlockEntity) blockEntity).clientTick(level, pos, state, blockEntity);
-                    }else {
-                        ((ITickableBlockEntity) blockEntity).serverTick(level, pos, state, blockEntity);
-                    }
+        return (level, pos, state, blockEntity) -> {
+            if (blockEntity instanceof ITickableBlockEntity) {
+                if (level.isClientSide()) {
+                    ((ITickableBlockEntity) blockEntity).clientTick(level, pos, state, blockEntity);
+                } else {
+                    ((ITickableBlockEntity) blockEntity).serverTick(level, pos, state, blockEntity);
                 }
             }
         };
@@ -105,6 +102,6 @@ public abstract class BasicTileBlock<T extends BasicTile<T>> extends BasicBlock 
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos p_153215_, BlockState p_153216_) {
-        return null;
+        return getTileEntityFactory().create(p_153215_, p_153216_);
     }
 }

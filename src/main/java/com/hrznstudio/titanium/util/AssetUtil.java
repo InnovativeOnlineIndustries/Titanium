@@ -8,6 +8,7 @@
 package com.hrznstudio.titanium.util;
 
 import com.hrznstudio.titanium.api.client.IAsset;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.Screen;
@@ -20,7 +21,7 @@ public class AssetUtil {
     public static void drawAsset(PoseStack stack, Screen screen, IAsset asset, int xPos, int yPos) {
         Point offset = asset.getOffset();
         Rectangle area = asset.getArea();
-        screen.getMinecraft().getTextureManager().bindForSetup(asset.getResourceLocation());
+        RenderSystem.setShaderTexture(0, asset.getResourceLocation());
         screen.blit(stack, xPos + offset.x,
             yPos + offset.y,
             area.x,

@@ -8,9 +8,9 @@
 package com.hrznstudio.titanium._impl.test;
 
 import com.hrznstudio.titanium._impl.test.tile.MachineTestTile;
-import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.block.RotatableBlock;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class MachineTestBlock extends RotatableBlock<MachineTestTile> {
 
@@ -21,7 +21,7 @@ public class MachineTestBlock extends RotatableBlock<MachineTestTile> {
     }
 
     @Override
-    public IFactory<MachineTestTile> getTileEntityFactory() {
+    public BlockEntityType.BlockEntitySupplier<MachineTestTile> getTileEntityFactory() {
         return MachineTestTile::new;
     }
 }

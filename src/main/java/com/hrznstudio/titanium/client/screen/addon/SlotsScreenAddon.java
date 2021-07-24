@@ -46,7 +46,7 @@ public class SlotsScreenAddon<T extends IComponentHarness> extends BasicScreenAd
     public static void drawAsset(PoseStack stack, Screen screen, IAssetProvider provider, int handlerPosX, int handlerPosY, int guiX, int guiY, int slots, Function<Integer, Pair<Integer, Integer>> positionFunction, Function<Integer, ItemStack> slotToStackRenderMap, boolean drawColor, Function<Integer, Color> slotToColorRenderMap, Predicate<Integer> slotEnabled) {
         IAsset slot = IAssetProvider.getAsset(provider, AssetTypes.SLOT);
         Rectangle area = slot.getArea();
-        screen.getMinecraft().getTextureManager().bindForSetup(slot.getResourceLocation());
+        RenderSystem.setShaderTexture(0, slot.getResourceLocation());
         //Draw background
         if (drawColor) {
             for (int slotID = 0; slotID < slots; slotID++) {

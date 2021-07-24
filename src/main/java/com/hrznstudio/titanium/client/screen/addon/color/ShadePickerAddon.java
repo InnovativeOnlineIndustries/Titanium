@@ -17,7 +17,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Matrix4f;
 import net.minecraft.client.gui.screens.Screen;
-import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.util.function.Consumer;
@@ -79,21 +78,21 @@ public class ShadePickerAddon extends BasicScreenAddon implements IClickable, IC
     private void drawGradient(PoseStack matrix, int x, int y, int width, int height, Color tl, Color tr, Color bl, Color br) {
         RenderSystem.disableTexture();
         RenderSystem.enableBlend();
-        RenderSystem.disableAlphaTest();
+        //RenderSystem.disableAlphaTest(); TODO
         RenderSystem.defaultBlendFunc();
-        RenderSystem.shadeModel(GL11.GL_SMOOTH);
+        //RenderSystem.shadeModel(GL11.GL_SMOOTH); TODO
         BufferBuilder buffer = Tesselator.getInstance().getBuilder();
         Matrix4f matrix4f = matrix.last().pose();
-        buffer.begin(7, DefaultVertexFormat.POSITION_COLOR);
+        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
         buffer.vertex(matrix4f, x, y + height, 0).color(bl.getRed() / 255f, bl.getGreen() / 255f, bl.getBlue() / 255f, bl.getAlpha() / 255f).endVertex();
         buffer.vertex(matrix4f, x + width, y + height, 0).color(br.getRed() / 255f, br.getGreen() / 255f, br.getBlue() / 255f, br.getAlpha() / 255f).endVertex();
         buffer.vertex(matrix4f, x + width, y, 0).color(tr.getRed() / 255f, tr.getGreen() / 255f, tr.getBlue() / 255f, tr.getAlpha() / 255f).endVertex();
         buffer.vertex(matrix4f, x, y, 0).color(tl.getRed() / 255f, tl.getGreen() / 255f, tl.getBlue() / 255f, tl.getAlpha() / 255f).endVertex();
         buffer.end();
         BufferUploader.end(buffer);
-        RenderSystem.shadeModel(GL11.GL_FLAT);
+        //RenderSystem.shadeModel(GL11.GL_FLAT); TODO
         RenderSystem.disableBlend();
-        RenderSystem.enableAlphaTest();
+        //RenderSystem.enableAlphaTest(); TODO
         RenderSystem.enableTexture();
     }
 

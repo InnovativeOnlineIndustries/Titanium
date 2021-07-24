@@ -34,18 +34,18 @@ public class TwentyFourTestTile extends PoweredTile<TwentyFourTestTile> {
     @Save
     private InventoryComponent<TwentyFourTestTile> third;
 
-    public TwentyFourTestTile() {
-        super(TwentyFourTestBlock.TEST);
+    public TwentyFourTestTile(BlockPos pos, BlockState state) {
+        super(TwentyFourTestBlock.TEST, pos, state);
 
         this.addInventory(first = new InventoryComponent<TwentyFourTestTile>("test", -120, 20, 1)
-                .setComponentHarness(this)
-                .setInputFilter(IItemStackQuery.ANYTHING.toSlotFilter()));
+            .setComponentHarness(this)
+            .setInputFilter(IItemStackQuery.ANYTHING.toSlotFilter()));
         this.addInventory(second = new InventoryComponent<TwentyFourTestTile>("test2", 80, 30, 1)
-                .setComponentHarness(this)
-                .setInputFilter(IItemStackQuery.ANYTHING.toSlotFilter()));
+            .setComponentHarness(this)
+            .setInputFilter(IItemStackQuery.ANYTHING.toSlotFilter()));
         this.addProgressBar(bar = new ProgressBarComponent<TwentyFourTestTile>(20, 20, 500)
-                .setCanIncrease(componentHarness -> true)
-                .setOnFinishWork(() -> System.out.println("WOWOOW")));
+            .setCanIncrease(componentHarness -> true)
+            .setOnFinishWork(() -> System.out.println("WOWOOW")));
         this.addInventory(third = new InventoryComponent<TwentyFourTestTile>("test3", 180, 30, 1)
                 .setComponentHarness(this)
                 .setInputFilter(IItemStackQuery.ANYTHING.toSlotFilter()));

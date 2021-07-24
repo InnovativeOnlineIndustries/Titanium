@@ -107,11 +107,7 @@ public class CompoundSerializableDataHandler {
     }
 
     private static void writeUpdatePacket(FriendlyByteBuf buf, ClientboundBlockEntityDataPacket packet) {
-        try {
-            packet.write(buf);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        packet.write(buf);
     }
 
     private static Ingredient.Value[] readIItemListArray(FriendlyByteBuf buf) {
@@ -160,13 +156,7 @@ public class CompoundSerializableDataHandler {
     }
 
     private static ClientboundBlockEntityDataPacket readUpdatePacket(FriendlyByteBuf buf) {
-        ClientboundBlockEntityDataPacket packet = new ClientboundBlockEntityDataPacket();
-        try {
-            packet.write(buf);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return packet;
+        return new ClientboundBlockEntityDataPacket(buf);
     }
 
     public static Pair<Reader, Writer> getHandler(Class<?> clazz) {

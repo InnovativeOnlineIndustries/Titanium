@@ -25,9 +25,9 @@ public class AnnotationUtil {
         Type type = Type.getType(annotation);
         for (ModFileScanData allScanDatum : ModList.get().getAllScanData()) {
             for (ModFileScanData.AnnotationData allScanDatumAnnotation : allScanDatum.getAnnotations()) {
-                if (Objects.equals(allScanDatumAnnotation.getAnnotationType(), type)) {
+                if (Objects.equals(allScanDatumAnnotation.annotationData(), type)) {
                     try {
-                        classList.add(Class.forName(allScanDatumAnnotation.getMemberName()));
+                        classList.add(Class.forName(allScanDatumAnnotation.memberName()));
                     } catch (ClassNotFoundException e) {
                         Titanium.LOGGER.error(e);
                     }
@@ -43,9 +43,9 @@ public class AnnotationUtil {
         for (ModFileScanData allScanDatum : ModList.get().getAllScanData()) {
             if (allScanDatum.getTargets().get(filter) == null) continue;
             for (ModFileScanData.AnnotationData allScanDatumAnnotation : allScanDatum.getAnnotations()) {
-                if (Objects.equals(allScanDatumAnnotation.getAnnotationType(), type)) {
+                if (Objects.equals(allScanDatumAnnotation.annotationType(), type)) {
                     try {
-                        classList.add(Class.forName(allScanDatumAnnotation.getMemberName()));
+                        classList.add(Class.forName(allScanDatumAnnotation.memberName()));
                     } catch (ClassNotFoundException e) {
                         Titanium.LOGGER.error(e);
                     }
@@ -60,10 +60,10 @@ public class AnnotationUtil {
         Type type = Type.getType(annotation);
         for (ModFileScanData allScanDatum : ModList.get().getAllScanData()) {
             for (ModFileScanData.AnnotationData annotationData : allScanDatum.getAnnotations()) {
-                if (Objects.equals(annotationData.getAnnotationType(), type)) {
+                if (Objects.equals(annotationData.annotationType(), type)) {
                     try {
-                        for (Field field : Class.forName(annotationData.getClassType().getClassName()).getDeclaredFields()) {
-                            if (field.getName().equalsIgnoreCase(annotationData.getMemberName())) {
+                        for (Field field : Class.forName(annotationData.clazz().getClassName()).getDeclaredFields()) {
+                            if (field.getName().equalsIgnoreCase(annotationData.memberName())) {
                                 fields.add(field);
                             }
                         }

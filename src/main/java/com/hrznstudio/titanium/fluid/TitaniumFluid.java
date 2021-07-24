@@ -66,8 +66,8 @@ public class TitaniumFluid extends FlowingFluid {
     @ParametersAreNonnullByDefault
     protected void beforeDestroyingBlock(LevelAccessor worldIn, BlockPos pos, BlockState state) {
         // copied from the WaterFluid implementation
-        BlockEntity tileentity = state.getBlock().hasTileEntity(state) ? worldIn.getBlockEntity(pos) : null;
-        Block.dropResources(state, worldIn, pos, tileentity);
+        BlockEntity blockEntity = worldIn.getBlockEntity(pos);
+        if (blockEntity != null) Block.dropResources(state, worldIn, pos, blockEntity);
     }
 
     @Override

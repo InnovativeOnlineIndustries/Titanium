@@ -14,8 +14,10 @@ import com.hrznstudio.titanium.block.tile.MachineTile;
 import com.hrznstudio.titanium.component.bundle.TankInteractionBundle;
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.hrznstudio.titanium.filter.ItemStackFilter;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -29,8 +31,8 @@ public class MachineTestTile extends MachineTile<MachineTestTile> {
     @Save
     private InventoryComponent<MachineTestTile> movingSlot;
 
-    public MachineTestTile() {
-        super(MachineTestBlock.TEST);
+    public MachineTestTile(BlockPos blockPos, BlockState state) {
+        super(MachineTestBlock.TEST, blockPos, state);
         addFilter(this.filter = new ItemStackFilter("filter", 12));
         int pos = 0;
         for (int y = 0; y < 4; y++) {

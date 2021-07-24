@@ -24,19 +24,14 @@ public class RewardWorldStorage extends SavedData {
     private List<ResourceLocation> freeRewards;
     private List<UUID> configuredPlayers;
 
-    private RewardWorldStorage(String p_i2141_1_) {
-        super(NAME);
+    private RewardWorldStorage() {
         this.rewards = new HashMap<>();
         this.freeRewards = new ArrayList<>();
         this.configuredPlayers = new ArrayList<>();
     }
 
-    public RewardWorldStorage() {
-        this(NAME);
-    }
-
     public static RewardWorldStorage get(ServerLevel world) {
-        return world.getDataStorage().computeIfAbsent(RewardWorldStorage::new, NAME);
+        return world.getDataStorage().computeIfAbsent(compoundTag -> new RewardWorldStorage().load(compoundTag), RewardWorldStorage::new, NAME);
     }
 
     public void remove(UUID uuid, ResourceLocation resourceLocation) {
@@ -59,8 +54,8 @@ public class RewardWorldStorage extends SavedData {
         return configuredPlayers;
     }
 
-    @Override
-    public void load(CompoundTag nbt) {
+
+    public RewardWorldStorage load(CompoundTag nbt) {
         CompoundTag compoundNBT = nbt.getCompound(NAME);
         rewards.clear();
         compoundNBT.getAllKeys().forEach(s -> {
@@ -74,6 +69,7 @@ public class RewardWorldStorage extends SavedData {
         configuredPlayers.clear();
         CompoundTag configured = nbt.getCompound("ConfiguredPlayers");
         configured.getAllKeys().forEach(s -> configuredPlayers.add(UUID.fromString(s)));
+        return this;
     }
 
     @Override

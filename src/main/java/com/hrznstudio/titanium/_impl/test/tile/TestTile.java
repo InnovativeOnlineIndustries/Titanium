@@ -37,7 +37,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -63,8 +65,8 @@ public class TestTile extends PoweredTile<TestTile> implements IRedstoneReader {
     private RedstoneManager<RedstoneAction> redstoneManager;
     private RedstoneControlButtonComponent<RedstoneAction> redstoneButton;
 
-    public TestTile() {
-        super(TestBlock.TEST);
+    public TestTile(BlockPos pos, BlockState blockState) {
+        super(TestBlock.TEST, pos, blockState);
         this.addInventory(first = (SidedInventoryComponent<TestTile>) new SidedInventoryComponent<TestTile>("test", 80, 30, 1, 0)
             .setValidFaceModes(IFacingComponent.FaceMode.ENABLED, IFacingComponent.FaceMode.NONE)
             .setComponentHarness(this)
@@ -74,7 +76,7 @@ public class TestTile extends PoweredTile<TestTile> implements IRedstoneReader {
             .setComponentHarness(this)
             .setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack))
             .setSlotToItemStackRender(0, new ItemStack(Items.STONE_PICKAXE))
-                .setSlotToColorRender(1, DyeColor.ORANGE));
+            .setSlotToColorRender(1, DyeColor.ORANGE));
         this.addProgressBar(bar = new ProgressBarComponent<TestTile>(40, 20, 500)
             .setCanIncrease(tileEntity -> redstoneManager.getAction().canRun(tileEntity.getEnvironmentValue(false, null)) && redstoneManager.shouldWork())
             .setOnFinishWork(() -> {
@@ -113,8 +115,8 @@ public class TestTile extends PoweredTile<TestTile> implements IRedstoneReader {
     }
 
     @Override
-    public void tick() {
-        super.tick();
+    public void serverTick(Level level, BlockPos pos, BlockState state, TestTile blockEntity) {
+        super.serverTick(level, pos, state, blockEntity);
         if (Objects.requireNonNull(getLevel()).isRaining()) {
             getLevel().getLevelData().setRaining(false);
         }

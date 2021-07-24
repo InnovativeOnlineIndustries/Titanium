@@ -8,6 +8,7 @@
 package com.hrznstudio.titanium.util;
 
 import com.hrznstudio.titanium._impl.TagConfig;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.*;
 import net.minecraft.world.entity.EntityType;
@@ -29,15 +30,15 @@ public class TagUtil {
     }
 
     public static TagCollection<Block> getAllBlockTags(Level world) {
-        return world.getTagManager().getBlocks();
+        return world.getTagManager().getOrEmpty(Registry.BLOCK_REGISTRY);
     }
 
     public static TagCollection<Item> getAllItemTags(Level world) {
-        return world.getTagManager().getItems();
+        return world.getTagManager().getOrEmpty(Registry.ITEM_REGISTRY);
     }
 
     public static TagCollection<Fluid> getAllFluidTags(Level world) {
-        return world.getTagManager().getFluids();
+        return world.getTagManager().getOrEmpty(Registry.FLUID_REGISTRY);
     }
 
     public static <T> Collection<T> getAllEntries(SetTag<T>... tags) {

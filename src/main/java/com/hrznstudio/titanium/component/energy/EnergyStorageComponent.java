@@ -17,14 +17,12 @@ import com.hrznstudio.titanium.container.addon.IContainerAddon;
 import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
 import com.hrznstudio.titanium.container.addon.IntReferenceHolderAddon;
 import com.hrznstudio.titanium.container.referenceholder.FunctionReferenceHolder;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.energy.EnergyStorage;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public class EnergyStorageComponent<T extends IComponentHarness> extends EnergyStorage implements INBTSerializable<CompoundTag>,
+public class EnergyStorageComponent<T extends IComponentHarness> extends EnergyStorage implements
     IScreenAddonProvider, IContainerAddonProvider {
 
     private final int xPos;
@@ -64,13 +62,6 @@ public class EnergyStorageComponent<T extends IComponentHarness> extends EnergyS
         return amount;
     }
 
-    @Override
-    public CompoundTag serializeNBT() {
-        CompoundTag nbt = new CompoundTag();
-        nbt.putInt("energy", this.energy);
-        return nbt;
-    }
-
     public void setEnergyStored(int energy) {
         if (energy > this.getMaxEnergyStored()) {
             this.energy = this.getMaxEnergyStored();
@@ -78,11 +69,6 @@ public class EnergyStorageComponent<T extends IComponentHarness> extends EnergyS
             this.energy = Math.max(energy, 0);
         }
         this.update();
-    }
-
-    @Override
-    public void deserializeNBT(CompoundTag nbt) {
-        this.energy = nbt.getInt("energy");
     }
 
     @Override

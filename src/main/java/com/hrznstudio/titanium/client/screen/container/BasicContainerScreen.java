@@ -28,6 +28,7 @@ import org.lwjgl.glfw.GLFW;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class BasicContainerScreen<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> implements IScreenAddonConsumer {
     private final T container;
@@ -82,7 +83,7 @@ public class BasicContainerScreen<T extends AbstractContainerMenu> extends Abstr
         yCenter = (height - imageHeight) / 2;
         //BG RENDERING
         RenderSystem.setShaderColor(1, 1, 1, 1);
-        getMinecraft().getTextureManager().bindForSetup(IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND).getResourceLocation());
+        RenderSystem.setShaderTexture(0, IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND).getResourceLocation());
         blit(stack, xCenter, yCenter, 0, 0, imageWidth, imageHeight);
         Minecraft.getInstance().font.draw(stack, ChatFormatting.DARK_GRAY + title.getString(), xCenter + imageWidth / 2 - Minecraft.getInstance().font.width(title.getString()) / 2, yCenter + 6, 0xFFFFFF);
         this.checkForMouseDrag(mouseX, mouseY);
@@ -112,7 +113,7 @@ public class BasicContainerScreen<T extends AbstractContainerMenu> extends Abstr
         for (IScreenAddon iScreenAddon : addons) {
             if (iScreenAddon.isInside(this, mouseX - xCenter, mouseY - yCenter) && !iScreenAddon.getTooltipLines().isEmpty()) {
                 // renderTooltip
-                renderWrappedToolTip(stack, iScreenAddon.getTooltipLines(), mouseX - xCenter, mouseY - yCenter, minecraft.font);
+                renderTooltip(stack, iScreenAddon.getTooltipLines(), Optional.empty(), mouseX - xCenter, mouseY - yCenter);
             }
         }
     }

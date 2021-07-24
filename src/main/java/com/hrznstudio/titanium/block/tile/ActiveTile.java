@@ -297,7 +297,7 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
                                 }
                                 playerEntity.inventoryMenu.setCarried(iFluidHandlerItem.getContainer().copy());
                                 if (playerEntity instanceof ServerPlayer) {
-                                    ((ServerPlayer) playerEntity).broadcastCarriedItem();
+                                    //((ServerPlayer) playerEntity).broadcastCarriedItem(); TODO
                                 }
                             });
                     }

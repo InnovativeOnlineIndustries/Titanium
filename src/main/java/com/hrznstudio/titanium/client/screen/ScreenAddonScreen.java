@@ -23,6 +23,7 @@ import net.minecraft.network.chat.TextComponent;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public abstract class ScreenAddonScreen extends Screen implements IScreenAddonConsumer {
@@ -81,7 +82,7 @@ public abstract class ScreenAddonScreen extends Screen implements IScreenAddonCo
         for (IScreenAddon iScreenAddon : addonList) {
             if (iScreenAddon.isInside(this, mouseX - x, mouseY - y) && !iScreenAddon.getTooltipLines().isEmpty()) {
                 // renderTooltip
-                renderWrappedToolTip(stack, iScreenAddon.getTooltipLines(), mouseX, mouseY, minecraft.font);
+                renderTooltip(stack, iScreenAddon.getTooltipLines(), Optional.empty(), mouseX, mouseY);
             }
         }
     }

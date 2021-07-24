@@ -89,9 +89,9 @@ repositories {
      }
 }
 dependencies {
-  minecraft 'net.minecraftforge:forge:1.17.1-37.0.1'
+  minecraft 'net.minecraftforge:forge:1.17.1-37.0.2'
 
-  compileOnly fg.deobf("mezz.jei:jei-1.16.4:7.6.1.71:api")
+  //compileOnly fg.deobf("mezz.jei:jei-1.16.4:7.6.1.71:api")
         // at runtime, use the full JEI jar
   //runtimeOnly fg.deobf("mezz.jei:jei-1.16.4:7.6.1.71")
 
@@ -109,6 +109,7 @@ jar {
                     "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
                     "Maven-Artifact": "${group}:${archivesBaseName}:${version}",
                     "ModSide": "BOTH",
+                    "Automatic-Module-Name": "com.hrznstdio.titanium"
         ],)
 
     }
@@ -155,25 +156,6 @@ publishing {
         } else {
             mavenLocal()
         }
-    }
-}
-
-processResources {
-    // this will ensure that this task is redone when the versions change.
-    inputs.property 'version', project.version
-    inputs.property 'mcversion', '1.14'
-
-    // replace stuff in mcmod.info, nothing else
-    from(sourceSets.main.resources.srcDirs) {
-        include 'META_INF/mods.toml'
-
-        // replace version and mcversion
-        expand 'version':project.version, 'mcversion': '1.14'
-    }
-
-    // copy everything else except the mcmod.info
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'META_INF/mods.toml'
     }
 }
 

@@ -89,7 +89,7 @@ public class ItemstackFilterScreenAddon extends BasicScreenAddon implements ICli
                     CompoundTag compoundNBT = new CompoundTag();
                     compoundNBT.putString("Name", filter.getName());
                     compoundNBT.putInt("Slot", filterSlot.getFilterID());
-                    compoundNBT.put("Filter", Minecraft.getInstance().player.inventory.getCarried().serializeNBT());
+                    compoundNBT.put("Filter", Minecraft.getInstance().player.inventoryMenu.getCarried().serializeNBT());
                     Titanium.NETWORK.get().sendToServer(new ButtonClickNetworkMessage(locatable.getLocatorInstance(), -2, compoundNBT));
                 }
             }

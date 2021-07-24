@@ -56,7 +56,7 @@ public class ResourceRegistryProvider implements DataProvider {
                         String tag = resourceHolder.getType().getTag();
                         String type = resourceHolder.getMaterial().getMaterialType();
                         if (entry instanceof Block) {
-                            this.tag(BlockTags.bindForSetup("forge:" + tag + "/" + type)).add((Block) entry);//Builder, add
+                            this.tag(BlockTags.bind("forge:" + tag + "/" + type)).add((Block) entry);//Builder, add
                             typeBlockMap.compute(new ResourceLocation("forge", tag), (resourceLocation, blocks) -> {
                                 if (blocks == null) {
                                     List<Block> list = NonNullList.create();
@@ -70,7 +70,7 @@ public class ResourceRegistryProvider implements DataProvider {
                         }
                     });
                 });
-                typeBlockMap.forEach((tagLocation, blockList) -> this.tag(BlockTags.bindForSetup(tagLocation.toString())).add(blockList.toArray(new Block[blockList.size()])));//Builder, add
+                typeBlockMap.forEach((tagLocation, blockList) -> this.tag(BlockTags.bind(tagLocation.toString())).add(blockList.toArray(new Block[blockList.size()])));//Builder, add
             }
         };
         this.itemTagsProvider = new ItemTagsProvider(generator, blockTagsProvider, modid, helper) {

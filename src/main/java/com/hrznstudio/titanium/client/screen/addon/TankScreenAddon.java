@@ -90,7 +90,7 @@ public class TankScreenAddon extends BasicScreenAddon implements IClickable {
             }
         }
         RenderSystem.setShaderColor(1, 1, 1, 1);
-        RenderSystem.enableAlphaTest();
+        //RenderSystem.enableAlphaTest(); TODO
         ITankAsset asset = IAssetProvider.getAsset(provider, type.getAssetType());
         AssetUtil.drawAsset(stack, screen, asset, guiX + getPosX(), guiY + getPosY());
     }

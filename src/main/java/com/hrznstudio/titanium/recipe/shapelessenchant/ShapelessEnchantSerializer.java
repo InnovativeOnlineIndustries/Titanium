@@ -38,7 +38,7 @@ public class ShapelessEnchantSerializer extends ShapelessRecipe.Serializer {
             throw new JsonParseException("Too many ingredients for shapeless recipe the max is " + 9);
         } else {
             JsonObject jsonObject = GsonHelper.getAsJsonObject(json, "result");
-            ItemStack itemstack = ShapedRecipe.itemFromJson(jsonObject);
+            ItemStack itemstack = ShapedRecipe.itemStackFromJson(jsonObject);
             if (jsonObject.has("enchantments")) {
                 JsonElement enchantments = jsonObject.get("enchantments");
                 Map<Enchantment, Integer> enchantmentLevelMap = Maps.newHashMap();

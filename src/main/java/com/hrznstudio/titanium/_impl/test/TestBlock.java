@@ -10,9 +10,9 @@ package com.hrznstudio.titanium._impl.test;
 import com.hrznstudio.titanium._impl.test.tile.TestTile;
 import com.hrznstudio.titanium.annotation.config.ConfigFile;
 import com.hrznstudio.titanium.annotation.config.ConfigVal;
-import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.block.RotatableBlock;
 import com.hrznstudio.titanium.datagenerator.loot.block.BasicBlockLootTables;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.storage.loot.LootTable;
 
@@ -30,10 +30,6 @@ public class TestBlock extends RotatableBlock<TestTile> {
         super(Properties.of(Material.STONE), TestTile.class);
     }
 
-    @Override
-    public IFactory<TestTile> getTileEntityFactory() {
-        return TestTile::new;
-    }
 
     @Nonnull
     @Override
@@ -44,5 +40,10 @@ public class TestBlock extends RotatableBlock<TestTile> {
     @Override
     public LootTable.Builder getLootTable(BasicBlockLootTables blockLootTables) {
         return blockLootTables.droppingNothing();
+    }
+
+    @Override
+    public BlockEntityType.BlockEntitySupplier<TestTile> getTileEntityFactory() {
+        return TestTile::new;
     }
 }

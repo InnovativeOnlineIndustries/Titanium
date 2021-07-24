@@ -48,18 +48,18 @@ public class AssetTestTile extends PoweredTile<AssetTestTile>{
     @Save
     private SidedFluidTankComponent<AssetTestTile> fluidTank;
 
-    public AssetTestTile() {
-        super(AssetTestBlock.TEST);
+    public AssetTestTile(BlockPos pos, BlockState state) {
+        super(AssetTestBlock.TEST, pos, state);
         this.addInventory(inventory = (SidedInventoryComponent<AssetTestTile>) new SidedInventoryComponent<AssetTestTile>("inventory", 8, 88, 18, 0)
-                .setFacingHandlerPos(-15, 1).setRange(9, 2)
-                .setComponentHarness(this)
-                .setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
+            .setFacingHandlerPos(-15, 1).setRange(9, 2)
+            .setComponentHarness(this)
+            .setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
         this.addInventory(recipe = new InventoryComponent<AssetTestTile>("recipe", 10, 20, 9)
-                .setRange(3, 3)
-                .setComponentHarness(this)
-                .setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
+            .setRange(3, 3)
+            .setComponentHarness(this)
+            .setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
         this.addInventory(fakeOutput = new InventoryComponent<AssetTestTile>("fake_output", 80, 51, 1)
-                .setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
+            .setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
         this.addInventory(realOutput = (SidedInventoryComponent<AssetTestTile>) new SidedInventoryComponent<AssetTestTile>("real_output", 120, 56, 1, 0)
                 .setFacingHandlerPos(-15, 16)
                 .setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));

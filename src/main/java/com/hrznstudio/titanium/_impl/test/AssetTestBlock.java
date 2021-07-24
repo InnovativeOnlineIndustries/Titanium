@@ -8,9 +8,9 @@
 package com.hrznstudio.titanium._impl.test;
 
 import com.hrznstudio.titanium._impl.test.tile.AssetTestTile;
-import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.block.RotatableBlock;
 import com.hrznstudio.titanium.datagenerator.loot.block.BasicBlockLootTables;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.storage.loot.LootTable;
 
@@ -24,10 +24,6 @@ public class AssetTestBlock extends RotatableBlock<AssetTestTile> {
         super(Properties.of(Material.STONE), AssetTestTile.class);
     }
 
-    @Override
-    public IFactory<AssetTestTile> getTileEntityFactory() {
-        return AssetTestTile::new;
-    }
 
     @Nonnull
     @Override
@@ -38,5 +34,10 @@ public class AssetTestBlock extends RotatableBlock<AssetTestTile> {
     @Override
     public LootTable.Builder getLootTable(BasicBlockLootTables blockLootTables) {
         return blockLootTables.droppingNothing();
+    }
+
+    @Override
+    public BlockEntityType.BlockEntitySupplier<AssetTestTile> getTileEntityFactory() {
+        return AssetTestTile::new;
     }
 }
