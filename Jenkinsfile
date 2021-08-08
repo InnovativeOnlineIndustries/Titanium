@@ -14,7 +14,7 @@ pipeline {
       steps {
         echo 'Cleaning Project'
         sh 'chmod +x gradlew'
-        sh './gradle wrapper --gradle-version 7.2 --distribution-type all'
+        sh './gradlew wrapper --gradle-version 7.2 --distribution-type all'
         sh './gradlew -version'
         sh './gradlew clean'
       }
