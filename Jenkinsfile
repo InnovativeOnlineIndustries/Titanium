@@ -14,6 +14,7 @@ pipeline {
       steps {
         echo 'Cleaning Project'
         sh 'chmod +x gradlew'
+        sh './gradlew -version'
         sh './gradlew clean'
       }
     }
