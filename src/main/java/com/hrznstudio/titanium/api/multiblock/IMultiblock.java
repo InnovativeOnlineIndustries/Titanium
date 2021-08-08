@@ -7,7 +7,7 @@
 
 package com.hrznstudio.titanium.api.multiblock;
 
-import jdk.nashorn.internal.ir.Block;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
