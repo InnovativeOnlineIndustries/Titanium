@@ -2,20 +2,19 @@ import se.bjurr.gitchangelog.plugin.gradle.GitChangelogTask
 
 buildscript {
     repositories {
-        maven { url = 'https://files.minecraftforge.net/maven' }
-        jcenter()
+        maven { url = 'https://maven.minecraftforge.net' }
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
         classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.4.0"
     }
 }
 plugins {
     id 'maven-publish'
-    id 'net.minecrell.licenser' version '0.4.1'
+    id 'org.cadixdev.licenser' version '0.6.1'
     id "com.matthewprenger.cursegradle" version "1.4.0"
-    id "se.bjurr.gitchangelog.git-changelog-gradle-plugin" version "1.64"
+    id "se.bjurr.gitchangelog.git-changelog-gradle-plugin" version "1.71.4"
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
@@ -26,7 +25,7 @@ if (System.getenv('BUILD_NUMBER') != null) {
 }
 group = 'com.hrznstudio'
 archivesBaseName = 'titanium'
-def isReleaseBranch = System.getenv("BRANCH") == "release" || System.getenv("BRANCH") == "release-1.15" || System.getenv("BRANCH") == "release-1.16";
+def isReleaseBranch = System.getenv("GIT_BRANCH") == "release" || System.getenv("GIT_BRANCH") == "release-1.15" || System.getenv("GIT_BRANCH") == "release-1.16";
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
@@ -49,7 +48,11 @@ minecraft {
             // recommended logging level for the console
             properties 'forge.logging.console.level': 'debug'
             workingDirectory project.file('run').canonicalPath
-            source sourceSets.main
+            mods{
+                Titanium{
+                  source sourceSets.main
+                }
+            }
         }
         server = {
             // recommended logging data for a userdev environment
@@ -57,13 +60,21 @@ minecraft {
             // recommended logging level for the console
             properties 'forge.logging.console.level': 'debug'
             workingDirectory project.file('run').canonicalPath
-            source sourceSets.main
+            mods{
+              Titanium{
+               source sourceSets.main
+              }
+            }
         }
         data {
             workingDirectory project.file('run')
             property 'forge.logging.console.level', 'info'
             args '--mod', 'titanium', '--all', '--output', file('src/main/resources'), '--input', file('src/main/resources')
-            source sourceSets.main
+            mods{
+              Titanium{
+                source sourceSets.main
+              }
+            }
         }
     }
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
@@ -71,7 +82,6 @@ minecraft {
 
 repositories {
     mavenCentral()
-    jcenter()
     maven {
         // location of the maven that hosts JEI files
         name = "Progwml6 maven"
@@ -159,25 +169,6 @@ publishing {
     }
 }
 
-processResources {
-    // this will ensure that this task is redone when the versions change.
-    inputs.property 'version', project.version
-    inputs.property 'mcversion', '1.14'
-
-    // replace stuff in mcmod.info, nothing else
-    from(sourceSets.main.resources.srcDirs) {
-        include 'META_INF/mods.toml'
-
-        // replace version and mcversion
-        expand 'version':project.version, 'mcversion': '1.14'
-    }
-
-    // copy everything else except the mcmod.info
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'META_INF/mods.toml'
-    }
-}
-
 tasks.curseforge.enabled = System.env["CURSE_API"] != null
 
 curseforge {
@@ -196,9 +187,6 @@ curseforge {
     mainArtifact(jar){
 
     }
-    addArtifact sourcesJar
-    addArtifact deobfJar
-    addArtifact javadocJar
   }
 }
 
