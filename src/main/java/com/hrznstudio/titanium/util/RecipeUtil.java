@@ -25,7 +25,7 @@ import java.util.Map;
 public class RecipeUtil {
 
     public static <T extends Recipe<?>> Collection<T> getRecipes(Level world, RecipeType<T> recipeType) {
-        Map<RecipeType<?>, Map<ResourceLocation, Recipe<?>>> recipes = ObfuscationReflectionHelper.getPrivateValue(RecipeManager.class, world.getRecipeManager(), "recipes");
+        Map<RecipeType<?>, Map<ResourceLocation, Recipe<?>>> recipes = ObfuscationReflectionHelper.getPrivateValue(RecipeManager.class, world.getRecipeManager(), "f_44007_");
         if (recipes != null) {
             Map<ResourceLocation, Recipe<?>> typedRecipes = recipes.get(recipeType);
             if (typedRecipes != null) {
