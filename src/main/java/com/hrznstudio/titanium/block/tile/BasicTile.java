@@ -44,7 +44,7 @@ public class BasicTile<T extends BasicTile<T>> extends BlockEntity {
 
     }
 
-    // TileEntity.Read
+    // BlockEntity.Read
     @Override
     public void load(CompoundTag compound) {
         NBTManager.getInstance().readTileEntity(this, compound);

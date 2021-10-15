@@ -58,9 +58,9 @@ public class NBTManager {
     }
 
     /**
-     * Scans a {@link TileEntity} class for {@link Save}.
+     * Scans a {@link BlockEntity} class for {@link Save}.
      *
-     * @param entity The TileEntity class
+     * @param entity The BlockEntity class
      */
     public void scanTileClassForAnnotations(Class<? extends BlockEntity> entity) {
         List<Field> fields = new ArrayList<>();
