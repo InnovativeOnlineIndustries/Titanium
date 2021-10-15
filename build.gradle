@@ -12,7 +12,7 @@ buildscript {
 }
 plugins {
     id 'maven-publish'
-  id 'org.cadixdev.licenser' version '0.6.1'
+    id 'org.cadixdev.licenser' version '0.6.1'
     id "com.matthewprenger.cursegradle" version "1.4.0"
     id "se.bjurr.gitchangelog.git-changelog-gradle-plugin" version "1.71.4"
 }
@@ -28,7 +28,7 @@ group = 'com.hrznstudio'
 archivesBaseName = 'titanium'
 def isReleaseBranch = System.getenv("GIT_BRANCH") == "release" || System.getenv("GIT_BRANCH") == "release-1.15" || System.getenv("GIT_BRANCH") == "release-1.16";
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '16' // Need this here so eclipse task generates correctly.
+java.toolchain.languageVersion = JavaLanguageVersion.of(16)
 
 license {
     header = project.file('HEADER')
