@@ -21,7 +21,7 @@ public class PlayerInventoryFinder {
     public static HashMap<String, PlayerInventoryFinder> FINDERS = new HashMap<>();
 
     static {
-        FINDERS.put(MAIN, new PlayerInventoryFinder(playerEntity -> playerEntity.inventoryMenu.slots.size(), (playerEntity, integer) -> playerEntity.inventoryMenu.slots.get(integer).getItem(), (playerEntity, slot, stack) -> playerEntity.inventoryMenu.slots.get(slot).set(stack)));
+        FINDERS.put(MAIN, new PlayerInventoryFinder(playerEntity -> playerEntity.getInventory().items.size(), (playerEntity, integer) -> playerEntity.getSlot(integer).get(), (playerEntity, slot, stack) -> playerEntity.getSlot(slot).set(stack)));
     }
 
     public static Optional<PlayerInventoryFinder> get(String name){
