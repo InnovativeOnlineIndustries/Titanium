@@ -32,6 +32,15 @@ public class TeleportationUtils {
         return teleportEntityTo(entity, new BlockPos(xCoord, yCoord, zCoord), dimension, yaw ,pitch);
     }
 
+    /**
+     * From Mekanism (MIT licensed) TileEntityTeleporter#teleportEntityTo with a couple minor validation and direction tweaks.
+     * @param entity               Entity to teleport.
+     * @param target               Target position.
+     * @param destinationDimension Target dimension.
+     * @param yaw                  Yaw the entity will have after teleporting.
+     * @param pitch                Pitch the entity will have after teleporting.
+     * @return The entity that teleported.
+     */
     public static Entity teleportEntityTo(Entity entity, BlockPos target, RegistryKey<World> destinationDimension, float yaw, float pitch) {
         if (entity instanceof PartEntity) {
             //Don't allow teleporting sub parts of an entity (such as an ender dragon's wing)
@@ -93,6 +102,13 @@ public class TeleportationUtils {
         return entity;
     }
 
+    /**
+     * From Mekanism (MIT licensed) TileEntityTeleporter#teleportPassenger
+     * @param destWorld          Destination world.
+     * @param destination        Destination position.
+     * @param repositionedEntity "New" parent to become a passenger of after teleportation.
+     * @param passenger          Passenger to teleport.
+     */
     private static void teleportPassenger(ServerWorld destWorld, Vector3d destination, Entity repositionedEntity, Entity passenger) {
         if (!passenger.isNonBoss()) {
             //If the passenger can't change dimensions just let it peacefully stay after dismounting rather than trying to teleport it
