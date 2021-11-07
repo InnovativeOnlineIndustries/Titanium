@@ -92,6 +92,7 @@ public class TagUtil {
     }
 
     public static ItemStack getItemWithPreference(ITag<Item> tag){
+        if (tag == null) return ItemStack.EMPTY;
         if (tag.getAllElements().isEmpty()) return ItemStack.EMPTY;
         List<Item> elements = tag.getAllElements();
         for (String modid : TagConfig.ITEM_PREFERENCE) {
