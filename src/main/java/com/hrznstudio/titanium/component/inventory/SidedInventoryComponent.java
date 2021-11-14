@@ -213,23 +213,12 @@ public class SidedInventoryComponent<T extends IComponentHarness> extends Invent
         int slot = slotCache.getOrDefault(sideness, getNextSlot(from, 0));
         if (slot >= from.getSlots()) slot = 0;
         ItemStack extracted = from.extractItem(slot, workAmount, true);
-        int outSlot = isValidForAnySlot(to, extracted);
-        if (!extracted.isEmpty() && outSlot != -1) {
-            ItemStack returned = to.insertItem(outSlot, extracted, false);
+        if (!extracted.isEmpty()) {
+            ItemStack returned = ItemHandlerHelper.insertItem(to, extracted, false);
             return !from.extractItem(slot, extracted.getCount() - returned.getCount(), false).isEmpty();
         }
         slotCache.put(sideness, getNextSlot(from, slot + 1));
         return false;
     }
 
-    private int isValidForAnySlot(IItemHandler dest, ItemStack stack) {
-        for (int i = 0; i < dest.getSlots(); i++) {
-            if (!dest.isItemValid(i, stack)) continue;
-            if (dest.getStackInSlot(i).isEmpty()) return i;
-            if (ItemHandlerHelper.canItemStacksStack(dest.getStackInSlot(i), stack) && dest.getStackInSlot(i).getCount() < dest.getSlotLimit(i) && dest.getStackInSlot(i).getCount() < dest.getStackInSlot(i).getMaxStackSize()) {
-                return i;
-            }
-        }
-        return -1;
-    }
 }
