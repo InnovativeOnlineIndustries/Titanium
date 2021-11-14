@@ -32,6 +32,13 @@ public class FacingUtil {
             if (sideness == Sideness.BACK) return block.getOpposite();
             if (sideness == Sideness.RIGHT) return block.rotateYCCW();
             if (sideness == Sideness.LEFT) return block.rotateY();
+        }else {
+            if (sideness == Sideness.TOP) return Direction.EAST;
+            if (sideness == Sideness.BOTTOM) return Direction.WEST;
+            if (sideness == Sideness.FRONT) return block;
+            if (sideness == Sideness.BACK) return block.getOpposite();
+            if (sideness == Sideness.RIGHT) return Direction.SOUTH;
+            if (sideness == Sideness.LEFT) return Direction.NORTH;
         }
         return Direction.NORTH;
     }
