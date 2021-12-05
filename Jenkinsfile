@@ -1,10 +1,10 @@
 #!/usr/bin/env groovy
-def releaseBranch = "1.17";
+def releaseBranch = "1.18";
 
 pipeline {
   agent any
   tools {
-      jdk "jdk-16.0.1+9"
+      jdk "jdk-17.0.1"
   }
   environment {
     CURSE_API = credentials('curseforge_api_key')

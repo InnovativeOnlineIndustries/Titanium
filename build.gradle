@@ -169,8 +169,8 @@ curseforge {
     id = '287342'
     changelog = "https://github.com/InnovativeOnlineIndustries/Titanium/blob/changelog/CHANGELOG.md"
     changelogType = 'markdown'
-    releaseType = 'alpha'
-    addGameVersion '1.17.1'
+    releaseType = 'beta'
+    addGameVersion '1.18'
     mainArtifact(jar){
 
     }
