@@ -28,7 +28,7 @@ group = 'com.hrznstudio'
 archivesBaseName = 'titanium'
 def isReleaseBranch = System.getenv("GIT_BRANCH") == "release" || System.getenv("GIT_BRANCH") == "release-1.15" || System.getenv("GIT_BRANCH") == "release-1.16" ||  System.getenv("GIT_BRANCH") == "1.17" ;
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(16)
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 license {
     header = project.file('HEADER')
@@ -41,7 +41,7 @@ license {
 }
 
 minecraft {
-    mappings channel: 'official', version: '1.17.1'
+    mappings channel: 'official', version: '1.18'
     runs {
         client = {
             // recommended logging data for a userdev environment
@@ -89,7 +89,7 @@ repositories {
      }
 }
 dependencies {
-  minecraft 'net.minecraftforge:forge:1.17.1-37.0.2'
+  minecraft 'net.minecraftforge:forge:1.18-38.0.14'
 
   //compileOnly fg.deobf("mezz.jei:jei-1.16.4:7.6.1.71:api")
         // at runtime, use the full JEI jar

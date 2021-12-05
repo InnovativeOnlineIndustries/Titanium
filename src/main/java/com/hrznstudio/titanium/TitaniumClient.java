@@ -48,13 +48,13 @@ public class TitaniumClient {
                 if (shape != null && !shape.isEmpty()) {
                     PoseStack stack = new PoseStack();
                     stack.pushPose();
-                    Camera info = event.getInfo();
+                    Camera info = event.getCamera();
                     stack.mulPose(Vector3f.XP.rotationDegrees(info.getXRot()));
                     stack.mulPose(Vector3f.YP.rotationDegrees(info.getYRot() + 180));
                     double d0 = info.getPosition().x();
                     double d1 = info.getPosition().y();
                     double d2 = info.getPosition().z();
-                    VertexConsumer builder = event.getBuffers().getBuffer(RenderType.LINES);
+                    VertexConsumer builder = event.getMultiBufferSource().getBuffer(RenderType.LINES);
                     drawShape(stack, builder, shape, blockpos.getX() - d0,
                         blockpos.getY() - d1, blockpos.getZ() - d2,0, 0, 0, 0.5F);
                     stack.popPose();

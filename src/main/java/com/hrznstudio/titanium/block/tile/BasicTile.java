@@ -77,7 +77,7 @@ public class BasicTile<T extends BasicTile<T>> extends BlockEntity {
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
         CompoundTag tag = new CompoundTag();
         save(tag);
-        return new ClientboundBlockEntityDataPacket(getBlockPos(), 1, tag);
+        return ClientboundBlockEntityDataPacket.create(this, blockEntity -> tag);
     }
 
     public void updateNeigh() {

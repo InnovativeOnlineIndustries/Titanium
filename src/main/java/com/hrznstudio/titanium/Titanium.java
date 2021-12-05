@@ -55,20 +55,21 @@ import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.DrawSelectionEvent;
+import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.extensions.IForgeContainerType;
+import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
-import net.minecraftforge.fmllegacy.network.NetworkDirection;
-import net.minecraftforge.fmlserverevents.FMLServerStartingEvent;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -94,7 +95,8 @@ public class Titanium extends ModuleController {
         SidedHandler.runOn(Dist.CLIENT, () -> () -> EventManager.mod(FMLClientSetupEvent.class).process(this::clientSetup).subscribe());
         EventManager.mod(FMLCommonSetupEvent.class).process(this::commonSetup).subscribe();
         EventManager.forge(PlayerEvent.PlayerLoggedInEvent.class).process(this::onPlayerLoggedIn).subscribe();
-        EventManager.forge(FMLServerStartingEvent.class).process(this::onServerStart).subscribe();
+        EventManager.forge(ServerStartingEvent.class).process(this::onServerStart).subscribe();
+        EventManager.mod(RegisterCapabilitiesEvent.class).process(CapabilityItemStackHolder::register).subscribe();
         CraftingHelper.register(new ContentExistsConditionSerializer());
     }
 
@@ -113,7 +115,7 @@ public class Titanium extends ModuleController {
     protected void initModules() {
         addModule(Module.builder("core").force()
                 .feature(Feature.builder("core").force()
-                        .content(MenuType.class, (MenuType) IForgeContainerType.create(BasicAddonContainer::create).setRegistryName(new ResourceLocation(Titanium.MODID, "addon_container")))
+                    .content(MenuType.class, (MenuType) IForgeMenuType.create(BasicAddonContainer::create).setRegistryName(new ResourceLocation(Titanium.MODID, "addon_container")))
                         .content(RecipeSerializer.class, (RecipeSerializer)new ShapelessEnchantSerializer().setRegistryName(new ResourceLocation(Titanium.MODID, "shapeless_enchant")))
                 )
         );
@@ -183,7 +185,6 @@ public class Titanium extends ModuleController {
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
-        CapabilityItemStackHolder.register();
         RewardManager.get().getRewards().values().forEach(rewardGiver -> rewardGiver.getRewards().forEach(reward -> reward.register(Dist.DEDICATED_SERVER)));
         LocatorTypes.register();
     }
@@ -212,7 +213,7 @@ public class Titanium extends ModuleController {
         });
     }
 
-    private void onServerStart(FMLServerStartingEvent event) {
+    private void onServerStart(ServerStartingEvent event) {
         RewardCommand.register(event.getServer().getCommands().getDispatcher());
         RewardGrantCommand.register(event.getServer().getCommands().getDispatcher());
     }

@@ -11,7 +11,7 @@ import com.hrznstudio.titanium.network.Message;
 import com.hrznstudio.titanium.reward.storage.ClientRewardStorage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 
 
 public class RewardSyncMessage extends Message {

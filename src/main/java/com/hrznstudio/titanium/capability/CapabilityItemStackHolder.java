@@ -9,16 +9,19 @@ package com.hrznstudio.titanium.capability;
 
 import com.hrznstudio.titanium.api.capability.IStackHolder;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityToken;
+import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 
 public class CapabilityItemStackHolder {
 
-    @CapabilityInject(IStackHolder.class)
-    public static Capability<IStackHolder> ITEMSTACK_HOLDER_CAPABILITY = null;
 
-    public static void register() {
-        CapabilityManager.INSTANCE.register(IStackHolder.class);
+    public static final Capability<IStackHolder> ITEMSTACK_HOLDER_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {
+    });
+
+
+    public static void register(RegisterCapabilitiesEvent event) {
+        event.register(IStackHolder.class);
     }
 
 }

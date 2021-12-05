@@ -12,7 +12,7 @@ import com.hrznstudio.titanium.network.Message;
 import com.hrznstudio.titanium.network.locator.LocatorInstance;
 import com.hrznstudio.titanium.util.CastingUtil;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.Optional;
 

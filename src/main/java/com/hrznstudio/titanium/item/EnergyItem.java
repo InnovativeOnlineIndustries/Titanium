@@ -63,18 +63,19 @@ public class EnergyItem extends BasicItem {
         }
     }
 
+
     @Override
-    public boolean showDurabilityBar(ItemStack stack) {
+    public boolean isBarVisible(ItemStack stack) {
         return getEnergyStorage(stack).isPresent();
     }
 
     @Override
-    public double getDurabilityForDisplay(ItemStack stack) {
-        return getEnergyStorage(stack).map(storage -> 1 - (double) storage.getEnergyStored() / (double) storage.getMaxEnergyStored()).orElse(0.0);
+    public int getBarWidth(ItemStack stack) { //TODO ???
+        return (int) Math.round(getEnergyStorage(stack).map(storage -> 1 - (double) storage.getEnergyStored() / (double) storage.getMaxEnergyStored()).orElse(0.0) * 13);
     }
 
     @Override
-    public int getRGBDurabilityForDisplay(ItemStack stack) {
+    public int getBarColor(ItemStack stack) {
         return 0x00E93232;
     }
 

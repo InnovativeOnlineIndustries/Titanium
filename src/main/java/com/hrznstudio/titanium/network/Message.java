@@ -8,7 +8,7 @@
 package com.hrznstudio.titanium.network;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
