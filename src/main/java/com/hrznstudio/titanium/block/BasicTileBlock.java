@@ -9,7 +9,7 @@ package com.hrznstudio.titanium.block;
 
 import com.hrznstudio.titanium.block.tile.BasicTile;
 import com.hrznstudio.titanium.block.tile.ITickableBlockEntity;
-import com.hrznstudio.titanium.module.api.RegistryManager;
+import com.hrznstudio.titanium.module.DeferredRegistryHelper;
 import com.hrznstudio.titanium.nbthandler.NBTManager;
 import com.hrznstudio.titanium.util.TileUtil;
 import net.minecraft.core.BlockPos;
@@ -26,29 +26,28 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
 
 public abstract class BasicTileBlock<T extends BasicTile<T>> extends BasicBlock implements EntityBlock {
     private final Class<T> tileClass;
-    private BlockEntityType tileEntityType;
+    private RegistryObject<BlockEntityType<?>> tileEntityType;
 
-    public BasicTileBlock(Properties properties, Class<T> tileClass) {
-        super(properties);
+    public BasicTileBlock(String name, Properties properties, Class<T> tileClass) {
+        super(name, properties);
         this.tileClass = tileClass;
     }
 
     @Override
-    public void addAlternatives(RegistryManager<?> registry) {
+    public void addAlternatives(DeferredRegistryHelper registry) {
         super.addAlternatives(registry);
         NBTManager.getInstance().scanTileClassForAnnotations(tileClass);
-        tileEntityType = BlockEntityType.Builder.of(getTileEntityFactory(), this).build(null);
-        tileEntityType.setRegistryName(this.getRegistryName());
-        registry.content(BlockEntityType.class, tileEntityType);
+        tileEntityType = registry.registerBlockEntityType(getObjectName(), () -> BlockEntityType.Builder.of(getTileEntityFactory(), this).build(null));
     }
 
-    public abstract BlockEntityType.BlockEntitySupplier<T> getTileEntityFactory();
+    public abstract BlockEntityType.BlockEntitySupplier<?> getTileEntityFactory();
 
     @Override
     @SuppressWarnings("deprecation")
@@ -61,8 +60,8 @@ public abstract class BasicTileBlock<T extends BasicTile<T>> extends BasicBlock 
     @SuppressWarnings("deprecation")
     public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand hand, BlockHitResult ray) {
         return getTile(worldIn, pos)
-                .map(tile -> tile.onActivated(player, hand, ray.getDirection(), ray.getLocation().x, ray.getLocation().y, ray.getLocation().z))
-                .orElseGet(() -> super.use(state, worldIn, pos, player, hand, ray));
+            .map(tile -> tile.onActivated(player, hand, ray.getDirection(), ray.getLocation().x, ray.getLocation().y, ray.getLocation().z))
+            .orElseGet(() -> super.use(state, worldIn, pos, player, hand, ray));
     }
 
 
@@ -71,8 +70,8 @@ public abstract class BasicTileBlock<T extends BasicTile<T>> extends BasicBlock 
     }
 
 
-    public BlockEntityType getTileEntityType() {
-        return tileEntityType;
+    public BlockEntityType<?> getTileEntityType() {
+        return tileEntityType.get();
     }
 
     public Class<T> getTileClass() {

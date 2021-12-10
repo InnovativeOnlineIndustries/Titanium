@@ -7,12 +7,6 @@
 
 package com.hrznstudio.titanium;
 
-import com.hrznstudio.titanium._impl.creative.CreativeFEGeneratorBlock;
-import com.hrznstudio.titanium._impl.test.AssetTestBlock;
-import com.hrznstudio.titanium._impl.test.MachineTestBlock;
-import com.hrznstudio.titanium._impl.test.TestBlock;
-import com.hrznstudio.titanium._impl.test.TwentyFourTestBlock;
-import com.hrznstudio.titanium._impl.test.recipe.TestSerializableRecipe;
 import com.hrznstudio.titanium.annotation.plugin.FeaturePlugin;
 import com.hrznstudio.titanium.capability.CapabilityItemStackHolder;
 import com.hrznstudio.titanium.client.screen.container.BasicAddonScreen;
@@ -23,8 +17,6 @@ import com.hrznstudio.titanium.datagenerator.loot.TitaniumLootTableProvider;
 import com.hrznstudio.titanium.datagenerator.model.BlockItemModelGeneratorProvider;
 import com.hrznstudio.titanium.event.handler.EventManager;
 import com.hrznstudio.titanium.material.ResourceRegistry;
-import com.hrznstudio.titanium.module.Feature;
-import com.hrznstudio.titanium.module.Module;
 import com.hrznstudio.titanium.module.ModuleController;
 import com.hrznstudio.titanium.network.NetworkHandler;
 import com.hrznstudio.titanium.network.locator.LocatorTypes;
@@ -34,22 +26,14 @@ import com.hrznstudio.titanium.plugin.PluginManager;
 import com.hrznstudio.titanium.recipe.condition.ContentExistsConditionSerializer;
 import com.hrznstudio.titanium.recipe.generator.titanium.JsonRecipeSerializerProvider;
 import com.hrznstudio.titanium.recipe.generator.titanium.ResourceRegistryProvider;
-import com.hrznstudio.titanium.recipe.shapelessenchant.ShapelessEnchantSerializer;
 import com.hrznstudio.titanium.reward.Reward;
 import com.hrznstudio.titanium.reward.RewardManager;
 import com.hrznstudio.titanium.reward.RewardSyncMessage;
 import com.hrznstudio.titanium.reward.storage.RewardWorldStorage;
 import com.hrznstudio.titanium.util.SidedHandler;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeManager;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
@@ -57,25 +41,19 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.DrawSelectionEvent;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.common.util.NonNullLazy;
-import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
-import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -113,6 +91,7 @@ public class Titanium extends ModuleController {
 
     @Override
     protected void initModules() {
+        /*
         addModule(Module.builder("core").force()
                 .feature(Feature.builder("core").force()
                     .content(MenuType.class, (MenuType) IForgeMenuType.create(BasicAddonContainer::create).setRegistryName(new ResourceLocation(Titanium.MODID, "addon_container")))
@@ -159,6 +138,8 @@ public class Titanium extends ModuleController {
                         .description("Adds creative machine features")
                         .content(Block.class, CreativeFEGeneratorBlock.INSTANCE)));
         ResourceRegistry.initModules(this);
+        */
+
     }
 
     @Override

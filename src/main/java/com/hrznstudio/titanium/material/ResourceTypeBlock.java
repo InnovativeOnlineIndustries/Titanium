@@ -9,7 +9,6 @@ package com.hrznstudio.titanium.material;
 
 import com.google.gson.JsonObject;
 import com.hrznstudio.titanium.Titanium;
-import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.material.IHasColor;
 import com.hrznstudio.titanium.api.material.IResourceHolder;
 import com.hrznstudio.titanium.api.material.IResourceType;
@@ -24,6 +23,7 @@ import net.minecraft.world.level.block.Block;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 public class ResourceTypeBlock extends BasicBlock implements IJsonFile, IJSONGenerator, IResourceHolder, IHasColor {
 
@@ -32,7 +32,7 @@ public class ResourceTypeBlock extends BasicBlock implements IJsonFile, IJSONGen
     private final IAdvancedResourceType blockResourceType;
 
     public ResourceTypeBlock(ResourceMaterial material, IResourceType type, IAdvancedResourceType blockType, ResourceTypeProperties<Properties> properties) {
-        super((properties == null ? ((ResourceTypeProperties<Properties>) ResourceTypeProperties.DEFAULTS.get(Block.class)).get() : properties.get())); //getName
+        super(material.getMaterialType(), (properties == null ? ((ResourceTypeProperties<Properties>) ResourceTypeProperties.DEFAULTS.get(Block.class)).get() : properties.get())); //getName
         this.resourceMaterial = material;
         this.resourceType = type;
         this.blockResourceType = blockType;
@@ -71,7 +71,7 @@ public class ResourceTypeBlock extends BasicBlock implements IJsonFile, IJSONGen
     }
 
     @Override
-    public IFactory<BlockItem> getItemBlockFactory() {
+    public Supplier<Item> getItemBlockFactory() {
         return () -> (BlockItem) new BlockItem(this, new Item.Properties().tab(this.getItemGroup())) {
             @Override
             public Component getName(ItemStack p_200295_1_) {

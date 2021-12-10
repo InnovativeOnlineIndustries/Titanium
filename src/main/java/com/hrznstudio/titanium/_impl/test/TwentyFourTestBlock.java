@@ -21,7 +21,7 @@ public class TwentyFourTestBlock extends RotatableBlock<TwentyFourTestTile> {
     public static TwentyFourTestBlock TEST;
 
     public TwentyFourTestBlock() {
-        super(Properties.of(Material.STONE), TwentyFourTestTile.class);
+        super("twenty_four_test", Properties.of(Material.STONE), TwentyFourTestTile.class);
     }
 
 

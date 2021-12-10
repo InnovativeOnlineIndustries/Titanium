@@ -22,7 +22,7 @@ public class CreativeFEGeneratorBlock extends BasicTileBlock<CreativeFEGenerator
         .setRegistryName(Titanium.MODID, "creative_fe_generator");
 
     public CreativeFEGeneratorBlock() {
-        super(Block.Properties.copy(Blocks.BEDROCK), CreativeFEGeneratorTile.class);
+        super("creative_fe_generator", Block.Properties.copy(Blocks.BEDROCK), CreativeFEGeneratorTile.class);
     }
 
 
