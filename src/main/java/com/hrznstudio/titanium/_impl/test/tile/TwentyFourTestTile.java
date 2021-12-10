@@ -13,13 +13,17 @@ import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.IItemStackQuery;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.block.tile.PoweredTile;
-import com.hrznstudio.titanium.client.screen.addon.BasicScreenAddon;
 import com.hrznstudio.titanium.client.screen.addon.EnergyBarScreenAddon;
 import com.hrznstudio.titanium.client.screen.addon.WidgetScreenAddon;
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.VolumeSlider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -45,19 +49,19 @@ public class TwentyFourTestTile extends PoweredTile<TwentyFourTestTile> {
 
         this.addInventory(first = new InventoryComponent<TwentyFourTestTile>("test", 80, 20, 1)
                 .setComponentHarness(this)
-                .setInputFilter(IItemStackQuery.ANYTHING.toSlotFilter()));
+            .setInputFilter(IItemStackQuery.ANYTHING.toSlotFilter()));
         this.addInventory(second = new InventoryComponent<TwentyFourTestTile>("test2", 80, 40, 1)
-                .setComponentHarness(this)
-                .setInputFilter(IItemStackQuery.ANYTHING.toSlotFilter()));
+            .setComponentHarness(this)
+            .setInputFilter(IItemStackQuery.ANYTHING.toSlotFilter()));
         this.addProgressBar(bar = new ProgressBarComponent<TwentyFourTestTile>(110, 20, 500)
-                .setCanIncrease(componentHarness -> true)
-                .setOnFinishWork(() -> System.out.println("WOWOOW")));
+            .setCanIncrease(componentHarness -> true)
+            .setOnFinishWork(() -> System.out.println("WOWOOW")));
         this.addInventory(third = new InventoryComponent<TwentyFourTestTile>("test3", 80, 60, 1)
-                .setComponentHarness(this)
-                .setInputFilter(IItemStackQuery.ANYTHING.toSlotFilter()));
-        this.addGuiAddonFactory(() -> new WidgetScreenAddon(30, 185, new SoundSlider(Minecraft.getInstance(), 0, 0, SoundCategory.HOSTILE, 120)));
-        TextFieldWidget widget = new TextFieldWidget(Minecraft.getInstance().fontRenderer, 0, 0, 120, 20, new StringTextComponent(""));
-        widget.setText("This is a Text Widget");
+            .setComponentHarness(this)
+            .setInputFilter(IItemStackQuery.ANYTHING.toSlotFilter()));
+        this.addGuiAddonFactory(() -> new WidgetScreenAddon(30, 185, new VolumeSlider(Minecraft.getInstance(), 0, 0, SoundSource.HOSTILE, 120)));
+        EditBox widget = new EditBox(Minecraft.getInstance().font, 0, 0, 120, 20, new TextComponent(""));
+        widget.setValue("This is a Text Widget");
         this.addGuiAddonFactory(() -> new WidgetScreenAddon(30, -25, widget));
     }
 

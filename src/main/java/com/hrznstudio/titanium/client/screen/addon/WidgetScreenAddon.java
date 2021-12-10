@@ -1,16 +1,16 @@
 package com.hrznstudio.titanium.client.screen.addon;
 
-import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.Widget;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.screens.Screen;
 
-public class WidgetScreenAddon extends BasicScreenAddon{
 
-    private final Widget widget;
+public class WidgetScreenAddon extends BasicScreenAddon {
 
-    public WidgetScreenAddon(int posX, int posY, Widget widget) {
+    private final AbstractWidget widget;
+
+    public WidgetScreenAddon(int posX, int posY, AbstractWidget widget) {
         super(posX, posY);
         this.widget = widget;
     }
@@ -22,10 +22,11 @@ public class WidgetScreenAddon extends BasicScreenAddon{
     }
 
     @Override
-    public void drawBackgroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {}
+    public void drawBackgroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+    }
 
     @Override
-    public void drawForegroundLayer(MatrixStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+    public void drawForegroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         widget.x = getPosX();
         widget.y = getPosY();
         widget.render(stack, mouseX, mouseY, partialTicks);
@@ -40,7 +41,7 @@ public class WidgetScreenAddon extends BasicScreenAddon{
 
     @Override
     public int getYSize() {
-        return widget.getHeightRealms();
+        return widget.getHeight();
     }
 
     @Override
@@ -93,7 +94,7 @@ public class WidgetScreenAddon extends BasicScreenAddon{
         return mouseX > this.getPosX() && mouseX < this.getPosX() + getXSize() && mouseY > this.getPosY() && mouseY < this.getPosY() + getYSize();
     }
 
-    public Widget getWidget() {
+    public AbstractWidget getWidget() {
         return widget;
     }
 }

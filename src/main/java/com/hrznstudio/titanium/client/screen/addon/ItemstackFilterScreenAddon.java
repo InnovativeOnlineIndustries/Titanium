@@ -81,8 +81,8 @@ public class ItemstackFilterScreenAddon extends BasicScreenAddon {
 
     @Override
     public boolean handleMouseClicked(Screen screen, int guiX, int guiY, double mouseX, double mouseY, int button) {
-        if (screen instanceof ContainerScreen && ((ContainerScreen) screen).getContainer() instanceof ILocatable) {
-            ILocatable locatable = (ILocatable) ((ContainerScreen) screen).getContainer();
+        if (screen instanceof AbstractContainerScreen && ((AbstractContainerScreen) screen).getMenu() instanceof ILocatable) {
+            ILocatable locatable = (ILocatable) ((AbstractContainerScreen) screen).getMenu();
             for (FilterSlot<ItemStack> filterSlot : filter.getFilterSlots()) {
                 if (filterSlot != null && mouseX > (guiX + filterSlot.getX() + 1) && mouseX < (guiX + filterSlot.getX() + 16) && mouseY > (guiY + filterSlot.getY() + 1) && mouseY < (guiY + filterSlot.getY() + 16)) {
                     CompoundTag compoundNBT = new CompoundTag();

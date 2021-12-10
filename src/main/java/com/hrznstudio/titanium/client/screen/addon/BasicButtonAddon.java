@@ -47,10 +47,10 @@ public class BasicButtonAddon extends BasicScreenAddon {
 
     @Override
     public boolean handleMouseClicked(Screen screen, int guiX, int guiY, double mouseX, double mouseY, int button) {
-        Minecraft.getInstance().getSoundHandler().play(new SimpleSound(SoundEvents.UI_BUTTON_CLICK, SoundCategory.PLAYERS, 1f, 1f, Minecraft.getInstance().player.getPosition())); //getPosition
-        if (screen instanceof ContainerScreen && ((ContainerScreen<?>) screen).getContainer() instanceof ILocatable) {
-            ILocatable locatable = (ILocatable) ((ContainerScreen<?>) screen).getContainer();
-            Titanium.NETWORK.get().sendToServer(new ButtonClickNetworkMessage(locatable.getLocatorInstance(), this.button.getId(), new CompoundNBT()));
+        Minecraft.getInstance().getSoundManager().play(new SimpleSoundInstance(SoundEvents.UI_BUTTON_CLICK, SoundSource.PLAYERS, 1f, 1f, Minecraft.getInstance().player.blockPosition())); //getPosition
+        if (screen instanceof AbstractContainerScreen && ((AbstractContainerScreen) screen).getMenu() instanceof ILocatable) {
+            ILocatable locatable = (ILocatable) ((AbstractContainerScreen) screen).getMenu();
+            Titanium.NETWORK.get().sendToServer(new ButtonClickNetworkMessage(locatable.getLocatorInstance(), this.button.getId(), new CompoundTag()));
         }
         return true;
     }

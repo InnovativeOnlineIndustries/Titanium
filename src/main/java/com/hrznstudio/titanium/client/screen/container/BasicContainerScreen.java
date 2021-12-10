@@ -7,7 +7,6 @@
 
 package com.hrznstudio.titanium.client.screen.container;
 
-import com.google.common.collect.Lists;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
@@ -19,6 +18,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -29,6 +30,7 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class BasicContainerScreen<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> implements IScreenAddonConsumer {
     private final T container;
@@ -101,10 +103,10 @@ public class BasicContainerScreen<T extends AbstractContainerMenu> extends Abstr
             if (iGuiAddon instanceof AssetScreenAddon) {
                 AssetScreenAddon assetGuiAddon = (AssetScreenAddon) iGuiAddon;
                 if (!assetGuiAddon.isBackground()) {
-                    iGuiAddon.drawForegroundLayer(stack, this, assetProvider, xCenter, yCenter, mouseX, mouseY, minecraft.getRenderPartialTicks());
+                    iGuiAddon.drawForegroundLayer(stack, this, assetProvider, xCenter, yCenter, mouseX, mouseY, minecraft.getDeltaFrameTime());
                 }
             } else {
-                iGuiAddon.drawForegroundLayer(stack, this, assetProvider, xCenter, yCenter, mouseX, mouseY, minecraft.getRenderPartialTicks());
+                iGuiAddon.drawForegroundLayer(stack, this, assetProvider, xCenter, yCenter, mouseX, mouseY, minecraft.getDeltaFrameTime());
             }
         });
         // renderHoveredToolTip
@@ -119,11 +121,11 @@ public class BasicContainerScreen<T extends AbstractContainerMenu> extends Abstr
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (this.children != null) {
-            for (IGuiEventListener listener : this.children) {
+        if (this.children() != null) {
+            for (GuiEventListener listener : this.children()) {
                 if (listener instanceof WidgetScreenAddon) {
                     WidgetScreenAddon addon = (WidgetScreenAddon) listener;
-                    Widget widget = addon.getWidget();
+                    AbstractWidget widget = addon.getWidget();
                     if (widget.keyPressed(keyCode, scanCode, modifiers)) {
                         return true;
                     }
@@ -139,7 +141,7 @@ public class BasicContainerScreen<T extends AbstractContainerMenu> extends Abstr
     }
 
     private void checkForMouseDrag(int mouseX, int mouseY) {
-        int pressedButton = GLFW.glfwGetMouseButton(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT);
+        int pressedButton = GLFW.glfwGetMouseButton(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_MOUSE_BUTTON_LEFT);
         if (pressedButton == GLFW.GLFW_PRESS) {//Main Window
             if (!this.isMouseDragging) {
                 this.isMouseDragging = true;
@@ -177,11 +179,13 @@ public class BasicContainerScreen<T extends AbstractContainerMenu> extends Abstr
     }
 
     @Override
-    public List<? extends IGuiEventListener> getEventListeners() {
-        if (this.children != null) {
-            children.addAll(getAddons());
+    public List<? extends GuiEventListener> children() {
+        if (this.children() != null) {
+            List<GuiEventListener> collect = this.children().stream().map(guiEventListener -> (GuiEventListener) guiEventListener).collect(Collectors.toList());
+            collect.addAll(getAddons());
+            return collect;
         }
-        return this.children;
+        return new ArrayList<>();
     }
 
     public void setAddons(List<IScreenAddon> addons) {

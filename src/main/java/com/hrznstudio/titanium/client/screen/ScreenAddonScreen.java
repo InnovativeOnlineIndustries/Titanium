@@ -17,6 +17,7 @@ import com.hrznstudio.titanium.util.AssetUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.TextComponent;
 import org.lwjgl.glfw.GLFW;
@@ -89,7 +90,7 @@ public abstract class ScreenAddonScreen extends Screen implements IScreenAddonCo
     public abstract List<IFactory<IScreenAddon>> guiAddons();
 
     private void checkForMouseDrag(int mouseX, int mouseY) {
-        int pressedButton = GLFW.glfwGetMouseButton(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT);
+        int pressedButton = GLFW.glfwGetMouseButton(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_MOUSE_BUTTON_LEFT);
         if (pressedButton == GLFW.GLFW_PRESS) {//Main Window
             if (!this.isDragging()) {
                 this.setDragging(true);
@@ -113,7 +114,7 @@ public abstract class ScreenAddonScreen extends Screen implements IScreenAddonCo
     }
 
     @Override
-    public List<? extends IGuiEventListener> getEventListeners() {
+    public List<? extends GuiEventListener> children() {
         return Lists.newArrayList(getAddons());
     }
 }

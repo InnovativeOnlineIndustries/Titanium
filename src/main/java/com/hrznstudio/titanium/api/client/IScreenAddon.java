@@ -7,9 +7,9 @@
 
 package com.hrznstudio.titanium.api.client;
 
-import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
@@ -17,11 +17,11 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-public interface IScreenAddon extends IGuiEventListener {
+public interface IScreenAddon extends GuiEventListener {
     /**
      * Draws the component in the background layer
      *
-     * @param stack        The {@link com.mojang.blaze3d.matrix.MatrixStack}
+     * @param stack        The {@link com.mojang.blaze3d.vertex.PoseStack}
      * @param screen       The current open screen
      * @param provider     The current asset provider used in the GUI
      * @param guiX         The gui X in the top left corner
@@ -35,7 +35,7 @@ public interface IScreenAddon extends IGuiEventListener {
     /**
      * Draws the component in the foreground layer
      *
-     * @param stack        The {@link com.mojang.blaze3d.matrix.MatrixStack}
+     * @param stack        The {@link com.mojang.blaze3d.vertex.PoseStack}
      * @param screen       The current open screen
      * @param provider     The current asset provider used in the GUI
      * @param guiX         The gui X in the top left corner
@@ -44,13 +44,12 @@ public interface IScreenAddon extends IGuiEventListener {
      * @param mouseY       The current mouse Y
      * @param partialTicks Partial Ticks
      */
-    void drawForegroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY);
     void drawForegroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks);
 
     /**
      * A list of strings that will be drawn as a tooltip when `isInside` returns true
      *
-     * @return Returns a list of tooltip lines represented as {@link net.minecraft.util.text.ITextComponent}'s
+     * @return Returns a list of tooltip lines represented as {@link Component}'s
      */
     default List<Component> getTooltipLines() {
         return Collections.emptyList();
