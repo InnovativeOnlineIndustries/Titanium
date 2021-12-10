@@ -180,8 +180,8 @@ public class BasicContainerScreen<T extends AbstractContainerMenu> extends Abstr
 
     @Override
     public List<? extends GuiEventListener> children() {
-        if (this.children() != null) {
-            List<GuiEventListener> collect = this.children().stream().map(guiEventListener -> (GuiEventListener) guiEventListener).collect(Collectors.toList());
+        if (super.children() != null) {
+            List<GuiEventListener> collect = super.children().stream().map(guiEventListener -> (GuiEventListener) guiEventListener).collect(Collectors.toList());
             collect.addAll(getAddons());
             return collect;
         }
