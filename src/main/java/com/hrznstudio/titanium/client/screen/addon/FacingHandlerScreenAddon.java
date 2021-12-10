@@ -11,7 +11,6 @@ import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.api.client.IAssetType;
-import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.api.client.assets.types.IBackgroundAsset;
 import com.hrznstudio.titanium.client.screen.IScreenAddonConsumer;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
@@ -30,7 +29,9 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -141,13 +142,13 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon {
     @Override
     public boolean handleMouseClicked(Screen screen, int guiX, int guiY, double mouseX, double mouseY, int button) {
         if (button == 1) return false;
-        if (screen instanceof IScreenAddonConsumer && screen instanceof IHasContainer) {
+        if (screen instanceof IScreenAddonConsumer && screen instanceof AbstractContainerScreen) {
             IScreenAddonConsumer screenAddonConsumer = (IScreenAddonConsumer) screen;
             AbstractContainerMenu container = ((MenuAccess<?>) screen).getMenu();
             Consumer<Boolean> disable = container instanceof IDisableableContainer ?
                 ((IDisableableContainer) container)::setDisabled : value -> {
             };
-            for (IScreenAddon addon : new ArrayList<>(((IScreenAddonConsumer) screen).getAddons())) {
+            for (GuiEventListener addon : new ArrayList<>(((IScreenAddonConsumer) screen).getAddons())) {
                 if (addon instanceof FacingHandlerScreenAddon && addon != this) {
                     ((FacingHandlerScreenAddon) addon).setClicked(screenAddonConsumer, disable, false);
                     disable.accept(true);
