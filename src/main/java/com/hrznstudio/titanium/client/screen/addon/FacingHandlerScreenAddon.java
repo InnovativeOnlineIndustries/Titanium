@@ -14,7 +14,6 @@ import com.hrznstudio.titanium.api.client.IAssetType;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.api.client.assets.types.IBackgroundAsset;
 import com.hrznstudio.titanium.client.screen.IScreenAddonConsumer;
-import com.hrznstudio.titanium.client.screen.addon.interfaces.IClickable;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.component.button.ButtonComponent;
 import com.hrznstudio.titanium.component.sideness.IFacingComponent;
@@ -47,7 +46,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 
-public class FacingHandlerScreenAddon extends BasicScreenAddon implements IClickable {
+public class FacingHandlerScreenAddon extends BasicScreenAddon {
 
     private final IFacingComponent handler;
     private List<StateButtonAddon> buttonAddons;
@@ -110,7 +109,7 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon implements IClick
     }
 
     @Override
-    public void drawForegroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
+    public void drawForegroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         if (isInside(screen, mouseX - guiX, mouseY - guiY)) {
             AssetUtil.drawSelectingOverlay(stack, getPosX() + 1, getPosY() + 1, getPosX() + getXSize() - 1, getPosY() + getYSize() - 1);
         }
@@ -140,9 +139,9 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon implements IClick
     }
 
     @Override
-    public void handleClick(Screen screen, int guiX, int guiY, double mouseX, double mouseY, int button) {
-        if (button == 1) return;
-        if (screen instanceof IScreenAddonConsumer && screen instanceof MenuAccess) {
+    public boolean handleMouseClicked(Screen screen, int guiX, int guiY, double mouseX, double mouseY, int button) {
+        if (button == 1) return false;
+        if (screen instanceof IScreenAddonConsumer && screen instanceof IHasContainer) {
             IScreenAddonConsumer screenAddonConsumer = (IScreenAddonConsumer) screen;
             AbstractContainerMenu container = ((MenuAccess<?>) screen).getMenu();
             Consumer<Boolean> disable = container instanceof IDisableableContainer ?
@@ -184,7 +183,7 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon implements IClick
                         }
 
                         @Override
-                        public void handleClick(Screen gui, int guiX, int guiY, double mouseX, double mouseY, int mouse) {
+                        public boolean handleMouseClicked(Screen gui, int guiX, int guiY, double mouseX, double mouseY, int mouse) {
                             StateButtonInfo info = getStateInfo();
                             if (info != null && gui instanceof MenuAccess<?>) {
                                 CompoundTag compound = new CompoundTag();
@@ -201,6 +200,7 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon implements IClick
                                 }
                                 handler.getFacingModes().put(facing, handler.getValidFacingModes()[faceMode]);
                             }
+                            return true;
                         }
 
                         @Override
@@ -219,6 +219,7 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon implements IClick
                 }
             }
         }
+        return false;
     }
 
     public boolean isClicked() {

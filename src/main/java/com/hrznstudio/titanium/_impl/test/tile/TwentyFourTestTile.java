@@ -9,8 +9,13 @@ package com.hrznstudio.titanium._impl.test.tile;
 
 import com.hrznstudio.titanium._impl.test.TwentyFourTestBlock;
 import com.hrznstudio.titanium.annotation.Save;
+import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.IItemStackQuery;
+import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.block.tile.PoweredTile;
+import com.hrznstudio.titanium.client.screen.addon.BasicScreenAddon;
+import com.hrznstudio.titanium.client.screen.addon.EnergyBarScreenAddon;
+import com.hrznstudio.titanium.client.screen.addon.WidgetScreenAddon;
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
 import net.minecraft.core.BlockPos;
@@ -23,6 +28,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 
 public class TwentyFourTestTile extends PoweredTile<TwentyFourTestTile> {
     @Save
@@ -37,18 +43,22 @@ public class TwentyFourTestTile extends PoweredTile<TwentyFourTestTile> {
     public TwentyFourTestTile(BlockPos pos, BlockState state) {
         super(TwentyFourTestBlock.TEST, pos, state);
 
-        this.addInventory(first = new InventoryComponent<TwentyFourTestTile>("test", -120, 20, 1)
-            .setComponentHarness(this)
-            .setInputFilter(IItemStackQuery.ANYTHING.toSlotFilter()));
-        this.addInventory(second = new InventoryComponent<TwentyFourTestTile>("test2", 80, 30, 1)
-            .setComponentHarness(this)
-            .setInputFilter(IItemStackQuery.ANYTHING.toSlotFilter()));
-        this.addProgressBar(bar = new ProgressBarComponent<TwentyFourTestTile>(20, 20, 500)
-            .setCanIncrease(componentHarness -> true)
-            .setOnFinishWork(() -> System.out.println("WOWOOW")));
-        this.addInventory(third = new InventoryComponent<TwentyFourTestTile>("test3", 180, 30, 1)
+        this.addInventory(first = new InventoryComponent<TwentyFourTestTile>("test", 80, 20, 1)
                 .setComponentHarness(this)
                 .setInputFilter(IItemStackQuery.ANYTHING.toSlotFilter()));
+        this.addInventory(second = new InventoryComponent<TwentyFourTestTile>("test2", 80, 40, 1)
+                .setComponentHarness(this)
+                .setInputFilter(IItemStackQuery.ANYTHING.toSlotFilter()));
+        this.addProgressBar(bar = new ProgressBarComponent<TwentyFourTestTile>(110, 20, 500)
+                .setCanIncrease(componentHarness -> true)
+                .setOnFinishWork(() -> System.out.println("WOWOOW")));
+        this.addInventory(third = new InventoryComponent<TwentyFourTestTile>("test3", 80, 60, 1)
+                .setComponentHarness(this)
+                .setInputFilter(IItemStackQuery.ANYTHING.toSlotFilter()));
+        this.addGuiAddonFactory(() -> new WidgetScreenAddon(30, 185, new SoundSlider(Minecraft.getInstance(), 0, 0, SoundCategory.HOSTILE, 120)));
+        TextFieldWidget widget = new TextFieldWidget(Minecraft.getInstance().fontRenderer, 0, 0, 120, 20, new StringTextComponent(""));
+        widget.setText("This is a Text Widget");
+        this.addGuiAddonFactory(() -> new WidgetScreenAddon(30, -25, widget));
     }
 
     @Override
@@ -63,6 +73,19 @@ public class TwentyFourTestTile extends PoweredTile<TwentyFourTestTile> {
         super.serverTick(level, pos, state, blockEntity);
         this.getEnergyStorage().receiveEnergy(10, false);
         markForUpdate();
+    }
+
+    @Nonnull
+    @Override
+    public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
+        List<IFactory<? extends IScreenAddon>> addons = super.getScreenAddons();
+        for (IFactory<? extends IScreenAddon> addon : addons) {
+            if (addon.create() instanceof EnergyBarScreenAddon) {
+                addons.remove(addon);
+                addons.add(() -> new EnergyBarScreenAddon(50, 20, this.getEnergyStorage()));
+            }
+        }
+        return addons;
     }
 
     @Override

@@ -9,8 +9,6 @@ package com.hrznstudio.titanium.client.screen.addon.color;
 
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.client.screen.addon.BasicScreenAddon;
-import com.hrznstudio.titanium.client.screen.addon.interfaces.ICanMouseDrag;
-import com.hrznstudio.titanium.client.screen.addon.interfaces.IClickable;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.util.AssetUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -18,11 +16,12 @@ import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Matrix4f;
 import net.minecraft.client.gui.screens.Screen;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class ShadePickerAddon extends BasicScreenAddon implements IClickable, ICanMouseDrag {
+public class ShadePickerAddon extends BasicScreenAddon {
 
     private static final int S_TILES = 10, V_TILES = 10;
     private final Supplier<Float> hueSupplier;
@@ -57,7 +56,7 @@ public class ShadePickerAddon extends BasicScreenAddon implements IClickable, IC
     }
 
     @Override
-    public void drawForegroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
+    public void drawForegroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
 
     }
 
@@ -97,19 +96,21 @@ public class ShadePickerAddon extends BasicScreenAddon implements IClickable, IC
     }
 
     @Override
-    public void drag(int x, int y) {
-        this.saturation = (((float) x - this.getPosX()) / getXSize());
-        this.brightness = 1 - (((float) y - this.getPosY()) / getYSize());
+    public boolean handleMouseDragged(@Nullable Screen screen, double mouseX, double mouseY, int button, double dragX, double dragY) {
+        this.saturation = (((float) mouseX - this.getPosX()) / getXSize());
+        this.brightness = 1 - (((float) mouseY - this.getPosY()) / getYSize());
         this.saturationConsumer.accept(saturation);
         this.brightnessConsumer.accept(brightness);
+        return super.handleMouseDragged(screen, mouseX, mouseY, button, dragX, dragY);
     }
 
     @Override
-    public void handleClick(Screen screen, int guiX, int guiY, double mouseX, double mouseY, int button) {
+    public boolean handleMouseClicked(Screen screen, int guiX, int guiY, double mouseX, double mouseY, int button) {
         this.saturation = (float) ((mouseX - this.getPosX() - guiX) / getXSize());
         this.brightness = 1 - (float) ((mouseY - this.getPosY() - guiY) / getYSize());
         this.saturationConsumer.accept(saturation);
         this.brightnessConsumer.accept(brightness);
+        return true;
     }
 
     public void setBrightness(float brightness) {
