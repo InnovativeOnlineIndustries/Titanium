@@ -80,7 +80,7 @@ public abstract class ScreenAddonScreen extends Screen implements IScreenAddonCo
     public void renderForeground(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
         addonList.forEach(iGuiAddon -> iGuiAddon.drawForegroundLayer(stack, this, assetProvider, x, y, mouseX, mouseY, partialTicks));
         for (IScreenAddon iScreenAddon : addonList) {
-            if (iScreenAddon.isInside(this, mouseX - x, mouseY - y) && !iScreenAddon.getTooltipLines().isEmpty()) {
+            if (iScreenAddon.isMouseOver(mouseX - x, mouseY - y) && !iScreenAddon.getTooltipLines().isEmpty()) {
                 // renderTooltip
                 renderTooltip(stack, iScreenAddon.getTooltipLines(), Optional.empty(), mouseX, mouseY);
             }
@@ -96,8 +96,8 @@ public abstract class ScreenAddonScreen extends Screen implements IScreenAddonCo
                 this.setDragging(true);
             } else {
                 for (IScreenAddon iScreenAddon : this.addonList) {
-                    if (iScreenAddon.isInside(null, mouseX - x, mouseY - y)) {
-                        iScreenAddon.handleMouseDragged(this, mouseX - x, mouseY - y, pressedButton, dragX, dragY);
+                    if (iScreenAddon.isMouseOver(mouseX - x, mouseY - y)) {
+                        iScreenAddon.mouseDragged(mouseX - x, mouseY - y, pressedButton, dragX, dragY);
                     }
                 }
             }

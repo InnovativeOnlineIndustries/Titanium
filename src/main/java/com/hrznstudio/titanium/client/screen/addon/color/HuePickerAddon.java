@@ -15,7 +15,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.Screen;
 
-import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.function.Consumer;
 
@@ -58,17 +57,17 @@ public class HuePickerAddon extends BasicScreenAddon {
     }
 
     @Override
-    public boolean handleMouseClicked(Screen screen, int guiX, int guiY, double mouseX, double mouseY, int button) {
-        this.hue = (float) ((mouseX - this.getPosX() - guiX) / getXSize());
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        this.hue = (float) ((mouseX - this.getPosX()) / getXSize());
         consumer.accept(hue);
         return true;
     }
 
     @Override
-    public boolean handleMouseDragged(@Nullable Screen screen, double mouseX, double mouseY, int button, double dragX, double dragY) {
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
         this.hue = ((float) mouseX - this.getPosX()) / getXSize();
         consumer.accept(hue);
-        return super.handleMouseDragged(screen, mouseX, mouseY, button, dragX, dragY);
+        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
     }
 
     public void setHue(float hue) {

@@ -67,25 +67,25 @@ public class ColorPickerAddon extends BasicScreenAddon {
     }
 
     @Override
-    public boolean handleMouseClicked(Screen screen, int guiX, int guiY, double mouseX, double mouseY, int button) {
-        if (this.huePickerAddon.isInside(screen, mouseX - guiX, mouseY - guiY)) {
-            return this.huePickerAddon.handleMouseClicked(screen, guiX, guiY, mouseX, mouseY, button);
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (this.huePickerAddon.isMouseOver(mouseX, mouseY)) {
+            return this.huePickerAddon.mouseClicked(mouseX, mouseY, button);
         }
-        if (this.shadePickerAddon.isInside(screen, mouseX - guiX, mouseY - guiY)) {
-            return this.shadePickerAddon.handleMouseClicked(screen, guiX, guiY, mouseX, mouseY, button);
+        if (this.shadePickerAddon.isMouseOver(mouseX, mouseY)) {
+            return this.shadePickerAddon.mouseClicked(mouseX, mouseY, button);
         }
-        return super.handleMouseClicked(screen, guiX, guiY, mouseX, mouseY, button);
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
-    public boolean handleMouseDragged(Screen screen, double mouseX, double mouseY, int button, double dragX, double dragY) {
-        if (this.huePickerAddon.isInside(null, mouseX, mouseY)) {
-            return this.huePickerAddon.handleMouseDragged(screen, mouseX, mouseY, button, mouseX, mouseY);
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+        if (this.huePickerAddon.isMouseOver(mouseX, mouseY)) {
+            return this.huePickerAddon.mouseDragged(mouseX, mouseY, button, mouseX, mouseY);
         }
-        if (this.shadePickerAddon.isInside(null, mouseX, mouseY)) {
-            return this.shadePickerAddon.handleMouseDragged(screen, mouseX, mouseY, button, mouseX, mouseY);
+        if (this.shadePickerAddon.isMouseOver(mouseX, mouseY)) {
+            return this.shadePickerAddon.mouseDragged(mouseX, mouseY, button, mouseX, mouseY);
         }
-        return super.handleMouseDragged(screen, mouseX, mouseY, button, dragX, dragY);
+        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
     }
 
     private void updateColor() {

@@ -43,6 +43,7 @@ public abstract class DragPanelScreenAddon extends BasicScreenAddon {
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+        if (!isMouseOver(mouseX, mouseY)) return false;
         this.scrollX = (int) Math.round(Mth.clamp(this.scrollX - mouseX, this.minX, this.maxX));
         this.scrollY = (int) Math.round(Mth.clamp(this.scrollY - mouseY, this.minY, this.maxY));
         return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);

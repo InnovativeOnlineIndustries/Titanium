@@ -112,7 +112,7 @@ public class BasicContainerScreen<T extends AbstractContainerMenu> extends Abstr
         // renderHoveredToolTip
         renderTooltip(stack, mouseX - xCenter, mouseY - yCenter);
         for (IScreenAddon iScreenAddon : addons) {
-            if (iScreenAddon.isInside(this, mouseX - xCenter, mouseY - yCenter) && !iScreenAddon.getTooltipLines().isEmpty()) {
+            if (iScreenAddon.isMouseOver(mouseX - xCenter, mouseY - yCenter) && !iScreenAddon.getTooltipLines().isEmpty()) {
                 // renderTooltip
                 renderTooltip(stack, iScreenAddon.getTooltipLines(), Optional.empty(), mouseX - xCenter, mouseY - yCenter);
             }
@@ -147,8 +147,8 @@ public class BasicContainerScreen<T extends AbstractContainerMenu> extends Abstr
                 this.isMouseDragging = true;
             } else {
                 for (IScreenAddon iScreenAddon : this.addons) {
-                    if (iScreenAddon.isInside(this, mouseX - this.xCenter, mouseY - this.yCenter)) {
-                        iScreenAddon.handleMouseDragged(this, mouseX - this.xCenter, mouseY - this.yCenter, pressedButton, dragX, dragY);
+                    if (iScreenAddon.isMouseOver(mouseX - this.xCenter, mouseY - this.yCenter)) {
+                        iScreenAddon.mouseDragged(mouseX - this.xCenter, mouseY - this.yCenter, pressedButton, dragX, dragY);
                     }
                 }
             }

@@ -144,10 +144,13 @@ public class TankScreenAddon extends BasicScreenAddon {
     }
 
     @Override
-    public boolean handleMouseClicked(Screen screen, int guiX, int guiY, double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (!Minecraft.getInstance().player.getInventory().getSelected().isEmpty() && Minecraft.getInstance().player.getInventory().getSelected().getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).isPresent()) {
-            Minecraft.getInstance().getSoundManager().play(new SimpleSoundInstance(SoundEvents.UI_BUTTON_CLICK, SoundSource.PLAYERS, 1f, 1f, Minecraft.getInstance().player.blockPosition())); //getPosition
+            Screen screen = Minecraft.getInstance().screen;
             if (screen instanceof AbstractContainerScreen && ((AbstractContainerScreen) screen).getMenu() instanceof ILocatable) {
+                if (!isMouseOver(mouseX - ((AbstractContainerScreen<?>) screen).getGuiLeft(), mouseY - ((AbstractContainerScreen<?>) screen).getGuiTop()))
+                    return false;
+                Minecraft.getInstance().getSoundManager().play(new SimpleSoundInstance(SoundEvents.UI_BUTTON_CLICK, SoundSource.PLAYERS, 1f, 1f, Minecraft.getInstance().player.blockPosition())); //getPosition
                 ILocatable locatable = (ILocatable) ((AbstractContainerScreen) screen).getMenu();
                 CompoundTag compoundNBT = new CompoundTag();
                 if (tank instanceof FluidTankComponent) {

@@ -8,7 +8,6 @@
 package com.hrznstudio.titanium.client.screen.addon;
 
 import com.hrznstudio.titanium.api.client.IScreenAddon;
-import net.minecraft.client.gui.screens.Screen;
 
 public abstract class BasicScreenAddon implements IScreenAddon {
 
@@ -22,7 +21,7 @@ public abstract class BasicScreenAddon implements IScreenAddon {
 
     @Override
     public boolean isMouseOver(double mouseX, double mouseY) {
-        return mouseX > this.getPosX() && mouseX < this.getPosX() + getXSize() && mouseY > this.getPosY() && mouseY < this.getPosY() + getYSize();
+        return mouseX >= this.getPosX() && mouseX <= this.getPosX() + getXSize() && mouseY >= this.getPosY() && mouseY <= this.getPosY() + getYSize();
     }
 
     public abstract int getXSize();
@@ -44,4 +43,5 @@ public abstract class BasicScreenAddon implements IScreenAddon {
     public void setPosY(int posY) {
         this.posY = posY;
     }
+
 }

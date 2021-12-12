@@ -49,7 +49,7 @@ public class TextFieldScreenAddon extends BasicScreenAddon {
     }
 
     @Override
-    public boolean isInside(Screen screen, double mouseX, double mouseY) {
+    public boolean isMouseOver(double mouseX, double mouseY) {
         return false;
     }
 

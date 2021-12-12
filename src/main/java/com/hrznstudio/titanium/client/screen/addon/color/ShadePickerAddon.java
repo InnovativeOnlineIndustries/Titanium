@@ -16,7 +16,6 @@ import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Matrix4f;
 import net.minecraft.client.gui.screens.Screen;
 
-import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -96,18 +95,18 @@ public class ShadePickerAddon extends BasicScreenAddon {
     }
 
     @Override
-    public boolean handleMouseDragged(@Nullable Screen screen, double mouseX, double mouseY, int button, double dragX, double dragY) {
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
         this.saturation = (((float) mouseX - this.getPosX()) / getXSize());
         this.brightness = 1 - (((float) mouseY - this.getPosY()) / getYSize());
         this.saturationConsumer.accept(saturation);
         this.brightnessConsumer.accept(brightness);
-        return super.handleMouseDragged(screen, mouseX, mouseY, button, dragX, dragY);
+        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
     }
 
     @Override
-    public boolean handleMouseClicked(Screen screen, int guiX, int guiY, double mouseX, double mouseY, int button) {
-        this.saturation = (float) ((mouseX - this.getPosX() - guiX) / getXSize());
-        this.brightness = 1 - (float) ((mouseY - this.getPosY() - guiY) / getYSize());
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        this.saturation = (float) ((mouseX - this.getPosX()) / getXSize());
+        this.brightness = 1 - (float) ((mouseY - this.getPosY()) / getYSize());
         this.saturationConsumer.accept(saturation);
         this.brightnessConsumer.accept(brightness);
         return true;
