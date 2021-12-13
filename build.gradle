@@ -26,7 +26,7 @@ if (System.getenv('BUILD_NUMBER') != null) {
 }
 group = 'com.hrznstudio'
 archivesBaseName = 'titanium'
-def isReleaseBranch = System.getenv("GIT_BRANCH") == "release" || System.getenv("GIT_BRANCH") == "release-1.15" || System.getenv("GIT_BRANCH") == "release-1.16" ||  System.getenv("GIT_BRANCH") == "1.17" ;
+def isReleaseBranch =  System.getenv("GIT_BRANCH") == "1.18" ;
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
