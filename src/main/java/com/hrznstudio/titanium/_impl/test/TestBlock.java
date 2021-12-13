@@ -27,7 +27,7 @@ public class TestBlock extends RotatableBlock<TestTile> {
     public static TestBlock TEST;
 
     public TestBlock() {
-        super(Properties.of(Material.STONE), TestTile.class);
+        super("test", Properties.of(Material.STONE), TestTile.class);
     }
 
 

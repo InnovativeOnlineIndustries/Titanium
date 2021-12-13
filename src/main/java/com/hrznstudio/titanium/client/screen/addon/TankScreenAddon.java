@@ -9,7 +9,6 @@ package com.hrznstudio.titanium.client.screen.addon;
 
 import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.api.client.assets.types.ITankAsset;
-import com.hrznstudio.titanium.client.screen.addon.interfaces.IClickable;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.component.fluid.FluidTankComponent;
 import com.hrznstudio.titanium.network.locator.ILocatable;
@@ -45,7 +44,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TankScreenAddon extends BasicScreenAddon implements IClickable {
+public class TankScreenAddon extends BasicScreenAddon {
 
     private IFluidTank tank;
     private ITankAsset asset;
@@ -96,7 +95,7 @@ public class TankScreenAddon extends BasicScreenAddon implements IClickable {
     }
 
     @Override
-    public void drawForegroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {}
+    public void drawForegroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {}
 
     @Override
     public List<Component> getTooltipLines() {
@@ -145,14 +144,17 @@ public class TankScreenAddon extends BasicScreenAddon implements IClickable {
     }
 
     @Override
-    public void handleClick(Screen screen, int guiX, int guiY, double mouseX, double mouseY, int button) {
-        if (!Minecraft.getInstance().player.inventoryMenu.getCarried().isEmpty() && Minecraft.getInstance().player.inventoryMenu.getCarried().getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).isPresent()){
-            Minecraft.getInstance().getSoundManager().play(new SimpleSoundInstance(SoundEvents.UI_BUTTON_CLICK, SoundSource.PLAYERS, 1f, 1f, Minecraft.getInstance().player.blockPosition())); //getPosition
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (!Minecraft.getInstance().player.getInventory().getSelected().isEmpty() && Minecraft.getInstance().player.getInventory().getSelected().getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).isPresent()) {
+            Screen screen = Minecraft.getInstance().screen;
             if (screen instanceof AbstractContainerScreen && ((AbstractContainerScreen) screen).getMenu() instanceof ILocatable) {
+                if (!isMouseOver(mouseX - ((AbstractContainerScreen<?>) screen).getGuiLeft(), mouseY - ((AbstractContainerScreen<?>) screen).getGuiTop()))
+                    return false;
+                Minecraft.getInstance().getSoundManager().play(new SimpleSoundInstance(SoundEvents.UI_BUTTON_CLICK, SoundSource.PLAYERS, 1f, 1f, Minecraft.getInstance().player.blockPosition())); //getPosition
                 ILocatable locatable = (ILocatable) ((AbstractContainerScreen) screen).getMenu();
                 CompoundTag compoundNBT = new CompoundTag();
-                if (tank instanceof FluidTankComponent){
-                    compoundNBT.putString("Name",((FluidTankComponent<?>) tank).getName());
+                if (tank instanceof FluidTankComponent) {
+                    compoundNBT.putString("Name", ((FluidTankComponent<?>) tank).getName());
                 } else {
                     compoundNBT.putBoolean("Invalid", true);
                 }
@@ -172,7 +174,9 @@ public class TankScreenAddon extends BasicScreenAddon implements IClickable {
                     if (canDrainFromItem && button == 1) compoundNBT.putBoolean("Fill", false);
                 });
                 Titanium.NETWORK.get().sendToServer(new ButtonClickNetworkMessage(locatable.getLocatorInstance(), -3, compoundNBT));
+                return true;
             }
         }
+        return false;
     }
 }

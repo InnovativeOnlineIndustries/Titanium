@@ -48,7 +48,7 @@ public class AssetScreenAddon extends BasicScreenAddon {
     }
 
     @Override
-    public void drawForegroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
+    public void drawForegroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         if (assetType != null && !isBackground()) {
             AssetUtil.drawAsset(stack, screen, provider.getAsset(assetType), this.getPosX() + guiX, this.getPosY() + guiY);
         }

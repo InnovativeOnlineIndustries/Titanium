@@ -7,15 +7,14 @@
 
 package com.hrznstudio.titanium.block;
 
-import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.IRecipeProvider;
 import com.hrznstudio.titanium.api.raytrace.DistanceRayTraceResult;
 import com.hrznstudio.titanium.block.tile.ActiveTile;
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.hrznstudio.titanium.datagenerator.loot.block.BasicBlockLootTables;
 import com.hrznstudio.titanium.datagenerator.loot.block.IBlockLootTableProvider;
+import com.hrznstudio.titanium.module.DeferredRegistryHelper;
 import com.hrznstudio.titanium.module.api.IAlternativeEntries;
-import com.hrznstudio.titanium.module.api.RegistryManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -38,21 +37,24 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public abstract class BasicBlock extends Block implements IAlternativeEntries, IRecipeProvider, IBlockLootTableProvider {
     private CreativeModeTab itemGroup = CreativeModeTab.TAB_SEARCH;
-    private BlockItem item;
+    private final String name;
+    private RegistryObject<Item> item;
 
-    public BasicBlock(Properties properties) {
+    public BasicBlock(String name, Properties properties) {
         super(properties);
+        this.name = name;
     }
 
     @Nullable
@@ -97,22 +99,22 @@ public abstract class BasicBlock extends Block implements IAlternativeEntries, I
         return super.getCollisionShape(state, world, pos, selectionContext);
     }
 
-    public IFactory<BlockItem> getItemBlockFactory() {
-        return () -> (BlockItem) new BlockItem(this, new Item.Properties().tab(this.itemGroup)).setRegistryName(Objects.requireNonNull(getRegistryName()));
+    public Supplier<Item> getItemBlockFactory() {
+        return () -> (Item) new BlockItem(this, new Item.Properties().tab(this.itemGroup));
     }
 
     @Override
-    public void addAlternatives(RegistryManager<?> registry) {
-        registry.content(Item.class, item = getItemBlockFactory().create());
+    public void addAlternatives(DeferredRegistryHelper registry) {
+        item = registry.register(Item.class, name, getItemBlockFactory());
     }
 
     @Override
     @Nonnull
     public Item asItem() {
-        return item;
+        return item.get();
     }
 
-    public void setItem(BlockItem item) {
+    public void setItem(RegistryObject<Item> item) {
         this.item = item;
     }
 
@@ -187,4 +189,7 @@ public abstract class BasicBlock extends Block implements IAlternativeEntries, I
         return blockLootTables.droppingSelf(this);
     }
 
+    public String getObjectName() {
+        return name;
+    }
 }

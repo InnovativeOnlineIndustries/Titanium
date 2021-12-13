@@ -26,6 +26,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkDirection;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class RewardCommand {
@@ -84,7 +85,11 @@ public class RewardCommand {
             if (RewardManager.get().getReward(resourceLocation) == null || !RewardManager.get().getReward(resourceLocation).isPlayerValid(source.getPlayerOrException().getUUID()))
                 return false;
             RewardWorldStorage rewardWorldStorage = RewardWorldStorage.get(source.getLevel());
-            rewardWorldStorage.add(source.getPlayerOrException().getUUID(), context.getArgument("reward", ResourceLocation.class), context.getArgument("option", String.class));
+            String option = context.getArgument("option", String.class);
+            if (!Arrays.asList(RewardManager.get().getReward(resourceLocation).getOptions()).contains(option)) {
+                return false;
+            }
+            rewardWorldStorage.add(source.getPlayerOrException().getUUID(), context.getArgument("reward", ResourceLocation.class), option);
             rewardWorldStorage.setDirty();
             context.getSource().sendSuccess(new TranslatableComponent("titanium.rewards.enabled_success"), true);
             return true;

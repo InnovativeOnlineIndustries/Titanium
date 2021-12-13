@@ -10,7 +10,6 @@ package com.hrznstudio.titanium.client.screen.addon;
 import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.filter.FilterSlot;
-import com.hrznstudio.titanium.client.screen.addon.interfaces.IClickable;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.filter.ItemStackFilter;
 import com.hrznstudio.titanium.network.locator.ILocatable;
@@ -29,7 +28,7 @@ import net.minecraft.world.item.ItemStack;
 import java.awt.*;
 import java.util.Objects;
 
-public class ItemstackFilterScreenAddon extends BasicScreenAddon implements IClickable {
+public class ItemstackFilterScreenAddon extends BasicScreenAddon {
 
     private final ItemStackFilter filter;
 
@@ -66,7 +65,7 @@ public class ItemstackFilterScreenAddon extends BasicScreenAddon implements ICli
     }
 
     @Override
-    public void drawForegroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
+    public void drawForegroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         for (FilterSlot<ItemStack> filterSlot : filter.getFilterSlots()) {
             if (filterSlot != null && mouseX > (guiX + filterSlot.getX() + 1) && mouseX < (guiX + filterSlot.getX() + 16) && mouseY > (guiY + filterSlot.getY() + 1) && mouseY < (guiY + filterSlot.getY() + 16)) {
                 stack.translate(0, 0, 200);
@@ -81,11 +80,14 @@ public class ItemstackFilterScreenAddon extends BasicScreenAddon implements ICli
     }
 
     @Override
-    public void handleClick(Screen screen, int guiX, int guiY, double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        Screen screen = Minecraft.getInstance().screen;
         if (screen instanceof AbstractContainerScreen && ((AbstractContainerScreen) screen).getMenu() instanceof ILocatable) {
+            if (!isMouseOver(mouseX - ((AbstractContainerScreen<?>) screen).getGuiLeft(), mouseY - ((AbstractContainerScreen<?>) screen).getGuiTop()))
+                return false;
             ILocatable locatable = (ILocatable) ((AbstractContainerScreen) screen).getMenu();
             for (FilterSlot<ItemStack> filterSlot : filter.getFilterSlots()) {
-                if (filterSlot != null && mouseX > (guiX + filterSlot.getX() + 1) && mouseX < (guiX + filterSlot.getX() + 16) && mouseY > (guiY + filterSlot.getY() + 1) && mouseY < (guiY + filterSlot.getY() + 16)) {
+                if (filterSlot != null && mouseX > (this.getPosX() + filterSlot.getX() + 1) && mouseX < (this.getPosX() + filterSlot.getX() + 16) && mouseY > (this.getPosY() + filterSlot.getY() + 1) && mouseY < (this.getPosY() + filterSlot.getY() + 16)) {
                     CompoundTag compoundNBT = new CompoundTag();
                     compoundNBT.putString("Name", filter.getName());
                     compoundNBT.putInt("Slot", filterSlot.getFilterID());
@@ -93,8 +95,8 @@ public class ItemstackFilterScreenAddon extends BasicScreenAddon implements ICli
                     Titanium.NETWORK.get().sendToServer(new ButtonClickNetworkMessage(locatable.getLocatorInstance(), -2, compoundNBT));
                 }
             }
-
         }
+        return true;
     }
 
 }
