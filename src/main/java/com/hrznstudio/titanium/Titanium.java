@@ -7,12 +7,6 @@
 
 package com.hrznstudio.titanium;
 
-import com.hrznstudio.titanium._impl.creative.CreativeFEGeneratorBlock;
-import com.hrznstudio.titanium._impl.test.AssetTestBlock;
-import com.hrznstudio.titanium._impl.test.MachineTestBlock;
-import com.hrznstudio.titanium._impl.test.TestBlock;
-import com.hrznstudio.titanium._impl.test.TwentyFourTestBlock;
-import com.hrznstudio.titanium._impl.test.recipe.TestSerializableRecipe;
 import com.hrznstudio.titanium.capability.CapabilityItemStackHolder;
 import com.hrznstudio.titanium.client.screen.container.BasicAddonScreen;
 import com.hrznstudio.titanium.command.RewardCommand;
@@ -21,8 +15,6 @@ import com.hrznstudio.titanium.container.BasicAddonContainer;
 import com.hrznstudio.titanium.datagenerator.loot.TitaniumLootTableProvider;
 import com.hrznstudio.titanium.datagenerator.model.BlockItemModelGeneratorProvider;
 import com.hrznstudio.titanium.event.handler.EventManager;
-import com.hrznstudio.titanium.module.Feature;
-import com.hrznstudio.titanium.module.Module;
 import com.hrznstudio.titanium.module.ModuleController;
 import com.hrznstudio.titanium.network.NetworkHandler;
 import com.hrznstudio.titanium.network.locator.LocatorTypes;
@@ -30,7 +22,6 @@ import com.hrznstudio.titanium.network.messages.ButtonClickNetworkMessage;
 import com.hrznstudio.titanium.network.messages.TileFieldNetworkMessage;
 import com.hrznstudio.titanium.recipe.condition.ContentExistsConditionSerializer;
 import com.hrznstudio.titanium.recipe.generator.titanium.JsonRecipeSerializerProvider;
-import com.hrznstudio.titanium.recipe.shapelessenchant.ShapelessEnchantSerializer;
 import com.hrznstudio.titanium.reward.Reward;
 import com.hrznstudio.titanium.reward.RewardManager;
 import com.hrznstudio.titanium.reward.RewardSyncMessage;
