@@ -7,7 +7,12 @@
 
 package com.hrznstudio.titanium;
 
-import com.hrznstudio.titanium.annotation.plugin.FeaturePlugin;
+import com.hrznstudio.titanium._impl.creative.CreativeFEGeneratorBlock;
+import com.hrznstudio.titanium._impl.test.AssetTestBlock;
+import com.hrznstudio.titanium._impl.test.MachineTestBlock;
+import com.hrznstudio.titanium._impl.test.TestBlock;
+import com.hrznstudio.titanium._impl.test.TwentyFourTestBlock;
+import com.hrznstudio.titanium._impl.test.recipe.TestSerializableRecipe;
 import com.hrznstudio.titanium.capability.CapabilityItemStackHolder;
 import com.hrznstudio.titanium.client.screen.container.BasicAddonScreen;
 import com.hrznstudio.titanium.command.RewardCommand;
@@ -16,16 +21,16 @@ import com.hrznstudio.titanium.container.BasicAddonContainer;
 import com.hrznstudio.titanium.datagenerator.loot.TitaniumLootTableProvider;
 import com.hrznstudio.titanium.datagenerator.model.BlockItemModelGeneratorProvider;
 import com.hrznstudio.titanium.event.handler.EventManager;
-import com.hrznstudio.titanium.material.ResourceRegistry;
+import com.hrznstudio.titanium.module.Feature;
+import com.hrznstudio.titanium.module.Module;
 import com.hrznstudio.titanium.module.ModuleController;
 import com.hrznstudio.titanium.network.NetworkHandler;
 import com.hrznstudio.titanium.network.locator.LocatorTypes;
 import com.hrznstudio.titanium.network.messages.ButtonClickNetworkMessage;
 import com.hrznstudio.titanium.network.messages.TileFieldNetworkMessage;
-import com.hrznstudio.titanium.plugin.PluginManager;
 import com.hrznstudio.titanium.recipe.condition.ContentExistsConditionSerializer;
 import com.hrznstudio.titanium.recipe.generator.titanium.JsonRecipeSerializerProvider;
-import com.hrznstudio.titanium.recipe.generator.titanium.ResourceRegistryProvider;
+import com.hrznstudio.titanium.recipe.shapelessenchant.ShapelessEnchantSerializer;
 import com.hrznstudio.titanium.reward.Reward;
 import com.hrznstudio.titanium.reward.RewardManager;
 import com.hrznstudio.titanium.reward.RewardSyncMessage;
@@ -64,7 +69,6 @@ public class Titanium extends ModuleController {
     public static final String MODID = "titanium";
     public static final Logger LOGGER = LogManager.getLogger(MODID);
     public static NetworkHandler NETWORK = new NetworkHandler(MODID);
-    public static final PluginManager RESOURCES = new PluginManager(MODID, FeaturePlugin.FeaturePluginType.FEATURE, featurePlugin -> featurePlugin.value().equalsIgnoreCase(ResourceRegistry.PLUGIN_NAME), false);
 
     public Titanium() {
         NETWORK.registerMessage(ButtonClickNetworkMessage.class);
@@ -85,7 +89,6 @@ public class Titanium extends ModuleController {
 
     @Override
     public void onInit() {
-        ResourceRegistry.onInit();
         super.onInit();
     }
 
@@ -137,15 +140,12 @@ public class Titanium extends ModuleController {
                 .feature(Feature.builder("blocks")
                         .description("Adds creative machine features")
                         .content(Block.class, CreativeFEGeneratorBlock.INSTANCE)));
-        ResourceRegistry.initModules(this);
         */
-
     }
 
     @Override
     public void onPostInit() {
         super.onPostInit();
-        ResourceRegistry.onPostInit();
     }
 
     @Override
@@ -162,7 +162,6 @@ public class Titanium extends ModuleController {
         event.getGenerator().addProvider(new BlockItemModelGeneratorProvider(event.getGenerator(), MODID, blocksToProcess));
         event.getGenerator().addProvider(new TitaniumLootTableProvider(event.getGenerator(), blocksToProcess));
         event.getGenerator().addProvider(new JsonRecipeSerializerProvider(event.getGenerator(), MODID));
-        event.getGenerator().addProvider(new ResourceRegistryProvider(event.getGenerator(), MODID,event.getExistingFileHelper()));
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
