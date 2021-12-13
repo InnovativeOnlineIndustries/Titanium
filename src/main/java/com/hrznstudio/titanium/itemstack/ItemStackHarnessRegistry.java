@@ -14,29 +14,34 @@ import net.minecraft.world.item.ItemStack;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class ItemStackHarnessRegistry {
     private static final ItemStackHarnessRegistry INSTANCE = new ItemStackHarnessRegistry();
 
-    private final Map<Item, Function<ItemStack, ItemStackHarness>> harnessCreators;
+    private final Map<Supplier<Item>, Function<ItemStack, ItemStackHarness>> harnessCreators;
 
     public ItemStackHarnessRegistry() {
         harnessCreators = Maps.newHashMap();
     }
 
 
-    public static void register(Item item, Function<ItemStack, ItemStackHarness> harnessCreator) {
+    public static void register(Supplier<Item> item, Function<ItemStack, ItemStackHarness> harnessCreator) {
         getHarnessCreators().put(item, harnessCreator);
     }
 
-    public static Map<Item, Function<ItemStack, ItemStackHarness>> getHarnessCreators() {
+    public static Map<Supplier<Item>, Function<ItemStack, ItemStackHarness>> getHarnessCreators() {
         return getInstance().harnessCreators;
     }
 
     public static Optional<ItemStackHarness> createItemStackHarness(ItemStack itemStack) {
-        return Optional.of(itemStack.getItem())
-            .map(getHarnessCreators()::get)
-            .map(harnessCreator -> harnessCreator.apply(itemStack));
+        for (Map.Entry<Supplier<Item>, Function<ItemStack, ItemStackHarness>> itemSupplier : getHarnessCreators().entrySet()) {
+            if (itemSupplier.getKey().get().equals(itemStack.getItem())) {
+                return Optional.of(itemSupplier.getValue().apply(itemStack));
+            }
+        }
+
+        return Optional.empty();
     }
 
     public static ItemStackHarnessRegistry getInstance() {
