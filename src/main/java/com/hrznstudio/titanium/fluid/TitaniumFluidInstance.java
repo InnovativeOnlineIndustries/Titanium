@@ -7,8 +7,8 @@
 
 package com.hrznstudio.titanium.fluid;
 
+import com.hrznstudio.titanium.module.DeferredRegistryHelper;
 import com.hrznstudio.titanium.module.api.IAlternativeEntries;
-import com.hrznstudio.titanium.module.api.RegistryManager;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -25,8 +25,10 @@ public class TitaniumFluidInstance extends net.minecraftforge.registries.ForgeRe
     private TitaniumFluid sourceFluid;
     private Item bucketFluid;
     private Block blockFluid;
+    private final String fluid;
 
     public TitaniumFluidInstance(String modid, String fluid, FluidAttributes.Builder attributes, boolean hasBucket, CreativeModeTab group) {
+        this.fluid = fluid;
         this.sourceFluid = (TitaniumFluid) new TitaniumFluid.Source(attributes).setRegistryName(modid, fluid);
         this.flowingFluid = (TitaniumFluid) new TitaniumFluid.Flowing(attributes).setRegistryName(modid, fluid + "_fluid");
         this.sourceFluid = this.sourceFluid.setSourceFluid(sourceFluid).setFlowingFluid(flowingFluid);
@@ -40,11 +42,11 @@ public class TitaniumFluidInstance extends net.minecraftforge.registries.ForgeRe
     }
 
     @Override
-    public void addAlternatives(RegistryManager<?> registry) {
-        registry.content(Fluid.class, flowingFluid);
-        registry.content(Fluid.class, sourceFluid);
-        registry.content(Block.class, blockFluid);
-        if (bucketFluid != null) registry.content(Item.class, bucketFluid);
+    public void addAlternatives(DeferredRegistryHelper registry) { //TODO needs much improvement
+        registry.register(Fluid.class, fluid + "_fluid", () -> flowingFluid);
+        registry.register(Fluid.class, fluid, () -> sourceFluid);
+        registry.register(Block.class, fluid, () -> blockFluid);
+        if (bucketFluid != null) registry.register(Item.class, fluid + "_bucket", () -> bucketFluid);
     }
 
     public TitaniumFluid getFlowingFluid() {

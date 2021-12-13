@@ -13,9 +13,6 @@ import com.hrznstudio.titanium.annotation.MaterialReference;
 import com.hrznstudio.titanium.api.material.IHasColor;
 import com.hrznstudio.titanium.api.material.IResourceType;
 import com.hrznstudio.titanium.event.handler.EventManager;
-import com.hrznstudio.titanium.module.Feature;
-import com.hrznstudio.titanium.module.Module;
-import com.hrznstudio.titanium.module.ModuleController;
 import com.hrznstudio.titanium.plugin.PluginPhase;
 import com.hrznstudio.titanium.tab.AdvancedTitaniumTab;
 import com.hrznstudio.titanium.util.AnnotationUtil;
@@ -85,7 +82,7 @@ public class ResourceRegistry {
         }
     }
 
-
+        /*
     public static void initModules(ModuleController controller) {
         Module.Builder builder = Module.builder("resources").useCustomFile();
         ResourceRegistry.getMaterials().forEach(material -> {
@@ -102,7 +99,7 @@ public class ResourceRegistry {
         });
         controller.addModule(builder);
     }
-
+*/
     public static void onPostInit() {
         //ResourceRegistry.getMaterials().forEach(material -> {
         //    if (material.getGeneratorTypes().size() > 0) {

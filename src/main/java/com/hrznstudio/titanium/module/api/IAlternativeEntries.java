@@ -7,7 +7,10 @@
 
 package com.hrznstudio.titanium.module.api;
 
+import com.hrznstudio.titanium.module.DeferredRegistryHelper;
+
 public interface IAlternativeEntries {
-    void addAlternatives(RegistryManager<?> registry);
+
+    void addAlternatives(DeferredRegistryHelper registry);
 
 }

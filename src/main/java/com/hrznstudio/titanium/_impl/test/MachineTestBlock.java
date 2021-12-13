@@ -17,7 +17,7 @@ public class MachineTestBlock extends RotatableBlock<MachineTestTile> {
     public static MachineTestBlock TEST;
 
     public MachineTestBlock() {
-        super(Properties.copy(Blocks.IRON_BLOCK), MachineTestTile.class);
+        super("machine_test", Properties.copy(Blocks.IRON_BLOCK), MachineTestTile.class);
     }
 
     @Override
