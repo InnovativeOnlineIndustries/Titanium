@@ -8,6 +8,7 @@
 package com.hrznstudio.titanium.module;
 
 import com.hrznstudio.titanium.module.api.IAlternativeEntries;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
@@ -47,4 +48,10 @@ public class DeferredRegistryHelper {
         DeferredRegister deferredRegister = registries.computeIfAbsent(BlockEntityType.class, this::addRegistry);
         return deferredRegister.register(name, object);
     }
+
+    public RegistryObject<EntityType<?>> registerEntityType(String name, Supplier<?> object) {
+        DeferredRegister deferredRegister = registries.computeIfAbsent(EntityType.class, this::addRegistry);
+        return deferredRegister.register(name, object);
+    }
+
 }
