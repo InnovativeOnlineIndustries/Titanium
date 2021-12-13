@@ -10,6 +10,7 @@ package com.hrznstudio.titanium._impl.test.tile;
 import com.hrznstudio.titanium._impl.test.MachineTestBlock;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.filter.FilterSlot;
+import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.block.tile.MachineTile;
 import com.hrznstudio.titanium.component.bundle.TankInteractionBundle;
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
@@ -32,7 +33,7 @@ public class MachineTestTile extends MachineTile<MachineTestTile> {
     private InventoryComponent<MachineTestTile> movingSlot;
 
     public MachineTestTile(BlockPos blockPos, BlockState state) {
-        super(MachineTestBlock.TEST, blockPos, state);
+        super((BasicTileBlock<MachineTestTile>) MachineTestBlock.TEST.get(), blockPos, state);
         addFilter(this.filter = new ItemStackFilter("filter", 12));
         int pos = 0;
         for (int y = 0; y < 4; y++) {

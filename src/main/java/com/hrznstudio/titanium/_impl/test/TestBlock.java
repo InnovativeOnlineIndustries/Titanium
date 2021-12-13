@@ -12,9 +12,11 @@ import com.hrznstudio.titanium.annotation.config.ConfigFile;
 import com.hrznstudio.titanium.annotation.config.ConfigVal;
 import com.hrznstudio.titanium.block.RotatableBlock;
 import com.hrznstudio.titanium.datagenerator.loot.block.BasicBlockLootTables;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nonnull;
 
@@ -24,7 +26,7 @@ public class TestBlock extends RotatableBlock<TestTile> {
     @ConfigVal
     public static int DUMB_VALUE = 135;
 
-    public static TestBlock TEST;
+    public static RegistryObject<Block> TEST;
 
     public TestBlock() {
         super("test", Properties.of(Material.STONE), TestTile.class);

@@ -7,6 +7,10 @@
 
 package com.hrznstudio.titanium;
 
+import com.hrznstudio.titanium._impl.test.AssetTestBlock;
+import com.hrznstudio.titanium._impl.test.MachineTestBlock;
+import com.hrznstudio.titanium._impl.test.TestBlock;
+import com.hrznstudio.titanium._impl.test.TwentyFourTestBlock;
 import com.hrznstudio.titanium.capability.CapabilityItemStackHolder;
 import com.hrznstudio.titanium.client.screen.container.BasicAddonScreen;
 import com.hrznstudio.titanium.command.RewardCommand;
@@ -22,6 +26,7 @@ import com.hrznstudio.titanium.network.messages.ButtonClickNetworkMessage;
 import com.hrznstudio.titanium.network.messages.TileFieldNetworkMessage;
 import com.hrznstudio.titanium.recipe.condition.ContentExistsConditionSerializer;
 import com.hrznstudio.titanium.recipe.generator.titanium.JsonRecipeSerializerProvider;
+import com.hrznstudio.titanium.recipe.shapelessenchant.ShapelessEnchantSerializer;
 import com.hrznstudio.titanium.reward.Reward;
 import com.hrznstudio.titanium.reward.RewardManager;
 import com.hrznstudio.titanium.reward.RewardSyncMessage;
@@ -30,6 +35,8 @@ import com.hrznstudio.titanium.util.SidedHandler;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
@@ -37,6 +44,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.DrawSelectionEvent;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -85,22 +93,19 @@ public class Titanium extends ModuleController {
 
     @Override
     protected void initModules() {
+        getRegistries().register(MenuType.class, "addon_container", () -> (MenuType) IForgeMenuType.create(BasicAddonContainer::create));
+        getRegistries().register(RecipeSerializer.class, "shapeless_enchant", () -> (RecipeSerializer) new ShapelessEnchantSerializer());
+        TestBlock.TEST = getRegistries().register(Block.class, "block_test", () -> (TestBlock) new TestBlock());
+        TwentyFourTestBlock.TEST = getRegistries().register(Block.class, "block_twenty_four_test", () -> (TwentyFourTestBlock) new TwentyFourTestBlock());
+        AssetTestBlock.TEST = getRegistries().register(Block.class, "block_asset_test", () -> (AssetTestBlock) new AssetTestBlock());
+        MachineTestBlock.TEST = getRegistries().register(Block.class, "machine_test", () -> (MachineTestBlock) new MachineTestBlock());
         /*
-        addModule(Module.builder("core").force()
-                .feature(Feature.builder("core").force()
-                    .content(MenuType.class, (MenuType) IForgeMenuType.create(BasicAddonContainer::create).setRegistryName(new ResourceLocation(Titanium.MODID, "addon_container")))
-                        .content(RecipeSerializer.class, (RecipeSerializer)new ShapelessEnchantSerializer().setRegistryName(new ResourceLocation(Titanium.MODID, "shapeless_enchant")))
-                )
-        );
         addModule(Module.builder("test_module")
                 .disableByDefault()
                 .description("Test module for titanium features")
                 .feature(Feature.builder("blocks")
                         .description("Adds test titanium blocks")
-                        .content(Block.class, TestBlock.TEST = (TestBlock) new TestBlock().setRegistryName("block_test"))
-                        .content(Block.class, TwentyFourTestBlock.TEST = (TwentyFourTestBlock) new TwentyFourTestBlock().setRegistryName("block_twenty_four_test"))
-                        .content(Block.class, AssetTestBlock.TEST = (AssetTestBlock) new AssetTestBlock().setRegistryName("block_asset_test"))
-                        .content(Block.class, MachineTestBlock.TEST = (MachineTestBlock) new MachineTestBlock().setRegistryName("machine_test"))
+
                 )
                 .feature(Feature.builder("events")
                         .description("Adds test titanium events")

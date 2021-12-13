@@ -10,15 +10,17 @@ package com.hrznstudio.titanium._impl.test;
 import com.hrznstudio.titanium._impl.test.tile.AssetTestTile;
 import com.hrznstudio.titanium.block.RotatableBlock;
 import com.hrznstudio.titanium.datagenerator.loot.block.BasicBlockLootTables;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nonnull;
 
 public class AssetTestBlock extends RotatableBlock<AssetTestTile> {
 
-    public static AssetTestBlock TEST;
+    public static RegistryObject<Block> TEST;
 
     public AssetTestBlock() {
         super("asset_test", Properties.of(Material.STONE), AssetTestTile.class);

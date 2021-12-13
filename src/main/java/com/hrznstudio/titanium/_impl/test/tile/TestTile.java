@@ -15,6 +15,7 @@ import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.api.redstone.IRedstoneReader;
 import com.hrznstudio.titanium.api.redstone.IRedstoneState;
+import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.block.redstone.RedstoneAction;
 import com.hrznstudio.titanium.block.redstone.RedstoneManager;
 import com.hrznstudio.titanium.block.redstone.RedstoneState;
@@ -66,7 +67,7 @@ public class TestTile extends PoweredTile<TestTile> implements IRedstoneReader {
     private RedstoneControlButtonComponent<RedstoneAction> redstoneButton;
 
     public TestTile(BlockPos pos, BlockState blockState) {
-        super(TestBlock.TEST, pos, blockState);
+        super((BasicTileBlock<TestTile>) TestBlock.TEST.get(), pos, blockState);
         this.addInventory(first = (SidedInventoryComponent<TestTile>) new SidedInventoryComponent<TestTile>("test", 80, 30, 1, 0)
             .setValidFaceModes(IFacingComponent.FaceMode.ENABLED, IFacingComponent.FaceMode.NONE)
             .setComponentHarness(this)

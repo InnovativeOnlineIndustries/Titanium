@@ -12,6 +12,7 @@ import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.IItemStackQuery;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
+import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.block.tile.PoweredTile;
 import com.hrznstudio.titanium.client.screen.addon.EnergyBarScreenAddon;
 import com.hrznstudio.titanium.client.screen.addon.WidgetScreenAddon;
@@ -45,7 +46,7 @@ public class TwentyFourTestTile extends PoweredTile<TwentyFourTestTile> {
     private InventoryComponent<TwentyFourTestTile> third;
 
     public TwentyFourTestTile(BlockPos pos, BlockState state) {
-        super(TwentyFourTestBlock.TEST, pos, state);
+        super((BasicTileBlock<TwentyFourTestTile>) TwentyFourTestBlock.TEST.get(), pos, state);
 
         this.addInventory(first = new InventoryComponent<TwentyFourTestTile>("test", 80, 20, 1)
                 .setComponentHarness(this)

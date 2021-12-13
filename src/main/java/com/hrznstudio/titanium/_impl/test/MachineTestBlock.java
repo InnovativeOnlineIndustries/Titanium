@@ -9,12 +9,14 @@ package com.hrznstudio.titanium._impl.test;
 
 import com.hrznstudio.titanium._impl.test.tile.MachineTestTile;
 import com.hrznstudio.titanium.block.RotatableBlock;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraftforge.registries.RegistryObject;
 
 public class MachineTestBlock extends RotatableBlock<MachineTestTile> {
 
-    public static MachineTestBlock TEST;
+    public static RegistryObject<Block> TEST;
 
     public MachineTestBlock() {
         super("machine_test", Properties.copy(Blocks.IRON_BLOCK), MachineTestTile.class);

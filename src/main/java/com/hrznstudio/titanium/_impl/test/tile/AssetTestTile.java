@@ -11,6 +11,7 @@ import com.hrznstudio.titanium._impl.test.AssetTestBlock;
 import com.hrznstudio.titanium._impl.test.assetsystem.NewAssetProviderTest;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.IItemStackQuery;
+import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.block.tile.PoweredTile;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.component.energy.EnergyStorageComponent;
@@ -49,7 +50,7 @@ public class AssetTestTile extends PoweredTile<AssetTestTile>{
     private SidedFluidTankComponent<AssetTestTile> fluidTank;
 
     public AssetTestTile(BlockPos pos, BlockState state) {
-        super(AssetTestBlock.TEST, pos, state);
+        super((BasicTileBlock<AssetTestTile>) AssetTestBlock.TEST.get(), pos, state);
         this.addInventory(inventory = (SidedInventoryComponent<AssetTestTile>) new SidedInventoryComponent<AssetTestTile>("inventory", 8, 88, 18, 0)
             .setFacingHandlerPos(-15, 1).setRange(9, 2)
             .setComponentHarness(this)
