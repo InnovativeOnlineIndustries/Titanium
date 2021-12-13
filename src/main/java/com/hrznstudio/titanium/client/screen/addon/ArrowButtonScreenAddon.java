@@ -44,7 +44,7 @@ public class ArrowButtonScreenAddon extends BasicButtonAddon {
     }
 
     @Override
-    public void drawForegroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {}
+    public void drawForegroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {}
 
     public IAssetType<IAsset> getAssetFromSideness(FacingUtil.Sideness sideness) {
         switch (sideness) {

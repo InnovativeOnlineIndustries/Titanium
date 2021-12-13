@@ -11,10 +11,8 @@ import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.api.client.IAssetType;
-import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.api.client.assets.types.IBackgroundAsset;
 import com.hrznstudio.titanium.client.screen.IScreenAddonConsumer;
-import com.hrznstudio.titanium.client.screen.addon.interfaces.IClickable;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.component.button.ButtonComponent;
 import com.hrznstudio.titanium.component.sideness.IFacingComponent;
@@ -30,8 +28,11 @@ import com.hrznstudio.titanium.util.LangUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -47,7 +48,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 
-public class FacingHandlerScreenAddon extends BasicScreenAddon implements IClickable {
+public class FacingHandlerScreenAddon extends BasicScreenAddon {
 
     private final IFacingComponent handler;
     private List<StateButtonAddon> buttonAddons;
@@ -110,11 +111,11 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon implements IClick
     }
 
     @Override
-    public void drawForegroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
-        if (isInside(screen, mouseX - guiX, mouseY - guiY)) {
+    public void drawForegroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+        if (isMouseOver(mouseX - guiX, mouseY - guiY)) {
             AssetUtil.drawSelectingOverlay(stack, getPosX() + 1, getPosY() + 1, getPosX() + getXSize() - 1, getPosY() + getYSize() - 1);
         }
-        if (isInside(screen, mouseX - guiX, mouseY - guiY) || isClicked()) {
+        if (isMouseOver(mouseX - guiX, mouseY - guiY) || isClicked()) {
             IAsset asset = provider.getAsset(assetType);
             Rectangle area = handler.getRectangle(asset);
             AssetUtil.drawHorizontalLine(stack, area.x, area.x + area.width, area.y, handler.getColor());
@@ -140,15 +141,18 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon implements IClick
     }
 
     @Override
-    public void handleClick(Screen screen, int guiX, int guiY, double mouseX, double mouseY, int button) {
-        if (button == 1) return;
-        if (screen instanceof IScreenAddonConsumer && screen instanceof MenuAccess) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (button == 1) return false;
+        Screen screen = Minecraft.getInstance().screen;
+        if (screen instanceof IScreenAddonConsumer && screen instanceof AbstractContainerScreen) {
+            if (!isMouseOver(mouseX - ((AbstractContainerScreen<?>) screen).getGuiLeft(), mouseY - ((AbstractContainerScreen<?>) screen).getGuiTop()))
+                return false;
             IScreenAddonConsumer screenAddonConsumer = (IScreenAddonConsumer) screen;
             AbstractContainerMenu container = ((MenuAccess<?>) screen).getMenu();
             Consumer<Boolean> disable = container instanceof IDisableableContainer ?
                 ((IDisableableContainer) container)::setDisabled : value -> {
             };
-            for (IScreenAddon addon : new ArrayList<>(((IScreenAddonConsumer) screen).getAddons())) {
+            for (GuiEventListener addon : new ArrayList<>(((IScreenAddonConsumer) screen).getAddons())) {
                 if (addon instanceof FacingHandlerScreenAddon && addon != this) {
                     ((FacingHandlerScreenAddon) addon).setClicked(screenAddonConsumer, disable, false);
                     disable.accept(true);
@@ -184,9 +188,12 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon implements IClick
                         }
 
                         @Override
-                        public void handleClick(Screen gui, int guiX, int guiY, double mouseX, double mouseY, int mouse) {
+                        public boolean mouseClicked(double mouseX, double mouseY, int mouse) {
+                            Screen gui = Minecraft.getInstance().screen;
                             StateButtonInfo info = getStateInfo();
                             if (info != null && gui instanceof MenuAccess<?>) {
+                                if (!isMouseOver(mouseX - ((AbstractContainerScreen<?>) screen).getGuiLeft(), mouseY - ((AbstractContainerScreen<?>) screen).getGuiTop()))
+                                    return false;
                                 CompoundTag compound = new CompoundTag();
                                 compound.putString("Facing", facing.name());
                                 int faceMode = (getState() + (mouse == 0 ? 1 : -1)) % handler.getValidFacingModes().length;
@@ -201,6 +208,7 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon implements IClick
                                 }
                                 handler.getFacingModes().put(facing, handler.getValidFacingModes()[faceMode]);
                             }
+                            return true;
                         }
 
                         @Override
@@ -219,6 +227,7 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon implements IClick
                 }
             }
         }
+        return false;
     }
 
     public boolean isClicked() {

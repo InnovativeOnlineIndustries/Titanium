@@ -9,8 +9,6 @@ package com.hrznstudio.titanium.client.screen.addon.color;
 
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.client.screen.addon.BasicScreenAddon;
-import com.hrznstudio.titanium.client.screen.addon.interfaces.ICanMouseDrag;
-import com.hrznstudio.titanium.client.screen.addon.interfaces.IClickable;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.util.AssetUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -20,7 +18,7 @@ import net.minecraft.client.gui.screens.Screen;
 import java.awt.*;
 import java.util.function.Consumer;
 
-public class HuePickerAddon extends BasicScreenAddon implements IClickable, ICanMouseDrag {
+public class HuePickerAddon extends BasicScreenAddon {
 
     private final Consumer<Float> consumer;
     private float hue;
@@ -48,7 +46,7 @@ public class HuePickerAddon extends BasicScreenAddon implements IClickable, ICan
     }
 
     @Override
-    public void drawForegroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
+    public void drawForegroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
 
     }
 
@@ -59,15 +57,17 @@ public class HuePickerAddon extends BasicScreenAddon implements IClickable, ICan
     }
 
     @Override
-    public void handleClick(Screen screen, int guiX, int guiY, double mouseX, double mouseY, int button) {
-        this.hue = (float) ((mouseX - this.getPosX() - guiX) / getXSize());
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        this.hue = (float) ((mouseX - this.getPosX()) / getXSize());
         consumer.accept(hue);
+        return true;
     }
 
     @Override
-    public void drag(int x, int y) {
-        this.hue = ((float) x - this.getPosX()) / getXSize();
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+        this.hue = ((float) mouseX - this.getPosX()) / getXSize();
         consumer.accept(hue);
+        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
     }
 
     public void setHue(float hue) {

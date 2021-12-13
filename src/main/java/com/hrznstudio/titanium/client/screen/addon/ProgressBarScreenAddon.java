@@ -48,7 +48,7 @@ public class ProgressBarScreenAddon<T extends IComponentHarness> extends BasicSc
     }
 
     @Override
-    public void drawForegroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {}
+    public void drawForegroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {}
 
     public ProgressBarComponent<T> getProgressBar() {
         return progressBar;

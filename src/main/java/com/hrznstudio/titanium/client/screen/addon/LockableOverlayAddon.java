@@ -37,15 +37,15 @@ public class LockableOverlayAddon extends BasicScreenAddon{
     }
 
     @Override
-    public void drawForegroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY) {
-        if (isInside(screen, mouseX - guiX, mouseY - guiY)) {
+    public void drawForegroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+        if (isMouseOver(mouseX - guiX, mouseY - guiY)) {
             int extra = 4;
             IAsset asset = provider.getAsset(AssetTypes.BUTTON_SIDENESS_MANAGER);
             Rectangle area = component.getRectangle(asset);
             AssetUtil.drawHorizontalLine(stack, area.x, area.x + area.width + extra, area.y, component.getColor());
             AssetUtil.drawHorizontalLine(stack, area.x, area.x + area.width + extra, area.y + area.height + extra, component.getColor());
             AssetUtil.drawVerticalLine(stack, area.x, area.y, area.y + area.height + extra, component.getColor());
-            AssetUtil.drawVerticalLine(stack, area.x + area.width + extra, area.y , area.y + area.height + extra, component.getColor());
+            AssetUtil.drawVerticalLine(stack, area.x + area.width + extra, area.y, area.y + area.height + extra, component.getColor());
         }
     }
 
