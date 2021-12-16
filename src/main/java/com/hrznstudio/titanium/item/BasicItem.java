@@ -36,7 +36,7 @@ public class BasicItem extends Item {
 
     public BasicItem(String name, Properties properties) {
         super(properties);
-        setRegistryName(name);
+        //setRegistryName(name);
     }
 
     @Override

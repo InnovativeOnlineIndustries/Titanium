@@ -29,20 +29,20 @@ public class TitaniumFluidInstance extends net.minecraftforge.registries.ForgeRe
 
     public TitaniumFluidInstance(String modid, String fluid, FluidAttributes.Builder attributes, boolean hasBucket, CreativeModeTab group) {
         this.fluid = fluid;
-        this.sourceFluid = (TitaniumFluid) new TitaniumFluid.Source(attributes).setRegistryName(modid, fluid);
-        this.flowingFluid = (TitaniumFluid) new TitaniumFluid.Flowing(attributes).setRegistryName(modid, fluid + "_fluid");
+        this.sourceFluid = (TitaniumFluid) new TitaniumFluid.Source(attributes);
+        this.flowingFluid = (TitaniumFluid) new TitaniumFluid.Flowing(attributes);
         this.sourceFluid = this.sourceFluid.setSourceFluid(sourceFluid).setFlowingFluid(flowingFluid);
         this.flowingFluid = this.flowingFluid.setSourceFluid(sourceFluid).setFlowingFluid(flowingFluid);
         if (hasBucket)
-            this.bucketFluid = new BucketItem(this.sourceFluid, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(group)).setRegistryName(modid, fluid + "_bucket");
+            this.bucketFluid = new BucketItem(this.sourceFluid, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(group));
         this.blockFluid = new LiquidBlock(sourceFluid, Block.Properties.of(Material.WATER).noCollission().strength(100.0F).noDrops()) {
-        }.setRegistryName(modid, fluid + "_block");
+        };
         this.sourceFluid.setBlockFluid(blockFluid).setBucketFluid(bucketFluid);
         this.flowingFluid.setBlockFluid(blockFluid).setBucketFluid(bucketFluid);
     }
 
     @Override
-    public void addAlternatives(DeferredRegistryHelper registry) { //TODO needs much improvement
+    public void addAlternatives(DeferredRegistryHelper registry) {
         registry.register(Fluid.class, fluid + "_fluid", () -> flowingFluid);
         registry.register(Fluid.class, fluid, () -> sourceFluid);
         registry.register(Block.class, fluid, () -> blockFluid);
