@@ -8,6 +8,7 @@
 package com.hrznstudio.titanium.tab;
 
 import com.google.common.base.Stopwatch;
+import com.google.common.base.Supplier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 
@@ -17,9 +18,9 @@ import java.util.concurrent.TimeUnit;
 
 
 public class AdvancedTitaniumTab extends TitaniumTab {
-    private static final ItemStack defaultIconStack = new ItemStack(Blocks.BARRIER);
-    private List<ItemStack> icons = new ArrayList<>();
-    private ItemStack currentIcon;
+    private static final Supplier<ItemStack> defaultIconStack = () -> new ItemStack(Blocks.BARRIER);
+    private List<Supplier<ItemStack>> icons = new ArrayList<>();
+    private Supplier<ItemStack> currentIcon;
     private int current;
     private Stopwatch watch;
     private Random random;
@@ -50,21 +51,21 @@ public class AdvancedTitaniumTab extends TitaniumTab {
         }
     }
 
-    public void addIconStacks(Collection<ItemStack> icons) {
+    public void addIconStacks(Collection<Supplier<ItemStack>> icons) {
         this.icons.addAll(icons);
     }
 
-    public void addIconStack(ItemStack icon) {
+    public void addIconStack(Supplier<ItemStack> icon) {
         this.icons.add(icon);
     }
 
-    public void addIconStacks(ItemStack... icons) {
+    public void addIconStacks(Supplier<ItemStack>... icons) {
         Collections.addAll(this.icons, icons);
     }
 
     @Nonnull
     private ItemStack getCurrentIcon() {
         updateIcon();
-        return currentIcon;
+        return currentIcon.get();
     }
 }
