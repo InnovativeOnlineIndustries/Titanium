@@ -54,7 +54,7 @@ public class BasicTile<T extends BasicTile<T>> extends BlockEntity {
     @Override
     protected void saveAdditional(CompoundTag compoundTag) {
         super.saveAdditional(compoundTag);
-        NBTManager.getInstance().writeTileEntity(this, super.save(compoundTag));
+        NBTManager.getInstance().writeTileEntity(this, compoundTag);
     }
 
     public void markForUpdate() {
