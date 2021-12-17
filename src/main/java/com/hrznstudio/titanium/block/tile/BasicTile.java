@@ -65,7 +65,9 @@ public class BasicTile<T extends BasicTile<T>> extends BlockEntity {
     @Override
     @Nonnull
     public CompoundTag getUpdateTag() {
-        return save(new CompoundTag());
+        CompoundTag compoundTag = new CompoundTag();
+        saveAdditional(compoundTag);
+        return compoundTag;
     }
 
     @Override
