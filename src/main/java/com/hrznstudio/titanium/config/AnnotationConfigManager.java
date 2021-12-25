@@ -14,6 +14,7 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -38,6 +39,10 @@ public class AnnotationConfigManager {
             scanClass(configClass, builder);
         }
         // REGISTERING CONFIG
+        File folder = new File("config" + File.separator + ModLoadingContext.get().getActiveContainer().getModId());
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
         String fileName = ModLoadingContext.get().getActiveContainer().getModId() + "/" + (type.fileName.isEmpty() ? ModLoadingContext.get().getActiveContainer().getModId() : type.fileName);
         if (!fileName.endsWith(".toml")) fileName = fileName + ".toml";
         ModLoadingContext.get().registerConfig(type.type, builder.build(), fileName);
