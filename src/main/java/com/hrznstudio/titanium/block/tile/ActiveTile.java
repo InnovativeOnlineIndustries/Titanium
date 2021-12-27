@@ -86,10 +86,13 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
 
     private List<IFactory<? extends IContainerAddon>> containerAddons;
 
+    private List<IComponentBundle> bundles;
+
     public ActiveTile(BasicTileBlock<T> base, BlockPos pos, BlockState state) {
         super(base, pos, state);
         this.guiAddons = new ArrayList<>();
         this.containerAddons = new ArrayList<>();
+        this.bundles = new ArrayList<>();
     }
 
     @Override
@@ -163,8 +166,15 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
         if (multiButtonComponent == null) multiButtonComponent = new MultiButtonComponent();
         if (multiFilterComponent == null) multiFilterComponent = new MultiFilterComponent();
         bundle.accept(multiInventoryComponent, multiProgressBarHandler, multiTankComponent, multiButtonComponent, multiFilterComponent);
-        bundle.getScreenAddons().forEach(this::addGuiAddonFactory);
         bundle.getContainerAddons().forEach(this::addContainerAddonFactory);
+        this.bundles.add(bundle);
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void initClient() {
+        super.initClient();
+        this.bundles.stream().forEach(iComponentBundle -> iComponentBundle.getScreenAddons().forEach(this::addGuiAddonFactory));
     }
 
     @Nonnull

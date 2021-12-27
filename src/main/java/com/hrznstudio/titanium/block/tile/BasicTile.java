@@ -19,6 +19,7 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -35,9 +36,6 @@ public class BasicTile<T extends BasicTile<T>> extends BlockEntity {
     public BasicTile(BasicTileBlock<T> base, BlockPos pos, BlockState state) {
         super(base.getTileEntityType(), pos, state);
         this.basicTileBlock = base;
-        if (isClient()) {
-            initClient();
-        }
     }
 
     @ParametersAreNonnullByDefault
@@ -47,6 +45,14 @@ public class BasicTile<T extends BasicTile<T>> extends BlockEntity {
 
     public void onNeighborChanged(Block blockIn, BlockPos fromPos) {
 
+    }
+
+    @Override
+    public void setLevel(Level p_155231_) {
+        super.setLevel(p_155231_);
+        if (isClient()) {
+            initClient();
+        }
     }
 
     @OnlyIn(Dist.CLIENT)
