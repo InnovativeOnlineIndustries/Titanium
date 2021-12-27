@@ -93,12 +93,14 @@ public class Titanium extends ModuleController {
 
     @Override
     protected void initModules() {
-        getRegistries().register(MenuType.class, "addon_container", () -> (MenuType) IForgeMenuType.create(BasicAddonContainer::create));
-        getRegistries().register(RecipeSerializer.class, "shapeless_enchant", () -> (RecipeSerializer) new ShapelessEnchantSerializer());
-        TestBlock.TEST = getRegistries().register(Block.class, "block_test", () -> (TestBlock) new TestBlock());
-        TwentyFourTestBlock.TEST = getRegistries().register(Block.class, "block_twenty_four_test", () -> (TwentyFourTestBlock) new TwentyFourTestBlock());
-        AssetTestBlock.TEST = getRegistries().register(Block.class, "block_asset_test", () -> (AssetTestBlock) new AssetTestBlock());
-        MachineTestBlock.TEST = getRegistries().register(Block.class, "machine_test", () -> (MachineTestBlock) new MachineTestBlock());
+        if (false) { //ENABLE IN DEV
+            getRegistries().register(MenuType.class, "addon_container", () -> (MenuType) IForgeMenuType.create(BasicAddonContainer::create));
+            getRegistries().register(RecipeSerializer.class, "shapeless_enchant", () -> (RecipeSerializer) new ShapelessEnchantSerializer());
+            TestBlock.TEST = getRegistries().register(Block.class, "block_test", () -> (TestBlock) new TestBlock());
+            TwentyFourTestBlock.TEST = getRegistries().register(Block.class, "block_twenty_four_test", () -> (TwentyFourTestBlock) new TwentyFourTestBlock());
+            AssetTestBlock.TEST = getRegistries().register(Block.class, "block_asset_test", () -> (AssetTestBlock) new AssetTestBlock());
+            MachineTestBlock.TEST = getRegistries().register(Block.class, "machine_test", () -> (MachineTestBlock) new MachineTestBlock());
+        }
         /*
         addModule(Module.builder("test_module")
                 .disableByDefault()

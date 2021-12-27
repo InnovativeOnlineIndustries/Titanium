@@ -9,12 +9,9 @@ package com.hrznstudio.titanium._impl.test.tile;
 
 import com.hrznstudio.titanium._impl.test.TwentyFourTestBlock;
 import com.hrznstudio.titanium.annotation.Save;
-import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.IItemStackQuery;
-import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.block.tile.PoweredTile;
-import com.hrznstudio.titanium.client.screen.addon.EnergyBarScreenAddon;
 import com.hrznstudio.titanium.client.screen.addon.WidgetScreenAddon;
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
@@ -33,7 +30,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.List;
 
 public class TwentyFourTestTile extends PoweredTile<TwentyFourTestTile> {
     @Save
@@ -61,9 +57,7 @@ public class TwentyFourTestTile extends PoweredTile<TwentyFourTestTile> {
             .setComponentHarness(this)
             .setInputFilter(IItemStackQuery.ANYTHING.toSlotFilter()));
         this.addGuiAddonFactory(() -> new WidgetScreenAddon(30, 185, new VolumeSlider(Minecraft.getInstance(), 0, 0, SoundSource.HOSTILE, 120)));
-        EditBox widget = new EditBox(Minecraft.getInstance().font, 0, 0, 120, 20, new TextComponent(""));
-        widget.setValue("This is a Text Widget");
-        this.addGuiAddonFactory(() -> new WidgetScreenAddon(30, -25, widget));
+        this.addGuiAddonFactory(() -> new WidgetScreenAddon(30, -25, new EditBox(Minecraft.getInstance().font, 0, 0, 120, 20, new TextComponent(""))));
     }
 
     @Override
@@ -79,19 +73,20 @@ public class TwentyFourTestTile extends PoweredTile<TwentyFourTestTile> {
         this.getEnergyStorage().receiveEnergy(10, false);
         markForUpdate();
     }
-
+/*
     @Nonnull
     @Override
     public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
         List<IFactory<? extends IScreenAddon>> addons = super.getScreenAddons();
         for (IFactory<? extends IScreenAddon> addon : addons) {
+
             if (addon.create() instanceof EnergyBarScreenAddon) {
                 addons.remove(addon);
                 addons.add(() -> new EnergyBarScreenAddon(50, 20, this.getEnergyStorage()));
             }
         }
         return addons;
-    }
+    }*/
 
     @Override
     @Nonnull
