@@ -27,6 +27,8 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -43,9 +45,8 @@ public class TwentyFourTestTile extends PoweredTile<TwentyFourTestTile> {
 
     public TwentyFourTestTile(BlockPos pos, BlockState state) {
         super((BasicTileBlock<TwentyFourTestTile>) TwentyFourTestBlock.TEST.get(), pos, state);
-
         this.addInventory(first = new InventoryComponent<TwentyFourTestTile>("test", 80, 20, 1)
-                .setComponentHarness(this)
+            .setComponentHarness(this)
             .setInputFilter(IItemStackQuery.ANYTHING.toSlotFilter()));
         this.addInventory(second = new InventoryComponent<TwentyFourTestTile>("test2", 80, 40, 1)
             .setComponentHarness(this)
@@ -56,6 +57,12 @@ public class TwentyFourTestTile extends PoweredTile<TwentyFourTestTile> {
         this.addInventory(third = new InventoryComponent<TwentyFourTestTile>("test3", 80, 60, 1)
             .setComponentHarness(this)
             .setInputFilter(IItemStackQuery.ANYTHING.toSlotFilter()));
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void initClient() {
+        super.initClient();
         this.addGuiAddonFactory(() -> new WidgetScreenAddon(30, 185, new VolumeSlider(Minecraft.getInstance(), 0, 0, SoundSource.HOSTILE, 120)));
         this.addGuiAddonFactory(() -> new WidgetScreenAddon(30, -25, new EditBox(Minecraft.getInstance().font, 0, 0, 120, 20, new TextComponent(""))));
     }

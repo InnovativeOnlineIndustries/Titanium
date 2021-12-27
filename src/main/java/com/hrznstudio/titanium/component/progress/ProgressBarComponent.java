@@ -353,6 +353,7 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
      * @return A list of GUI addon factories
      */
     @Override
+    @OnlyIn(Dist.CLIENT)
     public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
         return Collections.singletonList(() -> new ProgressBarScreenAddon<>(posX, posY, this));
     }

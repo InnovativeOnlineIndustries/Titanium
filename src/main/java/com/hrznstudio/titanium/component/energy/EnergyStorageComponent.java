@@ -17,6 +17,8 @@ import com.hrznstudio.titanium.container.addon.IContainerAddon;
 import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
 import com.hrznstudio.titanium.container.addon.IntReferenceHolderAddon;
 import com.hrznstudio.titanium.container.referenceholder.FunctionReferenceHolder;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.energy.EnergyStorage;
 
 import javax.annotation.Nonnull;
@@ -73,6 +75,7 @@ public class EnergyStorageComponent<T extends IComponentHarness> extends EnergyS
 
     @Override
     @Nonnull
+    @OnlyIn(Dist.CLIENT)
     public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
         return Lists.newArrayList(
             () -> new EnergyBarScreenAddon(xPos, yPos, this)

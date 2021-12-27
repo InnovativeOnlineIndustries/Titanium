@@ -28,6 +28,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,10 +45,16 @@ public abstract class MachineTile<T extends MachineTile<T>> extends PoweredTile<
             .create()
             .setComponentHarness(this.getSelf())
             .setInputFilter((stack, integer) -> AugmentWrapper.isAugment(stack) && canAcceptAugment(stack)));
-        addGuiAddonFactory(getAugmentBackground());
         for (FacingUtil.Sideness value : FacingUtil.Sideness.values()) {
             augmentInventory.getFacingModes().put(value, IFacingComponent.FaceMode.NONE);
         }
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void initClient() {
+        super.initClient();
+        addGuiAddonFactory(getAugmentBackground());
     }
 
     @Override
@@ -87,6 +95,7 @@ public abstract class MachineTile<T extends MachineTile<T>> extends PoweredTile<
                 .setRange(1, 4);
     }
 
+    @OnlyIn(Dist.CLIENT)
     public IFactory<? extends IScreenAddon> getAugmentBackground() {
         return () -> new AssetScreenAddon(AssetTypes.AUGMENT_BACKGROUND, 175, 4, true);
     }

@@ -16,6 +16,8 @@ import com.hrznstudio.titanium.block.redstone.RedstoneManager;
 import com.hrznstudio.titanium.block.tile.BasicTile;
 import com.hrznstudio.titanium.client.screen.addon.StateButtonAddon;
 import com.hrznstudio.titanium.client.screen.addon.StateButtonInfo;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.Collections;
 import java.util.List;
@@ -38,6 +40,7 @@ public class RedstoneControlButtonComponent<T extends IEnumValues<T> & IRedstone
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
         return Collections.singletonList(() -> new StateButtonAddon(this, new StateButtonInfo(0, AssetTypes.BUTTON_REDSTONE_IGNORED, "tooltip.titanium.redstone.ignored"), new StateButtonInfo(1, AssetTypes.BUTTON_REDSTONE_NO_REDSTONE, "tooltip.titanium.redstone.no_redstone"), new StateButtonInfo(2, AssetTypes.BUTTON_REDSTONE_REDSTONE, "tooltip.titanium.redstone.redstone"), new StateButtonInfo(3, AssetTypes.BUTTON_REDSTONE_ONCE, "tooltip.titanium.redstone.once")) {
             @Override

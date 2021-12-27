@@ -55,6 +55,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -185,6 +187,7 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
         Client
      */
 
+    @OnlyIn(Dist.CLIENT)
     public void addGuiAddonFactory(IFactory<? extends IScreenAddon> factory) {
         this.guiAddons.add(factory);
     }
