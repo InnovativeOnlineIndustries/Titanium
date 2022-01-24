@@ -22,6 +22,8 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.TextComponent;
 import org.lwjgl.glfw.GLFW;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -115,6 +117,8 @@ public abstract class ScreenAddonScreen extends Screen implements IScreenAddonCo
 
     @Override
     public List<? extends GuiEventListener> children() {
-        return Lists.newArrayList(getAddons());
+        List<GuiEventListener> children = new ArrayList<>(super.children());
+        children.addAll(getAddons());
+        return children;
     }
 }

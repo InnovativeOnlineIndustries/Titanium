@@ -1,20 +1,20 @@
 import se.bjurr.gitchangelog.plugin.gradle.GitChangelogTask
 
 buildscript {
-    repositories {
-        maven { url = 'https://files.minecraftforge.net/maven' }
-        mavenCentral()
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-        classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.4.0"
-    }
+  repositories {
+    maven { url = 'https://files.minecraftforge.net/maven' }
+    mavenCentral()
+  }
+  dependencies {
+    classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+    classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.4.0"
+  }
 }
 plugins {
-    id 'maven-publish'
-    id 'org.cadixdev.licenser' version '0.6.1'
-    id "com.matthewprenger.cursegradle" version "1.4.0"
-    id "se.bjurr.gitchangelog.git-changelog-gradle-plugin" version "1.71.4"
+  id 'maven-publish'
+  id 'org.cadixdev.licenser' version '0.6.1'
+  id "com.matthewprenger.cursegradle" version "1.4.0"
+  id "se.bjurr.gitchangelog.git-changelog-gradle-plugin" version "1.71.4"
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
@@ -26,143 +26,155 @@ if (System.getenv('BUILD_NUMBER') != null) {
 }
 group = 'com.hrznstudio'
 archivesBaseName = 'titanium'
-def isReleaseBranch =  System.getenv("GIT_BRANCH") == "1.18" ;
+def isReleaseBranch = System.getenv("GIT_BRANCH") == "1.18";
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 license {
-    header = project.file('HEADER')
-    ext {
-        year = Calendar.getInstance().get(Calendar.YEAR)
-        name = 'Horizon Studio'
-        email = 'contact@hrznstudio.com'
-        mod = 'Titanium'
-    }
+  header = project.file('HEADER')
+  ext {
+    year = Calendar.getInstance().get(Calendar.YEAR)
+    name = 'Horizon Studio'
+    email = 'contact@hrznstudio.com'
+    mod = 'Titanium'
+  }
 }
 
 minecraft {
-    mappings channel: 'official', version: '1.18'
-    runs {
-        client = {
-            // recommended logging data for a userdev environment
-            properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
-            // recommended logging level for the console
-            properties 'forge.logging.console.level': 'debug'
-            workingDirectory project.file('run').canonicalPath
-            source sourceSets.main
+  mappings channel: 'official', version: '1.18.1'
+  runs {
+    client = {
+      // recommended logging data for a userdev environment
+      properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
+      // recommended logging level for the console
+      properties 'forge.logging.console.level': 'debug'
+      workingDirectory project.file('run').canonicalPath
+      mods {
+        titanium {
+          source sourceSets.main
         }
-        server = {
-            // recommended logging data for a userdev environment
-            properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
-            // recommended logging level for the console
-            properties 'forge.logging.console.level': 'debug'
-            workingDirectory project.file('run').canonicalPath
-            source sourceSets.main
-        }
-        data {
-            workingDirectory project.file('run')
-            property 'forge.logging.console.level', 'info'
-            args '--mod', 'titanium', '--all', '--output', file('src/main/resources'), '--input', file('src/main/resources')
-            source sourceSets.main
-        }
+      }
     }
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+    server = {
+      // recommended logging data for a userdev environment
+      properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
+      // recommended logging level for the console
+      properties 'forge.logging.console.level': 'debug'
+      workingDirectory project.file('run').canonicalPath
+      mods {
+        titanium {
+          source sourceSets.main
+        }
+      }
+    }
+    data {
+      workingDirectory project.file('run')
+      property 'forge.logging.console.level', 'info'
+      args '--mod', 'titanium', '--all', '--output', file('src/main/resources'), '--input', file('src/main/resources')
+      mods {
+        titanium {
+          source sourceSets.main
+        }
+      }
+    }
+  }
+  accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 }
 
 repositories {
-    mavenCentral()
-    maven {
-        // location of the maven that hosts JEI files
-        name = "Progwml6 maven"
-        url = "https://dvs1.progwml6.com/files/maven/"
-    }
-    maven {
-        // location of a maven mirror for JEI files, as a fallback
-        name = "ModMaven"
-        url = "https://modmaven.k-4u.nl"
-    }
-    maven {
-        url "https://maven.tterrag.com/"
-    }
-     maven {
-        url 'https://www.dogforce-games.com/maven/'
-     }
+  mavenCentral()
+  maven {
+    // location of the maven that hosts JEI files
+    name = "Progwml6 maven"
+    url = "https://dvs1.progwml6.com/files/maven/"
+  }
+  maven {
+    // location of a maven mirror for JEI files, as a fallback
+    name = "ModMaven"
+    url = "https://modmaven.k-4u.nl"
+  }
+  maven {
+    url "https://maven.tterrag.com/"
+  }
+  maven {
+    url 'https://www.dogforce-games.com/maven/'
+  }
 }
 dependencies {
-  minecraft 'net.minecraftforge:forge:1.18.1-39.0.8'
+  minecraft 'net.minecraftforge:forge:1.18.1-39.0.59'
 
   //compileOnly fg.deobf("mezz.jei:jei-1.16.4:7.6.1.71:api")
-        // at runtime, use the full JEI jar
+  // at runtime, use the full JEI jar
   //runtimeOnly fg.deobf("mezz.jei:jei-1.16.4:7.6.1.71")
 
 
 }
 
 jar {
-    manifest {
-        attributes(["Specification-Title": project.name,
-                    "Specification-Vendor": "Horizon Studio",
-                    "Specification-Version": "2.0",
-                    "Implementation-Title": project.name,
-                    "Implementation-Version": "${project.api_version}",
-                    "Implementation-Vendor" :"Horizon Studio",
-                    "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                    "Maven-Artifact": "${group}:${archivesBaseName}:${version}",
-                    "ModSide": "BOTH",
-                    "Automatic-Module-Name": "com.hrznstdio.titanium"
-        ],)
+  manifest {
+    attributes(["Specification-Title"     : project.name,
+                "Specification-Vendor"    : "Horizon Studio",
+                "Specification-Version"   : "2.0",
+                "Implementation-Title"    : project.name,
+                "Implementation-Version"  : "${project.api_version}",
+                "Implementation-Vendor"   : "Horizon Studio",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                "Maven-Artifact"          : "${group}:${archivesBaseName}:${version}",
+                "ModSide"                 : "BOTH",
+                "Automatic-Module-Name"   : "com.hrznstdio.titanium"
+    ],)
 
-    }
+  }
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
+  classifier = 'sources'
+  from sourceSets.main.allSource
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
+  classifier = 'javadoc'
+  from javadoc.destinationDir
 }
 
-task deobfJar(type:Jar) {
-    from sourceSets.main.output
-    classifier 'deobf'
+task deobfJar(type: Jar) {
+  from sourceSets.main.output
+  classifier 'deobf'
 }
 
 artifacts {
-    archives sourcesJar
-    archives javadocJar
-    archives deobfJar
+  archives sourcesJar
+  archives javadocJar
+  archives deobfJar
 }
 
 publish.dependsOn(project.tasks.getByName("assemble"))
 publish.mustRunAfter(project.tasks.getByName("build"))
 
 publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifact jar
-            artifact sourcesJar
-            artifact javadocJar
-            artifact deobfJar
-        }
+  publications {
+    mavenJava(MavenPublication) {
+      artifact jar
+      artifact sourcesJar
+      artifact javadocJar
+      artifact deobfJar
     }
-    repositories {
-        if(isReleaseBranch) {
-            maven {
-              url "file://" + System.getenv("local_maven")
-            }
-        } else {
-            mavenLocal()
-        }
+  }
+  repositories {
+    if (isReleaseBranch) {
+      maven {
+        url "file://" + System.getenv("local_maven")
+      }
+    } else {
+      mavenLocal()
     }
+  }
 }
 
 tasks.curseforge.enabled = System.env["CURSE_API"] != null
 
 curseforge {
-  if (System.env["CURSE_API"] != null){
+  if (System.env["CURSE_API"] != null) {
     apiKey = System.env["CURSE_API"]
   }
   project {
@@ -171,7 +183,7 @@ curseforge {
     changelogType = 'markdown'
     releaseType = 'beta'
     addGameVersion '1.18'
-    mainArtifact(jar){
+    mainArtifact(jar) {
 
     }
     addArtifact sourcesJar
