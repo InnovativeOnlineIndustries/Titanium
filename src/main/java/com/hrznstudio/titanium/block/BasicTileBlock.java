@@ -29,22 +29,18 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public abstract class BasicTileBlock<T extends BasicTile<T>> extends BasicBlock implements EntityBlock {
+
     private final Class<T> tileClass;
-    private RegistryObject<BlockEntityType<?>> tileEntityType;
 
     public BasicTileBlock(String name, Properties properties, Class<T> tileClass) {
         super(name, properties);
         this.tileClass = tileClass;
-    }
-
-    @Override
-    public void addAlternatives(DeferredRegistryHelper registry) {
-        super.addAlternatives(registry);
         NBTManager.getInstance().scanTileClassForAnnotations(tileClass);
-        tileEntityType = registry.registerBlockEntityType(getObjectName(), () -> BlockEntityType.Builder.of(getTileEntityFactory(), this).build(null));
     }
 
     public abstract BlockEntityType.BlockEntitySupplier<?> getTileEntityFactory();
@@ -67,11 +63,6 @@ public abstract class BasicTileBlock<T extends BasicTile<T>> extends BasicBlock 
 
     public Optional<T> getTile(BlockGetter access, BlockPos pos) {
         return TileUtil.getTileEntity(access, pos, tileClass);
-    }
-
-
-    public BlockEntityType<?> getTileEntityType() {
-        return tileEntityType.get();
     }
 
     public Class<T> getTileClass() {

@@ -8,7 +8,16 @@
 package com.hrznstudio.titanium.jei;
 
 
-/* TODO JEI
+import com.hrznstudio.titanium.client.screen.addon.BasicScreenAddon;
+import com.hrznstudio.titanium.client.screen.container.BasicContainerScreen;
+import mezz.jei.api.gui.handlers.IGuiContainerHandler;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
+
 public class BasicContainerScreenHandler<T extends AbstractContainerMenu> implements IGuiContainerHandler<BasicContainerScreen<T>> {
 
     @Override
@@ -24,4 +33,4 @@ public class BasicContainerScreenHandler<T extends AbstractContainerMenu> implem
         return rectangles;
     }
 }
-*/
+

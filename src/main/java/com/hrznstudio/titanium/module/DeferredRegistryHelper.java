@@ -7,13 +7,21 @@
 
 package com.hrznstudio.titanium.module;
 
-import com.hrznstudio.titanium.module.api.IAlternativeEntries;
+import com.hrznstudio.titanium.block.BasicBlock;
+import com.hrznstudio.titanium.block.BasicTileBlock;
+import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.RegistryObject;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.HashMap;
 import java.util.function.Supplier;
@@ -35,13 +43,16 @@ public class DeferredRegistryHelper {
         return deferredRegister;
     }
 
-    public <T extends IForgeRegistryEntry<? super T>> RegistryObject<T> register(Class<T> cl, String name, Supplier<T> object) {
+    private  <T extends IForgeRegistryEntry<? super T>> RegistryObject<T> register(Class<T> cl, String name, Supplier<T> object) {
         DeferredRegister deferredRegister = registries.computeIfAbsent(cl, this::addRegistry);
-        Object j = object.get();
-        if (j instanceof IAlternativeEntries) { // I'm sorry
+        /*if (j instanceof IAlternativeEntries) { // I'm sorry
             ((IAlternativeEntries) j).addAlternatives(this);
-        }
-        return deferredRegister.register(name, () -> j);
+        }*/
+        return deferredRegister.register(name, object);
+    }
+
+    public <T extends IForgeRegistryEntry<? super T>> RegistryObject<T> registerGeneric(Class<T> cl, String name, Supplier<T> object) {
+        return this.register(cl, name, object);
     }
 
     public RegistryObject<BlockEntityType<?>> registerBlockEntityType(String name, Supplier<?> object) {
@@ -54,4 +65,21 @@ public class DeferredRegistryHelper {
         return deferredRegister.register(name, object);
     }
 
+    public RegistryObject<Block> registerBlockWithItem(String name, Supplier<? extends BasicBlock> blockSupplier){
+        RegistryObject<Block> blockRegistryObject = registerGeneric(Block.class, name, blockSupplier::get);
+        registerGeneric(Item.class, name, () -> new BlockItem(blockRegistryObject.get(), new Item.Properties().tab(((BasicBlock) blockRegistryObject.get()).getItemGroup())));
+        return blockRegistryObject;
+    }
+
+    public RegistryObject<Block> registerBlockWithItem(String name, Supplier<? extends Block> blockSupplier, Supplier<Item> itemSupplier){
+        DeferredRegister blockDeferredRegister = registries.computeIfAbsent(Block.class, this::addRegistry);
+        DeferredRegister itemDeferredRegister = registries.computeIfAbsent(Item.class, this::addRegistry);
+        itemDeferredRegister.register(name, itemSupplier);
+        return blockDeferredRegister.register(name, blockSupplier);
+    }
+
+    public Pair<RegistryObject<Block>, RegistryObject<BlockEntityType<?>>> registerBlockWithTile(String name, Supplier<BasicTileBlock> blockSupplier){
+        RegistryObject<Block> blockRegistryObject = registerBlockWithItem(name, blockSupplier);
+        return Pair.of(blockRegistryObject, registerBlockEntityType(name, () -> BlockEntityType.Builder.of(((BasicTileBlock<?>)blockRegistryObject.get()).getTileEntityFactory(), blockRegistryObject.get()).build(null)));
+    }
 }

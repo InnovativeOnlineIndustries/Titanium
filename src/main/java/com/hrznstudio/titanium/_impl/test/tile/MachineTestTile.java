@@ -33,7 +33,7 @@ public class MachineTestTile extends MachineTile<MachineTestTile> {
     private InventoryComponent<MachineTestTile> movingSlot;
 
     public MachineTestTile(BlockPos blockPos, BlockState state) {
-        super((BasicTileBlock<MachineTestTile>) MachineTestBlock.TEST.get(), blockPos, state);
+        super((BasicTileBlock<MachineTestTile>) MachineTestBlock.TEST.getLeft().get(), MachineTestBlock.TEST.getRight().get(), blockPos, state);
         addFilter(this.filter = new ItemStackFilter("filter", 12));
         int pos = 0;
         for (int y = 0; y < 4; y++) {

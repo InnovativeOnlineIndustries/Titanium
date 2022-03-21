@@ -22,6 +22,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -33,8 +34,8 @@ public class BasicTile<T extends BasicTile<T>> extends BlockEntity {
 
     private final BasicTileBlock<T> basicTileBlock;
 
-    public BasicTile(BasicTileBlock<T> base, BlockPos pos, BlockState state) {
-        super(base.getTileEntityType(), pos, state);
+    public BasicTile(BasicTileBlock<T> base, BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state) {
+        super(blockEntityType, pos, state);
         this.basicTileBlock = base;
     }
 

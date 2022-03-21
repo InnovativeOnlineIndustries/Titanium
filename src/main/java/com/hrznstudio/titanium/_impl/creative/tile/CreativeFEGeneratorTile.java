@@ -8,6 +8,7 @@
 package com.hrznstudio.titanium._impl.creative.tile;
 
 import com.hrznstudio.titanium._impl.creative.CreativeFEGeneratorBlock;
+import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.block.tile.PoweredTile;
 import com.hrznstudio.titanium.component.energy.EnergyStorageComponent;
 import net.minecraft.core.BlockPos;
@@ -26,7 +27,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class CreativeFEGeneratorTile extends PoweredTile<CreativeFEGeneratorTile> {
 
     public CreativeFEGeneratorTile(BlockPos pos, BlockState state) {
-        super(CreativeFEGeneratorBlock.INSTANCE, pos, state);
+        super((BasicTileBlock<CreativeFEGeneratorTile>) CreativeFEGeneratorBlock.INSTANCE.getLeft().get(),CreativeFEGeneratorBlock.INSTANCE.getRight().get(), pos, state);
     }
 
     @Override

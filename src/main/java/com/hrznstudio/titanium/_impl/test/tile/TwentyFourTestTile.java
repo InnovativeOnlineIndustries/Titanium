@@ -44,7 +44,7 @@ public class TwentyFourTestTile extends PoweredTile<TwentyFourTestTile> {
     private InventoryComponent<TwentyFourTestTile> third;
 
     public TwentyFourTestTile(BlockPos pos, BlockState state) {
-        super((BasicTileBlock<TwentyFourTestTile>) TwentyFourTestBlock.TEST.get(), pos, state);
+        super((BasicTileBlock<TwentyFourTestTile>) TwentyFourTestBlock.TEST.getLeft().get(), TwentyFourTestBlock.TEST.getRight().get(), pos, state);
         this.addInventory(first = new InventoryComponent<TwentyFourTestTile>("test", 80, 20, 1)
             .setComponentHarness(this)
             .setInputFilter(IItemStackQuery.ANYTHING.toSlotFilter()));

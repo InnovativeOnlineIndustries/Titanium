@@ -14,7 +14,6 @@ import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.hrznstudio.titanium.datagenerator.loot.block.BasicBlockLootTables;
 import com.hrznstudio.titanium.datagenerator.loot.block.IBlockLootTableProvider;
 import com.hrznstudio.titanium.module.DeferredRegistryHelper;
-import com.hrznstudio.titanium.module.api.IAlternativeEntries;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -37,6 +36,7 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nonnull;
@@ -47,10 +47,9 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public abstract class BasicBlock extends Block implements IAlternativeEntries, IRecipeProvider, IBlockLootTableProvider {
+public abstract class BasicBlock extends Block implements IRecipeProvider, IBlockLootTableProvider {
     private CreativeModeTab itemGroup = CreativeModeTab.TAB_SEARCH;
     private final String name;
-    private RegistryObject<Item> item;
 
     public BasicBlock(String name, Properties properties) {
         super(properties);
@@ -101,21 +100,6 @@ public abstract class BasicBlock extends Block implements IAlternativeEntries, I
 
     public Supplier<Item> getItemBlockFactory() {
         return () -> (Item) new BlockItem(this, new Item.Properties().tab(this.itemGroup));
-    }
-
-    @Override
-    public void addAlternatives(DeferredRegistryHelper registry) {
-        item = registry.register(Item.class, name, getItemBlockFactory());
-    }
-
-    @Override
-    @Nonnull
-    public Item asItem() {
-        return item.get();
-    }
-
-    public void setItem(RegistryObject<Item> item) {
-        this.item = item;
     }
 
     public List<VoxelShape> getBoundingBoxes(BlockState state, BlockGetter source, BlockPos pos) {
@@ -189,7 +173,4 @@ public abstract class BasicBlock extends Block implements IAlternativeEntries, I
         return blockLootTables.droppingSelf(this);
     }
 
-    public String getObjectName() {
-        return name;
-    }
 }

@@ -14,20 +14,21 @@ import com.hrznstudio.titanium.event.handler.EventManager;
 import com.hrznstudio.titanium.plugin.PluginManager;
 import com.hrznstudio.titanium.plugin.PluginPhase;
 import com.hrznstudio.titanium.util.AnnotationUtil;
+import net.minecraft.world.item.Item;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
+import net.minecraftforge.registries.NewRegistryEvent;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public abstract class ModuleController {
     private final String modid;
-    private final Map<String, Module> moduleMap = new HashMap<>();
-    private final Map<String, Module> disabledModuleMap = new HashMap<>();
     private final AnnotationConfigManager configManager = new AnnotationConfigManager();
     private final PluginManager modPluginManager;
     private final DeferredRegistryHelper deferredRegistryHelper;

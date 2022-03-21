@@ -13,6 +13,7 @@ import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
@@ -60,7 +61,7 @@ public class TitaniumShapedRecipeBuilder extends ShapedRecipeBuilder implements 
     }
 
     @Override
-    public ShapedRecipeBuilder define(Character symbol, Tag<Item> tagIn) {
+    public ShapedRecipeBuilder define(Character symbol, TagKey<Item> tagIn) {
         if (!this.criterion) {
             this.criterion = true;
             unlockedBy("has_item", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(tagIn).build()));

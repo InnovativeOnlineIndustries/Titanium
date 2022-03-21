@@ -27,6 +27,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -39,8 +40,8 @@ public abstract class MachineTile<T extends MachineTile<T>> extends PoweredTile<
     @Save
     private SidedInventoryComponent<T> augmentInventory;
 
-    public MachineTile(BasicTileBlock<T> basicTileBlock, BlockPos pos, BlockState state) {
-        super(basicTileBlock, pos, state);
+    public MachineTile(BasicTileBlock<T> basicTileBlock, BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state) {
+        super(basicTileBlock, blockEntityType, pos, state);
         addInventory(this.augmentInventory = (SidedInventoryComponent<T>) getAugmentFactory()
             .create()
             .setComponentHarness(this.getSelf())

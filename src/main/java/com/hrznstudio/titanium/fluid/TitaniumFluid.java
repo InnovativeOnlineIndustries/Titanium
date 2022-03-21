@@ -23,38 +23,32 @@ import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.concurrent.Flow;
 
 public class TitaniumFluid extends FlowingFluid {
 
     private final FluidAttributes.Builder fluidAttributes;
-    private Fluid flowingFluid;
-    private FlowingFluid sourceFluid;
-    private Item bucketFluid;
-    private Block blockFluid;
+    private final TitaniumFluidInstance titaniumFluidInstance;
 
-    public TitaniumFluid(FluidAttributes.Builder fluidAttributes) {
+    public TitaniumFluid(FluidAttributes.Builder fluidAttributes, TitaniumFluidInstance titaniumFluidInstance) {
         this.fluidAttributes = fluidAttributes;
+        this.titaniumFluidInstance = titaniumFluidInstance;
     }
 
     @Override
     @Nonnull
     public Fluid getFlowing() {
-        return flowingFluid;
-    }
-
-    @Nonnull
-    public TitaniumFluid setFlowingFluid(Fluid flowingFluid) {
-        this.flowingFluid = flowingFluid;
-        return this;
+        return titaniumFluidInstance.getFlowingFluid().get();
     }
 
     @Override
     @Nonnull
     public Fluid getSource() {
-        return sourceFluid;
+        return titaniumFluidInstance.getSourceFluid().get();
     }
 
     @Override
@@ -83,7 +77,7 @@ public class TitaniumFluid extends FlowingFluid {
     @Override
     @Nonnull
     public Item getBucket() {
-        return bucketFluid;
+        return titaniumFluidInstance.getBucketFluid().get();
     }
 
     @Override
@@ -105,7 +99,7 @@ public class TitaniumFluid extends FlowingFluid {
     @Override
     @Nonnull
     protected BlockState createLegacyBlock(@Nonnull FluidState state) {
-        return blockFluid.defaultBlockState().setValue(LiquidBlock.LEVEL, getLegacyLevel(state));
+        return titaniumFluidInstance.getBlockFluid().get().defaultBlockState().setValue(LiquidBlock.LEVEL, getLegacyLevel(state));
     }
 
     @Override
@@ -120,23 +114,7 @@ public class TitaniumFluid extends FlowingFluid {
 
     @Override
     public boolean isSame(Fluid fluidIn) {
-        return fluidIn == sourceFluid || fluidIn == flowingFluid;
-    }
-
-    public TitaniumFluid setSourceFluid(FlowingFluid sourceFluid) {
-        this.sourceFluid = sourceFluid;
-        return this;
-    }
-
-    @Nonnull
-    public TitaniumFluid setBucketFluid(Item bucketFluid) {
-        this.bucketFluid = bucketFluid;
-        return this;
-    }
-
-    public TitaniumFluid setBlockFluid(Block blockFluid) {
-        this.blockFluid = blockFluid;
-        return this;
+        return fluidIn == titaniumFluidInstance.getFlowingFluid().get() || fluidIn == titaniumFluidInstance.getSourceFluid().get();
     }
 
     @Override
@@ -150,8 +128,8 @@ public class TitaniumFluid extends FlowingFluid {
             registerDefaultState(getStateDefinition().any().setValue(LEVEL, 7));
         }
 
-        public Flowing(FluidAttributes.Builder fluidAttributes) {
-            super(fluidAttributes);
+        public Flowing(FluidAttributes.Builder fluidAttributes, TitaniumFluidInstance instance) {
+            super(fluidAttributes, instance);
         }
 
         @Override
@@ -173,8 +151,8 @@ public class TitaniumFluid extends FlowingFluid {
 
     public static class Source extends TitaniumFluid {
 
-        public Source(FluidAttributes.Builder fluidAttributes) {
-            super(fluidAttributes);
+        public Source(FluidAttributes.Builder fluidAttributes, TitaniumFluidInstance instance) {
+            super(fluidAttributes, instance);
         }
 
         @Override

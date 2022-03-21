@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraftforge.registries.RegistryObject;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 
@@ -26,7 +27,7 @@ public class TestBlock extends RotatableBlock<TestTile> {
     @ConfigVal
     public static int DUMB_VALUE = 135;
 
-    public static RegistryObject<Block> TEST;
+    public static Pair<RegistryObject<Block>, RegistryObject<BlockEntityType<?>>> TEST;
 
     public TestBlock() {
         super("test", Properties.of(Material.STONE), TestTile.class);

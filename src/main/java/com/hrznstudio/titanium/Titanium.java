@@ -7,6 +7,8 @@
 
 package com.hrznstudio.titanium;
 
+import com.hrznstudio.titanium._impl.creative.CreativeFEGeneratorBlock;
+import com.hrznstudio.titanium._impl.creative.tile.CreativeFEGeneratorTile;
 import com.hrznstudio.titanium._impl.test.AssetTestBlock;
 import com.hrznstudio.titanium._impl.test.MachineTestBlock;
 import com.hrznstudio.titanium._impl.test.TestBlock;
@@ -94,12 +96,13 @@ public class Titanium extends ModuleController {
     @Override
     protected void initModules() {
         if (true) { //ENABLE IN DEV
-            getRegistries().register(MenuType.class, "addon_container", () -> (MenuType) IForgeMenuType.create(BasicAddonContainer::create));
-            getRegistries().register(RecipeSerializer.class, "shapeless_enchant", () -> (RecipeSerializer) new ShapelessEnchantSerializer());
-            TestBlock.TEST = getRegistries().register(Block.class, "block_test", () -> (TestBlock) new TestBlock());
-            TwentyFourTestBlock.TEST = getRegistries().register(Block.class, "block_twenty_four_test", () -> (TwentyFourTestBlock) new TwentyFourTestBlock());
-            AssetTestBlock.TEST = getRegistries().register(Block.class, "block_asset_test", () -> (AssetTestBlock) new AssetTestBlock());
-            MachineTestBlock.TEST = getRegistries().register(Block.class, "machine_test", () -> (MachineTestBlock) new MachineTestBlock());
+            getRegistries().registerGeneric(MenuType.class, "addon_container", () -> (MenuType) IForgeMenuType.create(BasicAddonContainer::create));
+            getRegistries().registerGeneric(RecipeSerializer.class, "shapeless_enchant", () -> (RecipeSerializer) new ShapelessEnchantSerializer());
+            TestBlock.TEST = getRegistries().registerBlockWithTile("block_test", () -> (TestBlock) new TestBlock());
+            TwentyFourTestBlock.TEST = getRegistries().registerBlockWithTile("block_twenty_four_test", () -> (TwentyFourTestBlock) new TwentyFourTestBlock());
+            AssetTestBlock.TEST = getRegistries().registerBlockWithTile("block_asset_test", () -> (AssetTestBlock) new AssetTestBlock());
+            MachineTestBlock.TEST = getRegistries().registerBlockWithTile("machine_test", () -> (MachineTestBlock) new MachineTestBlock());
+            CreativeFEGeneratorBlock.INSTANCE = getRegistries().registerBlockWithTile("creative_generator", () -> new CreativeFEGeneratorBlock());
         }
         /*
         addModule(Module.builder("test_module")

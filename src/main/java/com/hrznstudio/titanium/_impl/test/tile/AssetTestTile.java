@@ -50,7 +50,7 @@ public class AssetTestTile extends PoweredTile<AssetTestTile>{
     private SidedFluidTankComponent<AssetTestTile> fluidTank;
 
     public AssetTestTile(BlockPos pos, BlockState state) {
-        super((BasicTileBlock<AssetTestTile>) AssetTestBlock.TEST.get(), pos, state);
+        super((BasicTileBlock<AssetTestTile>) AssetTestBlock.TEST.getLeft().get(), AssetTestBlock.TEST.getRight().get(), pos, state);
         this.addInventory(inventory = (SidedInventoryComponent<AssetTestTile>) new SidedInventoryComponent<AssetTestTile>("inventory", 8, 88, 18, 0)
             .setFacingHandlerPos(-15, 1).setRange(9, 2)
             .setComponentHarness(this)

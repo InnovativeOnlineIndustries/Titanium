@@ -11,6 +11,7 @@ import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
@@ -42,7 +43,7 @@ public class TitaniumShapelessRecipeBuilder extends ShapelessRecipeBuilder {
     }
 
     @Override
-    public ShapelessRecipeBuilder requires(Tag<Item> tagIn) {
+    public ShapelessRecipeBuilder requires(TagKey<Item> tagIn) {
         if (!this.criterion) {
             this.criterion = true;
             unlockedBy("has_item", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(tagIn).build()));

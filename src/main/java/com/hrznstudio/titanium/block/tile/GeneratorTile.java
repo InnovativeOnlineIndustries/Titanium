@@ -15,6 +15,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.energy.CapabilityEnergy;
 
@@ -25,8 +26,8 @@ public abstract class GeneratorTile<T extends GeneratorTile<T>> extends PoweredT
     @Save
     private ProgressBarComponent<T> progressBar;
 
-    public GeneratorTile(BasicTileBlock<T> basicTileBlock, BlockPos pos, BlockState state) {
-        super(basicTileBlock, pos, state);
+    public GeneratorTile(BasicTileBlock<T> base, BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state) {
+        super(base, blockEntityType, pos, state);
         this.addProgressBar(progressBar = getProgressBar()
                 .setComponentHarness(this.getSelf())
                 .setCanIncrease(tileEntity -> !isSmart() || this.getEnergyCapacity() - this.getEnergyStorage().getEnergyStored() >= getEnergyProducedEveryTick())

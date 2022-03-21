@@ -54,6 +54,7 @@ import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -88,8 +89,8 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
 
     private List<IComponentBundle> bundles;
 
-    public ActiveTile(BasicTileBlock<T> base, BlockPos pos, BlockState state) {
-        super(base, pos, state);
+    public ActiveTile(BasicTileBlock<T> base, BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state) {
+        super(base, blockEntityType,pos, state);
         this.guiAddons = new ArrayList<>();
         this.containerAddons = new ArrayList<>();
         this.bundles = new ArrayList<>();

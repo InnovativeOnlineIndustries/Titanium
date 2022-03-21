@@ -67,7 +67,7 @@ public class TestTile extends PoweredTile<TestTile> implements IRedstoneReader {
     private RedstoneControlButtonComponent<RedstoneAction> redstoneButton;
 
     public TestTile(BlockPos pos, BlockState blockState) {
-        super((BasicTileBlock<TestTile>) TestBlock.TEST.get(), pos, blockState);
+        super((BasicTileBlock<TestTile>) TestBlock.TEST.getLeft().get(), TestBlock.TEST.getRight().get(), pos, blockState);
         this.addInventory(first = (SidedInventoryComponent<TestTile>) new SidedInventoryComponent<TestTile>("test", 80, 30, 1, 0)
             .setValidFaceModes(IFacingComponent.FaceMode.ENABLED, IFacingComponent.FaceMode.NONE)
             .setComponentHarness(this)
