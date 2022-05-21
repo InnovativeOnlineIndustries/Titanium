@@ -24,6 +24,7 @@ import net.minecraftforge.registries.RegistryObject;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.HashMap;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class DeferredRegistryHelper {
@@ -71,11 +72,12 @@ public class DeferredRegistryHelper {
         return blockRegistryObject;
     }
 
-    public RegistryObject<Block> registerBlockWithItem(String name, Supplier<? extends Block> blockSupplier, Supplier<Item> itemSupplier){
+    public RegistryObject<Block> registerBlockWithItem(String name, Supplier<? extends Block> blockSupplier, Function<RegistryObject<Block>, Supplier<Item>> itemSupplier){
         DeferredRegister blockDeferredRegister = registries.computeIfAbsent(Block.class, this::addRegistry);
         DeferredRegister itemDeferredRegister = registries.computeIfAbsent(Item.class, this::addRegistry);
-        itemDeferredRegister.register(name, itemSupplier);
-        return blockDeferredRegister.register(name, blockSupplier);
+        RegistryObject<Block> block = blockDeferredRegister.register(name, blockSupplier);
+        itemDeferredRegister.register(name, itemSupplier.apply(block));
+        return block;
     }
 
     public Pair<RegistryObject<Block>, RegistryObject<BlockEntityType<?>>> registerBlockWithTile(String name, Supplier<BasicTileBlock> blockSupplier){
