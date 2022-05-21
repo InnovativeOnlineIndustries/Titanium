@@ -72,7 +72,8 @@ public class TankScreenAddon extends BasicScreenAddon {
                 if (texture instanceof TextureAtlas) {
                     TextureAtlasSprite sprite = ((TextureAtlas) texture).getSprite(flowing);
                     if (sprite != null) {
-                        screen.getMinecraft().getTextureManager().bindForSetup(TextureAtlas.LOCATION_BLOCKS);
+                        //screen.getMinecraft().getTextureManager().bindForSetup(TextureAtlas.LOCATION_BLOCKS);
+                        RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
                         Color color = new Color(fluidStack.getFluid().getAttributes().getColor(fluidStack));
                         RenderSystem.setShaderColor(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
                         RenderSystem.enableBlend();
