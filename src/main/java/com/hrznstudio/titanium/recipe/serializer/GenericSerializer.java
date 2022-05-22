@@ -17,6 +17,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
@@ -60,6 +62,14 @@ public class GenericSerializer<T extends SerializableRecipe> extends ForgeRegist
             Titanium.LOGGER.catching(e);
             throw new JsonParseException(e);
         }
+    }
+
+    @Override
+    public T fromJson(ResourceLocation recipeLoc, JsonObject recipeJson, ICondition.IContext context) {
+        if (CraftingHelper.processConditions(recipeJson, "conditions", context)){
+            return fromJson(recipeLoc, recipeJson);
+        }
+        return null;
     }
 
     // Writes a json object from a recipe object

@@ -37,7 +37,7 @@ public class DeferredRegistryHelper {
         this.registries = new HashMap<>();
     }
 
-    public <T extends IForgeRegistryEntry> DeferredRegister<? super T> addRegistry(Class<T> cl) {
+    public DeferredRegister<? extends IForgeRegistryEntry> addRegistry(Class<? extends IForgeRegistryEntry> cl) {
         DeferredRegister deferredRegister = DeferredRegister.create(cl, this.modId);
         deferredRegister.register(FMLJavaModLoadingContext.get().getModEventBus());
         //registries.put(cl, deferredRegister);
