@@ -293,25 +293,25 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
     @Override
     public void handleButtonMessage(int id, Player playerEntity, CompoundTag compound) {
         if (id == -3) {
-            if (!compound.contains("Invalid") && compound.contains("Fill") && !playerEntity.inventoryMenu.getCarried().isEmpty()) {
+            if (!compound.contains("Invalid") && compound.contains("Fill") && !playerEntity.containerMenu.getCarried().isEmpty()) {
                 boolean fill = compound.getBoolean("Fill");
                 String name = compound.getString("Name");
                 if (multiTankComponent != null) {
                     for (FluidTankComponent<T> fluidTankComponent : multiTankComponent.getTanks()) {
                         if (fluidTankComponent.getName().equalsIgnoreCase(name))
-                            playerEntity.inventoryMenu.getCarried().getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(iFluidHandlerItem -> {
+                            playerEntity.containerMenu.getCarried().getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(iFluidHandlerItem -> {
                                 if (fill) {
-                                    int amount = Minecraft.getInstance().player.inventoryMenu.getCarried().getItem() instanceof BucketItem ? FluidAttributes.BUCKET_VOLUME : Integer.MAX_VALUE;
+                                    int amount = Minecraft.getInstance().player.containerMenu.getCarried().getItem() instanceof BucketItem ? FluidAttributes.BUCKET_VOLUME : Integer.MAX_VALUE;
                                     amount = fluidTankComponent.fill(iFluidHandlerItem.drain(amount, IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.EXECUTE);
                                     iFluidHandlerItem.drain(amount, IFluidHandler.FluidAction.EXECUTE);
                                 } else {
-                                    int amount = Minecraft.getInstance().player.inventoryMenu.getCarried().getItem() instanceof BucketItem ? FluidAttributes.BUCKET_VOLUME : Integer.MAX_VALUE;
+                                    int amount = Minecraft.getInstance().player.containerMenu.getCarried().getItem() instanceof BucketItem ? FluidAttributes.BUCKET_VOLUME : Integer.MAX_VALUE;
                                     amount = iFluidHandlerItem.fill(fluidTankComponent.drain(amount, IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.EXECUTE);
                                     fluidTankComponent.drain(amount, IFluidHandler.FluidAction.EXECUTE);
                                 }
-                                playerEntity.inventoryMenu.setCarried(iFluidHandlerItem.getContainer().copy());
+                                playerEntity.containerMenu.setCarried(iFluidHandlerItem.getContainer().copy());
                                 if (playerEntity instanceof ServerPlayer) {
-                                    //((ServerPlayer) playerEntity).broadcastCarriedItem(); TODO
+                                    playerEntity.containerMenu.broadcastChanges();
                                 }
                             });
                     }

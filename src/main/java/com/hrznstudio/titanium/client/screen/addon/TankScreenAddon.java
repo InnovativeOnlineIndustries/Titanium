@@ -103,9 +103,9 @@ public class TankScreenAddon extends BasicScreenAddon {
         List<Component> strings = new ArrayList<>();
         strings.add(new TextComponent(ChatFormatting.GOLD + new TranslatableComponent("tooltip.titanium.tank.fluid").getString()).append(tank.getFluid().isEmpty() ? new TranslatableComponent("tooltip.titanium.tank.empty").withStyle(ChatFormatting.WHITE) :  new TranslatableComponent(tank.getFluid().getFluid().getAttributes().getTranslationKey(tank.getFluid()))).withStyle(ChatFormatting.WHITE));
         strings.add(new TranslatableComponent("tooltip.titanium.tank.amount").withStyle(ChatFormatting.GOLD).append(new TextComponent(ChatFormatting.WHITE + new DecimalFormat().format(tank.getFluidAmount()) + ChatFormatting.GOLD + "/" + ChatFormatting.WHITE + new DecimalFormat().format(tank.getCapacity()) + ChatFormatting.DARK_AQUA + "mb")));
-        if (!Minecraft.getInstance().player.inventoryMenu.getCarried().isEmpty() && Minecraft.getInstance().player.inventoryMenu.getCarried().getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).isPresent()){
-            Minecraft.getInstance().player.inventoryMenu.getCarried().getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(iFluidHandlerItem -> {
-                boolean isBucket = Minecraft.getInstance().player.inventoryMenu.getCarried().getItem() instanceof BucketItem;
+        if (!Minecraft.getInstance().player.containerMenu.getCarried().isEmpty() && Minecraft.getInstance().player.containerMenu.getCarried().getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).isPresent()){
+            Minecraft.getInstance().player.containerMenu.getCarried().getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(iFluidHandlerItem -> {
+                boolean isBucket = Minecraft.getInstance().player.containerMenu.getCarried().getItem() instanceof BucketItem;
                 int amount = isBucket ? FluidAttributes.BUCKET_VOLUME : Integer.MAX_VALUE;
                 boolean canFillFromItem = false;
                 boolean canDrainFromItem = false;
@@ -146,7 +146,7 @@ public class TankScreenAddon extends BasicScreenAddon {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (!Minecraft.getInstance().player.getInventory().getSelected().isEmpty() && Minecraft.getInstance().player.getInventory().getSelected().getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).isPresent()) {
+        if (!Minecraft.getInstance().player.containerMenu.getCarried().isEmpty() && Minecraft.getInstance().player.containerMenu.getCarried().getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).isPresent()) {
             Screen screen = Minecraft.getInstance().screen;
             if (screen instanceof AbstractContainerScreen && ((AbstractContainerScreen) screen).getMenu() instanceof ILocatable) {
                 if (!isMouseOver(mouseX - ((AbstractContainerScreen<?>) screen).getGuiLeft(), mouseY - ((AbstractContainerScreen<?>) screen).getGuiTop()))
@@ -159,8 +159,8 @@ public class TankScreenAddon extends BasicScreenAddon {
                 } else {
                     compoundNBT.putBoolean("Invalid", true);
                 }
-                Minecraft.getInstance().player.inventoryMenu.getCarried().getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(iFluidHandlerItem -> {
-                    boolean isBucket = Minecraft.getInstance().player.inventoryMenu.getCarried().getItem() instanceof BucketItem;
+                Minecraft.getInstance().player.containerMenu.getCarried().getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(iFluidHandlerItem -> {
+                    boolean isBucket = Minecraft.getInstance().player.containerMenu.getCarried().getItem() instanceof BucketItem;
                     int amount = isBucket ? FluidAttributes.BUCKET_VOLUME : Integer.MAX_VALUE;
                     boolean canFillFromItem = false;
                     boolean canDrainFromItem = false;
