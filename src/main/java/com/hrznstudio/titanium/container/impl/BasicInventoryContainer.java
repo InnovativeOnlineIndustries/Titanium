@@ -59,7 +59,7 @@ public class BasicInventoryContainer extends BasicContainer implements IDisablea
     public void addHotbarSlots() {
         Point hotbarPos = IAssetProvider.getAsset(getAssetProvider(), AssetTypes.BACKGROUND).getHotbarPosition();
         for (int k = 0; k < 9; k++) {
-            addSlot(new Slot(getPlayerInventory(), k, hotbarPos.x + k * 18, hotbarPos.y));
+            addSlot(new DisableableSlot(getPlayerInventory(), k, hotbarPos.x + k * 18, hotbarPos.y, this));
         }
     }
 

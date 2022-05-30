@@ -9,13 +9,14 @@ package com.hrznstudio.titanium.container.impl;
 
 import com.hrznstudio.titanium.container.IDisableableContainer;
 import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.function.BooleanSupplier;
 
 public class DisableableSlot extends Slot {
-    private final BooleanSupplier isDisabled;
+    private BooleanSupplier isDisabled;
 
     public DisableableSlot(Container inventoryIn, int index, int xPosition, int yPosition, IDisableableContainer disableableContainer) {
         this(inventoryIn, index, xPosition, yPosition, disableableContainer::isDisabled);
@@ -34,5 +35,14 @@ public class DisableableSlot extends Slot {
     @Override
     public boolean mayPlace(ItemStack stack) {
         return !isDisabled.getAsBoolean();
+    }
+
+    @Override
+    public boolean mayPickup(Player player) {
+        return !isDisabled.getAsBoolean();
+    }
+
+    public void setIsDisabled(BooleanSupplier isDisabled) {
+        this.isDisabled = isDisabled;
     }
 }
