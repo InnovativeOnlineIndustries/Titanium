@@ -39,34 +39,27 @@ public class BasicContainer extends AbstractContainerMenu {
     }
 
     @Override
-    public ItemStack quickMoveStack(Player player, int index) {
+    public ItemStack quickMoveStack(Player player, int slotPos)
+    {
         ItemStack itemstack = ItemStack.EMPTY;
-        Slot slot = slots.get(index);
+        Slot slot = this.slots.get(slotPos);
         if (slot != null && slot.hasItem()) {
             ItemStack itemstack1 = slot.getItem();
             itemstack = itemstack1.copy();
-
-            int containerSlots = slots.size() - player.inventoryMenu.slots.size();
-
-            if (index < containerSlots) {
-                if (!this.moveItemStackTo(itemstack1, containerSlots, slots.size(), true)) {
+            int containerSlots = this.slots.size() - 9*4;
+            if (slotPos < containerSlots) {
+                if (!this.moveItemStackTo(itemstack1, containerSlots, this.slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
             } else if (!this.moveItemStackTo(itemstack1, 0, containerSlots, false)) {
                 return ItemStack.EMPTY;
             }
 
-            if (itemstack1.getCount() == 0) {
+            if (itemstack1.isEmpty()) {
                 slot.set(ItemStack.EMPTY);
             } else {
                 slot.setChanged();
             }
-
-            if (itemstack1.getCount() == itemstack.getCount()) {
-                return ItemStack.EMPTY;
-            }
-
-            slot.onTake(player, itemstack1);
         }
 
         return itemstack;
