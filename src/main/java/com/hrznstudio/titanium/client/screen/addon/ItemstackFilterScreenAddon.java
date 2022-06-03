@@ -87,11 +87,12 @@ public class ItemstackFilterScreenAddon extends BasicScreenAddon {
                 return false;
             ILocatable locatable = (ILocatable) ((AbstractContainerScreen) screen).getMenu();
             for (FilterSlot<ItemStack> filterSlot : filter.getFilterSlots()) {
-                if (filterSlot != null && mouseX > (this.getPosX() + filterSlot.getX() + 1) && mouseX < (this.getPosX() + filterSlot.getX() + 16) && mouseY > (this.getPosY() + filterSlot.getY() + 1) && mouseY < (this.getPosY() + filterSlot.getY() + 16)) {
+                if (filterSlot != null && mouseX > (((AbstractContainerScreen<?>) screen).getGuiLeft() + filterSlot.getX() + 1) && mouseX < (((AbstractContainerScreen<?>) screen).getGuiLeft() + filterSlot.getX() + 16) &&
+                    mouseY > (((AbstractContainerScreen<?>) screen).getGuiTop() + filterSlot.getY() + 1) && mouseY < (((AbstractContainerScreen<?>) screen).getGuiTop() + filterSlot.getY() + 16)) {
                     CompoundTag compoundNBT = new CompoundTag();
                     compoundNBT.putString("Name", filter.getName());
                     compoundNBT.putInt("Slot", filterSlot.getFilterID());
-                    compoundNBT.put("Filter", Minecraft.getInstance().player.inventoryMenu.getCarried().serializeNBT());
+                    compoundNBT.put("Filter", Minecraft.getInstance().player.containerMenu.getCarried().serializeNBT());
                     Titanium.NETWORK.get().sendToServer(new ButtonClickNetworkMessage(locatable.getLocatorInstance(), -2, compoundNBT));
                 }
             }

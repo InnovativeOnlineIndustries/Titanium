@@ -33,7 +33,7 @@ public abstract class StateButtonAddon extends BasicButtonAddon {
     public void drawBackgroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         StateButtonInfo buttonInfo = getStateInfo();
         if (buttonInfo != null) {
-            RenderSystem.setShaderColor(1, 1, 1, 1);
+            //RenderSystem.setShaderColor(1, 1, 1, 1);
             AssetUtil.drawAsset(stack, screen, provider.getAsset(buttonInfo.getAsset()), this.getPosX() + guiX, this.getPosY() + guiY);
         }
     }
