@@ -105,8 +105,9 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon {
         RenderSystem.setShaderColor(1, 1, 1, 1);
         if (isClicked()) {
             //draw the overlay for the slots
-            screen.blit(stack, guiX + backgroundInfo.getInventoryPosition().x - 1, guiY + backgroundInfo.getInventoryPosition().y - 1, 16, 213 + 18, 14, 14);
             screen.blit(stack, guiX + backgroundInfo.getInventoryPosition().x - 1, guiY + backgroundInfo.getInventoryPosition().y - 1, 56, 185, 162, 54);
+            screen.blit(stack, guiX + backgroundInfo.getInventoryPosition().x - 1, guiY + backgroundInfo.getInventoryPosition().y - 1 + 18*3 +4, 56, 185, 162, 17);
+            screen.blit(stack, guiX + backgroundInfo.getInventoryPosition().x - 1, guiY + backgroundInfo.getInventoryPosition().y - 1 + 18*3 +4 + 17, 56, 185 +53, 162, 1);
         }
     }
 
