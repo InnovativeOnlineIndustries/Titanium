@@ -19,17 +19,19 @@ import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 public class RecipeUtil {
 
-    public static <T extends Recipe<?>> Collection<T> getRecipes(Level world, RecipeType<T> recipeType) {
+    public static <T extends Recipe<?>> List<T> getRecipes(Level world, RecipeType<T> recipeType) {
         Map<RecipeType<?>, Map<ResourceLocation, Recipe<?>>> recipes = ObfuscationReflectionHelper.getPrivateValue(RecipeManager.class, world.getRecipeManager(), "f_44007_");
         if (recipes != null) {
             Map<ResourceLocation, Recipe<?>> typedRecipes = recipes.get(recipeType);
             if (typedRecipes != null) {
-                return (Collection<T>)typedRecipes.values();
+                return (List<T>) typedRecipes.values().stream().collect(Collectors.toList());
             }
         }
         return new ArrayList<>();
