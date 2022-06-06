@@ -101,11 +101,11 @@ repositories {
   }
 }
 dependencies {
-  minecraft 'net.minecraftforge:forge:1.18.2-40.1.0'
+  minecraft 'net.minecraftforge:forge:1.18.2-40.1.18'
 
-  compileOnly fg.deobf("mezz.jei:jei-1.18.2:9.5.3.143:api")
+  compileOnly fg.deobf("mezz.jei:jei-1.18.2:9.7.0.180:api")
   // at runtime, use the full JEI jar
-  runtimeOnly fg.deobf("mezz.jei:jei-1.18.2:9.5.3.143")
+  runtimeOnly fg.deobf("mezz.jei:jei-1.18.2:9.7.0.180")
 
 
 }
