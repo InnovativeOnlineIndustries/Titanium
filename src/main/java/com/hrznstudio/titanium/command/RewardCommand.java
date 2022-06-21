@@ -20,7 +20,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkDirection;
@@ -70,7 +70,7 @@ public class RewardCommand {
         try {
             rewardWorldStorage.remove(source.getPlayerOrException().getUUID(), context.getArgument("reward", ResourceLocation.class));
             rewardWorldStorage.setDirty();
-            context.getSource().sendSuccess(new TranslatableComponent("titanium.rewards.remove_success"), true);
+            context.getSource().sendSuccess(Component.literal("titanium.rewards.remove_success"), true);
             return true;
         } catch (CommandSyntaxException e) {
             e.printStackTrace();
@@ -91,7 +91,7 @@ public class RewardCommand {
             }
             rewardWorldStorage.add(source.getPlayerOrException().getUUID(), context.getArgument("reward", ResourceLocation.class), option);
             rewardWorldStorage.setDirty();
-            context.getSource().sendSuccess(new TranslatableComponent("titanium.rewards.enabled_success"), true);
+            context.getSource().sendSuccess(Component.literal("titanium.rewards.enabled_success"), true);
             return true;
         } catch (CommandSyntaxException e) {
             e.printStackTrace();

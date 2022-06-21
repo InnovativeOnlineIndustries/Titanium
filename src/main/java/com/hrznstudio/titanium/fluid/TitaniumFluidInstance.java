@@ -18,9 +18,10 @@ import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Material;
 import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.registries.RegistryObject;
 
-public class TitaniumFluidInstance extends net.minecraftforge.registries.ForgeRegistryEntry<TitaniumFluidInstance> {
+public class TitaniumFluidInstance {
 
     private RegistryObject<Fluid> flowingFluid;
     private RegistryObject<Fluid> sourceFluid;
@@ -28,12 +29,12 @@ public class TitaniumFluidInstance extends net.minecraftforge.registries.ForgeRe
     private RegistryObject<Block> blockFluid;
     private final String fluid;
 
-    public TitaniumFluidInstance(DeferredRegistryHelper helper, String fluid, FluidAttributes.Builder attributes, CreativeModeTab group) {
+    public TitaniumFluidInstance(DeferredRegistryHelper helper, String fluid, ForgeFlowingFluid.Properties properties, CreativeModeTab group) {
         this.fluid = fluid;
-        this.sourceFluid = helper.registerGeneric(Fluid.class, fluid, () -> new TitaniumFluid.Source(attributes, this));
-        this.flowingFluid = helper.registerGeneric(Fluid.class, fluid + "_flowing", () ->  new TitaniumFluid.Flowing(attributes, this));
+        this.sourceFluid = helper.registerGeneric(Fluid.class, fluid, () -> new TitaniumFluid.Source(properties, this));
+        this.flowingFluid = helper.registerGeneric(Fluid.class, fluid + "_flowing", () ->  new TitaniumFluid.Flowing(properties, this));
         this.bucketFluid = helper.registerGeneric(Item.class, fluid + "_bucket", () -> new BucketItem(this.sourceFluid, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(group)));
-        this.blockFluid = helper.registerGeneric(Block.class, fluid, () -> new LiquidBlock(() -> (FlowingFluid) sourceFluid.get(), Block.Properties.of(Material.WATER).noCollission().strength(100.0F).noDrops()));
+        this.blockFluid = helper.registerGeneric(Block.class, fluid, () -> new LiquidBlock(() -> (FlowingFluid) sourceFluid.get(), Block.Properties.of(Material.WATER).noCollission().strength(100.0F).noLootTable()));
     }
 
     public RegistryObject<Fluid>  getFlowingFluid() {

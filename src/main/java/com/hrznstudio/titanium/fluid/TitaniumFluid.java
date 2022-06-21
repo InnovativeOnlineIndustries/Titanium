@@ -22,20 +22,18 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraftforge.fluids.FluidAttributes;
-import net.minecraftforge.registries.RegistryObject;
+import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.concurrent.Flow;
 
 public class TitaniumFluid extends FlowingFluid {
 
-    private final FluidAttributes.Builder fluidAttributes;
+    private final ForgeFlowingFluid.Properties properties;
     private final TitaniumFluidInstance titaniumFluidInstance;
 
-    public TitaniumFluid(FluidAttributes.Builder fluidAttributes, TitaniumFluidInstance titaniumFluidInstance) {
-        this.fluidAttributes = fluidAttributes;
+    public TitaniumFluid(ForgeFlowingFluid.Properties properties, TitaniumFluidInstance titaniumFluidInstance) {
+        this.properties = properties;
         this.titaniumFluidInstance = titaniumFluidInstance;
     }
 
@@ -117,19 +115,13 @@ public class TitaniumFluid extends FlowingFluid {
         return fluidIn == titaniumFluidInstance.getFlowingFluid().get() || fluidIn == titaniumFluidInstance.getSourceFluid().get();
     }
 
-    @Override
-    @Nonnull
-    protected FluidAttributes createAttributes() {
-        return fluidAttributes.build(this);
-    }
-
     public static class Flowing extends TitaniumFluid {
         {
             registerDefaultState(getStateDefinition().any().setValue(LEVEL, 7));
         }
 
-        public Flowing(FluidAttributes.Builder fluidAttributes, TitaniumFluidInstance instance) {
-            super(fluidAttributes, instance);
+        public Flowing(ForgeFlowingFluid.Properties properties, TitaniumFluidInstance instance) {
+            super(properties, instance);
         }
 
         @Override
@@ -151,8 +143,8 @@ public class TitaniumFluid extends FlowingFluid {
 
     public static class Source extends TitaniumFluid {
 
-        public Source(FluidAttributes.Builder fluidAttributes, TitaniumFluidInstance instance) {
-            super(fluidAttributes, instance);
+        public Source(ForgeFlowingFluid.Properties properties, TitaniumFluidInstance instance) {
+            super(properties, instance);
         }
 
         @Override

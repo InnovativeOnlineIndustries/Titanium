@@ -7,7 +7,6 @@
 
 package com.hrznstudio.titanium.client.screen;
 
-import com.google.common.collect.Lists;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
@@ -19,10 +18,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -41,7 +39,7 @@ public abstract class ScreenAddonScreen extends Screen implements IScreenAddonCo
     private int dragY;
 
     public ScreenAddonScreen(IAssetProvider assetProvider, boolean drawBackground) {
-        super(new TextComponent(""));
+        super(Component.literal(""));
         this.assetProvider = assetProvider;
         this.drawBackground = drawBackground;
     }

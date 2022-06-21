@@ -37,7 +37,6 @@ import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
 import java.awt.*;
@@ -216,9 +215,9 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon {
                         public List<Component> getTooltipLines() {
                             List<Component> strings = new ArrayList<>();
                             IFacingComponent.FaceMode mode = handler.getValidFacingModes()[getState()];
-                            strings.add(new TextComponent(ChatFormatting.GOLD + LangUtil.getString("tooltip.titanium.facing_handler.direction") +
+                            strings.add(Component.literal(ChatFormatting.GOLD + LangUtil.getString("tooltip.titanium.facing_handler.direction") +
                                 ChatFormatting.RESET + LangUtil.getString("tooltip.titanium.facing_handler." + facing.name().toLowerCase()) + ChatFormatting.GRAY + " [" + LangUtil.getString("direction.titanium." + FacingUtil.getFacingFromSide(blockDirection, facing)) + "]"));
-                            strings.add(new TextComponent(ChatFormatting.GOLD + LangUtil.getString("tooltip.titanium.facing_handler.action") +
+                            strings.add(Component.literal(ChatFormatting.GOLD + LangUtil.getString("tooltip.titanium.facing_handler.action") +
                                 mode.getColor() + getStateInfo().getTooltip()[0].getString()));
                             return strings;
                         }
