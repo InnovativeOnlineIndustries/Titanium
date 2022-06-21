@@ -14,7 +14,7 @@ plugins {
   id 'maven-publish'
   id 'org.cadixdev.licenser' version '0.6.1'
   id "com.matthewprenger.cursegradle" version "1.4.0"
-  id "se.bjurr.gitchangelog.git-changelog-gradle-plugin" version "1.71.4"
+  id "se.bjurr.gitchangelog.git-changelog-gradle-plugin" version "1.71.9"
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
@@ -26,7 +26,7 @@ if (System.getenv('BUILD_NUMBER') != null) {
 }
 group = 'com.hrznstudio'
 archivesBaseName = 'titanium'
-def isReleaseBranch = System.getenv("GIT_BRANCH") == "1.18";
+def isReleaseBranch = System.getenv("GIT_BRANCH") == "1.19";
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
@@ -41,7 +41,7 @@ license {
 }
 
 minecraft {
-  mappings channel: 'official', version: '1.18.2'
+  mappings channel: 'official', version: '1.19'
   runs {
     client = {
       // recommended logging data for a userdev environment
@@ -101,11 +101,11 @@ repositories {
   }
 }
 dependencies {
-  minecraft 'net.minecraftforge:forge:1.18.2-40.1.18'
+  minecraft 'net.minecraftforge:forge:1.19-41.0.35'
 
-  compileOnly fg.deobf("mezz.jei:jei-1.18.2:9.7.0.180:api")
+  compileOnly fg.deobf("mezz.jei:jei-1.19-forge-api:11.0.0.206")
   // at runtime, use the full JEI jar
-  runtimeOnly fg.deobf("mezz.jei:jei-1.18.2:9.7.0.180")
+  runtimeOnly fg.deobf("mezz.jei:jei-1.19-forge:11.0.0.206")
 
 
 }
@@ -182,7 +182,7 @@ curseforge {
     changelog = "https://github.com/InnovativeOnlineIndustries/Titanium/blob/changelog/CHANGELOG.md"
     changelogType = 'markdown'
     releaseType = 'beta'
-    addGameVersion '1.18.2'
+    addGameVersion '1.19'
     mainArtifact(jar) {
 
     }
