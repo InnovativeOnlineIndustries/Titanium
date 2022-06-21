@@ -65,20 +65,4 @@ public class MachineMultiblock implements IMultiblock {
     public void destroyMultiblock(Level world, BlockPos pos, BlockState state, Direction facing) {
 
     }
-
-    @Override
-    public Block setRegistryName(ResourceLocation name) {
-        return null;
-    }
-
-    @Nullable
-    @Override
-    public ResourceLocation getRegistryName() {
-        return null;
-    }
-
-    @Override
-    public Class<Block> getRegistryType() {
-        return null;
-    }
 }

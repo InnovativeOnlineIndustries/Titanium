@@ -15,11 +15,9 @@ import net.minecraft.tags.*;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.tags.ITag;
 import net.minecraftforge.registries.tags.ITagManager;
@@ -31,7 +29,7 @@ import java.util.List;
 
 public class TagUtil {
 
-    public static <T extends ForgeRegistryEntry<T>> boolean hasTag(IForgeRegistry<T> registry, T type, TagKey<T> tag) {
+    public static <T> boolean hasTag(IForgeRegistry<T> registry, T type, TagKey<T> tag) {
         return registry.tags().getTag(tag).contains(type);
     }
 
@@ -47,7 +45,7 @@ public class TagUtil {
         return ForgeRegistries.FLUIDS.tags();
     }
 
-    public static <T extends ForgeRegistryEntry<T>> Collection<T> getAllEntries(IForgeRegistry<T> registry, TagKey<T>... tags) {
+    public static <T> Collection<T> getAllEntries(IForgeRegistry<T> registry, TagKey<T>... tags) {
         if (tags.length == 0)
             return Collections.emptyList();
         if (tags.length == 1)
@@ -59,11 +57,11 @@ public class TagUtil {
         return list;
     }
 
-    public static <T extends ForgeRegistryEntry<T>> Collection<T> getAllEntries(IForgeRegistry<T> registry, TagKey<T> tag) {
+    public static <T> Collection<T> getAllEntries(IForgeRegistry<T> registry, TagKey<T> tag) {
         return registry.tags().getTag(tag).stream().toList();
     }
 
-    public static <T extends ForgeRegistryEntry<T>> TagKey<T> getOrCreateTag(IForgeRegistry<T> registry, ResourceLocation resourceLocation) {
+    public static <T> TagKey<T> getOrCreateTag(IForgeRegistry<T> registry, ResourceLocation resourceLocation) {
         /*
         if (registry.tags().stream().anyMatch(ts -> ts.getKey().location().equals(resourceLocation))) {
 
@@ -118,7 +116,7 @@ public class TagUtil {
         List<Item> elements = item.stream().toList();
         for (String modid : TagConfig.ITEM_PREFERENCE) {
             for (Item allElement : elements) {
-                if (allElement.getRegistryName().getNamespace().equalsIgnoreCase(modid)) return new ItemStack(allElement);
+                if (ForgeRegistries.ITEMS.getKey(allElement).getNamespace().equalsIgnoreCase(modid)) return new ItemStack(allElement);
             }
         }
         return new ItemStack(elements.get(0));

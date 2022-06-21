@@ -28,10 +28,11 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ObjectHolder;
 
 public class BasicAddonContainer extends BasicInventoryContainer implements IObjectContainer, ILocatable {
-    @ObjectHolder("titanium:addon_container")
+    @ObjectHolder(registryName = "minecraft:menu", value = "titanium:addon_container")
     public static MenuType<BasicAddonContainer> TYPE;
 
     private final ContainerLevelAccess worldPosCallable;

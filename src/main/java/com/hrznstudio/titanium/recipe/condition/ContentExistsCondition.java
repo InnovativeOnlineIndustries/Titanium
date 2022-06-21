@@ -30,7 +30,7 @@ public class ContentExistsCondition implements ICondition {
     }
 
     @Override
-    public boolean test() {
+    public boolean test(IContext context) {
         return forgeRegistry.containsKey(contentName);
     }
 

@@ -7,8 +7,9 @@
 
 package com.hrznstudio.titanium.module.api;
 
-import net.minecraftforge.registries.IForgeRegistryEntry;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 
 public interface RegistryManager<B> {
-    <T extends IForgeRegistryEntry<T>> B content(Class<T> tClass, T t);
+    <T> B content(ResourceKey<? extends Registry<T>> registryKey, T t);
 }

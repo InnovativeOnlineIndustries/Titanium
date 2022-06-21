@@ -68,7 +68,7 @@ public class CompoundSerializableDataHandler {
         map(LocatorInstance.class, LocatorFactory::readPacketBuffer, LocatorFactory::writePacketBuffer);
         map(Ingredient.Value.class, CollectionItemList::new, CollectionItemList::serializeBuffer);
         map(Ingredient.class, Ingredient::fromNetwork, (buf, ingredient) -> ingredient.toNetwork(buf));
-        map(Block.class, buf -> ForgeRegistries.BLOCKS.getValue(buf.readResourceLocation()), (buf, block) -> buf.writeResourceLocation(block.getRegistryName()));
+        map(Block.class, buf -> ForgeRegistries.BLOCKS.getValue(buf.readResourceLocation()), (buf, block) -> buf.writeResourceLocation(ForgeRegistries.BLOCKS.getKey(block)));
         map(Ingredient.Value[].class, CompoundSerializableDataHandler::readIItemListArray, CompoundSerializableDataHandler::writeIItemListArray);
         map(Ingredient[].class, CompoundSerializableDataHandler::readIngredientArray, CompoundSerializableDataHandler::writeIngredientArray);
         map(ResourceKey.class, CompoundSerializableDataHandler::readRegistryKey, CompoundSerializableDataHandler::writeRegistryKey);
@@ -102,7 +102,7 @@ public class CompoundSerializableDataHandler {
     }
 
     public static void writeRegistryKey(FriendlyByteBuf buffer, ResourceKey<?> biome) {
-        buffer.writeResourceLocation(biome.getRegistryName());
+        buffer.writeResourceLocation(biome.registry());
         buffer.writeResourceLocation(biome.location());
     }
 

@@ -15,13 +15,14 @@ import net.minecraft.world.Container;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 
 public abstract class SerializableRecipe implements Recipe<Container>, IJsonFile, IJSONGenerator {
 
-    public String type = getSerializer().getRegistryName().toString();
+    public String type = ForgeRegistries.RECIPE_SERIALIZERS.getKey(getSerializer()).toString();
     private transient ResourceLocation resourceLocation;
 
     public SerializableRecipe(ResourceLocation resourceLocation) {

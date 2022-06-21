@@ -87,7 +87,6 @@ public class ShadePickerAddon extends BasicScreenAddon {
         buffer.vertex(matrix4f, x + width, y, 0).color(tr.getRed() / 255f, tr.getGreen() / 255f, tr.getBlue() / 255f, tr.getAlpha() / 255f).endVertex();
         buffer.vertex(matrix4f, x, y, 0).color(tl.getRed() / 255f, tl.getGreen() / 255f, tl.getBlue() / 255f, tl.getAlpha() / 255f).endVertex();
         buffer.end();
-        BufferUploader.end(buffer);
         //RenderSystem.shadeModel(GL11.GL_FLAT); TODO
         RenderSystem.disableBlend();
         //RenderSystem.enableAlphaTest(); TODO

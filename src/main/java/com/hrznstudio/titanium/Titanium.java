@@ -96,8 +96,8 @@ public class Titanium extends ModuleController {
     @Override
     protected void initModules() {
         if (true) { //ENABLE IN DEV
-            getRegistries().registerGeneric(MenuType.class, "addon_container", () -> (MenuType) IForgeMenuType.create(BasicAddonContainer::create));
-            getRegistries().registerGeneric(RecipeSerializer.class, "shapeless_enchant", () -> (RecipeSerializer) new ShapelessEnchantSerializer());
+            getRegistries().registerGeneric(ForgeRegistries.CONTAINERS.getRegistryKey(), "addon_container", () -> (MenuType) IForgeMenuType.create(BasicAddonContainer::create));
+            getRegistries().registerGeneric(ForgeRegistries.RECIPE_SERIALIZERS.getRegistryKey(), "shapeless_enchant", () -> (RecipeSerializer) new ShapelessEnchantSerializer());
             TestBlock.TEST = getRegistries().registerBlockWithTile("block_test", () -> (TestBlock) new TestBlock());
             TwentyFourTestBlock.TEST = getRegistries().registerBlockWithTile("block_twenty_four_test", () -> (TwentyFourTestBlock) new TwentyFourTestBlock());
             AssetTestBlock.TEST = getRegistries().registerBlockWithTile("block_asset_test", () -> (AssetTestBlock) new AssetTestBlock());
@@ -154,15 +154,15 @@ public class Titanium extends ModuleController {
         NonNullLazy<List<Block>> blocksToProcess = NonNullLazy.of(() ->
             ForgeRegistries.BLOCKS.getValues()
                 .stream()
-                .filter(basicBlock -> Optional.ofNullable(basicBlock.getRegistryName())
+                .filter(basicBlock -> Optional.ofNullable(ForgeRegistries.BLOCKS.getKey(basicBlock))
                     .map(ResourceLocation::getNamespace)
                     .filter(MODID::equalsIgnoreCase)
                     .isPresent())
                 .collect(Collectors.toList())
         );
-        event.getGenerator().addProvider(new BlockItemModelGeneratorProvider(event.getGenerator(), MODID, blocksToProcess));
-        event.getGenerator().addProvider(new TitaniumLootTableProvider(event.getGenerator(), blocksToProcess));
-        event.getGenerator().addProvider(new JsonRecipeSerializerProvider(event.getGenerator(), MODID));
+        event.getGenerator().addProvider(event.includeClient(), new BlockItemModelGeneratorProvider(event.getGenerator(), MODID, blocksToProcess));
+        event.getGenerator().addProvider(event.includeServer(), new TitaniumLootTableProvider(event.getGenerator(), blocksToProcess));
+        event.getGenerator().addProvider(event.includeServer(), new JsonRecipeSerializerProvider(event.getGenerator(), MODID));
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {

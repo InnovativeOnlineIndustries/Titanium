@@ -7,17 +7,17 @@
 
 package com.hrznstudio.titanium.util;
 
-import net.minecraft.network.chat.TranslatableComponent;
-
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 public class LangUtil {
 
-    public static TranslatableComponent get(String string, Object... args) {
-        return new TranslatableComponent(string, args);
+    public static MutableComponent get(String string, Object... args) {
+        return Component.translatable(string, args);
     }
 
     public static String getString(String string, Object... args) {
-        return new TranslatableComponent(string, args).getString();
+        return Component.translatable(string, args).getString();
     }
 
 }

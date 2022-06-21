@@ -13,6 +13,7 @@ import com.hrznstudio.titanium.module.DeferredRegistryHelper;
 import com.hrznstudio.titanium.nbthandler.NBTManager;
 import com.hrznstudio.titanium.util.TileUtil;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -85,7 +86,7 @@ public abstract class BasicTileBlock<T extends BasicTile<T>> extends BasicBlock 
 
     @Nullable
     @Override
-    public <T extends BlockEntity> GameEventListener getListener(Level p_153210_, T p_153211_) {
+    public <T extends BlockEntity> GameEventListener getListener(ServerLevel p_153210_, T p_153211_) {
         return EntityBlock.super.getListener(p_153210_, p_153211_);
     }
 

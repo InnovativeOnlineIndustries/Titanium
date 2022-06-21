@@ -19,7 +19,6 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -32,18 +31,19 @@ import java.util.Map;
  *
  * @param <T>
  */
-public class GenericSerializer<T extends SerializableRecipe> extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<T>, IRecipeSerializerReversed<T> {
+public class GenericSerializer<T extends SerializableRecipe> implements RecipeSerializer<T>, IRecipeSerializerReversed<T> {
     private final Class<T> recipeClass;
     private final RecipeType<T> recipeType;
-
+    private ResourceLocation resourceLocation;
     public GenericSerializer(RecipeType<T> recipeType, Class<T> recipeClass) {
         this.recipeType = recipeType;
         this.recipeClass = recipeClass;
+        this.resourceLocation = null;
     }
 
     public GenericSerializer(ResourceLocation resourceLocation, Class<T> recipeClass) {
         this(RecipeType.register(resourceLocation.toString()), recipeClass);
-        this.setRegistryName(resourceLocation);
+        this.resourceLocation = resourceLocation;
     }
 
     // Reading the recipe from the json file
@@ -148,5 +148,7 @@ public class GenericSerializer<T extends SerializableRecipe> extends ForgeRegist
         return false;
     }
 
-
+    public ResourceLocation getResourceLocation() {
+        return resourceLocation;
+    }
 }

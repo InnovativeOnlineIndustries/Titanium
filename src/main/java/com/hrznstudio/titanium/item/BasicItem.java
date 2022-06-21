@@ -10,7 +10,6 @@ package com.hrznstudio.titanium.item;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -50,7 +49,7 @@ public class BasicItem extends Item {
                 if (key.isDown()) {
                     addTooltipDetails(key, stack, tooltip, flagIn.isAdvanced());
                 } else {
-                    tooltip.add(new TextComponent("Hold " + ChatFormatting.YELLOW + key.getSerializedName() + ChatFormatting.GRAY + " for more information"));
+                    tooltip.add(Component.literal("Hold " + ChatFormatting.YELLOW + key.getSerializedName() + ChatFormatting.GRAY + " for more information"));
                 }
             }
         }

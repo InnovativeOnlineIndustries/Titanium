@@ -42,7 +42,7 @@ public class TitaniumClient {
             BlockHitResult traceResult = event.getTarget();
             BlockState og = Minecraft.getInstance().level.getBlockState(traceResult.getBlockPos());
             if (og.getBlock() instanceof BasicBlock && ((BasicBlock) og.getBlock()).hasIndividualRenderVoxelShape()) {
-                VoxelShape shape = RayTraceUtils.rayTraceVoxelShape(traceResult, Minecraft.getInstance().level, Minecraft.getInstance().player, 32, event.getPartialTicks());
+                VoxelShape shape = RayTraceUtils.rayTraceVoxelShape(traceResult, Minecraft.getInstance().level, Minecraft.getInstance().player, 32, event.getPartialTick());
                 BlockPos blockpos = event.getTarget().getBlockPos();
                 event.setCanceled(true);
                 if (shape != null && !shape.isEmpty()) {
