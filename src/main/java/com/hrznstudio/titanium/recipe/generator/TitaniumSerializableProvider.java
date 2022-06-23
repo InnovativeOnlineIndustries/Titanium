@@ -8,6 +8,7 @@
 package com.hrznstudio.titanium.recipe.generator;
 
 import com.google.common.collect.Sets;
+import com.google.common.hash.HashCode;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -21,6 +22,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -60,15 +62,7 @@ public abstract class TitaniumSerializableProvider implements DataProvider {
 
     protected void saveRecipe(CachedOutput cache, JsonObject recipeJson, Path output) {
         try {
-            String s = GSON.toJson((JsonElement) recipeJson);
-            String s1 = SHA1.hashUnencodedChars(s).toString();
-            if (!Objects.equals(cache.getHash(output), s1) || !Files.exists(output)) {
-                Files.createDirectories(output.getParent());
-                try (BufferedWriter bufferedwriter = Files.newBufferedWriter(output)) {
-                    bufferedwriter.write(s);
-                }
-            }
-            cache.putNew(output, s1);
+            DataProvider.saveStable(cache, recipeJson, output);
         } catch (IOException ioexception) {
             LOGGER.error("Couldn't save recipe {}", output, ioexception);
         }
