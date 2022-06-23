@@ -29,7 +29,7 @@ import java.util.function.Supplier;
 public class DeferredRegistryHelper {
 
     private final String modId;
-    private HashMap<ResourceKey<? extends Registry<?>>, DeferredRegister<?>> registries;
+    private final HashMap<ResourceKey<? extends Registry<?>>, DeferredRegister<?>> registries;
 
     public DeferredRegistryHelper(String modId) {
         this.modId = modId;
@@ -39,15 +39,16 @@ public class DeferredRegistryHelper {
     public <T> DeferredRegister<T> addRegistry(ResourceKey<? extends Registry<T>> key) {
         DeferredRegister<T> deferredRegister = DeferredRegister.create(key, this.modId);
         deferredRegister.register(FMLJavaModLoadingContext.get().getModEventBus());
-        //registries.put(cl, deferredRegister);
+        registries.put(key, deferredRegister);
         return deferredRegister;
     }
 
     private  <T> RegistryObject<T> register(ResourceKey<? extends Registry<T>> key, String name, Supplier<T> object) {
-        DeferredRegister<T> deferredRegister = registries.computeIfAbsent(key, this::addRegistry);
-        /*if (j instanceof IAlternativeEntries) { // I'm sorry
-            ((IAlternativeEntries) j).addAlternatives(this);
-        }*/
+        DeferredRegister<T> deferredRegister = (DeferredRegister<T>)(Object)registries.get(key);
+        if (deferredRegister == null) {
+            this.addRegistry(key);
+            deferredRegister = (DeferredRegister<T>)(Object)registries.get(key);
+        }
         return deferredRegister.register(name, object);
     }
 
@@ -56,12 +57,22 @@ public class DeferredRegistryHelper {
     }
 
     public RegistryObject<BlockEntityType<?>> registerBlockEntityType(String name, Supplier<BlockEntityType<?>> object) {
-        DeferredRegister<BlockEntityType<?>> deferredRegister = registries.computeIfAbsent(ForgeRegistries.BLOCK_ENTITIES.getRegistryKey(), this::addRegistry);
+        ResourceKey<Registry<BlockEntityType<?>>> key = ForgeRegistries.BLOCK_ENTITIES.getRegistryKey();
+        DeferredRegister<BlockEntityType<?>> deferredRegister = (DeferredRegister<BlockEntityType<?>>)(Object)registries.get(key);
+        if (deferredRegister == null) {
+            this.addRegistry(key);
+            deferredRegister = (DeferredRegister<BlockEntityType<?>>)(Object)registries.get(key);
+        }
         return deferredRegister.register(name, object);
     }
 
     public RegistryObject<EntityType<?>> registerEntityType(String name, Supplier<EntityType<?>> object) {
-        DeferredRegister<EntityType<?>> deferredRegister = registries.computeIfAbsent(ForgeRegistries.ENTITIES.getRegistryKey(), this::addRegistry);
+        ResourceKey<Registry<EntityType<?>>> key = ForgeRegistries.ENTITIES.getRegistryKey();
+        DeferredRegister<EntityType<?>> deferredRegister = (DeferredRegister<EntityType<?>>)(Object)registries.get(key);
+        if (deferredRegister == null) {
+            this.addRegistry(key);
+            deferredRegister = (DeferredRegister<EntityType<?>>)(Object)registries.get(key);
+        }
         return deferredRegister.register(name, object);
     }
 
@@ -72,10 +83,23 @@ public class DeferredRegistryHelper {
     }
 
     public RegistryObject<Block> registerBlockWithItem(String name, Supplier<? extends Block> blockSupplier, Function<RegistryObject<Block>, Supplier<Item>> itemSupplier){
-        DeferredRegister<Block> blockDeferredRegister = registries.computeIfAbsent(ForgeRegistries.BLOCKS.getRegistryKey(), this::addRegistry);
-        DeferredRegister<Item> itemDeferredRegister = registries.computeIfAbsent(ForgeRegistries.ITEMS.getRegistryKey(), this::addRegistry);
-        RegistryObject<Block> block = blockDeferredRegister.register(name, blockSupplier);
-        itemDeferredRegister.register(name, itemSupplier.apply(block));
+        ResourceKey<Registry<Block>> blockKey = ForgeRegistries.BLOCKS.getRegistryKey();
+        DeferredRegister<Block> blockRegister = (DeferredRegister<Block>)(Object)registries.get(blockKey);
+        ResourceKey<Registry<Item>> itemKey = ForgeRegistries.ITEMS.getRegistryKey();
+        DeferredRegister<Item> itemRegister = (DeferredRegister<Item>)(Object)registries.get(itemKey);
+
+        if (blockRegister == null) {
+            this.addRegistry(blockKey);
+            blockRegister = (DeferredRegister<Block>)(Object)registries.get(blockKey);
+        }
+
+        if (itemRegister == null) {
+            this.addRegistry(itemKey);
+            itemRegister = (DeferredRegister<Item>)(Object)registries.get(itemKey);
+        }
+
+        RegistryObject<Block> block = blockRegister.register(name, blockSupplier);
+        itemRegister.register(name, itemSupplier.apply(block));
         return block;
     }
 

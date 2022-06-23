@@ -101,9 +101,13 @@ repositories {
   }
 }
 dependencies {
-  minecraft 'net.minecraftforge:forge:1.19-41.0.35'
+  minecraft 'net.minecraftforge:forge:1.19-41.0.45'
 
-  implementation fg.deobf("mezz.jei:jei-1.19-forge:11.0.0.206")
+  // compile against the JEI API but do not include it at runtime
+  compileOnly fg.deobf("mezz.jei:jei-1.19-common-api:11.0.0.206")
+  compileOnly fg.deobf("mezz.jei:jei-1.19-forge-api:11.0.0.206")
+  // at runtime, use the full JEI jar for Forge
+  runtimeOnly fg.deobf("mezz.jei:jei-1.19-forge:11.0.0.206")
 }
 
 jar {
