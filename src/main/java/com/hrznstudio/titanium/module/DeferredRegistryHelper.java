@@ -57,21 +57,21 @@ public class DeferredRegistryHelper {
     }
 
     public RegistryObject<BlockEntityType<?>> registerBlockEntityType(String name, Supplier<BlockEntityType<?>> object) {
-        ResourceKey<Registry<BlockEntityType<?>>> key = ForgeRegistries.BLOCK_ENTITIES.getRegistryKey();
-        DeferredRegister<BlockEntityType<?>> deferredRegister = (DeferredRegister<BlockEntityType<?>>)(Object)registries.get(key);
+        ResourceKey<Registry<BlockEntityType<?>>> key = ForgeRegistries.BLOCK_ENTITY_TYPES.getRegistryKey();
+        DeferredRegister<BlockEntityType<?>> deferredRegister = (DeferredRegister<BlockEntityType<?>>) (Object) registries.get(key);
         if (deferredRegister == null) {
             this.addRegistry(key);
-            deferredRegister = (DeferredRegister<BlockEntityType<?>>)(Object)registries.get(key);
+            deferredRegister = (DeferredRegister<BlockEntityType<?>>) (Object) registries.get(key);
         }
         return deferredRegister.register(name, object);
     }
 
     public RegistryObject<EntityType<?>> registerEntityType(String name, Supplier<EntityType<?>> object) {
-        ResourceKey<Registry<EntityType<?>>> key = ForgeRegistries.ENTITIES.getRegistryKey();
-        DeferredRegister<EntityType<?>> deferredRegister = (DeferredRegister<EntityType<?>>)(Object)registries.get(key);
+        ResourceKey<Registry<EntityType<?>>> key = ForgeRegistries.ENTITY_TYPES.getRegistryKey();
+        DeferredRegister<EntityType<?>> deferredRegister = (DeferredRegister<EntityType<?>>) (Object) registries.get(key);
         if (deferredRegister == null) {
             this.addRegistry(key);
-            deferredRegister = (DeferredRegister<EntityType<?>>)(Object)registries.get(key);
+            deferredRegister = (DeferredRegister<EntityType<?>>) (Object) registries.get(key);
         }
         return deferredRegister.register(name, object);
     }

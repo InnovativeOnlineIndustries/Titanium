@@ -12,6 +12,7 @@ import com.hrznstudio.titanium.annotation.config.ConfigVal;
 import com.hrznstudio.titanium.util.AnnotationUtil;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.config.IConfigSpec;
 import net.minecraftforge.fml.config.ModConfig;
 
 import java.io.File;
@@ -24,19 +25,20 @@ import java.util.List;
 public class AnnotationConfigManager {
 
     public List<Type> configClasses;
-    public HashMap<Field, ForgeConfigSpec.ConfigValue> cachedConfigValues;
+    public List<SpecCache> specCaches;
 
     public AnnotationConfigManager() {
         configClasses = new ArrayList<>();
-        cachedConfigValues = new HashMap<>();
+        specCaches = new ArrayList<>();
     }
 
     public void add(Type type) {
         configClasses.add(type);
+        SpecCache specCache = new SpecCache();
         // SCANNING CLASSES
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
         for (Class configClass : type.configClass) {
-            scanClass(configClass, builder);
+            scanClass(configClass, builder, specCache);
         }
         // REGISTERING CONFIG
         File folder = new File("config" + File.separator + ModLoadingContext.get().getActiveContainer().getModId());
@@ -45,10 +47,12 @@ public class AnnotationConfigManager {
         }
         String fileName = ModLoadingContext.get().getActiveContainer().getModId() + "/" + (type.fileName.isEmpty() ? ModLoadingContext.get().getActiveContainer().getModId() : type.fileName);
         if (!fileName.endsWith(".toml")) fileName = fileName + ".toml";
-        ModLoadingContext.get().registerConfig(type.type, builder.build(), fileName);
+        specCache.spec = builder.build();
+        ModLoadingContext.get().registerConfig(type.type, specCache.spec, fileName);
+        specCaches.add(specCache);
     }
 
-    private void scanClass(Class configClass, ForgeConfigSpec.Builder builder) {
+    private void scanClass(Class configClass, ForgeConfigSpec.Builder builder, SpecCache specCache) {
         builder.push(configClass.getSimpleName());
         try {
             for (Field field : configClass.getFields()) {
@@ -70,33 +74,37 @@ public class AnnotationConfigManager {
 
                         if (configValue == null)
                             configValue = builder.define(value.value().isEmpty() ? field.getName() : value.value(), field.get(null));
-                        cachedConfigValues.put(field, configValue);
-                    } if (field.getType().equals(List.class)){
+                        specCache.cachedConfigValues.put(field, configValue);
+                    } if (field.getType().equals(List.class)) {
                         ConfigVal value = field.getAnnotation(ConfigVal.class);
                         ForgeConfigSpec.ConfigValue configValue = null;
                         if (!value.comment().isEmpty()) builder.comment(value.comment());
-                        configValue = builder.defineList(value.value().isEmpty() ? field.getName() : value.value() , (List<String>) field.get(null) , (object) -> true);
-                        cachedConfigValues.put(field, configValue);
+                        configValue = builder.defineList(value.value().isEmpty() ? field.getName() : value.value(), (List<String>) field.get(null), (object) -> true);
+                        specCache.cachedConfigValues.put(field, configValue);
                     } else {
-                        scanClass(field.getType(), builder);
+                        scanClass(field.getType(), builder, specCache);
                     }
                 }
             }
             AnnotationUtil.getFilteredAnnotatedClasses(ConfigFile.Child.class, ModLoadingContext.get().getActiveContainer().getModId()).stream()
-                    .filter(aClass -> ((ConfigFile.Child) aClass.getAnnotation(ConfigFile.Child.class)).value().equals(configClass)).forEach(aClass -> scanClass(aClass, builder));
+                .filter(aClass -> ((ConfigFile.Child) aClass.getAnnotation(ConfigFile.Child.class)).value().equals(configClass)).forEach(aClass -> scanClass(aClass, builder, specCache));
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
         builder.pop();
     }
 
-    public void inject() {
+    public void inject(IConfigSpec spec) {
         // MODIFYING CLASSES VALUES FROM CONFIG
-        cachedConfigValues.forEach((field, configValue) -> {
-            try {
-                field.set(null, configValue.get());
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
+        specCaches.forEach(specCache -> {
+            if (specCache.spec == spec) {
+                specCache.cachedConfigValues.forEach((field, configValue) -> {
+                    try {
+                        field.set(null, configValue.get());
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                });
             }
         });
     }
@@ -145,5 +153,12 @@ public class AnnotationConfigManager {
         public Class[] getConfigClass() {
             return configClass;
         }
+    }
+
+    public static class SpecCache {
+
+        public ForgeConfigSpec spec;
+        public HashMap<Field, ForgeConfigSpec.ConfigValue> cachedConfigValues = new HashMap<>();
+
     }
 }

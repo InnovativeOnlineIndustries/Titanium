@@ -14,12 +14,12 @@ import com.hrznstudio.titanium.event.handler.EventManager;
 import com.hrznstudio.titanium.plugin.PluginManager;
 import com.hrznstudio.titanium.plugin.PluginPhase;
 import com.hrznstudio.titanium.util.AnnotationUtil;
+import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
 public abstract class ModuleController {
     private final String modid;
@@ -60,11 +60,11 @@ public abstract class ModuleController {
             addConfig(AnnotationConfigManager.Type.of(annotation.type(), aClass).setName(annotation.value()));
         });
         EventManager.mod(ModConfigEvent.Loading.class).process(ev -> {
-            configManager.inject();
+            configManager.inject(ev.getConfig().getSpec());
             this.modPluginManager.execute(PluginPhase.CONFIG_LOAD);
         }).subscribe();
         EventManager.mod(ModConfigEvent.Reloading.class).process(ev -> {
-            configManager.inject();
+            configManager.inject(ev.getConfig().getSpec());
             this.modPluginManager.execute(PluginPhase.CONFIG_RELOAD);
         }).subscribe();
         EventManager.mod(GatherDataEvent.class).process(this::addDataProvider).subscribe();

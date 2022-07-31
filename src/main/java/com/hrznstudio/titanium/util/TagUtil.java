@@ -8,10 +8,8 @@
 package com.hrznstudio.titanium.util;
 
 import com.hrznstudio.titanium._impl.TagConfig;
-import net.minecraft.core.Registry;
-import net.minecraft.nbt.TagType;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.*;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -96,7 +94,7 @@ public class TagUtil {
             return EntityTypeTags.getAllTags().getTag(resourceLocation);
         }
         return TagKey.create(Registry.ENTITY_TYPE_REGISTRY, resourceLocation);*/
-        return ForgeRegistries.ENTITIES.tags().stream().filter(items -> items.getKey().location().equals(resourceLocation)).map(ITag::getKey).findFirst().orElse(getOrCreateTag(ForgeRegistries.ENTITIES, resourceLocation));
+        return ForgeRegistries.ENTITY_TYPES.tags().stream().filter(items -> items.getKey().location().equals(resourceLocation)).map(ITag::getKey).findFirst().orElse(getOrCreateTag(ForgeRegistries.ENTITY_TYPES, resourceLocation));
 
     }
 

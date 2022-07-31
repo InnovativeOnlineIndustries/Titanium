@@ -25,7 +25,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.DrawSelectionEvent;
+import net.minecraftforge.client.event.RenderHighlightEvent;
 
 public class TitaniumClient {
     public static void registerModelLoader() {
@@ -37,7 +37,7 @@ public class TitaniumClient {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static void blockOverlayEvent(DrawSelectionEvent.HighlightBlock event) {
+    public static void blockOverlayEvent(RenderHighlightEvent.Block event) {
         if (event.getTarget() != null) {
             BlockHitResult traceResult = event.getTarget();
             BlockState og = Minecraft.getInstance().level.getBlockState(traceResult.getBlockPos());

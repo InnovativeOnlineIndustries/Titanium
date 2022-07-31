@@ -34,9 +34,11 @@ public class ButtonClickNetworkMessage extends Message {
 
     @Override
     protected void handleMessage(NetworkEvent.Context context) {
-        Optional.ofNullable(context.getSender())
+        context.enqueueWork(() -> {
+            Optional.ofNullable(context.getSender())
                 .flatMap(locatorInstance::locale)
                 .flatMap(CastingUtil.attemptCast(IButtonHandler.class))
                 .ifPresent(iButtonHandler -> iButtonHandler.handleButtonMessage(id, context.getSender(), data));
+        });
     }
 }

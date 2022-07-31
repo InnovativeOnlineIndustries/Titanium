@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Material;
-import net.minecraftforge.client.IFluidTypeRenderProperties;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -34,13 +34,13 @@ public class TitaniumFluidInstance {
     private RegistryObject<Block> blockFluid;
     private final String fluid;
 
-    public TitaniumFluidInstance(DeferredRegistryHelper helper, String fluid, FluidType.Properties fluidTypeProperties, ForgeFlowingFluid.Properties fluidProperties, IFluidTypeRenderProperties renderProperties, CreativeModeTab group) {
+    public TitaniumFluidInstance(DeferredRegistryHelper helper, String fluid, FluidType.Properties fluidTypeProperties, ForgeFlowingFluid.Properties fluidProperties, IClientFluidTypeExtensions renderProperties, CreativeModeTab group) {
         this.fluid = fluid;
         this.sourceFluid = helper.registerGeneric(ForgeRegistries.FLUIDS.getRegistryKey(), fluid, () -> new TitaniumFluid.Source(fluidProperties, this));
-        this.flowingFluid = helper.registerGeneric(ForgeRegistries.FLUIDS.getRegistryKey(), fluid + "_flowing", () ->  new TitaniumFluid.Flowing(fluidProperties, this));
+        this.flowingFluid = helper.registerGeneric(ForgeRegistries.FLUIDS.getRegistryKey(), fluid + "_flowing", () -> new TitaniumFluid.Flowing(fluidProperties, this));
         this.fluidType = helper.registerGeneric(ForgeRegistries.FLUID_TYPES.get().getRegistryKey(), fluid, () -> new FluidType(fluidTypeProperties) {
             @Override
-            public void initializeClient(Consumer<IFluidTypeRenderProperties> consumer) {
+            public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
                 consumer.accept(renderProperties);
             }
         });

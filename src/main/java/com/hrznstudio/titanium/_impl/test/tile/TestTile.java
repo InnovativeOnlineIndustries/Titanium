@@ -138,11 +138,12 @@ public class TestTile extends PoweredTile<TestTile> implements IRedstoneReader {
     @Override
     @ParametersAreNonnullByDefault
     public InteractionResult onActivated(Player player, InteractionHand hand, Direction facing, double hitX, double hitY, double hitZ) {
-        if (super.onActivated(player, hand, facing, hitX, hitY, hitZ) == InteractionResult.PASS) {
+        InteractionResult result = super.onActivated(player, hand, facing, hitX, hitY, hitZ);
+        if (result == InteractionResult.PASS) {
             openGui(player);
             return InteractionResult.SUCCESS;
         }
-        return InteractionResult.PASS;
+        return result;
     }
 
     @Nonnull
