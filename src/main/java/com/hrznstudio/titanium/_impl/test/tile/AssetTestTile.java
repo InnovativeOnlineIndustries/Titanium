@@ -121,4 +121,14 @@ public class AssetTestTile extends PoweredTile<AssetTestTile>{
     public int getTitleColor() {
         return ChatFormatting.RED.getColor();
     }
+
+    @Override
+    public float getTitleXPos(float titleWidth, float screenWidth, float screenHeight, float guiWidth, float guiHeight) {
+        return super.getTitleXPos(titleWidth, screenWidth, screenHeight, guiWidth, guiHeight) + 30;
+    }
+
+    @Override
+    public float getTitleYPos(float titleWidth, float screenWidth, float screenHeight, float guiWidth, float guiHeight) {
+        return super.getTitleYPos(titleWidth, screenWidth, screenHeight, guiWidth, guiHeight) - 20;
+    }
 }
