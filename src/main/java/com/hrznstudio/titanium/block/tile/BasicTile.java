@@ -30,7 +30,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-public class BasicTile<T extends BasicTile<T>> extends BlockEntity implements IScreenInfo {
+public class BasicTile<T extends BasicTile<T>> extends BlockEntity implements IScreenInfoProvider {
 
     private final BasicTileBlock<T> basicTileBlock;
 
