@@ -87,7 +87,7 @@ public class BasicContainerScreen<T extends AbstractContainerMenu> extends Abstr
         RenderSystem.setShaderColor(1, 1, 1, 1);
         RenderSystem.setShaderTexture(0, IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND).getResourceLocation());
         blit(stack, xCenter, yCenter, 0, 0, imageWidth, imageHeight);
-        Minecraft.getInstance().font.draw(stack, ChatFormatting.DARK_GRAY + title.getString(), xCenter + imageWidth / 2 - Minecraft.getInstance().font.width(title.getString()) / 2, yCenter + 6, 0xFFFFFF);
+        this.font.draw(stack, ChatFormatting.DARK_GRAY + title.getString(), xCenter + imageWidth / 2 - this.font.width(title.getString()) / 2, yCenter + 6, getTitleColor());
         addons.stream().filter(IScreenAddon::isBackground).forEach(iGuiAddon -> {
             iGuiAddon.drawBackgroundLayer(stack, this, assetProvider, xCenter, yCenter, mouseX, mouseY, partialTicks);
         });
@@ -198,5 +198,12 @@ public class BasicContainerScreen<T extends AbstractContainerMenu> extends Abstr
 
     public void setAssetProvider(IAssetProvider assetProvider) {
         this.assetProvider = assetProvider;
+    }
+
+    public int getTitleColor() {
+        if (container instanceof BasicAddonContainer addonContainer) {
+            return addonContainer.getTitleColorFromProvider();
+        }
+        return 0xFFFFFF;
     }
 }

@@ -9,6 +9,7 @@ package com.hrznstudio.titanium.container;
 
 import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.api.IFactory;
+import com.hrznstudio.titanium.block.tile.IScreenTileInfo;
 import com.hrznstudio.titanium.client.screen.asset.DefaultAssetProvider;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.client.screen.asset.IHasAssetProvider;
@@ -28,7 +29,6 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ObjectHolder;
 
 public class BasicAddonContainer extends BasicInventoryContainer implements IObjectContainer, ILocatable {
@@ -132,6 +132,11 @@ public class BasicAddonContainer extends BasicInventoryContainer implements IObj
     @Override
     public LocatorInstance getLocatorInstance() {
         return locatorInstance;
+    }
+
+    public int getTitleColorFromProvider() {
+        if (this.provider instanceof IScreenTileInfo provider) return provider.getTitleColor();
+        return 0xFFFFFF;
     }
 
     public void update() {
