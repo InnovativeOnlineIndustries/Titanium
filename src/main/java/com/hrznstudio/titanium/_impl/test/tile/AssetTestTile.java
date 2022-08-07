@@ -19,6 +19,7 @@ import com.hrznstudio.titanium.component.fluid.SidedFluidTankComponent;
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.hrznstudio.titanium.component.inventory.SidedInventoryComponent;
 import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -114,5 +115,20 @@ public class AssetTestTile extends PoweredTile<AssetTestTile>{
     @Override
     public EnergyStorageComponent<AssetTestTile> createEnergyStorage() {
         return new EnergyStorageComponent<>(10000, 0, 0);
+    }
+
+    @Override
+    public int getTitleColor() {
+        return ChatFormatting.RED.getColor();
+    }
+
+    @Override
+    public float getTitleXPos(float titleWidth, float screenWidth, float screenHeight, float guiWidth, float guiHeight) {
+        return super.getTitleXPos(titleWidth, screenWidth, screenHeight, guiWidth, guiHeight) + 30;
+    }
+
+    @Override
+    public float getTitleYPos(float titleWidth, float screenWidth, float screenHeight, float guiWidth, float guiHeight) {
+        return super.getTitleYPos(titleWidth, screenWidth, screenHeight, guiWidth, guiHeight) - 20;
     }
 }

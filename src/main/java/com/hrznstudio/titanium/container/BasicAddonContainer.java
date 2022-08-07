@@ -9,6 +9,7 @@ package com.hrznstudio.titanium.container;
 
 import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.api.IFactory;
+import com.hrznstudio.titanium.block.tile.IScreenInfoProvider;
 import com.hrznstudio.titanium.client.screen.asset.DefaultAssetProvider;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.client.screen.asset.IHasAssetProvider;
@@ -27,8 +28,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ObjectHolder;
 
 public class BasicAddonContainer extends BasicInventoryContainer implements IObjectContainer, ILocatable {
@@ -79,15 +80,6 @@ public class BasicAddonContainer extends BasicInventoryContainer implements IObj
 
     @Override
     public void clicked(int slotId, int dragType, ClickType clickTypeIn, Player player) {
-        if (locatorInstance instanceof HeldStackLocatorInstance) {
-            if (((HeldStackLocatorInstance) locatorInstance).isMainHand()) {
-                //if (player.inventoryMenu.selected == (slotId - 27)) {
-                //    return ItemStack.EMPTY;
-                //}TODO
-            } else if (slotId == 40) {
-                //return ItemStack.EMPTY;
-            }
-        }
         if (locatorInstance instanceof InventoryStackLocatorInstance) {
             int slot = ((InventoryStackLocatorInstance) locatorInstance).getInventorySlot();
             if (slot < 9){
@@ -132,6 +124,21 @@ public class BasicAddonContainer extends BasicInventoryContainer implements IObj
     @Override
     public LocatorInstance getLocatorInstance() {
         return locatorInstance;
+    }
+
+    public int getTitleColorFromProvider() {
+        if (this.provider instanceof IScreenInfoProvider provider) return provider.getTitleColor();
+        return 0xFFFFFF;
+    }
+
+    public float getTitleXPos(float titleWidth, float screenWidth, float screenHeight, float guiWidth, float guiHeight) {
+        if (this.provider instanceof IScreenInfoProvider provider) return provider.getTitleXPos(titleWidth, screenWidth, screenHeight, guiWidth, guiHeight);
+        return (screenWidth - guiWidth) / 2 + guiWidth / 2 - titleWidth / 2;
+    }
+
+    public float getTitleYPos(float titleWidth, float screenWidth, float screenHeight, float guiWidth, float guiHeight) {
+        if (this.provider instanceof IScreenInfoProvider provider) return provider.getTitleYPos(titleWidth, screenWidth, screenHeight, guiWidth, guiHeight);
+        return ((screenHeight - guiHeight) / 2) + 6;
     }
 
     public void update() {

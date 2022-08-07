@@ -19,6 +19,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.Containers;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -67,22 +68,6 @@ public abstract class BasicBlock extends Block implements IRecipeProvider, IBloc
         }
         return null;
     }
-
-    // TODO: getBlockHardness is moved to BlockState, couldn't find an answer on how to adress this.
-//    @Override
-//    @SuppressWarnings("deprecation")
-//    public float getBlockHardness(BlockState blockState, IBlockReader worldIn, BlockPos pos) {
-//        return 1.5F;
-//    }
-
-    //@Nullable
-    //@Override
-    //public RayTraceResult getRayTraceResult(BlockState state, World world, BlockPos pos, Vector3d start, Vector3d end, RayTraceResult original) {
-    //    if (hasCustomBoxes(state, world, pos)) {
-    //        return rayTraceBoxesClosest(start, end, pos, getBoundingBoxes(state, world, pos));
-    //    }
-    //    return super.getRayTraceResult(state, world, pos, start, end, original);
-    //}
 
     @Override
     @Nonnull

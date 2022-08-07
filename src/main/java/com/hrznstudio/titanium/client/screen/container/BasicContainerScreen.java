@@ -14,6 +14,7 @@ import com.hrznstudio.titanium.client.screen.IScreenAddonConsumer;
 import com.hrznstudio.titanium.client.screen.addon.AssetScreenAddon;
 import com.hrznstudio.titanium.client.screen.addon.WidgetScreenAddon;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
+import com.hrznstudio.titanium.container.BasicAddonContainer;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
@@ -36,8 +37,8 @@ public class BasicContainerScreen<T extends AbstractContainerMenu> extends Abstr
     private final T container;
     private final Component title;
     private IAssetProvider assetProvider;
-    private int xCenter;
-    private int yCenter;
+    protected int xCenter;
+    protected int yCenter;
     private List<IScreenAddon> addons;
 
     private int dragX;
@@ -79,15 +80,15 @@ public class BasicContainerScreen<T extends AbstractContainerMenu> extends Abstr
     protected void renderBg(PoseStack stack, float partialTicks, int mouseX, int mouseY) {
         // renderBackground
         this.renderBackground(stack);
-        // width
+        // Width
         xCenter = (width - imageWidth) / 2;
-        // height
+        // Height
         yCenter = (height - imageHeight) / 2;
         //BG RENDERING
         RenderSystem.setShaderColor(1, 1, 1, 1);
         RenderSystem.setShaderTexture(0, IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND).getResourceLocation());
         blit(stack, xCenter, yCenter, 0, 0, imageWidth, imageHeight);
-        Minecraft.getInstance().font.draw(stack, ChatFormatting.DARK_GRAY + title.getString(), xCenter + imageWidth / 2 - Minecraft.getInstance().font.width(title.getString()) / 2, yCenter + 6, 0xFFFFFF);
+        this.font.draw(stack, title.getString(), getTitleX(xCenter), getTitleY(yCenter), getTitleColor());
         addons.stream().filter(IScreenAddon::isBackground).forEach(iGuiAddon -> {
             iGuiAddon.drawBackgroundLayer(stack, this, assetProvider, xCenter, yCenter, mouseX, mouseY, partialTicks);
         });
@@ -100,8 +101,7 @@ public class BasicContainerScreen<T extends AbstractContainerMenu> extends Abstr
     @Override
     protected void renderLabels(PoseStack stack, int mouseX, int mouseY) {
         addons.forEach(iGuiAddon -> {
-            if (iGuiAddon instanceof AssetScreenAddon) {
-                AssetScreenAddon assetGuiAddon = (AssetScreenAddon) iGuiAddon;
+            if (iGuiAddon instanceof AssetScreenAddon assetGuiAddon) {
                 if (!assetGuiAddon.isBackground()) {
                     iGuiAddon.drawForegroundLayer(stack, this, assetProvider, xCenter, yCenter, mouseX, mouseY, minecraft.getDeltaFrameTime());
                 }
@@ -123,8 +123,7 @@ public class BasicContainerScreen<T extends AbstractContainerMenu> extends Abstr
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (this.children() != null) {
             for (GuiEventListener listener : this.children()) {
-                if (listener instanceof WidgetScreenAddon) {
-                    WidgetScreenAddon addon = (WidgetScreenAddon) listener;
+                if (listener instanceof WidgetScreenAddon addon) {
                     AbstractWidget widget = addon.getWidget();
                     if (widget.keyPressed(keyCode, scanCode, modifiers)) {
                         return true;
@@ -180,7 +179,7 @@ public class BasicContainerScreen<T extends AbstractContainerMenu> extends Abstr
 
     @Override
     public List<? extends GuiEventListener> children() {
-        if (super.children() != null) {
+        if (!super.children().isEmpty()) {
             List<GuiEventListener> collect = super.children().stream().map(guiEventListener -> (GuiEventListener) guiEventListener).collect(Collectors.toList());
             collect.addAll(getAddons());
             return collect;
@@ -198,5 +197,26 @@ public class BasicContainerScreen<T extends AbstractContainerMenu> extends Abstr
 
     public void setAssetProvider(IAssetProvider assetProvider) {
         this.assetProvider = assetProvider;
+    }
+
+    public int getTitleColor() {
+        if (container instanceof BasicAddonContainer addonContainer) {
+            return addonContainer.getTitleColorFromProvider();
+        }
+        return 0xFFFFFF;
+    }
+
+    public float getTitleX(float xCenter) {
+        if (container instanceof BasicAddonContainer addonContainer) {
+            return addonContainer.getTitleXPos(font.width(title.getString()), width, height, imageWidth, imageHeight);
+        }
+        return xCenter / 2 + imageHeight / 2 - font.width(title.getString()) / 2;
+    }
+
+    public float getTitleY(float yCenter) {
+        if (container instanceof BasicAddonContainer addonContainer) {
+            return addonContainer.getTitleYPos(font.width(title.getString()), width, height, imageWidth, imageHeight);
+        }
+        return yCenter / 2 + 6;
     }
 }

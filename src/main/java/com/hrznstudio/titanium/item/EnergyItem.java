@@ -8,6 +8,7 @@
 package com.hrznstudio.titanium.item;
 
 import com.hrznstudio.titanium.energy.EnergyStorageItemStack;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -59,7 +60,13 @@ public class EnergyItem extends BasicItem {
     public void addTooltipDetails(@Nullable Key key, @Nonnull ItemStack stack, @Nonnull List<Component> tooltip, boolean advanced) {
         super.addTooltipDetails(key, stack, tooltip, advanced);
         if (key == Key.SHIFT) {
-            //getEnergyStorage(stack).ifPresent(storage -> tooltip.add(new TextComponentString(TextFormatting.YELLOW + "Energy: " + TextFormatting.RED + storage.getEnergyStored() + TextFormatting.YELLOW + "/" + TextFormatting.RED + storage.getMaxEnergyStored() + TextFormatting.RESET))); TODO
+            getEnergyStorage(stack).ifPresent(storage ->
+                tooltip.add(
+                    Component.empty().withStyle(ChatFormatting.YELLOW)
+                        .append("Energy: ").withStyle(ChatFormatting.RED)
+                        .append(String.valueOf(storage.getEnergyStored())).withStyle(ChatFormatting.YELLOW)
+                        .append("/").withStyle(ChatFormatting.RED)
+                        .append(String.valueOf(storage.getMaxEnergyStored())).withStyle(ChatFormatting.RESET)));
         }
     }
 
@@ -70,7 +77,7 @@ public class EnergyItem extends BasicItem {
     }
 
     @Override
-    public int getBarWidth(ItemStack stack) { //TODO ???
+    public int getBarWidth(ItemStack stack) {
         return (int) Math.round(getEnergyStorage(stack).map(storage -> 1 - (double) storage.getEnergyStored() / (double) storage.getMaxEnergyStored()).orElse(0.0) * 13);
     }
 

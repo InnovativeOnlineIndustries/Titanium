@@ -72,13 +72,15 @@ public class ShadePickerAddon extends BasicScreenAddon {
         }
     }
 
-
+    //TODO: Leaving the TODO's here since to set these up you'd need a custom RenderType.
+    //RenderSystem.shadeModel(GL11.GL_SMOOTH);
+    //RenderSystem.shadeModel(GL11.GL_FLAT);
+    // In the current code they didn't do anything anyway.
+    // So if they are needed we have to fix it anyway later!
     private void drawGradient(PoseStack matrix, int x, int y, int width, int height, Color tl, Color tr, Color bl, Color br) {
         RenderSystem.disableTexture();
         RenderSystem.enableBlend();
-        //RenderSystem.disableAlphaTest(); TODO
         RenderSystem.defaultBlendFunc();
-        //RenderSystem.shadeModel(GL11.GL_SMOOTH); TODO
         BufferBuilder buffer = Tesselator.getInstance().getBuilder();
         Matrix4f matrix4f = matrix.last().pose();
         buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
@@ -87,9 +89,7 @@ public class ShadePickerAddon extends BasicScreenAddon {
         buffer.vertex(matrix4f, x + width, y, 0).color(tr.getRed() / 255f, tr.getGreen() / 255f, tr.getBlue() / 255f, tr.getAlpha() / 255f).endVertex();
         buffer.vertex(matrix4f, x, y, 0).color(tl.getRed() / 255f, tl.getGreen() / 255f, tl.getBlue() / 255f, tl.getAlpha() / 255f).endVertex();
         buffer.end();
-        //RenderSystem.shadeModel(GL11.GL_FLAT); TODO
         RenderSystem.disableBlend();
-        //RenderSystem.enableAlphaTest(); TODO
         RenderSystem.enableTexture();
     }
 
