@@ -14,6 +14,7 @@ import com.hrznstudio.titanium.client.screen.IScreenAddonConsumer;
 import com.hrznstudio.titanium.client.screen.addon.AssetScreenAddon;
 import com.hrznstudio.titanium.client.screen.addon.WidgetScreenAddon;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
+import com.hrznstudio.titanium.container.BasicAddonContainer;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
@@ -36,8 +37,8 @@ public class BasicContainerScreen<T extends AbstractContainerMenu> extends Abstr
     private final T container;
     private final Component title;
     private IAssetProvider assetProvider;
-    private int xCenter;
-    private int yCenter;
+    protected int xCenter;
+    protected int yCenter;
     private List<IScreenAddon> addons;
 
     private int dragX;
@@ -100,8 +101,7 @@ public class BasicContainerScreen<T extends AbstractContainerMenu> extends Abstr
     @Override
     protected void renderLabels(PoseStack stack, int mouseX, int mouseY) {
         addons.forEach(iGuiAddon -> {
-            if (iGuiAddon instanceof AssetScreenAddon) {
-                AssetScreenAddon assetGuiAddon = (AssetScreenAddon) iGuiAddon;
+            if (iGuiAddon instanceof AssetScreenAddon assetGuiAddon) {
                 if (!assetGuiAddon.isBackground()) {
                     iGuiAddon.drawForegroundLayer(stack, this, assetProvider, xCenter, yCenter, mouseX, mouseY, minecraft.getDeltaFrameTime());
                 }
@@ -180,7 +180,7 @@ public class BasicContainerScreen<T extends AbstractContainerMenu> extends Abstr
 
     @Override
     public List<? extends GuiEventListener> children() {
-        if (super.children() != null) {
+        if (!super.children().isEmpty()) {
             List<GuiEventListener> collect = super.children().stream().map(guiEventListener -> (GuiEventListener) guiEventListener).collect(Collectors.toList());
             collect.addAll(getAddons());
             return collect;
