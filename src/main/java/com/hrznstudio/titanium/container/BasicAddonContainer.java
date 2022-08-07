@@ -28,6 +28,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ObjectHolder;
 
@@ -79,15 +80,6 @@ public class BasicAddonContainer extends BasicInventoryContainer implements IObj
 
     @Override
     public void clicked(int slotId, int dragType, ClickType clickTypeIn, Player player) {
-        if (locatorInstance instanceof HeldStackLocatorInstance) {
-            if (((HeldStackLocatorInstance) locatorInstance).isMainHand()) {
-                //if (player.inventoryMenu.selected == (slotId - 27)) {
-                //    return ItemStack.EMPTY;
-                //}TODO
-            } else if (slotId == 40) {
-                //return ItemStack.EMPTY;
-            }
-        }
         if (locatorInstance instanceof InventoryStackLocatorInstance) {
             int slot = ((InventoryStackLocatorInstance) locatorInstance).getInventorySlot();
             if (slot < 9){
