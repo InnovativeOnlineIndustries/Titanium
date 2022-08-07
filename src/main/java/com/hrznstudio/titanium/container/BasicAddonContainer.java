@@ -131,6 +131,16 @@ public class BasicAddonContainer extends BasicInventoryContainer implements IObj
         return 0xFFFFFF;
     }
 
+    public float getTitleXPos(float titleWidth, float screenWidth, float screenHeight, float guiWidth, float guiHeight) {
+        if (this.provider instanceof IScreenInfoProvider provider) return provider.getTitleXPos(titleWidth, screenWidth, screenHeight, guiWidth, guiHeight);
+        return (screenWidth - guiWidth) / 2 + guiWidth / 2 - titleWidth / 2;
+    }
+
+    public float getTitleYPos(float titleWidth, float screenWidth, float screenHeight, float guiWidth, float guiHeight) {
+        if (this.provider instanceof IScreenInfoProvider provider) return provider.getTitleYPos(titleWidth, screenWidth, screenHeight, guiWidth, guiHeight);
+        return ((screenHeight - guiHeight) / 2) + 6;
+    }
+
     public void update() {
         this.slots.stream().filter(slot -> slot instanceof UpdatableSlotItemHandler).forEach(slot -> ((UpdatableSlotItemHandler) slot).update());
     }

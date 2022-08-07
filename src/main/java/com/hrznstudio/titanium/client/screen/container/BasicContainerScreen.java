@@ -80,15 +80,15 @@ public class BasicContainerScreen<T extends AbstractContainerMenu> extends Abstr
     protected void renderBg(PoseStack stack, float partialTicks, int mouseX, int mouseY) {
         // renderBackground
         this.renderBackground(stack);
-        // width
+        // Width
         xCenter = (width - imageWidth) / 2;
-        // height
+        // Height
         yCenter = (height - imageHeight) / 2;
         //BG RENDERING
         RenderSystem.setShaderColor(1, 1, 1, 1);
         RenderSystem.setShaderTexture(0, IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND).getResourceLocation());
         blit(stack, xCenter, yCenter, 0, 0, imageWidth, imageHeight);
-        this.font.draw(stack, ChatFormatting.DARK_GRAY + title.getString(), xCenter + imageWidth / 2 - this.font.width(title.getString()) / 2, yCenter + 6, getTitleColor());
+        this.font.draw(stack, title.getString(), getTitleX(xCenter), getTitleY(yCenter), getTitleColor());
         addons.stream().filter(IScreenAddon::isBackground).forEach(iGuiAddon -> {
             iGuiAddon.drawBackgroundLayer(stack, this, assetProvider, xCenter, yCenter, mouseX, mouseY, partialTicks);
         });
@@ -123,8 +123,7 @@ public class BasicContainerScreen<T extends AbstractContainerMenu> extends Abstr
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (this.children() != null) {
             for (GuiEventListener listener : this.children()) {
-                if (listener instanceof WidgetScreenAddon) {
-                    WidgetScreenAddon addon = (WidgetScreenAddon) listener;
+                if (listener instanceof WidgetScreenAddon addon) {
                     AbstractWidget widget = addon.getWidget();
                     if (widget.keyPressed(keyCode, scanCode, modifiers)) {
                         return true;
@@ -205,5 +204,19 @@ public class BasicContainerScreen<T extends AbstractContainerMenu> extends Abstr
             return addonContainer.getTitleColorFromProvider();
         }
         return 0xFFFFFF;
+    }
+
+    public float getTitleX(float xCenter) {
+        if (container instanceof BasicAddonContainer addonContainer) {
+            return addonContainer.getTitleXPos(font.width(title.getString()), width, height, imageWidth, imageHeight);
+        }
+        return xCenter / 2 + imageHeight / 2 - font.width(title.getString()) / 2;
+    }
+
+    public float getTitleY(float yCenter) {
+        if (container instanceof BasicAddonContainer addonContainer) {
+            return addonContainer.getTitleYPos(font.width(title.getString()), width, height, imageWidth, imageHeight);
+        }
+        return yCenter / 2 + 6;
     }
 }
