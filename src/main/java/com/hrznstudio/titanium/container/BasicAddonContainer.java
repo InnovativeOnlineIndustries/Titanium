@@ -9,7 +9,7 @@ package com.hrznstudio.titanium.container;
 
 import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.block.tile.IScreenTileInfo;
+import com.hrznstudio.titanium.block.tile.IScreenInfo;
 import com.hrznstudio.titanium.client.screen.asset.DefaultAssetProvider;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.client.screen.asset.IHasAssetProvider;
@@ -135,7 +135,7 @@ public class BasicAddonContainer extends BasicInventoryContainer implements IObj
     }
 
     public int getTitleColorFromProvider() {
-        if (this.provider instanceof IScreenTileInfo provider) return provider.getTitleColor();
+        if (this.provider instanceof IScreenInfo provider) return provider.getTitleColor();
         return 0xFFFFFF;
     }
 
