@@ -19,6 +19,7 @@ import com.hrznstudio.titanium.client.screen.addon.StateButtonInfo;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
@@ -27,6 +28,7 @@ public class RedstoneControlButtonComponent<T extends IEnumValues<T> & IRedstone
 
     private final Supplier<RedstoneManager<T>> redstoneManager;
     private final Supplier<BasicTile> componentHarness;
+    private boolean isVisible = true;
 
     public RedstoneControlButtonComponent(int posX, int posY, int sizeX, int sizeY, Supplier<RedstoneManager<T>> redstoneManagerSupplier, Supplier<BasicTile> componentHarness) {
         super(posX, posY, sizeX, sizeY);
@@ -39,15 +41,25 @@ public class RedstoneControlButtonComponent<T extends IEnumValues<T> & IRedstone
         });
     }
 
+    public void show() {
+        this.isVisible = true;
+    }
+
+    public void hide() {
+        this.isVisible = false;
+    }
+
     @Override
     @OnlyIn(Dist.CLIENT)
     public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
-        return Collections.singletonList(() -> new StateButtonAddon(this, new StateButtonInfo(0, AssetTypes.BUTTON_REDSTONE_IGNORED, "tooltip.titanium.redstone.ignored"), new StateButtonInfo(1, AssetTypes.BUTTON_REDSTONE_NO_REDSTONE, "tooltip.titanium.redstone.no_redstone"), new StateButtonInfo(2, AssetTypes.BUTTON_REDSTONE_REDSTONE, "tooltip.titanium.redstone.redstone"), new StateButtonInfo(3, AssetTypes.BUTTON_REDSTONE_ONCE, "tooltip.titanium.redstone.once")) {
+        List<IFactory<? extends IScreenAddon>> addons = new ArrayList<>();
+        if (isVisible) addons.add(() -> new StateButtonAddon(this) {
             @Override
             public int getState() {
                 return redstoneManager.get().getAction().getValues().indexOf(redstoneManager.get().getAction());
             }
         });
+        return addons;
     }
 
 }

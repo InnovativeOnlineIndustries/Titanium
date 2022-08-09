@@ -14,22 +14,34 @@ import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class ArrowButtonComponent extends ButtonComponent {
 
     public final FacingUtil.Sideness direction;
+    private boolean isVisible = true;
 
     public ArrowButtonComponent(int posX, int posY, int sizeX, int sizeY, FacingUtil.Sideness direction) {
         super(posX, posY, sizeX, sizeY);
         this.direction = direction;
     }
 
+    public void show() {
+        this.isVisible = true;
+    }
+
+    public void hide() {
+        this.isVisible = false;
+    }
+
     @Override
     @OnlyIn(Dist.CLIENT)
     public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
-        return Collections.singletonList(() -> new ArrowButtonScreenAddon(this));
+        List<IFactory<? extends IScreenAddon>> addons = new ArrayList<>();
+        if (isVisible) addons.add(() -> new ArrowButtonScreenAddon(this));
+        return addons;
     }
 
     public FacingUtil.Sideness getDirection() {
