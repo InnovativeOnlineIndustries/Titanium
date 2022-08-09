@@ -82,6 +82,10 @@ public class ButtonComponent implements IScreenAddonProvider {
         return this;
     }
 
+    public boolean isVisible() {
+        return isVisible;
+    }
+
     public void show() {
         this.isVisible = true;
     }
