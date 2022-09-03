@@ -20,7 +20,6 @@ import com.hrznstudio.titanium.network.locator.ILocatable;
 import com.hrznstudio.titanium.network.locator.LocatorFactory;
 import com.hrznstudio.titanium.network.locator.LocatorInstance;
 import com.hrznstudio.titanium.network.locator.instance.EmptyLocatorInstance;
-import com.hrznstudio.titanium.network.locator.instance.HeldStackLocatorInstance;
 import com.hrznstudio.titanium.network.locator.instance.InventoryStackLocatorInstance;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
@@ -28,13 +27,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ObjectHolder;
+import net.minecraftforge.registries.RegistryObject;
 
 public class BasicAddonContainer extends BasicInventoryContainer implements IObjectContainer, ILocatable {
-    @ObjectHolder(registryName = "minecraft:menu", value = "titanium:addon_container")
-    public static MenuType<BasicAddonContainer> TYPE;
+
+    public static RegistryObject<MenuType<?>> TYPE;
 
     private final ContainerLevelAccess worldPosCallable;
     private final Object provider;
@@ -42,10 +40,10 @@ public class BasicAddonContainer extends BasicInventoryContainer implements IObj
 
     public BasicAddonContainer(Object provider, LocatorInstance locatorInstance, ContainerLevelAccess worldPosCallable,
                                Inventory playerInventory, int containerId) {
-        this(provider, locatorInstance, TYPE, worldPosCallable, playerInventory, containerId);
+        this(provider, locatorInstance, (MenuType<BasicAddonContainer>) TYPE.get(), worldPosCallable, playerInventory, containerId);
     }
 
-    public BasicAddonContainer(Object provider, LocatorInstance locatorInstance, MenuType<?> containerType,
+    public BasicAddonContainer(Object provider, LocatorInstance locatorInstance, MenuType<BasicAddonContainer> containerType,
                                ContainerLevelAccess worldPosCallable, Inventory playerInventory, int containerId) {
         super(containerType, playerInventory, containerId, findAssetProvider(provider));
         this.worldPosCallable = worldPosCallable;
