@@ -16,7 +16,6 @@ import com.hrznstudio.titanium.network.CompoundSerializableDataHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 
@@ -33,17 +32,8 @@ import java.util.Map;
  */
 public class GenericSerializer<T extends SerializableRecipe> implements RecipeSerializer<T>, IRecipeSerializerReversed<T> {
     private final Class<T> recipeClass;
-    private final RecipeType<T> recipeType;
-    private ResourceLocation resourceLocation;
-    public GenericSerializer(RecipeType<T> recipeType, Class<T> recipeClass) {
-        this.recipeType = recipeType;
+    public GenericSerializer(Class<T> recipeClass) {
         this.recipeClass = recipeClass;
-        this.resourceLocation = null;
-    }
-
-    public GenericSerializer(ResourceLocation resourceLocation, Class<T> recipeClass) {
-        this(RecipeType.register(resourceLocation.toString()), recipeClass);
-        this.resourceLocation = resourceLocation;
     }
 
     // Reading the recipe from the json file
@@ -135,10 +125,6 @@ public class GenericSerializer<T extends SerializableRecipe> implements RecipeSe
         }
     }
 
-    public RecipeType<T> getRecipeType() {
-        return recipeType;
-    }
-
     private boolean fieldExists(String field) {
         for (Field recipeClassField : recipeClass.getFields()) {
             if (recipeClassField.getName().equalsIgnoreCase(field)) {
@@ -148,7 +134,4 @@ public class GenericSerializer<T extends SerializableRecipe> implements RecipeSe
         return false;
     }
 
-    public ResourceLocation getResourceLocation() {
-        return resourceLocation;
-    }
 }

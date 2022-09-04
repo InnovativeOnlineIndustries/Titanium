@@ -22,7 +22,6 @@ import javax.annotation.Nullable;
 
 public abstract class SerializableRecipe implements Recipe<Container>, IJsonFile, IJSONGenerator {
 
-    public String type = ForgeRegistries.RECIPE_SERIALIZERS.getKey(getSerializer()).toString();
     private transient ResourceLocation resourceLocation;
 
     public SerializableRecipe(ResourceLocation resourceLocation) {
@@ -42,7 +41,7 @@ public abstract class SerializableRecipe implements Recipe<Container>, IJsonFile
     @Nullable
     @Override
     public String getRecipeSubfolder() {
-        return new ResourceLocation(type).getPath();
+        return new ResourceLocation(ForgeRegistries.RECIPE_SERIALIZERS.getKey(getSerializer()).toString()).getPath();
     }
 
     @Override

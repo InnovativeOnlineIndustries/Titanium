@@ -15,18 +15,20 @@ import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TestSerializableRecipe extends SerializableRecipe {
 
-    public static GenericSerializer<TestSerializableRecipe> SERIALIZER
-            = new GenericSerializer<>(new ResourceLocation(Titanium.MODID, "test_serializer"), TestSerializableRecipe.class);
+    public static RegistryObject<RecipeSerializer<?>> SERIALIZER;
+    public static RegistryObject<RecipeType<?>> RECIPE_TYPE;
     public static final List<TestSerializableRecipe> RECIPES = new ArrayList<>();
 
     static {
@@ -75,12 +77,12 @@ public class TestSerializableRecipe extends SerializableRecipe {
 
     @Override
     public GenericSerializer<? extends SerializableRecipe> getSerializer() {
-        return SERIALIZER;
+        return (GenericSerializer<? extends SerializableRecipe>) SERIALIZER.get();
     }
 
     @Override
     public RecipeType<?> getType() {
-        return SERIALIZER.getRecipeType();
+        return RECIPE_TYPE.get();
     }
 
     public boolean isValid(ItemStack input, Block block) {
