@@ -17,7 +17,6 @@ import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.container.BasicAddonContainer;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -179,7 +178,7 @@ public class BasicContainerScreen<T extends AbstractContainerMenu> extends Abstr
 
     @Override
     public List<? extends GuiEventListener> children() {
-        if (!super.children().isEmpty()) {
+        if (super.children() != null) {
             List<GuiEventListener> collect = super.children().stream().map(guiEventListener -> (GuiEventListener) guiEventListener).collect(Collectors.toList());
             collect.addAll(getAddons());
             return collect;
