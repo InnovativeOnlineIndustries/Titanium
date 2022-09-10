@@ -22,18 +22,14 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 public class TitaniumFluid extends FlowingFluid {
+        private final TitaniumFluidInstance titaniumFluidInstance;
 
-    private final ForgeFlowingFluid.Properties properties;
-    private final TitaniumFluidInstance titaniumFluidInstance;
-
-    public TitaniumFluid(ForgeFlowingFluid.Properties properties, TitaniumFluidInstance titaniumFluidInstance) {
-        this.properties = properties;
+    public TitaniumFluid(TitaniumFluidInstance titaniumFluidInstance) {
         this.titaniumFluidInstance = titaniumFluidInstance;
     }
 
@@ -120,8 +116,8 @@ public class TitaniumFluid extends FlowingFluid {
             registerDefaultState(getStateDefinition().any().setValue(LEVEL, 7));
         }
 
-        public Flowing(ForgeFlowingFluid.Properties properties, TitaniumFluidInstance instance) {
-            super(properties, instance);
+        public Flowing(TitaniumFluidInstance instance) {
+            super(instance);
         }
 
         @Override
@@ -143,8 +139,8 @@ public class TitaniumFluid extends FlowingFluid {
 
     public static class Source extends TitaniumFluid {
 
-        public Source(ForgeFlowingFluid.Properties properties, TitaniumFluidInstance instance) {
-            super(properties, instance);
+        public Source(TitaniumFluidInstance instance) {
+            super(instance);
         }
 
         @Override
