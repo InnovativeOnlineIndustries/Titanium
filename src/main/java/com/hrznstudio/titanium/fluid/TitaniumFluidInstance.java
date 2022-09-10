@@ -37,7 +37,7 @@ public class TitaniumFluidInstance {
         this.fluid = fluid;
         this.sourceFluid = helper.registerGeneric(ForgeRegistries.FLUIDS.getRegistryKey(), fluid, () -> new TitaniumFluid.Source(this));
         this.flowingFluid = helper.registerGeneric(ForgeRegistries.FLUIDS.getRegistryKey(), fluid + "_flowing", () -> new TitaniumFluid.Flowing(this));
-        this.fluidType = helper.registerGeneric(ForgeRegistries.FLUID_TYPES.get().getRegistryKey(), fluid, () -> new FluidType(fluidTypeProperties) {
+        this.fluidType = helper.registerGeneric(ForgeRegistries.Keys.FLUID_TYPES, fluid, () -> new FluidType(fluidTypeProperties) {
             @Override
             public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
                 consumer.accept(renderProperties);
