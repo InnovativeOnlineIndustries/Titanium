@@ -22,6 +22,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraftforge.fluids.FluidType;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -109,6 +110,11 @@ public class TitaniumFluid extends FlowingFluid {
     @Override
     public boolean isSame(Fluid fluidIn) {
         return fluidIn == titaniumFluidInstance.getFlowingFluid().get() || fluidIn == titaniumFluidInstance.getSourceFluid().get();
+    }
+
+    @Override
+    public FluidType getFluidType() {
+        return titaniumFluidInstance.getFluidType().get();
     }
 
     public static class Flowing extends TitaniumFluid {
