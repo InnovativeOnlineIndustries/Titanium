@@ -101,7 +101,7 @@ public class Titanium extends ModuleController {
         BasicAddonContainer.TYPE = getRegistries().registerGeneric(ForgeRegistries.MENU_TYPES.getRegistryKey(), "addon_container", () -> (MenuType) IForgeMenuType.create(BasicAddonContainer::create));
         if (!FMLLoader.isProduction()) { //ENABLE IN DEV
             getRegistries().registerGeneric(ForgeRegistries.RECIPE_SERIALIZERS.getRegistryKey(), "shapeless_enchant", () -> (RecipeSerializer) new ShapelessEnchantSerializer());
-            TestSerializableRecipe.SERIALIZER = getRegistries().registerGeneric(ForgeRegistries.RECIPE_SERIALIZERS.getRegistryKey(), "test_serializer", () -> new GenericSerializer<>(TestSerializableRecipe.class));
+            TestSerializableRecipe.SERIALIZER = getRegistries().registerGeneric(ForgeRegistries.RECIPE_SERIALIZERS.getRegistryKey(), "test_serializer", () -> new GenericSerializer<>(TestSerializableRecipe.class, TestSerializableRecipe.RECIPE_TYPE));
             TestSerializableRecipe.RECIPE_TYPE = getRegistries().registerGeneric(ForgeRegistries.RECIPE_TYPES.getRegistryKey(), "test_recipe_type", () -> RecipeType.simple(new ResourceLocation(MODID, "test_recipe_type")));
             TestBlock.TEST = getRegistries().registerBlockWithTile("block_test", () -> (TestBlock) new TestBlock());
             TwentyFourTestBlock.TEST = getRegistries().registerBlockWithTile("block_twenty_four_test", () -> (TwentyFourTestBlock) new TwentyFourTestBlock());

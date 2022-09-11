@@ -16,6 +16,7 @@ import com.hrznstudio.titanium.network.CompoundSerializableDataHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 
@@ -23,6 +24,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.lang.reflect.Field;
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * Generic recipe serializer, that will serialize a recipe from the Handlers in @{@link JSONSerializableDataHandler}.
@@ -32,8 +34,11 @@ import java.util.Map;
  */
 public class GenericSerializer<T extends SerializableRecipe> implements RecipeSerializer<T>, IRecipeSerializerReversed<T> {
     private final Class<T> recipeClass;
-    public GenericSerializer(Class<T> recipeClass) {
+    private final Supplier<RecipeType<?>> recipeTypeSupplier;
+
+    public GenericSerializer(Class<T> recipeClass, Supplier<RecipeType<?>> recipeTypeSupplier) {
         this.recipeClass = recipeClass;
+        this.recipeTypeSupplier = recipeTypeSupplier;
     }
 
     // Reading the recipe from the json file
@@ -66,6 +71,7 @@ public class GenericSerializer<T extends SerializableRecipe> implements RecipeSe
     @Override
     public JsonObject write(T recipe) {
         JsonObject object = new JsonObject();
+        object.addProperty("type", recipeTypeSupplier.get().toString());
         try {
             for (Field field : recipeClass.getFields()) {
                 if (JSONSerializableDataHandler.acceptField(field, field.getType())) {
