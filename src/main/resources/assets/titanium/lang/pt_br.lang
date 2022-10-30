@@ -1,0 +1,21 @@
+itemGroup.titanium.resources=Titanium Resources
+
+item.titanium.plate.name=%s Placa
+item.titanium.ingot.name=%s Lingote
+item.titanium.dust.name=%s Pó
+item.titanium.smalldust.name=Pequeno %s Pó
+item.titanium.nugget.name=%s Pepita
+item.titanium.purified.name=Purificado %s Grindings
+item.titanium.grindings.name=%s Grindings
+item.titanium.pebbles.name=%s Pebbles
+item.titanium.clump.name=%s Clump
+item.titanium.chunk.name=%s Chunk
+item.titanium.stone.name=%s Stone
+item.titanium.crushed.name=Crushed %s
+item.titanium.flakes.name=%s Flakes
+item.titanium.rod.name=%s Haste
+item.titanium.dense_rod.name=Denso %s Haste
+item.titanium.gear.name=%s Gear
+item.titanium.casing.name=%s Revestimento
+item.titanium.reinforced_plate.name=Reforçado %s Placa
+item.titanium.dense_plate.name=Denso %s Placa
