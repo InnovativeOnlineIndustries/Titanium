@@ -10,18 +10,19 @@ package com.hrznstudio.titanium.reward;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class RewardManager {
 
-    private static RewardManager INSTANCE = new RewardManager();
-    private HashMap<UUID, RewardGiver> rewards;
+    private static final RewardManager INSTANCE = new RewardManager();
+    private final Map<UUID, RewardGiver> rewards;
 
     private RewardManager() {
-        this.rewards = new HashMap<>();
+        this.rewards = new ConcurrentHashMap<>();
     }
 
     public static RewardManager get() {
@@ -32,7 +33,7 @@ public class RewardManager {
         return rewards.computeIfAbsent(uuid, uuid1 -> new RewardGiver(uuid, name));
     }
 
-    public HashMap<UUID, RewardGiver> getRewards() {
+    public Map<UUID, RewardGiver> getRewards() {
         return rewards;
     }
 
