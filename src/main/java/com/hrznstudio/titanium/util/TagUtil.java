@@ -8,6 +8,7 @@
 package com.hrznstudio.titanium.util;
 
 import com.hrznstudio.titanium._impl.TagConfig;
+import com.hrznstudio.titanium.compat.almostunified.AlmostUnifiedAdapter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
@@ -108,7 +109,12 @@ public class TagUtil {
 
     }
 
-    public static ItemStack getItemWithPreference(TagKey<Item> tagKey){
+    public static ItemStack getItemWithPreference(TagKey<Item> tagKey) {
+        Item preferredItem = AlmostUnifiedAdapter.getPreferredItemForTag(tagKey);
+        if (preferredItem != null) {
+            return new ItemStack(preferredItem);
+        }
+
         ITag<Item> item = ForgeRegistries.ITEMS.tags().getTag(tagKey);
         if (item.isEmpty()) return ItemStack.EMPTY;
         List<Item> elements = item.stream().toList();
