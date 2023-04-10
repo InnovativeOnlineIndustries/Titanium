@@ -229,7 +229,7 @@ public class SidedInventoryComponent<T extends IComponentHarness> extends Invent
         for (int i = 0; i < dest.getSlots(); i++) {
             if (!dest.isItemValid(i, stack)) continue;
             if (dest.getStackInSlot(i).isEmpty()) return i;
-            if (ItemHandlerHelper.canItemStacksStack(dest.getStackInSlot(i), stack) && dest.getStackInSlot(i).getCount() < dest.getSlotLimit(i) && dest.getStackInSlot(i).getCount() < dest.getStackInSlot(i).getMaxStackSize()) {
+            if (ItemHandlerHelper.canItemStacksStack(dest.getStackInSlot(i), stack) && dest.getStackInSlot(i).getCount() < dest.getSlotLimit(i)) {
                 return i;
             }
         }
