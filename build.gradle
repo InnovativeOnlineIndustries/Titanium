@@ -41,7 +41,7 @@ license {
 }
 
 minecraft {
-  mappings channel: 'official', version: '1.19.1'
+  mappings channel: 'official', version: '1.19.2'
   runs {
     client = {
       // recommended logging data for a userdev environment
@@ -97,9 +97,12 @@ repositories {
   maven {
     url 'https://www.dogforce-games.com/maven/'
   }
+  maven {
+    url = "https://www.cursemaven.com"
+  }
 }
 dependencies {
-  minecraft 'net.minecraftforge:forge:1.19.2-43.1.1'
+  minecraft 'net.minecraftforge:forge:1.19.2-43.2.3'
 
   // compile against the JEI API but do not include it at runtime
   compileOnly fg.deobf("mezz.jei:jei-1.19.1-common-api:11.2.0.241")
@@ -108,6 +111,9 @@ dependencies {
   runtimeOnly fg.deobf("mezz.jei:jei-1.19.1-forge:11.2.0.241")
   // Almost Unified for compile time
   compileOnly fg.deobf("com.almostreliable.mods:almostunified-forge:1.19.2-0.3.4")
+
+  runtimeOnly fg.deobf("curse.maven:functional-storage-556861:4324174")
+  runtimeOnly fg.deobf("curse.maven:industrial-foregoing-266515:4459182")
 }
 
 jar {
