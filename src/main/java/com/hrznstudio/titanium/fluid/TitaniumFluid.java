@@ -1,6 +1,6 @@
 /*
  * This file is part of Titanium
- * Copyright (C) 2022, Horizon Studio <contact@hrznstudio.com>.
+ * Copyright (C) 2023, Horizon Studio <contact@hrznstudio.com>.
  *
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
@@ -23,11 +23,9 @@ import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.fluids.FluidAttributes;
-import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.concurrent.Flow;
 
 public class TitaniumFluid extends FlowingFluid {
 

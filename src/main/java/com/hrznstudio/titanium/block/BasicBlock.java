@@ -1,6 +1,6 @@
 /*
  * This file is part of Titanium
- * Copyright (C) 2022, Horizon Studio <contact@hrznstudio.com>.
+ * Copyright (C) 2023, Horizon Studio <contact@hrznstudio.com>.
  *
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
@@ -13,7 +13,6 @@ import com.hrznstudio.titanium.block.tile.ActiveTile;
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.hrznstudio.titanium.datagenerator.loot.block.BasicBlockLootTables;
 import com.hrznstudio.titanium.datagenerator.loot.block.IBlockLootTableProvider;
-import com.hrznstudio.titanium.module.DeferredRegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -36,8 +35,6 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

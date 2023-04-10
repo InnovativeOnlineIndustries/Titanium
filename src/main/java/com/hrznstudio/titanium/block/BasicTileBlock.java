@@ -1,6 +1,6 @@
 /*
  * This file is part of Titanium
- * Copyright (C) 2022, Horizon Studio <contact@hrznstudio.com>.
+ * Copyright (C) 2023, Horizon Studio <contact@hrznstudio.com>.
  *
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
@@ -9,7 +9,6 @@ package com.hrznstudio.titanium.block;
 
 import com.hrznstudio.titanium.block.tile.BasicTile;
 import com.hrznstudio.titanium.block.tile.ITickableBlockEntity;
-import com.hrznstudio.titanium.module.DeferredRegistryHelper;
 import com.hrznstudio.titanium.nbthandler.NBTManager;
 import com.hrznstudio.titanium.util.TileUtil;
 import net.minecraft.core.BlockPos;
@@ -26,12 +25,9 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 public abstract class BasicTileBlock<T extends BasicTile<T>> extends BasicBlock implements EntityBlock {
 

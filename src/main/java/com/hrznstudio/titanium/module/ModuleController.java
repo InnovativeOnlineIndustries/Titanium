@@ -1,6 +1,6 @@
 /*
  * This file is part of Titanium
- * Copyright (C) 2022, Horizon Studio <contact@hrznstudio.com>.
+ * Copyright (C) 2023, Horizon Studio <contact@hrznstudio.com>.
  *
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
@@ -14,18 +14,12 @@ import com.hrznstudio.titanium.event.handler.EventManager;
 import com.hrznstudio.titanium.plugin.PluginManager;
 import com.hrznstudio.titanium.plugin.PluginPhase;
 import com.hrznstudio.titanium.util.AnnotationUtil;
-import net.minecraft.world.item.Item;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
-import net.minecraftforge.registries.NewRegistryEvent;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public abstract class ModuleController {
     private final String modid;

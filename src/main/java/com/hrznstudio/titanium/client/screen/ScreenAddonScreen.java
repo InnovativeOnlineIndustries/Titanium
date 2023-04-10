@@ -1,13 +1,12 @@
 /*
  * This file is part of Titanium
- * Copyright (C) 2022, Horizon Studio <contact@hrznstudio.com>.
+ * Copyright (C) 2023, Horizon Studio <contact@hrznstudio.com>.
  *
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
 
 package com.hrznstudio.titanium.client.screen;
 
-import com.google.common.collect.Lists;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
@@ -22,7 +21,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.TextComponent;
 import org.lwjgl.glfw.GLFW;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
