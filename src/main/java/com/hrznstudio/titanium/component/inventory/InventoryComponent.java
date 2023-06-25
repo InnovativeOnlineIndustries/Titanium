@@ -276,7 +276,7 @@ public class InventoryComponent<T extends IComponentHarness> extends ItemStackHa
         if (!this.colorGuiEnabled) {
             this.setColorGuiEnabled(true);
         }
-        this.slotToColorRenderMap.put(slot, new Color(color.getMaterialColor().col));
+        this.slotToColorRenderMap.put(slot, new Color(color.getMapColor().col));
         return this;
     }
 

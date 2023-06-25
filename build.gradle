@@ -15,6 +15,7 @@ plugins {
   id 'org.cadixdev.licenser' version '0.6.1'
   id "com.matthewprenger.cursegradle" version "1.4.0"
   id "se.bjurr.gitchangelog.git-changelog-gradle-plugin" version "1.71.9"
+  id "com.modrinth.minotaur" version "2.+"
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
@@ -26,7 +27,7 @@ if (System.getenv('BUILD_NUMBER') != null) {
 }
 group = 'com.hrznstudio'
 archivesBaseName = 'titanium'
-def isReleaseBranch = System.getenv("GIT_BRANCH") == "1.19";
+def isReleaseBranch = System.getenv("GIT_BRANCH") == "1.20";
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
@@ -41,7 +42,7 @@ license {
 }
 
 minecraft {
-  mappings channel: 'official', version: '1.19.2'
+  mappings channel: 'official', version: '1.20.1'
   runs {
     client = {
       // recommended logging data for a userdev environment
@@ -102,18 +103,18 @@ repositories {
   }
 }
 dependencies {
-  minecraft 'net.minecraftforge:forge:1.19.2-43.2.3'
+  minecraft 'net.minecraftforge:forge:1.20.1-47.0.19'
 
   // compile against the JEI API but do not include it at runtime
-  compileOnly fg.deobf("mezz.jei:jei-1.19.1-common-api:11.2.0.241")
-  compileOnly fg.deobf("mezz.jei:jei-1.19.1-forge-api:11.2.0.241")
+  compileOnly fg.deobf("mezz.jei:jei-1.20.1-common-api:15.1.0.19")
+  compileOnly fg.deobf("mezz.jei:jei-1.20.1-forge-api:15.1.0.19")
   // at runtime, use the full JEI jar for Forge
-  runtimeOnly fg.deobf("mezz.jei:jei-1.19.1-forge:11.2.0.241")
+  runtimeOnly fg.deobf("mezz.jei:jei-1.20.1-forge:15.1.0.19")
   // Almost Unified for compile time
   compileOnly fg.deobf("com.almostreliable.mods:almostunified-forge:1.19.2-0.3.4")
 
-  runtimeOnly fg.deobf("curse.maven:functional-storage-556861:4324174")
-  runtimeOnly fg.deobf("curse.maven:industrial-foregoing-266515:4459182")
+  //runtimeOnly fg.deobf("curse.maven:functional-storage-556861:4324174")
+  //runtimeOnly fg.deobf("curse.maven:industrial-foregoing-266515:4459182")
 }
 
 jar {
@@ -188,7 +189,7 @@ curseforge {
     changelog = "https://github.com/InnovativeOnlineIndustries/Titanium/blob/changelog/CHANGELOG.md"
     changelogType = 'markdown'
     releaseType = 'beta'
-    addGameVersion '1.19.1'
+    addGameVersion '1.20.1'
     mainArtifact(jar) {
 
     }
@@ -198,12 +199,29 @@ curseforge {
   }
 }
 
+tasks.modrinth.enabled = System.env["MODRINTH_TOKEN"] != null
+
+modrinth {
+  token = System.getenv("MODRINTH_TOKEN")
+  // This is the default. Remember to have the MODRINTH_TOKEN environment variable set or else this will fail, or set it to whatever you want - just make sure it stays private!
+  projectId = "1Ro7m06l" // This can be the project ID or the slug. Either will work!
+  versionType = "beta" // This is the default -- can also be `beta` or `alpha`
+  uploadFile = jar // With Loom, this MUST be set to `remapJar` instead of `jar`!
+  gameVersions = ["1.20.1"] // Must be an array, even with only one version
+  loaders = ["forge"] // Must also be an array - no need to specify this if you're using Loom or ForgeGradle
+  dependencies { // A special DSL for creating dependencies
+
+  }
+  changelog = "https://github.com/InnovativeOnlineIndustries/Titanium/blob/changelog/CHANGELOG.md"
+}
+
+
 task makeChangelog(type: GitChangelogTask) {
   //fromRepo = file("../../home/runner/work/Titanium/Titanium")
   file = new File("CHANGELOG.md")
   untaggedName = "Version ${project.version}"
   fromCommit = "6a5a3df3665643ea181873312e3801db7c662686"
   fromRef = "refs/tags/2.4.0"
-  toRef = "1.19"
+  toRef = "1.20"
   templateContent = file("changelog.mustache").getText("UTF-8")
 }

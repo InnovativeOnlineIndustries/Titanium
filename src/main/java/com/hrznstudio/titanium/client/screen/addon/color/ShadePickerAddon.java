@@ -11,9 +11,7 @@ import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.client.screen.addon.BasicScreenAddon;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.util.AssetUtil;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
-import com.mojang.math.Matrix4f;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 
 import java.awt.*;
@@ -49,17 +47,17 @@ public class ShadePickerAddon extends BasicScreenAddon {
     }
 
     @Override
-    public void drawBackgroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackgroundLayer(GuiGraphics stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         drawTiledGradient(stack, this.getPosX() + guiX, this.getPosY() + guiY, getXSize(), getYSize());
         AssetUtil.drawAsset(stack, screen, provider.getAsset(AssetTypes.SHADE_PICKER), guiX + (int) (this.getPosX() + this.saturation * this.getXSize()) - 4, (int) (guiY + this.getPosY() + (1 - this.brightness) * this.getYSize()) - 4);
     }
 
     @Override
-    public void drawForegroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+    public void drawForegroundLayer(GuiGraphics stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
 
     }
 
-    private void drawTiledGradient(PoseStack matrix, int x, int y, int width, int height) {
+    private void drawTiledGradient(GuiGraphics guiGraphics, int x, int y, int width, int height) {
         int tileWidth = Math.round((float) width / S_TILES);
         int tileHeight = Math.round((float) height / V_TILES);
         for (int i = 0; i < 10; i++) {
@@ -67,7 +65,7 @@ public class ShadePickerAddon extends BasicScreenAddon {
             for (int j = 0; j < 10; j++) {
                 float minS = (float) j / S_TILES, maxS = (float) (j + 1) / S_TILES;
                 Color tl = Color.getHSBColor(hueSupplier.get(), minS, maxV), tr = Color.getHSBColor(hueSupplier.get(), maxS, maxV), bl = Color.getHSBColor(hueSupplier.get(), minS, minV), br = Color.getHSBColor(hueSupplier.get(), maxS, minV);
-                drawGradient(matrix, x + j * tileWidth, y + (V_TILES - i - 1) * tileHeight, tileWidth, tileHeight, tl, tr, bl, br);
+                drawGradient(guiGraphics, x + j * tileWidth, y + (V_TILES - i - 1) * tileHeight, tileWidth, tileHeight, tl, tr, bl, br);
             }
         }
     }
@@ -77,7 +75,8 @@ public class ShadePickerAddon extends BasicScreenAddon {
     //RenderSystem.shadeModel(GL11.GL_FLAT);
     // In the current code they didn't do anything anyway.
     // So if they are needed we have to fix it anyway later!
-    private void drawGradient(PoseStack matrix, int x, int y, int width, int height, Color tl, Color tr, Color bl, Color br) {
+    private void drawGradient(GuiGraphics guiGraphics, int x, int y, int width, int height, Color tl, Color tr, Color bl, Color br) {
+        /* TODO FIX
         RenderSystem.disableTexture();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
@@ -91,6 +90,8 @@ public class ShadePickerAddon extends BasicScreenAddon {
         buffer.end();
         RenderSystem.disableBlend();
         RenderSystem.enableTexture();
+        */
+
     }
 
     @Override

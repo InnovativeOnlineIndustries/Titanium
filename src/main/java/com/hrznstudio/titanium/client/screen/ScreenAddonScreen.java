@@ -14,8 +14,8 @@ import com.hrznstudio.titanium.api.client.assets.types.IBackgroundAsset;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.util.AssetUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -23,7 +23,6 @@ import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public abstract class ScreenAddonScreen extends Screen implements IScreenAddonConsumer {
@@ -57,32 +56,28 @@ public abstract class ScreenAddonScreen extends Screen implements IScreenAddonCo
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) { //render
-        matrixStack.pushPose();
-        renderBackground(matrixStack, mouseX, mouseY, partialTicks);
-        matrixStack.popPose();
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
-        matrixStack.pushPose();
-        renderForeground(matrixStack, mouseX, mouseY, partialTicks);
-        matrixStack.popPose();
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) { //render
+        renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+        renderForeground(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
-    public void renderBackground(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
+    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         this.checkForMouseDrag(mouseX, mouseY);
         RenderSystem.setShaderColor(1, 1, 1, 1);
         if (drawBackground) {
-            this.renderBackground(stack, 0);//draw tinted background
-            AssetUtil.drawAsset(stack, this, assetProvider.getAsset(AssetTypes.BACKGROUND), x, y);
+            this.renderBackground(guiGraphics);//draw tinted background
+            AssetUtil.drawAsset(guiGraphics, this, assetProvider.getAsset(AssetTypes.BACKGROUND), x, y);
         }
-        addonList.forEach(iGuiAddon -> iGuiAddon.drawBackgroundLayer(stack, this, assetProvider, x, y, mouseX, mouseY, partialTicks));
+        addonList.forEach(iGuiAddon -> iGuiAddon.drawBackgroundLayer(guiGraphics, this, assetProvider, x, y, mouseX, mouseY, partialTicks));
     }
 
-    public void renderForeground(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
-        addonList.forEach(iGuiAddon -> iGuiAddon.drawForegroundLayer(stack, this, assetProvider, x, y, mouseX, mouseY, partialTicks));
+    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        addonList.forEach(iGuiAddon -> iGuiAddon.drawForegroundLayer(guiGraphics, this, assetProvider, x, y, mouseX, mouseY, partialTicks));
         for (IScreenAddon iScreenAddon : addonList) {
             if (iScreenAddon.isMouseOver(mouseX - x, mouseY - y) && !iScreenAddon.getTooltipLines().isEmpty()) {
                 // renderTooltip
-                renderTooltip(stack, iScreenAddon.getTooltipLines(), Optional.empty(), mouseX, mouseY);
+                guiGraphics.renderComponentTooltip(Minecraft.getInstance().font, iScreenAddon.getTooltipLines(), mouseX, mouseY);
             }
         }
     }

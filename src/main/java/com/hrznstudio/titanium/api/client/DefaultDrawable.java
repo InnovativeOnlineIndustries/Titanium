@@ -7,8 +7,8 @@
 
 package com.hrznstudio.titanium.api.client;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 
 import java.awt.*;
@@ -23,9 +23,8 @@ public class DefaultDrawable implements IDrawable {
     }
 
     @Override
-    public void draw(Screen gui, Point position, Point mousePosition) {
-        RenderSystem.setShaderTexture(0, asset.getResourceLocation());
+    public void draw(GuiGraphics guiGraphics, Screen gui, Point position, Point mousePosition) {
         Rectangle area = asset.getArea();
-        gui.blit(matrixStack, position.x, position.y, area.x, area.y, area.width, area.height);
+        guiGraphics.blit(asset.getResourceLocation(), position.x, position.y, area.x, area.y, area.width, area.height);
     }
 }

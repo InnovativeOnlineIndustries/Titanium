@@ -16,18 +16,15 @@ import java.util.function.Consumer;
 public abstract class TitaniumRecipeProvider extends RecipeProvider {
 
     public TitaniumRecipeProvider(DataGenerator generatorIn) {
-        super(generatorIn);
+        super(generatorIn.getPackOutput());
     }
 
     @Override
-    protected void buildCraftingRecipes(Consumer<FinishedRecipe> p_176532_) {
+    protected void buildRecipes(Consumer<FinishedRecipe> p_176532_) {
         register(p_176532_);
     }
 
     public abstract void register(Consumer<FinishedRecipe> consumer);
 
-    @Override
-    public String getName() {
-        return "Titanium Recipe";
-    }
+
 }

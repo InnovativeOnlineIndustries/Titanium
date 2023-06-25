@@ -14,9 +14,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nonnull;
@@ -87,7 +87,7 @@ public class EnergyItem extends BasicItem {
     }
 
     public LazyOptional<IEnergyStorage> getEnergyStorage(ItemStack stack) {
-        return stack.getCapability(CapabilityEnergy.ENERGY, null);
+        return stack.getCapability(ForgeCapabilities.ENERGY, null);
     }
 
     @Nullable
@@ -106,7 +106,7 @@ public class EnergyItem extends BasicItem {
         @Nonnull
         @Override
         public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-            if (cap == CapabilityEnergy.ENERGY) {
+            if (cap == ForgeCapabilities.ENERGY) {
                 return energyCap.cast();
             }
             return LazyOptional.empty();

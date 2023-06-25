@@ -70,7 +70,7 @@ public class RewardCommand {
         try {
             rewardWorldStorage.remove(source.getPlayerOrException().getUUID(), context.getArgument("reward", ResourceLocation.class));
             rewardWorldStorage.setDirty();
-            context.getSource().sendSuccess(Component.literal("titanium.rewards.remove_success"), true);
+            context.getSource().sendSuccess(() -> Component.literal("titanium.rewards.remove_success"), true);
             return true;
         } catch (CommandSyntaxException e) {
             e.printStackTrace();
@@ -91,7 +91,7 @@ public class RewardCommand {
             }
             rewardWorldStorage.add(source.getPlayerOrException().getUUID(), context.getArgument("reward", ResourceLocation.class), option);
             rewardWorldStorage.setDirty();
-            context.getSource().sendSuccess(Component.literal("titanium.rewards.enabled_success"), true);
+            context.getSource().sendSuccess(() -> Component.literal("titanium.rewards.enabled_success"), true);
             return true;
         } catch (CommandSyntaxException e) {
             e.printStackTrace();

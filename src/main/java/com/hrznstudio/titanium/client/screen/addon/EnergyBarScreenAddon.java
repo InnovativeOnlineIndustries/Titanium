@@ -11,9 +11,8 @@ import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.util.AssetUtil;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -33,21 +32,20 @@ public class EnergyBarScreenAddon extends BasicScreenAddon {
         this.handler = handler;
     }
 
-    public static IAsset drawBackground(PoseStack stack, Screen screen, IAssetProvider provider, int handlerPosX, int handlerPosY, int guiX, int guiY) {
+    public static IAsset drawBackground(GuiGraphics guiGraphics, Screen screen, IAssetProvider provider, int handlerPosX, int handlerPosY, int guiX, int guiY) {
         IAsset background = IAssetProvider.getAsset(provider, AssetTypes.ENERGY_BACKGROUND);
         Point offset = background.getOffset();
         Rectangle area = background.getArea();
-        AssetUtil.drawAsset(stack, screen, background, guiX + handlerPosX + offset.x, guiY + handlerPosY + offset.y);
+        AssetUtil.drawAsset(guiGraphics, screen, background, guiX + handlerPosX + offset.x, guiY + handlerPosY + offset.y);
         return background;
     }
 
-    public static void drawForeground(PoseStack stack, Screen screen, IAssetProvider provider, int handlerPosX, int handlerPosY, int guiX, int guiY, double stored, double capacity) {
+    public static void drawForeground(GuiGraphics guiGraphics, Screen screen, IAssetProvider provider, int handlerPosX, int handlerPosY, int guiX, int guiY, double stored, double capacity) {
         IAsset asset = IAssetProvider.getAsset(provider, AssetTypes.ENERGY_BAR);
         Point offset = asset.getOffset();
         Rectangle area = asset.getArea();
-        RenderSystem.setShaderTexture(0, asset.getResourceLocation());
         int powerOffset = (int) ((stored / Math.max(capacity, 1)) * area.height);
-        screen.blit(stack, handlerPosX + offset.x, handlerPosY + offset.y + area.height - powerOffset, area.x, area.y + (area.height - powerOffset), area.width, powerOffset);
+        guiGraphics.blit(asset.getResourceLocation(), handlerPosX + offset.x, handlerPosY + offset.y + area.height - powerOffset, area.x, area.y + (area.height - powerOffset), area.width, powerOffset);
     }
 
     public static List<Component> getTooltip(int stored, int capacity) {
@@ -65,13 +63,13 @@ public class EnergyBarScreenAddon extends BasicScreenAddon {
     }
 
     @Override
-    public void drawBackgroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
-        background = drawBackground(stack, screen, provider, getPosX(), getPosY(), guiX, guiY);
+    public void drawBackgroundLayer(GuiGraphics guiGraphics, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+        background = drawBackground(guiGraphics, screen, provider, getPosX(), getPosY(), guiX, guiY);
     }
 
     @Override
-    public void drawForegroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
-        drawForeground(stack, screen, provider, getPosX(), getPosY(), guiX, guiY, handler.getEnergyStored(), handler.getMaxEnergyStored());
+    public void drawForegroundLayer(GuiGraphics guiGraphics, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+        drawForeground(guiGraphics, screen, provider, getPosX(), getPosY(), guiX, guiY, handler.getEnergyStored(), handler.getMaxEnergyStored());
     }
 
     @Override

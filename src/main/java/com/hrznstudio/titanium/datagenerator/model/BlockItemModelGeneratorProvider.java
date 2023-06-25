@@ -23,7 +23,9 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class BlockItemModelGeneratorProvider implements DataProvider {
 
@@ -46,19 +48,25 @@ public class BlockItemModelGeneratorProvider implements DataProvider {
     }
 
     @Override
-    public void run(@Nonnull CachedOutput cache) throws IOException {
-        Path path = this.generator.getOutputFolder();
+    public CompletableFuture<?> run(@Nonnull CachedOutput cache) {
+        Path path = this.generator.getPackOutput().getOutputFolder();
         Path output = path.resolve("assets/" + modid + "/models/item/");
-        Files.createDirectories(output);
+        try {
+            Files.createDirectories(output);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        List<CompletableFuture<?>> futures = new ArrayList<>();
         blocksToProcess.get().forEach(blockBase -> {
-            try {
+            futures.add(CompletableFuture.runAsync(() -> {
                 try (BufferedWriter bufferedwriter = Files.newBufferedWriter(output.resolve(ForgeRegistries.BLOCKS.getKey(blockBase).getPath() + ".json"))) {
                     bufferedwriter.write(GSON.toJson(createModel(blockBase)));
+                } catch (Exception e) {
+
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            }));
         });
+        return CompletableFuture.allOf(futures.toArray((i) -> new CompletableFuture<?>[i]));
     }
 
     @Override

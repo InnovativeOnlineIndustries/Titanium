@@ -16,6 +16,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
@@ -57,7 +58,7 @@ public class ShapelessEnchantSerializer extends ShapelessRecipe.Serializer {
             } else {
                 throw new JsonParseException("No String or Array found for enchantments");
             }
-            return new ShapelessRecipe(recipeId, s, itemstack, ingredients);
+            return new ShapelessRecipe(recipeId, s, CraftingBookCategory.MISC, itemstack, ingredients);
         }
     }
 

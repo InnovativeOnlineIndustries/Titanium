@@ -30,10 +30,12 @@ public class DeferredRegistryHelper {
 
     private final String modId;
     private final HashMap<ResourceKey<? extends Registry<?>>, DeferredRegister<?>> registries;
+    private final CreativeTabHelper creativeTabHelper;
 
     public DeferredRegistryHelper(String modId) {
         this.modId = modId;
         this.registries = new HashMap<>();
+        this.creativeTabHelper = new CreativeTabHelper();
     }
 
     public <T> DeferredRegister<T> addRegistry(ResourceKey<? extends Registry<T>> key) {
@@ -76,9 +78,10 @@ public class DeferredRegistryHelper {
         return deferredRegister.register(name, object);
     }
 
-    public RegistryObject<Block> registerBlockWithItem(String name, Supplier<? extends BasicBlock> blockSupplier){
+    public RegistryObject<Block> registerBlockWithItem(String name, Supplier<? extends BasicBlock> blockSupplier) {
         RegistryObject<Block> blockRegistryObject = registerGeneric(ForgeRegistries.BLOCKS.getRegistryKey(), name, blockSupplier::get);
-        registerGeneric(ForgeRegistries.ITEMS.getRegistryKey(), name, () -> new BlockItem(blockRegistryObject.get(), new Item.Properties().tab(((BasicBlock) blockRegistryObject.get()).getItemGroup())));
+        var object = registerGeneric(ForgeRegistries.ITEMS.getRegistryKey(), name, () -> new BlockItem(blockRegistryObject.get(), new Item.Properties()));
+        //TODO Creative tab
         return blockRegistryObject;
     }
 

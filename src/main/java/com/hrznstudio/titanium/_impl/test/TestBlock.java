@@ -13,8 +13,8 @@ import com.hrznstudio.titanium.annotation.config.ConfigVal;
 import com.hrznstudio.titanium.block.RotatableBlock;
 import com.hrznstudio.titanium.datagenerator.loot.block.BasicBlockLootTables;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraftforge.registries.RegistryObject;
 import org.apache.commons.lang3.tuple.Pair;
@@ -30,7 +30,7 @@ public class TestBlock extends RotatableBlock<TestTile> {
     public static Pair<RegistryObject<Block>, RegistryObject<BlockEntityType<?>>> TEST;
 
     public TestBlock() {
-        super("test", Properties.of(Material.STONE), TestTile.class);
+        super("test", Properties.copy(Blocks.STONE), TestTile.class);
     }
 
 

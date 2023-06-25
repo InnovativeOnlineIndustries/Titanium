@@ -8,7 +8,7 @@
 package com.hrznstudio.titanium.api.client;
 
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -20,7 +20,7 @@ public interface IScreenAddon extends GuiEventListener {
     /**
      * Draws the component in the background layer
      *
-     * @param stack        The {@link com.mojang.blaze3d.vertex.PoseStack}
+     * @param guiGraphics
      * @param screen       The current open screen
      * @param provider     The current asset provider used in the GUI
      * @param guiX         The gui X in the top left corner
@@ -29,12 +29,12 @@ public interface IScreenAddon extends GuiEventListener {
      * @param mouseY       The current mouse Y
      * @param partialTicks Partial ticks
      */
-    void drawBackgroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks);
+    void drawBackgroundLayer(GuiGraphics guiGraphics, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks);
 
     /**
      * Draws the component in the foreground layer
      *
-     * @param stack        The {@link com.mojang.blaze3d.vertex.PoseStack}
+     * @param guiGraphics
      * @param screen       The current open screen
      * @param provider     The current asset provider used in the GUI
      * @param guiX         The gui X in the top left corner
@@ -43,7 +43,7 @@ public interface IScreenAddon extends GuiEventListener {
      * @param mouseY       The current mouse Y
      * @param partialTicks Partial Ticks
      */
-    void drawForegroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks);
+    void drawForegroundLayer(GuiGraphics guiGraphics, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks);
 
     /**
      * A list of strings that will be drawn as a tooltip when `isInside` returns true
@@ -170,6 +170,9 @@ public interface IScreenAddon extends GuiEventListener {
         return false;
     }
 
+    @Override
+    boolean isFocused();
+
     /**
      * Called when Screen Focus changes
      *
@@ -177,9 +180,7 @@ public interface IScreenAddon extends GuiEventListener {
      * @return Returns true if the widget is part of a focused screen
      */
     @Override
-    default boolean changeFocus(boolean focus) {
-        return false;
-    }
+    void setFocused(boolean focus);
 
     /**
      * Checks whether the mouse if over a specific object or point

@@ -31,7 +31,7 @@ public class TileEntityLocatorInstance extends LocatorInstance {
 
     @Override
     public Optional<?> locale(Player playerEntity) {
-        return TileUtil.getTileEntity(playerEntity.getLevel(), blockPos);
+        return TileUtil.getTileEntity(playerEntity.getCommandSenderWorld(), blockPos);
     }
 
     @Override

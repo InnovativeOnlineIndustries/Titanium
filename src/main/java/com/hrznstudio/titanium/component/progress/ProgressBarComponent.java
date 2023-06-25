@@ -21,8 +21,7 @@ import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
 import com.hrznstudio.titanium.container.addon.IntArrayReferenceHolderAddon;
 import com.hrznstudio.titanium.container.referenceholder.ProgressBarReferenceHolder;
 import com.hrznstudio.titanium.util.AssetUtil;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.DyeColor;
@@ -386,32 +385,29 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
     public enum BarDirection {
         VERTICAL_UP {
             @Override
-            public <T extends IComponentHarness> void render(PoseStack stack, Screen screen, int guiX, int guiY, IAssetProvider provider, ProgressBarScreenAddon<T> addon) {
+            public <T extends IComponentHarness> void render(GuiGraphics guiGraphics, Screen screen, int guiX, int guiY, IAssetProvider provider, ProgressBarScreenAddon<T> addon) {
                 IAsset assetBorder = IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_BORDER_VERTICAL);
                 Point offset = assetBorder.getOffset();
                 Rectangle area = assetBorder.getArea();
-                RenderSystem.setShaderTexture(0, assetBorder.getResourceLocation());
-                screen.blit(stack, guiX + addon.getPosX() + offset.x, guiY + addon.getPosY() + offset.y, area.x, area.y, area.width, area.height);
-                RenderSystem.setShaderColor(addon.getProgressBar().getColor().getTextureDiffuseColors()[0], addon.getProgressBar().getColor().getTextureDiffuseColors()[1], addon.getProgressBar().getColor().getTextureDiffuseColors()[2], 1);
+                guiGraphics.blit(assetBorder.getResourceLocation(), guiX + addon.getPosX() + offset.x, guiY + addon.getPosY() + offset.y, area.x, area.y, area.width, area.height);
+                guiGraphics.setColor(addon.getProgressBar().getColor().getTextureDiffuseColors()[0], addon.getProgressBar().getColor().getTextureDiffuseColors()[1], addon.getProgressBar().getColor().getTextureDiffuseColors()[2], 1);
                 IAsset assetBar = IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_BACKGROUND_VERTICAL);
                 offset = assetBar.getOffset();
                 area = assetBar.getArea();
-                RenderSystem.setShaderTexture(0, assetBar.getResourceLocation());
-                screen.blit(stack, guiX + addon.getPosX() + offset.x, guiY + addon.getPosY() + offset.y, area.x, area.y, area.width, area.height);
+                guiGraphics.blit(assetBar.getResourceLocation(), guiX + addon.getPosX() + offset.x, guiY + addon.getPosY() + offset.y, area.x, area.y, area.width, area.height);
                 IAsset asset = IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_VERTICAL);
                 offset = asset.getOffset();
                 area = asset.getArea();
-                RenderSystem.setShaderTexture(0, asset.getResourceLocation());
                 int progress = addon.getProgressBar().getProgress();
                 int maxProgress = addon.getProgressBar().getMaxProgress();
                 int progressOffset = progress * area.height / Math.max(maxProgress, 1);
-                screen.blit(stack, addon.getPosX() + offset.x + guiX,
+                guiGraphics.blit(asset.getResourceLocation(), addon.getPosX() + offset.x + guiX,
                     addon.getPosY() + offset.y + area.height - progressOffset + guiY,
                     area.x,
                     area.y + (area.height - progressOffset),
                     area.width,
                     progressOffset);
-                RenderSystem.setShaderColor(1, 1, 1, 1);
+                guiGraphics.setColor(1, 1, 1, 1);
             }
 
             @Override
@@ -426,18 +422,17 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
         },
         ARROW_RIGHT {
             @Override
-            public <T extends IComponentHarness> void render(PoseStack stack, Screen screen, int guiX, int guiY, IAssetProvider provider, ProgressBarScreenAddon<T> addon) {
-                AssetUtil.drawAsset(stack, screen, IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_BACKGROUND_ARROW_HORIZONTAL), addon.getPosX() + guiX, addon.getPosY() + guiY);
+            public <T extends IComponentHarness> void render(GuiGraphics guiGraphics, Screen screen, int guiX, int guiY, IAssetProvider provider, ProgressBarScreenAddon<T> addon) {
+                AssetUtil.drawAsset(guiGraphics, screen, IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_BACKGROUND_ARROW_HORIZONTAL), addon.getPosX() + guiX, addon.getPosY() + guiY);
                 IAsset asset = IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_ARROW_HORIZONTAL);
                 Point offset = asset.getOffset();
                 Rectangle area = asset.getArea();
-                RenderSystem.setShaderTexture(0, asset.getResourceLocation());
                 int progress = addon.getProgressBar().getProgress();
                 int maxProgress = addon.getProgressBar().getMaxProgress();
                 int progressOffset = progress * area.width / Math.max(maxProgress, 1);
-                RenderSystem.setShaderColor(addon.getProgressBar().getColor().getTextureDiffuseColors()[0], addon.getProgressBar().getColor().getTextureDiffuseColors()[1], addon.getProgressBar().getColor().getTextureDiffuseColors()[2], 1);
-                screen.blit(stack, addon.getPosX() + offset.x + guiX, addon.getPosY() + offset.y + guiY, area.x, area.y, progressOffset, area.height);
-                RenderSystem.setShaderColor(1, 1, 1, 1);
+                guiGraphics.setColor(addon.getProgressBar().getColor().getTextureDiffuseColors()[0], addon.getProgressBar().getColor().getTextureDiffuseColors()[1], addon.getProgressBar().getColor().getTextureDiffuseColors()[2], 1);
+                guiGraphics.blit(asset.getResourceLocation(), addon.getPosX() + offset.x + guiX, addon.getPosY() + offset.y + guiY, area.x, area.y, progressOffset, area.height);
+                guiGraphics.setColor(1, 1, 1, 1);
             }
 
             @Override
@@ -453,18 +448,17 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
 
         ARROW_DOWN {
             @Override
-            public <T extends IComponentHarness> void render(PoseStack stack, Screen screen, int guiX, int guiY, IAssetProvider provider, ProgressBarScreenAddon<T> addon) {
-                AssetUtil.drawAsset(stack, screen, IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_BACKGROUND_ARROW_DOWN), addon.getPosX() + guiX, addon.getPosY() + guiY);
+            public <T extends IComponentHarness> void render(GuiGraphics guiGraphics, Screen screen, int guiX, int guiY, IAssetProvider provider, ProgressBarScreenAddon<T> addon) {
+                AssetUtil.drawAsset(guiGraphics, screen, IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_BACKGROUND_ARROW_DOWN), addon.getPosX() + guiX, addon.getPosY() + guiY);
                 IAsset asset = IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_ARROW_DOWN);
                 Point offset = asset.getOffset();
                 Rectangle area = asset.getArea();
-                RenderSystem.setShaderTexture(0, asset.getResourceLocation());
                 int progress = addon.getProgressBar().getProgress();
                 int maxProgress = addon.getProgressBar().getMaxProgress();
                 int progressOffset = progress * area.height / Math.max(maxProgress, 1);
-                RenderSystem.setShaderColor(addon.getProgressBar().getColor().getTextureDiffuseColors()[0], addon.getProgressBar().getColor().getTextureDiffuseColors()[1], addon.getProgressBar().getColor().getTextureDiffuseColors()[2], 1);
-                screen.blit(stack, addon.getPosX() + offset.x + guiX, addon.getPosY() + offset.y + guiY, area.x, area.y, area.width, progressOffset);
-                RenderSystem.setShaderColor(1, 1, 1, 1);
+                guiGraphics.setColor(addon.getProgressBar().getColor().getTextureDiffuseColors()[0], addon.getProgressBar().getColor().getTextureDiffuseColors()[1], addon.getProgressBar().getColor().getTextureDiffuseColors()[2], 1);
+                guiGraphics.blit(asset.getResourceLocation(), addon.getPosX() + offset.x + guiX, addon.getPosY() + offset.y + guiY, area.x, area.y, area.width, progressOffset);
+                guiGraphics.setColor(1, 1, 1, 1);
             }
 
             @Override
@@ -479,7 +473,7 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
         };
 
         @OnlyIn(Dist.CLIENT)
-        public abstract <T extends IComponentHarness> void render(PoseStack stack, Screen screen, int guiX, int guiY, IAssetProvider provider, ProgressBarScreenAddon<T> addon);
+        public abstract <T extends IComponentHarness> void render(GuiGraphics guiGraphics, Screen screen, int guiX, int guiY, IAssetProvider provider, ProgressBarScreenAddon<T> addon);
 
         @OnlyIn(Dist.CLIENT)
         public abstract int getXSize(IAssetProvider provider);

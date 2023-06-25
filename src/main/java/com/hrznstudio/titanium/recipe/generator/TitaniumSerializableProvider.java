@@ -10,18 +10,15 @@ package com.hrznstudio.titanium.recipe.generator;
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 public abstract class TitaniumSerializableProvider implements DataProvider {
 
@@ -39,26 +36,20 @@ public abstract class TitaniumSerializableProvider implements DataProvider {
     }
 
     @Override
-    public void run(CachedOutput cache) throws IOException {
+    public CompletableFuture<?> run(CachedOutput cache) {
         add(serializables);
-        Path path = this.generator.getOutputFolder();
+        Path path = this.generator.getPackOutput().getOutputFolder();
         Set<Path> set = Sets.newHashSet();
+        List<CompletableFuture<?>> futures = new ArrayList<>();
         serializables.forEach((iJsonFile, ijsonGenerator) -> {
             Path outputFile = path.resolve("data/" + modid + "/recipes/" + (iJsonFile.getRecipeSubfolder() != null ? iJsonFile.getRecipeSubfolder() + "/" : "") + iJsonFile.getRecipeKey() + ".json");
             if (!set.add(outputFile)) {
                 throw new IllegalStateException("Duplicate recipe " + iJsonFile.getRecipeKey());
             } else {
-                this.saveRecipe(cache, ijsonGenerator.generate(), outputFile);
+                futures.add(DataProvider.saveStable(cache, ijsonGenerator.generate(), outputFile));
             }
         });
-    }
-
-    protected void saveRecipe(CachedOutput cache, JsonObject recipeJson, Path output) {
-        try {
-            DataProvider.saveStable(cache, recipeJson, output);
-        } catch (IOException ioexception) {
-            LOGGER.error("Couldn't save recipe {}", output, ioexception);
-        }
+        return CompletableFuture.allOf(futures.toArray((i) -> new CompletableFuture<?>[i]));
     }
 
     public abstract void add(Map<IJsonFile, IJSONGenerator> serializables);

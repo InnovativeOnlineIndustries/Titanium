@@ -11,8 +11,7 @@ import com.hrznstudio.titanium.block.BasicBlock;
 import com.hrznstudio.titanium.util.RayTraceUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -26,6 +25,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderHighlightEvent;
+import org.joml.Matrix4f;
 
 public class TitaniumClient {
     public static void registerModelLoader() {
@@ -49,14 +49,14 @@ public class TitaniumClient {
                     PoseStack stack = new PoseStack();
                     stack.pushPose();
                     Camera info = event.getCamera();
-                    stack.mulPose(Vector3f.XP.rotationDegrees(info.getXRot()));
-                    stack.mulPose(Vector3f.YP.rotationDegrees(info.getYRot() + 180));
+                    stack.mulPose(Axis.XP.rotationDegrees(info.getXRot()));
+                    stack.mulPose(Axis.YP.rotationDegrees(info.getYRot() + 180));
                     double d0 = info.getPosition().x();
                     double d1 = info.getPosition().y();
                     double d2 = info.getPosition().z();
                     VertexConsumer builder = event.getMultiBufferSource().getBuffer(RenderType.LINES);
                     drawShape(stack, builder, shape, blockpos.getX() - d0,
-                        blockpos.getY() - d1, blockpos.getZ() - d2,0, 0, 0, 0.5F);
+                        blockpos.getY() - d1, blockpos.getZ() - d2, 0, 0, 0, 0.5F);
                     stack.popPose();
                 }
             }

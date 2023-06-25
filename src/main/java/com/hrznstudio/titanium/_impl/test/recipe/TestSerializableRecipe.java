@@ -10,6 +10,7 @@ package com.hrznstudio.titanium._impl.test.recipe;
 import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.recipe.serializer.GenericSerializer;
 import com.hrznstudio.titanium.recipe.serializer.SerializableRecipe;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
@@ -61,7 +62,7 @@ public class TestSerializableRecipe extends SerializableRecipe {
     }
 
     @Override
-    public ItemStack assemble(Container inv) {
+    public ItemStack assemble(Container p_44001_, RegistryAccess p_267165_) {
         return this.output.copy();
     }
 
@@ -71,7 +72,12 @@ public class TestSerializableRecipe extends SerializableRecipe {
     }
 
     @Override
-    public ItemStack getResultItem() {
+    public ItemStack getResultItem(RegistryAccess p_267052_) {
+        return this.output;
+    }
+
+    @Override
+    public ItemStack getToastSymbol() {
         return this.output;
     }
 

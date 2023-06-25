@@ -13,10 +13,12 @@ public abstract class BasicScreenAddon implements IScreenAddon {
 
     private int posX;
     private int posY;
+    private boolean isFocused;
 
     protected BasicScreenAddon(int posX, int posY) {
         this.posX = posX;
         this.posY = posY;
+        this.isFocused = false;
     }
 
     @Override
@@ -44,4 +46,13 @@ public abstract class BasicScreenAddon implements IScreenAddon {
         this.posY = posY;
     }
 
+    @Override
+    public boolean isFocused() {
+        return this.isFocused;
+    }
+
+    @Override
+    public void setFocused(boolean p_265728_) {
+        this.isFocused = p_265728_;
+    }
 }

@@ -10,7 +10,7 @@ package com.hrznstudio.titanium.client.screen.container;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.container.BasicAddonContainer;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -26,8 +26,8 @@ public class BasicAddonScreen extends BasicContainerScreen<BasicAddonContainer> 
     }
 
     @Override
-    protected void renderBg(PoseStack stack, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
         this.getMenu().update();
-        super.renderBg(stack, partialTicks, mouseX, mouseY);
+        super.renderBg(guiGraphics, partialTicks, mouseX, mouseY);
     }
 }

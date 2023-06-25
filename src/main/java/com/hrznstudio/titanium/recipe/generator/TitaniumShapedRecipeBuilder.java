@@ -10,6 +10,7 @@ package com.hrznstudio.titanium.recipe.generator;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -29,14 +30,14 @@ public class TitaniumShapedRecipeBuilder extends ShapedRecipeBuilder implements 
     private boolean build;
     private boolean criterion;
 
-    public TitaniumShapedRecipeBuilder(ItemLike resultIn, int countIn) {
-        super(resultIn, countIn);
+    public TitaniumShapedRecipeBuilder(RecipeCategory recipeCategory, ItemLike resultIn, int countIn) {
+        super(recipeCategory, resultIn, countIn);
         this.resourceLocation = ForgeRegistries.ITEMS.getKey(resultIn.asItem());
         this.build = false;
         this.conditional = ConditionalRecipe.builder().addCondition(
-                and(
-                        itemExists(resourceLocation.getNamespace(), resourceLocation.getPath())
-                ));
+            and(
+                itemExists(resourceLocation.getNamespace(), resourceLocation.getPath())
+            ));
     }
 
     public static TitaniumShapedRecipeBuilder shapedRecipe(ItemLike resultIn) {
@@ -47,7 +48,7 @@ public class TitaniumShapedRecipeBuilder extends ShapedRecipeBuilder implements 
      * Creates a new builder for a shaped recipe.
      */
     public static TitaniumShapedRecipeBuilder shapedRecipe(ItemLike resultIn, int countIn) {
-        return new TitaniumShapedRecipeBuilder(resultIn, countIn);
+        return new TitaniumShapedRecipeBuilder(RecipeCategory.MISC, resultIn, countIn);
     }
 
     @Override

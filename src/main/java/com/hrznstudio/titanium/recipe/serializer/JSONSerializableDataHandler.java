@@ -100,11 +100,11 @@ public class JSONSerializableDataHandler {
             return registryKeys;
         });
         map(Ingredient.class, (type) -> {
-            if(Ingredient.EMPTY.equals(type)) {
+            if (Ingredient.EMPTY.equals(type)) {
                 return null;
             }
             return type.toJson();
-        }, CraftingHelper::getIngredient);
+        }, element -> CraftingHelper.getIngredient(element.getAsJsonObject(), true));
         map(Ingredient[].class, (type) -> {
             JsonArray array = new JsonArray();
             for (Ingredient ingredient : type) {

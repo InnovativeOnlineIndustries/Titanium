@@ -12,7 +12,7 @@ import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.component.inventory.SidedInventoryComponent;
 import com.hrznstudio.titanium.util.AssetUtil;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 
 import java.awt.*;
@@ -31,21 +31,21 @@ public class LockableOverlayAddon extends BasicScreenAddon{
     }
 
     @Override
-    public void drawBackgroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
-        this.xSize = provider.getAsset(AssetTypes.BUTTON_SIDENESS_MANAGER).getArea().width +2;
+    public void drawBackgroundLayer(GuiGraphics guiGraphics, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+        this.xSize = provider.getAsset(AssetTypes.BUTTON_SIDENESS_MANAGER).getArea().width + 2;
         this.ySize = provider.getAsset(AssetTypes.BUTTON_SIDENESS_MANAGER).getArea().height;
     }
 
     @Override
-    public void drawForegroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+    public void drawForegroundLayer(GuiGraphics guiGraphics, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         if (isMouseOver(mouseX - guiX, mouseY - guiY)) {
             int extra = 4;
             IAsset asset = provider.getAsset(AssetTypes.BUTTON_SIDENESS_MANAGER);
             Rectangle area = component.getRectangle(asset);
-            AssetUtil.drawHorizontalLine(stack, area.x, area.x + area.width + extra, area.y, component.getColor());
-            AssetUtil.drawHorizontalLine(stack, area.x, area.x + area.width + extra, area.y + area.height + extra, component.getColor());
-            AssetUtil.drawVerticalLine(stack, area.x, area.y, area.y + area.height + extra, component.getColor());
-            AssetUtil.drawVerticalLine(stack, area.x + area.width + extra, area.y, area.y + area.height + extra, component.getColor());
+            AssetUtil.drawHorizontalLine(guiGraphics, area.x, area.x + area.width + extra, area.y, component.getColor());
+            AssetUtil.drawHorizontalLine(guiGraphics, area.x, area.x + area.width + extra, area.y + area.height + extra, component.getColor());
+            AssetUtil.drawVerticalLine(guiGraphics, area.x, area.y, area.y + area.height + extra, component.getColor());
+            AssetUtil.drawVerticalLine(guiGraphics, area.x + area.width + extra, area.y, area.y + area.height + extra, component.getColor());
         }
     }
 

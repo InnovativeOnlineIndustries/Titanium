@@ -17,11 +17,9 @@ import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.VolumeSlider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -63,7 +61,7 @@ public class TwentyFourTestTile extends PoweredTile<TwentyFourTestTile> {
     @OnlyIn(Dist.CLIENT)
     public void initClient() {
         super.initClient();
-        this.addGuiAddonFactory(() -> new WidgetScreenAddon(30, 185, new VolumeSlider(Minecraft.getInstance(), 0, 0, SoundSource.HOSTILE, 120)));
+        //this.addGuiAddonFactory(() -> new WidgetScreenAddon(30, 185, new ForgeSlider(Minecraft.getInstance(), 0, 0, SoundSource.HOSTILE, 120)));
         this.addGuiAddonFactory(() -> new WidgetScreenAddon(30, -25, new EditBox(Minecraft.getInstance().font, 0, 0, 120, 20, Component.literal(""))));
     }
 

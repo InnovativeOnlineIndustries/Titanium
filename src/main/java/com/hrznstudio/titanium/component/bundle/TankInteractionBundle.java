@@ -25,11 +25,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -54,7 +54,7 @@ public class TankInteractionBundle<T extends BasicTile & IComponentHarness> impl
             .setSlotToItemStackRender(0, new ItemStack(Items.BUCKET))
             .setOutputFilter((stack, integer) -> false)
             .setSlotToColorRender(0, DyeColor.BLUE)
-            .setInputFilter((stack, integer) -> stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).isPresent())
+            .setInputFilter((stack, integer) -> stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).isPresent())
             .setComponentHarness(componentHarness);
         this.output = new InventoryComponent<T>("tank_output", posX + 5, posY + 60, 1)
             .setSlotToItemStackRender(0, new ItemStack(Items.BUCKET))
@@ -64,7 +64,7 @@ public class TankInteractionBundle<T extends BasicTile & IComponentHarness> impl
         this.bar = new ProgressBarComponent<T>(posX + 5, posY + 30, maxProgress)
             .setBarDirection(ProgressBarComponent.BarDirection.ARROW_DOWN)
             .setCanReset(t -> true)
-            .setCanIncrease(t -> !this.input.getStackInSlot(0).isEmpty() && this.input.getStackInSlot(0).getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).isPresent() && !getOutputStack(false).isEmpty() && (this.output.getStackInSlot(0).isEmpty() || ItemHandlerHelper.canItemStacksStack(getOutputStack(false), this.output.getStackInSlot(0))))
+            .setCanIncrease(t -> !this.input.getStackInSlot(0).isEmpty() && this.input.getStackInSlot(0).getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).isPresent() && !getOutputStack(false).isEmpty() && (this.output.getStackInSlot(0).isEmpty() || ItemHandlerHelper.canItemStacksStack(getOutputStack(false), this.output.getStackInSlot(0))))
             .setOnFinishWork(() -> {
                 ItemStack result = getOutputStack(false);
                 if (ItemHandlerHelper.insertItem(this.output, result, true).isEmpty()) {

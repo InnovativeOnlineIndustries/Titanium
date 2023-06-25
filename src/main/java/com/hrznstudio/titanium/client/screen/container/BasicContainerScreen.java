@@ -15,9 +15,8 @@ import com.hrznstudio.titanium.client.screen.addon.AssetScreenAddon;
 import com.hrznstudio.titanium.client.screen.addon.WidgetScreenAddon;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.container.BasicAddonContainer;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -29,7 +28,6 @@ import org.lwjgl.glfw.GLFW;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class BasicContainerScreen<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> implements IScreenAddonConsumer {
@@ -76,44 +74,43 @@ public class BasicContainerScreen<T extends AbstractContainerMenu> extends Abstr
 
     // drawGuiContainerBackgroundLayer
     @Override
-    protected void renderBg(PoseStack stack, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
         // renderBackground
-        this.renderBackground(stack);
+        this.renderBackground(guiGraphics);
         // Width
         xCenter = (width - imageWidth) / 2;
         // Height
         yCenter = (height - imageHeight) / 2;
         //BG RENDERING
-        RenderSystem.setShaderColor(1, 1, 1, 1);
-        RenderSystem.setShaderTexture(0, IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND).getResourceLocation());
-        blit(stack, xCenter, yCenter, 0, 0, imageWidth, imageHeight);
-        this.font.draw(stack, title.getString(), getTitleX(xCenter), getTitleY(yCenter), getTitleColor());
+        guiGraphics.setColor(1, 1, 1, 1);
+        guiGraphics.blit(IAssetProvider.getAsset(assetProvider, AssetTypes.BACKGROUND).getResourceLocation(), xCenter, yCenter, 0, 0, imageWidth, imageHeight);
+        guiGraphics.drawString(this.font, title.getString(), getTitleX(xCenter), getTitleY(yCenter), getTitleColor(), false);
         addons.stream().filter(IScreenAddon::isBackground).forEach(iGuiAddon -> {
-            iGuiAddon.drawBackgroundLayer(stack, this, assetProvider, xCenter, yCenter, mouseX, mouseY, partialTicks);
+            iGuiAddon.drawBackgroundLayer(guiGraphics, this, assetProvider, xCenter, yCenter, mouseX, mouseY, partialTicks);
         });
         addons.stream().filter(iScreenAddon -> !iScreenAddon.isBackground()).forEach(iGuiAddon -> {
-            iGuiAddon.drawBackgroundLayer(stack, this, assetProvider, xCenter, yCenter, mouseX, mouseY, partialTicks);
+            iGuiAddon.drawBackgroundLayer(guiGraphics, this, assetProvider, xCenter, yCenter, mouseX, mouseY, partialTicks);
         });
     }
 
     // drawGuiContainerForegroundLayer
     @Override
-    protected void renderLabels(PoseStack stack, int mouseX, int mouseY) {
+    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         addons.forEach(iGuiAddon -> {
             if (iGuiAddon instanceof AssetScreenAddon assetGuiAddon) {
                 if (!assetGuiAddon.isBackground()) {
-                    iGuiAddon.drawForegroundLayer(stack, this, assetProvider, xCenter, yCenter, mouseX, mouseY, minecraft.getDeltaFrameTime());
+                    iGuiAddon.drawForegroundLayer(guiGraphics, this, assetProvider, xCenter, yCenter, mouseX, mouseY, minecraft.getDeltaFrameTime());
                 }
             } else {
-                iGuiAddon.drawForegroundLayer(stack, this, assetProvider, xCenter, yCenter, mouseX, mouseY, minecraft.getDeltaFrameTime());
+                iGuiAddon.drawForegroundLayer(guiGraphics, this, assetProvider, xCenter, yCenter, mouseX, mouseY, minecraft.getDeltaFrameTime());
             }
         });
         // renderHoveredToolTip
-        renderTooltip(stack, mouseX - xCenter, mouseY - yCenter);
+        renderTooltip(guiGraphics, mouseX - xCenter, mouseY - yCenter);
         for (IScreenAddon iScreenAddon : addons) {
             if (iScreenAddon.isMouseOver(mouseX - xCenter, mouseY - yCenter) && !iScreenAddon.getTooltipLines().isEmpty()) {
                 // renderTooltip
-                renderTooltip(stack, iScreenAddon.getTooltipLines(), Optional.empty(), mouseX - xCenter, mouseY - yCenter);
+                guiGraphics.renderComponentTooltip(this.font, iScreenAddon.getTooltipLines(), mouseX - xCenter, mouseY - yCenter);
             }
         }
     }

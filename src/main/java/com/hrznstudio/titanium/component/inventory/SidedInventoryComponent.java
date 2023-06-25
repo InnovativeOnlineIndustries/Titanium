@@ -26,7 +26,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -80,7 +80,7 @@ public class SidedInventoryComponent<T extends IComponentHarness> extends Invent
     }
 
     public SidedInventoryComponent<T> setColor(DyeColor color) {
-        this.color = color.getMaterialColor().col;
+        this.color = color.getMapColor().col;
         return this;
     }
 
@@ -127,9 +127,9 @@ public class SidedInventoryComponent<T extends IComponentHarness> extends Invent
                 Direction real = FacingUtil.getFacingFromSide(blockFacing, sideness);
                 BlockEntity entity = world.getBlockEntity(pos.relative(real));
                 if (entity != null) {
-                    boolean hasWorked = entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, real.getOpposite())
-                            .map(iItemHandler -> transfer(sideness, this, iItemHandler, workAmount))
-                            .orElse(false);
+                    boolean hasWorked = entity.getCapability(ForgeCapabilities.ITEM_HANDLER, real.getOpposite())
+                        .map(iItemHandler -> transfer(sideness, this, iItemHandler, workAmount))
+                        .orElse(false);
                     if (hasWorked) {
                         return true;
                     }
@@ -141,9 +141,9 @@ public class SidedInventoryComponent<T extends IComponentHarness> extends Invent
                 Direction real = FacingUtil.getFacingFromSide(blockFacing, sideness);
                 BlockEntity entity = world.getBlockEntity(pos.relative(real));
                 if (entity != null) {
-                    boolean hasWorked = entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, real.getOpposite())
-                            .map(iItemHandler -> transfer(sideness, iItemHandler, this, workAmount))
-                            .orElse(false);
+                    boolean hasWorked = entity.getCapability(ForgeCapabilities.ITEM_HANDLER, real.getOpposite())
+                        .map(iItemHandler -> transfer(sideness, iItemHandler, this, workAmount))
+                        .orElse(false);
                     if (hasWorked) {
                         return true;
                     }

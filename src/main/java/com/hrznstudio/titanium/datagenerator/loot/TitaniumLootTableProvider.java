@@ -8,43 +8,33 @@
 package com.hrznstudio.titanium.datagenerator.loot;
 
 import com.hrznstudio.titanium.datagenerator.loot.block.BasicBlockLootTables;
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.loot.BlockLoot;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.ValidationContext;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraftforge.common.util.NonNullLazy;
 
-import javax.annotation.Nonnull;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
+import java.util.*;
 
 public class TitaniumLootTableProvider extends LootTableProvider {
     private final NonNullLazy<List<Block>> blocksToProcess;
 
     public TitaniumLootTableProvider(DataGenerator dataGenerator, NonNullLazy<List<Block>> blocks) {
-        super(dataGenerator);
+        super(dataGenerator.getPackOutput(), new HashSet<>(), new ArrayList<>());
         this.blocksToProcess = blocks;
     }
 
     @Override
-    @Nonnull
-    protected List<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>>, LootContextParamSet>> getTables() {
+    public List<SubProviderEntry> getTables() {
         return Collections.singletonList(
-            Pair.of(this::createBlockLootTables, LootContextParamSets.BLOCK)
+            new SubProviderEntry(this::createBlockLootTables, LootContextParamSets.BLOCK)
         );
     }
 
-    protected BlockLoot createBlockLootTables() {
+    protected BasicBlockLootTables createBlockLootTables() {
         return new BasicBlockLootTables(blocksToProcess);
     }
 

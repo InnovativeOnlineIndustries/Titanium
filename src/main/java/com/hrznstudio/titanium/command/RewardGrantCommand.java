@@ -40,7 +40,7 @@ public class RewardGrantCommand {
                 RewardWorldStorage rewardWorldStorage = RewardWorldStorage.get(context.getSource().getLevel());
                 rewardWorldStorage.addFree(resourceLocation);
                 rewardWorldStorage.setDirty();
-                context.getSource().sendSuccess(Component.translatable("titanium.rewards.granted_success"), true);
+                context.getSource().sendSuccess(() -> Component.translatable("titanium.rewards.granted_success"), true);
                 return;
             }
         }

@@ -18,10 +18,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.Containers;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -45,7 +42,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public abstract class BasicBlock extends Block implements IRecipeProvider, IBlockLootTableProvider {
-    private CreativeModeTab itemGroup = CreativeModeTab.TAB_SEARCH;
+    private CreativeModeTab itemGroup = CreativeModeTabs.getDefaultTab();
     private final String name;
 
     public BasicBlock(String name, Properties properties) {
@@ -80,7 +77,7 @@ public abstract class BasicBlock extends Block implements IRecipeProvider, IBloc
     }
 
     public Supplier<Item> getItemBlockFactory() {
-        return () -> (Item) new BlockItem(this, new Item.Properties().tab(this.itemGroup));
+        return () -> (Item) new BlockItem(this, new Item.Properties());
     }
 
     public List<VoxelShape> getBoundingBoxes(BlockState state, BlockGetter source, BlockPos pos) {

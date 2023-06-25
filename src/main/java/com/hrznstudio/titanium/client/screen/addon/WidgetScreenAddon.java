@@ -8,7 +8,7 @@
 package com.hrznstudio.titanium.client.screen.addon;
 
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
 
@@ -24,21 +24,21 @@ public class WidgetScreenAddon extends BasicScreenAddon {
 
     @Override
     public void init(int screenX, int screenY) {
-        this.widget.x = screenX + getPosX();
-        this.widget.y = screenY + getPosY();
+        this.widget.setX(screenX + getPosX());
+        this.widget.setY(screenY + getPosY());
     }
 
     @Override
-    public void drawBackgroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackgroundLayer(GuiGraphics guiGraphics, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
     }
 
     @Override
-    public void drawForegroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
-        widget.x = getPosX();
-        widget.y = getPosY();
-        widget.render(stack, mouseX, mouseY, partialTicks);
-        widget.x = guiX + getPosX();
-        widget.y = guiY + getPosY();
+    public void drawForegroundLayer(GuiGraphics guiGraphics, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+        widget.setX(getPosX());
+        widget.setY(getPosY());
+        widget.render(guiGraphics, mouseX, mouseY, partialTicks);
+        widget.setX(guiX + getPosX());
+        widget.setY(guiY + getPosY());
     }
 
     @Override
@@ -92,8 +92,13 @@ public class WidgetScreenAddon extends BasicScreenAddon {
     }
 
     @Override
-    public boolean changeFocus(boolean focus) {
-        return widget.changeFocus(focus);
+    public boolean isFocused() {
+        return widget.isFocused();
+    }
+
+    @Override
+    public void setFocused(boolean focus) {
+        widget.setFocused(focus);
     }
 
     @Override

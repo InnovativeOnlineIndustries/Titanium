@@ -7,7 +7,8 @@
 
 package com.hrznstudio.titanium.datagenerator.loot.block;
 
-import net.minecraft.data.loot.BlockLoot;
+import net.minecraft.data.loot.BlockLootSubProvider;
+import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootPool;
@@ -17,24 +18,17 @@ import net.minecraft.world.level.storage.loot.functions.CopyNbtFunction;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraftforge.common.util.NonNullLazy;
 
+import java.util.HashSet;
 import java.util.List;
 
-public class BasicBlockLootTables extends BlockLoot {
+public class BasicBlockLootTables extends BlockLootSubProvider {
     private final NonNullLazy<List<Block>> blocksToProcess;
 
     public BasicBlockLootTables(NonNullLazy<List<Block>> blocksToProcess) {
+        super(new HashSet<>(), FeatureFlagSet.of());
         this.blocksToProcess = blocksToProcess;
     }
 
-    @Override
-    public void addTables() {
-        blocksToProcess.get()
-            .forEach(block -> {
-                if (block instanceof IBlockLootTableProvider) {
-                    this.add(block, ((IBlockLootTableProvider) block).getLootTable(this));
-                }
-            });
-    }
 
     public LootTable.Builder droppingNothing() {
         return LootTable.lootTable();
@@ -52,6 +46,16 @@ public class BasicBlockLootTables extends BlockLoot {
             .withPool(applyExplosionCondition(itemProvider, LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(LootItem.lootTableItem(itemProvider).apply(nbtBuilder))));
+    }
+
+    @Override
+    protected void generate() {
+        blocksToProcess.get()
+            .forEach(block -> {
+                if (block instanceof IBlockLootTableProvider) {
+                    this.add(block, ((IBlockLootTableProvider) block).getLootTable(this));
+                }
+            });
     }
 
     @Override

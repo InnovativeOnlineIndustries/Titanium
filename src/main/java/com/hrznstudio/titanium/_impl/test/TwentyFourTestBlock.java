@@ -11,8 +11,8 @@ import com.hrznstudio.titanium._impl.test.tile.TwentyFourTestTile;
 import com.hrznstudio.titanium.block.RotatableBlock;
 import com.hrznstudio.titanium.datagenerator.loot.block.BasicBlockLootTables;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraftforge.registries.RegistryObject;
 import org.apache.commons.lang3.tuple.Pair;
@@ -24,7 +24,7 @@ public class TwentyFourTestBlock extends RotatableBlock<TwentyFourTestTile> {
     public static Pair<RegistryObject<Block>, RegistryObject<BlockEntityType<?>>> TEST;
 
     public TwentyFourTestBlock() {
-        super("twenty_four_test", Properties.of(Material.STONE), TwentyFourTestTile.class);
+        super("twenty_four_test", Properties.copy(Blocks.STONE), TwentyFourTestTile.class);
     }
 
 

@@ -9,6 +9,7 @@ package com.hrznstudio.titanium.recipe.generator;
 
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -19,17 +20,17 @@ public class TitaniumShapelessRecipeBuilder extends ShapelessRecipeBuilder {
 
     private boolean criterion;
 
-    public TitaniumShapelessRecipeBuilder(ItemLike resultIn, int countIn) {
-        super(resultIn, countIn);
+    public TitaniumShapelessRecipeBuilder(RecipeCategory recipeCategory, ItemLike resultIn, int countIn) {
+        super(recipeCategory, resultIn, countIn);
         this.criterion = false;
     }
 
     public static TitaniumShapelessRecipeBuilder shapelessRecipe(ItemLike resultIn) {
-        return new TitaniumShapelessRecipeBuilder(resultIn, 1);
+        return new TitaniumShapelessRecipeBuilder(RecipeCategory.MISC, resultIn, 1);
     }
 
     public static TitaniumShapelessRecipeBuilder shapelessRecipe(ItemLike resultIn, int countIn) {
-        return new TitaniumShapelessRecipeBuilder(resultIn, countIn);
+        return new TitaniumShapelessRecipeBuilder(RecipeCategory.MISC, resultIn, countIn);
     }
 
     @Override

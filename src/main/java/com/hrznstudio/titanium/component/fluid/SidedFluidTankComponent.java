@@ -26,8 +26,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
@@ -105,9 +105,9 @@ public class SidedFluidTankComponent<T extends IComponentHarness> extends FluidT
                 Direction real = FacingUtil.getFacingFromSide(blockFacing, sideness);
                 BlockEntity entity = world.getBlockEntity(pos.relative(real));
                 if (entity != null) {
-                    boolean hasWorked = entity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, real.getOpposite())
-                            .map(iFluidHandler -> transfer(this, iFluidHandler, workAmount))
-                            .orElse(false);
+                    boolean hasWorked = entity.getCapability(ForgeCapabilities.FLUID_HANDLER, real.getOpposite())
+                        .map(iFluidHandler -> transfer(this, iFluidHandler, workAmount))
+                        .orElse(false);
                     if (hasWorked) {
                         return true;
                     }
@@ -119,9 +119,9 @@ public class SidedFluidTankComponent<T extends IComponentHarness> extends FluidT
                 Direction real = FacingUtil.getFacingFromSide(blockFacing, sideness);
                 BlockEntity entity = world.getBlockEntity(pos.relative(real));
                 if (entity != null) {
-                    boolean hasWorked = entity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, real.getOpposite())
-                            .map(iFluidHandler -> transfer(iFluidHandler, this, workAmount))
-                            .orElse(false);
+                    boolean hasWorked = entity.getCapability(ForgeCapabilities.FLUID_HANDLER, real.getOpposite())
+                        .map(iFluidHandler -> transfer(iFluidHandler, this, workAmount))
+                        .orElse(false);
                     if (hasWorked) {
                         return true;
                     }

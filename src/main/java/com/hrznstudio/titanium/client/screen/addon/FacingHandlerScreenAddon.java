@@ -26,10 +26,9 @@ import com.hrznstudio.titanium.util.AssetUtil;
 import com.hrznstudio.titanium.util.FacingUtil;
 import com.hrznstudio.titanium.util.LangUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -92,36 +91,36 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon {
     }
 
     @Override
-    public void drawBackgroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackgroundLayer(GuiGraphics guiGraphics, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         IBackgroundAsset backgroundInfo = provider.getAsset(AssetTypes.BACKGROUND);
         inventoryPoint = backgroundInfo.getInventoryPosition();
         this.xSize = provider.getAsset(AssetTypes.BUTTON_SIDENESS_MANAGER).getArea().width;
         this.ySize = provider.getAsset(AssetTypes.BUTTON_SIDENESS_MANAGER).getArea().height;
         RenderSystem.setShaderColor(1, 1, 1, 1);
-        AssetUtil.drawAsset(stack, screen, provider.getAsset(AssetTypes.BUTTON_SIDENESS_MANAGER), guiX + getPosX(), guiY + getPosY());
+        AssetUtil.drawAsset(guiGraphics, screen, provider.getAsset(AssetTypes.BUTTON_SIDENESS_MANAGER), guiX + getPosX(), guiY + getPosY());
         int offset = 2;
-        GuiComponent.fill(stack, guiX + getPosX() + offset, guiY + getPosY() + offset, guiX + getPosX() + getXSize() - offset, guiY + getPosY() + getYSize() - offset, handler.getColor());
+        guiGraphics.fill(guiX + getPosX() + offset, guiY + getPosY() + offset, guiX + getPosX() + getXSize() - offset, guiY + getPosY() + getYSize() - offset, handler.getColor());
         RenderSystem.setShaderColor(1, 1, 1, 1);
         if (isClicked()) {
             //draw the overlay for the slots
-            screen.blit(stack, guiX + backgroundInfo.getInventoryPosition().x - 1, guiY + backgroundInfo.getInventoryPosition().y - 1, 56, 185, 162, 54);
-            screen.blit(stack, guiX + backgroundInfo.getInventoryPosition().x - 1, guiY + backgroundInfo.getInventoryPosition().y - 1 + 18*3 +4, 56, 185, 162, 17);
-            screen.blit(stack, guiX + backgroundInfo.getInventoryPosition().x - 1, guiY + backgroundInfo.getInventoryPosition().y - 1 + 18*3 +4 + 17, 56, 185 +53, 162, 1);
+            guiGraphics.blit(backgroundInfo.getResourceLocation(), guiX + backgroundInfo.getInventoryPosition().x - 1, guiY + backgroundInfo.getInventoryPosition().y - 1, 56, 185, 162, 54);
+            guiGraphics.blit(backgroundInfo.getResourceLocation(), guiX + backgroundInfo.getInventoryPosition().x - 1, guiY + backgroundInfo.getInventoryPosition().y - 1 + 18 * 3 + 4, 56, 185, 162, 17);
+            guiGraphics.blit(backgroundInfo.getResourceLocation(), guiX + backgroundInfo.getInventoryPosition().x - 1, guiY + backgroundInfo.getInventoryPosition().y - 1 + 18 * 3 + 4 + 17, 56, 185 + 53, 162, 1);
         }
     }
 
     @Override
-    public void drawForegroundLayer(PoseStack stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+    public void drawForegroundLayer(GuiGraphics guiGraphics, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         if (isMouseOver(mouseX - guiX, mouseY - guiY)) {
-            AssetUtil.drawSelectingOverlay(stack, getPosX() + 1, getPosY() + 1, getPosX() + getXSize() - 1, getPosY() + getYSize() - 1);
+            AssetUtil.drawSelectingOverlay(guiGraphics, getPosX() + 1, getPosY() + 1, getPosX() + getXSize() - 1, getPosY() + getYSize() - 1);
         }
         if (isMouseOver(mouseX - guiX, mouseY - guiY) || isClicked()) {
             IAsset asset = provider.getAsset(assetType);
             Rectangle area = handler.getRectangle(asset);
-            AssetUtil.drawHorizontalLine(stack, area.x, area.x + area.width, area.y, handler.getColor());
-            AssetUtil.drawHorizontalLine(stack, area.x, area.x + area.width, area.y + area.height, handler.getColor());
-            AssetUtil.drawVerticalLine(stack, area.x, area.y, area.y + area.height, handler.getColor());
-            AssetUtil.drawVerticalLine(stack, area.x + area.width, area.y, area.y + area.height, handler.getColor());
+            AssetUtil.drawHorizontalLine(guiGraphics, area.x, area.x + area.width, area.y, handler.getColor());
+            AssetUtil.drawHorizontalLine(guiGraphics, area.x, area.x + area.width, area.y + area.height, handler.getColor());
+            AssetUtil.drawVerticalLine(guiGraphics, area.x, area.y, area.y + area.height, handler.getColor());
+            AssetUtil.drawVerticalLine(guiGraphics, area.x + area.width, area.y, area.y + area.height, handler.getColor());
         }
     }
 

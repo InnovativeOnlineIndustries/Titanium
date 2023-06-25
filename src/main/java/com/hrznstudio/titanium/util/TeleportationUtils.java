@@ -7,7 +7,6 @@
 
 package com.hrznstudio.titanium.util;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerChunkCache;
@@ -17,6 +16,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.portal.PortalInfo;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.ITeleporter;
+import org.joml.Vector3f;
 
 import java.util.List;
 import java.util.function.Function;
@@ -25,14 +25,14 @@ public class TeleportationUtils {
 
 
     public static Entity teleportEntity(Entity entity, ResourceKey<Level> dimension, double xCoord, double yCoord, double zCoord, float yaw, float pitch) {
-        return teleportEntityTo(entity, new BlockPos(xCoord, yCoord, zCoord), dimension, yaw ,pitch);
+        return teleportEntityTo(entity, new Vector3f((float) xCoord, (float) yCoord, (float) zCoord), dimension, yaw, pitch);
     }
 
-    public static Entity teleportEntityTo(Entity entity, BlockPos target, ResourceKey<Level> destinationDimension, float yaw, float pitch) {
+    public static Entity teleportEntityTo(Entity entity, Vector3f target, ResourceKey<Level> destinationDimension, float yaw, float pitch) {
         if (entity.getCommandSenderWorld().dimension() == destinationDimension) {
             entity.setYRot(yaw);
             entity.setXRot(pitch);
-            entity.teleportTo(target.getX() + 0.5, target.getY(), target.getZ() + 0.5);
+            entity.teleportTo(target.x() + 0.5, target.y(), target.z() + 0.5);
 
             if (!entity.getPassengers().isEmpty()) {
                 //Force re-apply any passengers so that players don't get "stuck" outside what they may be riding
@@ -42,7 +42,7 @@ public class TeleportationUtils {
         } else {
             ServerLevel newWorld = ((ServerLevel) entity.getCommandSenderWorld()).getServer().getLevel(destinationDimension);
             if (newWorld != null) {
-                Vec3 destination = new Vec3(target.getX() + 0.5, target.getY(), target.getZ() + 0.5);
+                Vec3 destination = new Vec3(target.x() + 0.5, target.y(), target.z() + 0.5);
                 //Note: We grab the passengers here instead of in placeEntity as changeDimension starts by removing any passengers
                 List<Entity> passengers = entity.getPassengers();
                 return entity.changeDimension(newWorld, new ITeleporter() {

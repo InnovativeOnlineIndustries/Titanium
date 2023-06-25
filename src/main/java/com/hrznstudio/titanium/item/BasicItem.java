@@ -11,10 +11,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.glfw.GLFW;
@@ -27,7 +24,7 @@ import java.util.List;
 @ParametersAreNonnullByDefault
 public class BasicItem extends Item {
 
-    private CreativeModeTab itemGroup = CreativeModeTab.TAB_SEARCH;
+    private CreativeModeTab itemGroup = CreativeModeTabs.getDefaultTab();
 
     public BasicItem(Properties properties) {
         super(properties);
