@@ -177,7 +177,6 @@ public interface IScreenAddon extends GuiEventListener {
      * Called when Screen Focus changes
      *
      * @param focus If the screen the addon is part of is focused
-     * @return Returns true if the widget is part of a focused screen
      */
     @Override
     void setFocused(boolean focus);
