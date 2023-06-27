@@ -8,6 +8,7 @@
 package com.hrznstudio.titanium.datagenerator.loot.block;
 
 import net.minecraft.data.loot.BlockLootSubProvider;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
@@ -20,6 +21,7 @@ import net.minecraftforge.common.util.NonNullLazy;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 public class BasicBlockLootTables extends BlockLootSubProvider {
     private final NonNullLazy<List<Block>> blocksToProcess;
@@ -56,6 +58,11 @@ public class BasicBlockLootTables extends BlockLootSubProvider {
                     this.add(block, ((IBlockLootTableProvider) block).getLootTable(this));
                 }
             });
+    }
+
+    @Override
+    public void generate(BiConsumer<ResourceLocation, LootTable.Builder> p_249322_) {
+        this.generate();
     }
 
     @Override

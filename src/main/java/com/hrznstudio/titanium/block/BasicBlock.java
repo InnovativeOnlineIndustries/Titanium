@@ -13,6 +13,7 @@ import com.hrznstudio.titanium.block.tile.ActiveTile;
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.hrznstudio.titanium.datagenerator.loot.block.BasicBlockLootTables;
 import com.hrznstudio.titanium.datagenerator.loot.block.IBlockLootTableProvider;
+import com.hrznstudio.titanium.tab.AdvancedTitaniumTab;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -42,7 +43,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public abstract class BasicBlock extends Block implements IRecipeProvider, IBlockLootTableProvider {
-    private CreativeModeTab itemGroup = CreativeModeTabs.getDefaultTab();
+    private AdvancedTitaniumTab itemGroup = null;
     private final String name;
 
     public BasicBlock(String name, Properties properties) {
@@ -107,11 +108,11 @@ public abstract class BasicBlock extends Block implements IRecipeProvider, IBloc
         return closestHit;
     }
 
-    public CreativeModeTab getItemGroup() {
+    public AdvancedTitaniumTab getItemGroup() {
         return itemGroup;
     }
 
-    public void setItemGroup(CreativeModeTab itemGroup) {
+    public void setItemGroup(AdvancedTitaniumTab itemGroup) {
         this.itemGroup = itemGroup;
     }
 

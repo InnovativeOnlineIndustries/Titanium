@@ -127,9 +127,9 @@ public class Titanium extends ModuleController {
                     .isPresent())
                 .collect(Collectors.toList())
         );
-        event.getGenerator().addProvider(event.includeClient(), new BlockItemModelGeneratorProvider(event.getGenerator(), MODID, blocksToProcess));
-        event.getGenerator().addProvider(event.includeServer(), new TitaniumLootTableProvider(event.getGenerator(), blocksToProcess));
-        event.getGenerator().addProvider(event.includeServer(), new JsonRecipeSerializerProvider(event.getGenerator(), MODID));
+        //event.getGenerator().addProvider(event.includeClient(), new BlockItemModelGeneratorProvider(event.getGenerator(), MODID, blocksToProcess));
+        //event.getGenerator().addProvider(event.includeServer(), new TitaniumLootTableProvider(event.getGenerator(), blocksToProcess));
+        //event.getGenerator().addProvider(event.includeServer(), new JsonRecipeSerializerProvider(event.getGenerator(), MODID));
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {

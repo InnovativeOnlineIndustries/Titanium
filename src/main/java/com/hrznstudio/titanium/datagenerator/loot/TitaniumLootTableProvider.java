@@ -42,4 +42,6 @@ public class TitaniumLootTableProvider extends LootTableProvider {
     protected void validate(Map<ResourceLocation, LootTable> map, ValidationContext validationtracker) {
         //super.validate(map, validationtracker);
     }
+
+
 }

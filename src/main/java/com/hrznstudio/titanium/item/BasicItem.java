@@ -7,6 +7,7 @@
 
 package com.hrznstudio.titanium.item;
 
+import com.hrznstudio.titanium.tab.AdvancedTitaniumTab;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -24,7 +25,7 @@ import java.util.List;
 @ParametersAreNonnullByDefault
 public class BasicItem extends Item {
 
-    private CreativeModeTab itemGroup = CreativeModeTabs.getDefaultTab();
+    private AdvancedTitaniumTab itemGroup = null;
 
     public BasicItem(Properties properties) {
         super(properties);
@@ -60,7 +61,7 @@ public class BasicItem extends Item {
         return false;
     }
 
-    public void setItemGroup(CreativeModeTab itemGroup) {
+    public void setItemGroup(AdvancedTitaniumTab itemGroup) {
         this.itemGroup = itemGroup;
     }
 
