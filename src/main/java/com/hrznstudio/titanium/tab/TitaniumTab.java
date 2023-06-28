@@ -7,25 +7,29 @@
 
 package com.hrznstudio.titanium.tab;
 
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 public class TitaniumTab {
-    protected Supplier<ItemStack> stackSupplier;
 
-    public TitaniumTab(String label, Supplier<ItemStack> stackSupplier) {
+    private List<Item> tabList;
+    private ResourceLocation resourceLocation;
 
-        this.stackSupplier = stackSupplier;
+    public TitaniumTab(ResourceLocation resourceLocation) {
+        this.resourceLocation = resourceLocation;
+        this.tabList = new ArrayList<>();
     }
 
-
-    public ItemStack makeIcon() {
-        return stackSupplier.get();
+    public List<Item> getTabList() {
+        return tabList;
     }
 
-
-    public ItemStack getIconItem() {
-        return stackSupplier.get();
+    public ResourceLocation getResourceLocation() {
+        return resourceLocation;
     }
 }

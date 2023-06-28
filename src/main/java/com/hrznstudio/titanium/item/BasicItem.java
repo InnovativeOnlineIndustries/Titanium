@@ -7,7 +7,7 @@
 
 package com.hrznstudio.titanium.item;
 
-import com.hrznstudio.titanium.tab.AdvancedTitaniumTab;
+import com.hrznstudio.titanium.tab.TitaniumTab;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -25,7 +25,7 @@ import java.util.List;
 @ParametersAreNonnullByDefault
 public class BasicItem extends Item {
 
-    private AdvancedTitaniumTab itemGroup = null;
+    private TitaniumTab itemGroup = null;
 
     public BasicItem(Properties properties) {
         super(properties);
@@ -61,8 +61,9 @@ public class BasicItem extends Item {
         return false;
     }
 
-    public void setItemGroup(AdvancedTitaniumTab itemGroup) {
+    public void setItemGroup(TitaniumTab itemGroup) {
         this.itemGroup = itemGroup;
+        this.itemGroup.getTabList().add(this);
     }
 
     public enum Key implements StringRepresentable {

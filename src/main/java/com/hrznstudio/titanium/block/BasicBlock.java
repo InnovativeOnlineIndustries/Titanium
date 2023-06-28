@@ -13,7 +13,7 @@ import com.hrznstudio.titanium.block.tile.ActiveTile;
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.hrznstudio.titanium.datagenerator.loot.block.BasicBlockLootTables;
 import com.hrznstudio.titanium.datagenerator.loot.block.IBlockLootTableProvider;
-import com.hrznstudio.titanium.tab.AdvancedTitaniumTab;
+import com.hrznstudio.titanium.tab.TitaniumTab;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -43,7 +43,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public abstract class BasicBlock extends Block implements IRecipeProvider, IBlockLootTableProvider {
-    private AdvancedTitaniumTab itemGroup = null;
+    private TitaniumTab itemGroup = null;
     private final String name;
 
     public BasicBlock(String name, Properties properties) {
@@ -77,10 +77,6 @@ public abstract class BasicBlock extends Block implements IRecipeProvider, IBloc
         return super.getCollisionShape(state, world, pos, selectionContext);
     }
 
-    public Supplier<Item> getItemBlockFactory() {
-        return () -> (Item) new BlockItem(this, new Item.Properties());
-    }
-
     public List<VoxelShape> getBoundingBoxes(BlockState state, BlockGetter source, BlockPos pos) {
         return Collections.emptyList();
     }
@@ -108,11 +104,11 @@ public abstract class BasicBlock extends Block implements IRecipeProvider, IBloc
         return closestHit;
     }
 
-    public AdvancedTitaniumTab getItemGroup() {
+    public TitaniumTab getItemGroup() {
         return itemGroup;
     }
 
-    public void setItemGroup(AdvancedTitaniumTab itemGroup) {
+    public void setItemGroup(TitaniumTab itemGroup) {
         this.itemGroup = itemGroup;
     }
 

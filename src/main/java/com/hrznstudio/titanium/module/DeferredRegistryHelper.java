@@ -9,6 +9,7 @@ package com.hrznstudio.titanium.module;
 
 import com.hrznstudio.titanium.block.BasicBlock;
 import com.hrznstudio.titanium.block.BasicTileBlock;
+import com.hrznstudio.titanium.tab.TitaniumTab;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
@@ -22,6 +23,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -78,10 +80,13 @@ public class DeferredRegistryHelper {
         return deferredRegister.register(name, object);
     }
 
-    public RegistryObject<Block> registerBlockWithItem(String name, Supplier<? extends BasicBlock> blockSupplier) {
+    public RegistryObject<Block> registerBlockWithItem(String name, Supplier<? extends BasicBlock> blockSupplier, @Nullable TitaniumTab tab) {
         RegistryObject<Block> blockRegistryObject = registerGeneric(ForgeRegistries.BLOCKS.getRegistryKey(), name, blockSupplier::get);
-        var object = registerGeneric(ForgeRegistries.ITEMS.getRegistryKey(), name, () -> new BlockItem(blockRegistryObject.get(), new Item.Properties()));
-        //TODO Creative tab
+        registerGeneric(ForgeRegistries.ITEMS.getRegistryKey(), name, () -> {
+            var item = new BlockItem(blockRegistryObject.get(), new Item.Properties());
+            if (tab != null) tab.getTabList().add(item);
+            return item;
+        });
         return blockRegistryObject;
     }
 
@@ -106,8 +111,8 @@ public class DeferredRegistryHelper {
         return block;
     }
 
-    public Pair<RegistryObject<Block>, RegistryObject<BlockEntityType<?>>> registerBlockWithTile(String name, Supplier<BasicTileBlock<?>> blockSupplier){
-        RegistryObject<Block> blockRegistryObject = registerBlockWithItem(name, blockSupplier);
+    public Pair<RegistryObject<Block>, RegistryObject<BlockEntityType<?>>> registerBlockWithTile(String name, Supplier<BasicTileBlock<?>> blockSupplier, @Nullable TitaniumTab tab){
+        RegistryObject<Block> blockRegistryObject = registerBlockWithItem(name, blockSupplier, tab);
         return Pair.of(blockRegistryObject, registerBlockEntityType(name, () -> BlockEntityType.Builder.of(((BasicTileBlock<?>)blockRegistryObject.get()).getTileEntityFactory(), blockRegistryObject.get()).build(null)));
     }
 
