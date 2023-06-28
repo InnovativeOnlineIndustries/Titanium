@@ -11,6 +11,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.flag.FeatureFlagSet;
+import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
@@ -31,7 +32,7 @@ public class BasicBlockLootTables extends BlockLootSubProvider {
     private final NonNullLazy<List<Block>> blocksToProcess;
 
     public BasicBlockLootTables(NonNullLazy<List<Block>> blocksToProcess) {
-        super(new HashSet<>(), FeatureFlagSet.of());
+        super(new HashSet<>(), FeatureFlags.REGISTRY.allFlags());
         this.blocksToProcess = blocksToProcess;
     }
 
