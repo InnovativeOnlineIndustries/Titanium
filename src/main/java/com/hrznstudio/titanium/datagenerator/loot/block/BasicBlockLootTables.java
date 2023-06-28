@@ -7,11 +7,13 @@
 
 package com.hrznstudio.titanium.datagenerator.loot.block;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
@@ -21,6 +23,8 @@ import net.minecraftforge.common.util.NonNullLazy;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 import java.util.function.BiConsumer;
 
 public class BasicBlockLootTables extends BlockLootSubProvider {
@@ -63,6 +67,22 @@ public class BasicBlockLootTables extends BlockLootSubProvider {
     @Override
     public void generate(BiConsumer<ResourceLocation, LootTable.Builder> p_249322_) {
         this.generate();
+        Set<ResourceLocation> set = new HashSet<>();
+
+        for(Block block : getKnownBlocks()) {
+            if (block.isEnabled(this.enabledFeatures)) {
+                ResourceLocation resourcelocation = block.getLootTable();
+                if (resourcelocation != BuiltInLootTables.EMPTY && set.add(resourcelocation)) {
+                    LootTable.Builder loottable$builder = this.map.remove(resourcelocation);
+                    if (loottable$builder == null) {
+                        throw new IllegalStateException(String.format(Locale.ROOT, "Missing loottable '%s' for '%s'", resourcelocation, BuiltInRegistries.BLOCK.getKey(block)));
+                    }
+
+                    p_249322_.accept(resourcelocation, loottable$builder);
+                }
+            }
+        }
+
     }
 
     @Override
