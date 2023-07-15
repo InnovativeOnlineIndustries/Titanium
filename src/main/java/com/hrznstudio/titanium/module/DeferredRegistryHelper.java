@@ -90,24 +90,13 @@ public class DeferredRegistryHelper {
         return blockRegistryObject;
     }
 
-    public RegistryObject<Block> registerBlockWithItem(String name, Supplier<? extends Block> blockSupplier, Function<RegistryObject<Block>, Supplier<Item>> itemSupplier){
-        ResourceKey<Registry<Block>> blockKey = ForgeRegistries.BLOCKS.getRegistryKey();
-        DeferredRegister<Block> blockRegister = (DeferredRegister<Block>)(Object)registries.get(blockKey);
-        ResourceKey<Registry<Item>> itemKey = ForgeRegistries.ITEMS.getRegistryKey();
-        DeferredRegister<Item> itemRegister = (DeferredRegister<Item>)(Object)registries.get(itemKey);
-
-        if (blockRegister == null) {
-            this.addRegistry(blockKey);
-            blockRegister = (DeferredRegister<Block>)(Object)registries.get(blockKey);
-        }
-
-        if (itemRegister == null) {
-            this.addRegistry(itemKey);
-            itemRegister = (DeferredRegister<Item>)(Object)registries.get(itemKey);
-        }
-
-        RegistryObject<Block> block = blockRegister.register(name, blockSupplier);
-        itemRegister.register(name, itemSupplier.apply(block));
+    public RegistryObject<Block> registerBlockWithItem(String name, Supplier<? extends Block> blockSupplier, Function<RegistryObject<Block>, Supplier<Item>> itemSupplier, TitaniumTab tab){
+        RegistryObject<Block> block = registerGeneric(ForgeRegistries.BLOCKS.getRegistryKey(), name, blockSupplier::get);
+        registerGeneric(ForgeRegistries.ITEMS.getRegistryKey(), name, () -> {
+            var item = itemSupplier.apply(block).get();
+            if (tab != null) tab.getTabList().add(item);
+            return item;
+        });
         return block;
     }
 
@@ -116,8 +105,8 @@ public class DeferredRegistryHelper {
         return Pair.of(blockRegistryObject, registerBlockEntityType(name, () -> BlockEntityType.Builder.of(((BasicTileBlock<?>)blockRegistryObject.get()).getTileEntityFactory(), blockRegistryObject.get()).build(null)));
     }
 
-    public Pair<RegistryObject<Block>, RegistryObject<BlockEntityType<?>>> registerBlockWithTileItem(String name, Supplier<BasicTileBlock<?>> blockSupplier, Function<RegistryObject<Block>, Supplier<Item>> itemSupplier){
-        RegistryObject<Block> blockRegistryObject = registerBlockWithItem(name, blockSupplier, itemSupplier);
+    public Pair<RegistryObject<Block>, RegistryObject<BlockEntityType<?>>> registerBlockWithTileItem(String name, Supplier<BasicTileBlock<?>> blockSupplier, Function<RegistryObject<Block>, Supplier<Item>> itemSupplier, @Nullable TitaniumTab tab){
+        RegistryObject<Block> blockRegistryObject = registerBlockWithItem(name, blockSupplier, itemSupplier, tab);
         return Pair.of(blockRegistryObject, registerBlockEntityType(name, () -> BlockEntityType.Builder.of(((BasicTileBlock<?>)blockRegistryObject.get()).getTileEntityFactory(), blockRegistryObject.get()).build(null)));
     }
 }
