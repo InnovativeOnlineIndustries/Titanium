@@ -8,6 +8,7 @@
 package com.hrznstudio.titanium.fluid;
 
 import com.hrznstudio.titanium.module.DeferredRegistryHelper;
+import com.hrznstudio.titanium.tab.TitaniumTab;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -24,6 +25,7 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
+import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
 public class TitaniumFluidInstance {
@@ -35,7 +37,7 @@ public class TitaniumFluidInstance {
     private RegistryObject<Block> blockFluid;
     private final String fluid;
 
-    public TitaniumFluidInstance(DeferredRegistryHelper helper, String fluid, FluidType.Properties fluidTypeProperties, IClientFluidTypeExtensions renderProperties, CreativeModeTab group) {
+    public TitaniumFluidInstance(DeferredRegistryHelper helper, String fluid, FluidType.Properties fluidTypeProperties, IClientFluidTypeExtensions renderProperties, @Nullable TitaniumTab group) {
         this.fluid = fluid;
         this.sourceFluid = helper.registerGeneric(ForgeRegistries.FLUIDS.getRegistryKey(), fluid, () -> new TitaniumFluid.Source(this));
         this.flowingFluid = helper.registerGeneric(ForgeRegistries.FLUIDS.getRegistryKey(), fluid + "_flowing", () -> new TitaniumFluid.Flowing(this));
@@ -45,7 +47,11 @@ public class TitaniumFluidInstance {
                 consumer.accept(renderProperties);
             }
         });
-        this.bucketFluid = helper.registerGeneric(ForgeRegistries.ITEMS.getRegistryKey(), fluid + "_bucket", () -> new BucketItem(this.sourceFluid, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+        this.bucketFluid = helper.registerGeneric(ForgeRegistries.ITEMS.getRegistryKey(), fluid + "_bucket", () -> {
+            var item = new BucketItem(this.sourceFluid, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
+            if (group != null) group.getTabList().add(item);
+            return item;
+        });
         this.blockFluid = helper.registerGeneric(ForgeRegistries.BLOCKS.getRegistryKey(), fluid, () -> new LiquidBlock(() -> (FlowingFluid) sourceFluid.get(), Block.Properties.of().mapColor(MapColor.WATER).replaceable().noCollission().strength(100.0F).pushReaction(PushReaction.DESTROY).noLootTable().liquid().sound(SoundType.EMPTY)));
     }
 
