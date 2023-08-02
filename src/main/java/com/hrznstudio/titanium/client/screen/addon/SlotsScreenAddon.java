@@ -44,9 +44,13 @@ public class SlotsScreenAddon<T extends IComponentHarness> extends BasicScreenAd
     }
 
     public static void drawAsset(GuiGraphics guiGraphics, Screen screen, IAssetProvider provider, int handlerPosX, int handlerPosY, int guiX, int guiY, int slots, Function<Integer, Pair<Integer, Integer>> positionFunction, Function<Integer, ItemStack> slotToStackRenderMap, boolean drawColor, Function<Integer, Color> slotToColorRenderMap, Predicate<Integer> slotEnabled) {
+        drawAsset(guiGraphics, screen, provider, handlerPosX, handlerPosY, guiX, guiY, slots,  positionFunction, slotToStackRenderMap, drawColor, slotToColorRenderMap, slotEnabled, 200);
+    }
+
+    public static void drawAsset(GuiGraphics guiGraphics, Screen screen, IAssetProvider provider, int handlerPosX, int handlerPosY, int guiX, int guiY, int slots, Function<Integer, Pair<Integer, Integer>> positionFunction, Function<Integer, ItemStack> slotToStackRenderMap, boolean drawColor, Function<Integer, Color> slotToColorRenderMap, Predicate<Integer> slotEnabled, int overlayDepth) {
         IAsset slot = IAssetProvider.getAsset(provider, AssetTypes.SLOT);
         Rectangle area = slot.getArea();
-        RenderSystem.setShaderTexture(0, slot.getResourceLocation());
+        //RenderSystem.setShaderTexture(0, slot.getResourceLocation());
         //Draw background
         if (drawColor) {
             for (int slotID = 0; slotID < slots; slotID++) {
@@ -72,6 +76,7 @@ public class SlotsScreenAddon<T extends IComponentHarness> extends BasicScreenAd
             guiGraphics.renderItem(stack1, handlerPosX + posX + guiX, handlerPosY + posY + guiY);
             //RenderSystem.disableDepthTest();
         }
+        RenderSystem.enableBlend();
         //Draw overlay
         if (drawColor) {
             for (int slotID = 0; slotID < slots; slotID++) {
@@ -81,15 +86,15 @@ public class SlotsScreenAddon<T extends IComponentHarness> extends BasicScreenAd
                 Color colored = slotToColorRenderMap.apply(slotID);
                 if (colored != null) {
                     guiGraphics.fill(RenderType.gui(), guiX + handlerPosX + posX, guiY + handlerPosY + posY,
-                        guiX + handlerPosX + posX + area.width - 2, guiY + handlerPosY + posY + area.height - 2, 200, new Color(colored.getRed(), colored.getGreen(), colored.getBlue(), 256 / 2).getRGB());
+                        guiX + handlerPosX + posX + area.width - 2, guiY + handlerPosY + posY + area.height - 2, overlayDepth, new Color(colored.getRed(), colored.getGreen(), colored.getBlue(), 256 / 2).getRGB());
                     RenderSystem.setShaderColor(1, 1, 1, 1);
                 }
             }
         }
-        RenderSystem.enableDepthTest();
+        //RenderSystem.enableDepthTest();
     }
 
-    @Override
+        @Override
     public void drawBackgroundLayer(GuiGraphics guiGraphics, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         drawAsset(guiGraphics, screen, provider, guiX, guiY, getPosX(), getPosY(), handler.getSlots(), handler.getSlotPosition(), handler::getItemStackForSlotRendering, handler.isColorGuiEnabled(), handler::getColorForSlotRendering, handler.getSlotVisiblePredicate());
     }
