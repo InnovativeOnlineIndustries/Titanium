@@ -9,6 +9,7 @@ package com.hrznstudio.titanium.module;
 
 import com.hrznstudio.titanium.annotation.config.ConfigFile;
 import com.hrznstudio.titanium.annotation.plugin.FeaturePlugin;
+import com.hrznstudio.titanium.api.ISpecialCreativeTabItem;
 import com.hrznstudio.titanium.config.AnnotationConfigManager;
 import com.hrznstudio.titanium.event.handler.EventManager;
 import com.hrznstudio.titanium.plugin.PluginManager;
@@ -22,6 +23,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
@@ -100,7 +102,13 @@ public abstract class ModuleController {
         EventManager.mod(BuildCreativeModeTabContentsEvent.class).process(buildCreativeModeTabContentsEvent -> {
             for (TitaniumTab titaniumTab : titaniumTabs) {
                 if (titaniumTab.getResourceLocation().equals(buildCreativeModeTabContentsEvent.getTabKey().location())){
-                    titaniumTab.getTabList().forEach(buildCreativeModeTabContentsEvent::accept);
+                    for (Item item : titaniumTab.getTabList()) {
+                        if (item instanceof ISpecialCreativeTabItem specialCreativeTabItem){
+                            specialCreativeTabItem.addToTab(buildCreativeModeTabContentsEvent);
+                        } else {
+                            buildCreativeModeTabContentsEvent.accept(item);
+                        }
+                    }
                 }
             }
         }).subscribe();
