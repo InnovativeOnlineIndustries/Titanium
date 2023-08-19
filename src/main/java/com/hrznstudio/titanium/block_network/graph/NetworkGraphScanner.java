@@ -1,14 +1,7 @@
-/*
- * This file is part of Titanium
- * Copyright (C) 2023, Horizon Studio <contact@hrznstudio.com>.
- *
- * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
- */
-
 package com.hrznstudio.titanium.block_network.graph;
 
-import com.hrznstudio.titanium.api.block_network.NetworkElement;
 import com.hrznstudio.titanium.block_network.NetworkManager;
+import com.hrznstudio.titanium.block_network.element.NetworkElement;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -42,10 +35,10 @@ public class NetworkGraphScanner {
         }
 
         return new NetworkGraphScannerResult(
-            foundElements,
-            newElements,
-            removedElements,
-            allRequests
+                foundElements,
+                newElements,
+                removedElements,
+                allRequests
         );
     }
 
@@ -56,7 +49,9 @@ public class NetworkGraphScanner {
             if (!requiredNetworkType.equals(pipe.getNetworkType())) {
                 return;
             }
-
+            if (request.getDirection() != null && !pipe.canConnectFrom(request.getDirection().getOpposite())){
+                return;
+            }
             if (foundElements.add(pipe)) {
                 if (!currentElements.contains(pipe)) {
                     newElements.add(pipe);
@@ -67,11 +62,12 @@ public class NetworkGraphScanner {
                 request.setSuccessful(true);
 
                 for (Direction dir : Direction.values()) {
+                    if (!pipe.canConnectFrom(dir)) continue;
                     addRequest(new NetworkGraphScannerRequest(
-                        request.getLevel(),
-                        request.getPos().relative(dir),
-                        dir,
-                        request
+                            request.getLevel(),
+                            request.getPos().relative(dir),
+                            dir,
+                            request
                     ));
                 }
             }

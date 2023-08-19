@@ -1,13 +1,6 @@
-/*
- * This file is part of Titanium
- * Copyright (C) 2023, Horizon Studio <contact@hrznstudio.com>.
- *
- * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
- */
-
 package com.hrznstudio.titanium.block_network;
 
-import com.hrznstudio.titanium.api.block_network.NetworkElement;
+import com.hrznstudio.titanium.block_network.element.NetworkElement;
 import com.hrznstudio.titanium.block_network.graph.NetworkGraph;
 import com.hrznstudio.titanium.block_network.graph.NetworkGraphScannerResult;
 import net.minecraft.core.BlockPos;
@@ -39,7 +32,6 @@ public abstract class Network {
     public NetworkGraphScannerResult scanGraph(Level level, BlockPos pos) {
         return graph.scan(level, pos);
     }
-
 
     public CompoundTag writeToNbt(CompoundTag tag) {
         tag.putString("id", id);

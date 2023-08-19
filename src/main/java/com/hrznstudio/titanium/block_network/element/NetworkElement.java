@@ -1,14 +1,8 @@
-/*
- * This file is part of Titanium
- * Copyright (C) 2023, Horizon Studio <contact@hrznstudio.com>.
- *
- * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
- */
-
-package com.hrznstudio.titanium.api.block_network;
+package com.hrznstudio.titanium.block_network.element;
 
 import com.hrznstudio.titanium.block_network.Network;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -33,7 +27,6 @@ public abstract class NetworkElement {
     public void update() {
 
     }
-
 
     public Level getLevel() {
         return level;
@@ -78,17 +71,19 @@ public abstract class NetworkElement {
 
     public abstract ResourceLocation getNetworkType();
 
+    public abstract boolean canConnectFrom(Direction direction);
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         NetworkElement pipe = (NetworkElement) o;
         return level.equals(pipe.level) &&
-            pos.equals(pipe.pos);
+                pos.equals(pipe.pos);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(level, pos);
     }
+
 }

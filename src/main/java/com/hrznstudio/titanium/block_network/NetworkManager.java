@@ -1,13 +1,6 @@
-/*
- * This file is part of Titanium
- * Copyright (C) 2023, Horizon Studio <contact@hrznstudio.com>.
- *
- * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
- */
-
 package com.hrznstudio.titanium.block_network;
 
-import com.hrznstudio.titanium.api.block_network.NetworkElement;
+import com.hrznstudio.titanium.block_network.element.NetworkElement;
 import com.hrznstudio.titanium.block_network.element.NetworkElementFactory;
 import com.hrznstudio.titanium.block_network.element.NetworkElementRegistry;
 import com.hrznstudio.titanium.block_network.graph.NetworkGraphScannerResult;
@@ -27,7 +20,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class NetworkManager extends SavedData {
-    private static final String NAME = "titanium_block_networks";
+    private static final String NAME =  "titanium_networks";
     private static final Logger LOGGER = LogManager.getLogger(NetworkManager.class);
     private final Level level;
     private final Map<String, Network> networks = new HashMap<>();
@@ -120,23 +113,23 @@ public class NetworkManager extends SavedData {
         mergedNetworks.forEach(n -> n.onMergedWith(mainNetwork));
     }
 
-    public void addElement(NetworkElement matterNetworkElement) {
-        if (elements.containsKey(matterNetworkElement.getPos())) {
-            throw new RuntimeException("Network element at " + matterNetworkElement.getPos() + " already exists");
+    public void addElement(NetworkElement networkElement) {
+        if (elements.containsKey(networkElement.getPos())) {
+            throw new RuntimeException("Network element at " + networkElement.getPos() + " already exists");
         }
 
-        elements.put(matterNetworkElement.getPos(), matterNetworkElement);
+        elements.put(networkElement.getPos(), networkElement);
 
-        LOGGER.debug("Network element added at {}", matterNetworkElement.getPos());
+        LOGGER.debug("Network element added at {}", networkElement.getPos());
 
         setDirty();
 
-        Set<NetworkElement> adjacentElement = findAdjacentElements(matterNetworkElement.getPos(), matterNetworkElement.getNetworkType());
+        Set<NetworkElement> adjacentElement = findAdjacentElements(networkElement, networkElement.getNetworkType());
 
         if (adjacentElement.isEmpty()) {
-            formNetworkAt(matterNetworkElement.getLevel(), matterNetworkElement.getPos(), matterNetworkElement.getNetworkType());
+            formNetworkAt(networkElement.getLevel(), networkElement.getPos(), networkElement.getNetworkType());
         } else {
-            mergeNetworksIntoOne(adjacentElement, matterNetworkElement.getLevel(), matterNetworkElement.getPos());
+            mergeNetworksIntoOne(adjacentElement, networkElement.getLevel(), networkElement.getPos());
         }
     }
 
@@ -163,27 +156,27 @@ public class NetworkManager extends SavedData {
 
     private void splitNetworks(NetworkElement originElement) {
         // Sanity checks
-        for (NetworkElement adjacent : findAdjacentElements(originElement.getPos(), originElement.getNetworkType())) {
+        for (NetworkElement adjacent : findAdjacentElements(originElement, originElement.getNetworkType())) {
             if (adjacent.getNetwork() == null) {
                 throw new RuntimeException("Adjacent element has no network");
             }
 
             if (adjacent.getNetwork() != originElement.getNetwork()) {
-                throw new RuntimeException("The origin element network is different than the adjacent element network");
+                //throw new RuntimeException("The origin element network is different than the adjacent element network");
             }
         }
 
         // We can assume all adjacent elements (with the same network type) share the same network with the removed element.
         // That means it doesn't matter which element network we use for splitting, we'll take the first found one.
-        NetworkElement otherElementInNetwork = findFirstAdjacentElement(originElement.getPos(), originElement.getNetworkType());
+        NetworkElement otherElementInNetwork = findFirstAdjacentElement(originElement, originElement.getNetworkType());
 
         if (otherElementInNetwork != null) {
             otherElementInNetwork.getNetwork().setOriginPos(otherElementInNetwork.getPos());
             setDirty();
 
             NetworkGraphScannerResult result = otherElementInNetwork.getNetwork().scanGraph(
-                otherElementInNetwork.getLevel(),
-                otherElementInNetwork.getPos()
+                    otherElementInNetwork.getLevel(),
+                    otherElementInNetwork.getPos()
             );
 
             // For sanity checking
@@ -214,13 +207,12 @@ public class NetworkManager extends SavedData {
         }
     }
 
-    private Set<NetworkElement> findAdjacentElements(BlockPos pos, ResourceLocation networkType) {
+    private Set<NetworkElement> findAdjacentElements(NetworkElement current, ResourceLocation networkType) {
         Set<NetworkElement> elements = new HashSet<>();
-
         for (Direction dir : Direction.values()) {
-            NetworkElement element = getElement(pos.relative(dir));
-
-            if (element != null && element.getNetworkType().equals(networkType)) {
+            NetworkElement element = getElement(current.getPos().relative(dir));
+            if (!current.canConnectFrom(dir)) continue;
+            if (element != null && element.getNetworkType().equals(networkType) && element.canConnectFrom(dir.getOpposite())) {
                 elements.add(element);
             }
         }
@@ -229,11 +221,11 @@ public class NetworkManager extends SavedData {
     }
 
     @Nullable
-    private NetworkElement findFirstAdjacentElement(BlockPos pos, ResourceLocation networkType) {
+    private NetworkElement findFirstAdjacentElement(NetworkElement current, ResourceLocation networkType) {
         for (Direction dir : Direction.values()) {
-            NetworkElement element = getElement(pos.relative(dir));
-
-            if (element != null && element.getNetworkType().equals(networkType)) {
+            if (!current.canConnectFrom(dir)) continue;
+            NetworkElement element = getElement(current.getPos().relative(dir));
+            if (element != null && element.getNetworkType().equals(networkType) && element.canConnectFrom(dir.getOpposite()) && current.getNetwork() == element.getNetwork()) {
                 return element;
             }
         }

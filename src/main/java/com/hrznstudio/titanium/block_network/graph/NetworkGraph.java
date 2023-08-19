@@ -1,15 +1,7 @@
-/*
- * This file is part of Titanium
- * Copyright (C) 2023, Horizon Studio <contact@hrznstudio.com>.
- *
- * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
- */
-
 package com.hrznstudio.titanium.block_network.graph;
 
-
-import com.hrznstudio.titanium.api.block_network.NetworkElement;
 import com.hrznstudio.titanium.block_network.Network;
+import com.hrznstudio.titanium.block_network.element.NetworkElement;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
@@ -35,6 +27,7 @@ public class NetworkGraph {
 
         result.getNewElements().forEach(p -> p.joinNetwork(network));
         result.getRemovedElements().forEach(NetworkElement::leaveNetwork);
+
 
 
         return result;
