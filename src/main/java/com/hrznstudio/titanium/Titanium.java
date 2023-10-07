@@ -94,7 +94,7 @@ public class Titanium extends ModuleController {
 
     @Override
     protected void initModules() {
-        if (true) { //ENABLE IN DEV
+        if (false) { //ENABLE IN DEV
             getRegistries().registerGeneric(MenuType.class, "addon_container", () -> (MenuType) IForgeMenuType.create(BasicAddonContainer::create));
             getRegistries().registerGeneric(RecipeSerializer.class, "shapeless_enchant", () -> (RecipeSerializer) new ShapelessEnchantSerializer());
             TestBlock.TEST = getRegistries().registerBlockWithTile("block_test", () -> (TestBlock) new TestBlock());
