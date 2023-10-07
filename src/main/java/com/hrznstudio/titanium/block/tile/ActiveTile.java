@@ -288,11 +288,11 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
                         if (fluidTankComponent.getName().equalsIgnoreCase(name))
                             playerEntity.inventory.getItemStack().getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(iFluidHandlerItem -> {
                                 if (fill) {
-                                    int amount = Minecraft.getInstance().player.inventory.getItemStack().getItem() instanceof BucketItem ? FluidAttributes.BUCKET_VOLUME : Integer.MAX_VALUE;
+                                    int amount = playerEntity.inventory.getItemStack().getItem() instanceof BucketItem ? FluidAttributes.BUCKET_VOLUME : Integer.MAX_VALUE;
                                     amount = fluidTankComponent.fill(iFluidHandlerItem.drain(amount, IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.EXECUTE);
                                     iFluidHandlerItem.drain(amount, IFluidHandler.FluidAction.EXECUTE);
                                 } else {
-                                    int amount = Minecraft.getInstance().player.inventory.getItemStack().getItem() instanceof BucketItem ? FluidAttributes.BUCKET_VOLUME : Integer.MAX_VALUE;
+                                    int amount = playerEntity.inventory.getItemStack().getItem() instanceof BucketItem ? FluidAttributes.BUCKET_VOLUME : Integer.MAX_VALUE;
                                     amount = iFluidHandlerItem.fill(fluidTankComponent.drain(amount, IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.EXECUTE);
                                     fluidTankComponent.drain(amount, IFluidHandler.FluidAction.EXECUTE);
                                 }
