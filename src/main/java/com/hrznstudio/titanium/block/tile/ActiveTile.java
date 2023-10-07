@@ -35,7 +35,6 @@ import com.hrznstudio.titanium.network.locator.LocatorFactory;
 import com.hrznstudio.titanium.network.locator.instance.TileEntityLocatorInstance;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -300,11 +299,11 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
                         if (fluidTankComponent.getName().equalsIgnoreCase(name))
                             playerEntity.containerMenu.getCarried().getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(iFluidHandlerItem -> {
                                 if (fill) {
-                                    int amount = Minecraft.getInstance().player.containerMenu.getCarried().getItem() instanceof BucketItem ? FluidType.BUCKET_VOLUME : Integer.MAX_VALUE;
+                                    int amount = playerEntity.containerMenu.getCarried().getItem() instanceof BucketItem ? FluidType.BUCKET_VOLUME : Integer.MAX_VALUE;
                                     amount = fluidTankComponent.fill(iFluidHandlerItem.drain(amount, IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.EXECUTE);
                                     iFluidHandlerItem.drain(amount, IFluidHandler.FluidAction.EXECUTE);
                                 } else {
-                                    int amount = Minecraft.getInstance().player.containerMenu.getCarried().getItem() instanceof BucketItem ? FluidType.BUCKET_VOLUME : Integer.MAX_VALUE;
+                                    int amount = playerEntity.containerMenu.getCarried().getItem() instanceof BucketItem ? FluidType.BUCKET_VOLUME : Integer.MAX_VALUE;
                                     amount = iFluidHandlerItem.fill(fluidTankComponent.drain(amount, IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.EXECUTE);
                                     fluidTankComponent.drain(amount, IFluidHandler.FluidAction.EXECUTE);
                                 }
