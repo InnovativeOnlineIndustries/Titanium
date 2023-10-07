@@ -1,6 +1,6 @@
 /*
  * This file is part of Titanium
- * Copyright (C) 2021, Horizon Studio <contact@hrznstudio.com>.
+ * Copyright (C) 2023, Horizon Studio <contact@hrznstudio.com>.
  *
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
@@ -20,10 +20,10 @@ import net.minecraft.world.server.ServerChunkProvider;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.ITeleporter;
+import net.minecraftforge.entity.PartEntity;
 
 import java.util.List;
 import java.util.function.Function;
-import net.minecraftforge.entity.PartEntity;
 
 public class TeleportationUtils {
 
