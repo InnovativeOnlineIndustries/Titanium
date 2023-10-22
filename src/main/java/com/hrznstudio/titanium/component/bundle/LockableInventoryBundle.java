@@ -127,7 +127,7 @@ public class LockableInventoryBundle<T extends BasicTile & IComponentHarness> im
 
     private void updateFilter(){
         if (isLocked){
-            this.inventory.setInputFilter((stack, integer) -> integer < this.filter.length && !this.filter[integer].isEmpty() && ItemStack.matches(this.filter[integer], (stack)));
+            this.inventory.setInputFilter((stack, integer) -> integer < this.filter.length && !this.filter[integer].isEmpty() && ItemStack.isSameItemSameTags(this.filter[integer], (stack)));
         } else {
             Arrays.fill(this.filter, ItemStack.EMPTY);
             this.inventory.setInputFilter(this.cachedFilter);

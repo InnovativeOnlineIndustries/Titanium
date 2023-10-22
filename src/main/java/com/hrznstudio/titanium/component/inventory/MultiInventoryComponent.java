@@ -192,7 +192,7 @@ public class MultiInventoryComponent<T extends IComponentHarness> implements ISc
         public int getSlotLimit(int slot) {
             InventoryComponent<T> handler = getFromSlot(slot);
             if (handler != null) {
-                handler.getSlotLimit(getRelativeSlot(handler, slot));
+                return handler.getSlotLimit(getRelativeSlot(handler, slot));
             }
             return super.getSlotLimit(slot);
         }
