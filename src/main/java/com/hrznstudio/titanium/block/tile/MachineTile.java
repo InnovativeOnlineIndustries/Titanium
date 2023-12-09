@@ -70,7 +70,7 @@ public abstract class MachineTile<T extends MachineTile<T>> extends PoweredTile<
 
     @Override
     public boolean canAcceptAugment(ItemStack augment) {
-        return AugmentWrapper.isAugment(augment);
+        return true;
     }
 
     @Override
