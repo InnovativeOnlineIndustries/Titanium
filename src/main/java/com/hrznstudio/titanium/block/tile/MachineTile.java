@@ -118,4 +118,7 @@ public abstract class MachineTile<T extends MachineTile<T>> extends PoweredTile<
         return InteractionResult.SUCCESS;
     }
 
+    public SidedInventoryComponent<T> getAugmentInventory() {
+        return augmentInventory;
+    }
 }
