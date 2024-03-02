@@ -1,6 +1,6 @@
 /*
  * This file is part of Titanium
- * Copyright (C) 2023, Horizon Studio <contact@hrznstudio.com>.
+ * Copyright (C) 2024, Horizon Studio <contact@hrznstudio.com>.
  *
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
@@ -10,7 +10,6 @@ package com.hrznstudio.titanium.fluid;
 import com.hrznstudio.titanium.module.DeferredRegistryHelper;
 import com.hrznstudio.titanium.tab.TitaniumTab;
 import net.minecraft.world.item.BucketItem;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;

@@ -1,6 +1,6 @@
 /*
  * This file is part of Titanium
- * Copyright (C) 2023, Horizon Studio <contact@hrznstudio.com>.
+ * Copyright (C) 2024, Horizon Studio <contact@hrznstudio.com>.
  *
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
@@ -19,7 +19,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.Containers;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -40,7 +40,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public abstract class BasicBlock extends Block implements IRecipeProvider, IBlockLootTableProvider {
     private TitaniumTab itemGroup = null;

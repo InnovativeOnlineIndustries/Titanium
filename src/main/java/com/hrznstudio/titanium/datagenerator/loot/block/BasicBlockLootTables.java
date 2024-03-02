@@ -1,6 +1,6 @@
 /*
  * This file is part of Titanium
- * Copyright (C) 2023, Horizon Studio <contact@hrznstudio.com>.
+ * Copyright (C) 2024, Horizon Studio <contact@hrznstudio.com>.
  *
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
@@ -10,7 +10,6 @@ package com.hrznstudio.titanium.datagenerator.loot.block;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;

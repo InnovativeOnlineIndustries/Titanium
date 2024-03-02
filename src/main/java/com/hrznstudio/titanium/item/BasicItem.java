@@ -1,6 +1,6 @@
 /*
  * This file is part of Titanium
- * Copyright (C) 2023, Horizon Studio <contact@hrznstudio.com>.
+ * Copyright (C) 2024, Horizon Studio <contact@hrznstudio.com>.
  *
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
@@ -12,7 +12,9 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.glfw.GLFW;

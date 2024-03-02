@@ -1,6 +1,6 @@
 /*
  * This file is part of Titanium
- * Copyright (C) 2023, Horizon Studio <contact@hrznstudio.com>.
+ * Copyright (C) 2024, Horizon Studio <contact@hrznstudio.com>.
  *
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
@@ -19,8 +19,6 @@ import com.hrznstudio.titanium.client.screen.container.BasicAddonScreen;
 import com.hrznstudio.titanium.command.RewardCommand;
 import com.hrznstudio.titanium.command.RewardGrantCommand;
 import com.hrznstudio.titanium.container.BasicAddonContainer;
-import com.hrznstudio.titanium.datagenerator.loot.TitaniumLootTableProvider;
-import com.hrznstudio.titanium.datagenerator.model.BlockItemModelGeneratorProvider;
 import com.hrznstudio.titanium.event.handler.EventManager;
 import com.hrznstudio.titanium.module.ModuleController;
 import com.hrznstudio.titanium.network.NetworkHandler;
@@ -28,7 +26,6 @@ import com.hrznstudio.titanium.network.locator.LocatorTypes;
 import com.hrznstudio.titanium.network.messages.ButtonClickNetworkMessage;
 import com.hrznstudio.titanium.network.messages.TileFieldNetworkMessage;
 import com.hrznstudio.titanium.recipe.condition.ContentExistsConditionSerializer;
-import com.hrznstudio.titanium.recipe.generator.titanium.JsonRecipeSerializerProvider;
 import com.hrznstudio.titanium.recipe.serializer.GenericSerializer;
 import com.hrznstudio.titanium.recipe.shapelessenchant.ShapelessEnchantSerializer;
 import com.hrznstudio.titanium.reward.Reward;
