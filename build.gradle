@@ -105,10 +105,10 @@ dependencies {
   minecraft 'net.minecraftforge:forge:1.20.1-47.1.1'
 
   // compile against the JEI API but do not include it at runtime
-  compileOnly fg.deobf("mezz.jei:jei-1.20.1-common-api:15.1.0.19")
-  compileOnly fg.deobf("mezz.jei:jei-1.20.1-forge-api:15.1.0.19")
+  compileOnly fg.deobf("mezz.jei:jei-1.20.1-common-api:15.2.0.23")
+  compileOnly fg.deobf("mezz.jei:jei-1.20.1-forge-api:15.2.0.23")
   // at runtime, use the full JEI jar for Forge
-  runtimeOnly fg.deobf("mezz.jei:jei-1.20.1-forge:15.1.0.19")
+  runtimeOnly fg.deobf("mezz.jei:jei-1.20.1-forge:15.2.0.23")
   // Almost Unified for compile time
   compileOnly fg.deobf("com.almostreliable.mods:almostunified-forge:1.19.2-0.3.4")
 
