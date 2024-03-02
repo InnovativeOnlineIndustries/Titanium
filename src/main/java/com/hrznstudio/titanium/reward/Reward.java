@@ -32,9 +32,12 @@ public class Reward {
     public Reward(ResourceLocation resourceLocation, URL contributorsURL, Supplier<Consumer<Dist>> register, String[] options) {
         this.resourceLocation = resourceLocation;
         this.contributorsURL = contributorsURL;
-        this.players = getPlayers(contributorsURL);
+        this.players = new ArrayList<>();
         this.register = register;
         this.options = options;
+        new Thread(() -> {
+            this.players = getPlayers(contributorsURL);
+        }).start();
     }
 
     private static List<UUID> getPlayers(URL url) {
