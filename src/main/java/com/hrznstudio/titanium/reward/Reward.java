@@ -1,6 +1,6 @@
 /*
  * This file is part of Titanium
- * Copyright (C) 2023, Horizon Studio <contact@hrznstudio.com>.
+ * Copyright (C) 2024, Horizon Studio <contact@hrznstudio.com>.
  *
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
@@ -32,9 +32,12 @@ public class Reward {
     public Reward(ResourceLocation resourceLocation, URL contributorsURL, Supplier<Consumer<Dist>> register, String[] options) {
         this.resourceLocation = resourceLocation;
         this.contributorsURL = contributorsURL;
-        this.players = getPlayers(contributorsURL);
+        this.players = new ArrayList<>();
         this.register = register;
         this.options = options;
+        new Thread(() -> {
+            this.players = getPlayers(contributorsURL);
+        }).start();
     }
 
     private static List<UUID> getPlayers(URL url) {
