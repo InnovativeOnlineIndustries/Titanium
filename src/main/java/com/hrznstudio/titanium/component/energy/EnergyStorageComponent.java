@@ -22,6 +22,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.energy.EnergyStorage;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.List;
 
 public class EnergyStorageComponent<T extends IComponentHarness> extends EnergyStorage implements
@@ -29,6 +30,8 @@ public class EnergyStorageComponent<T extends IComponentHarness> extends EnergyS
 
     private final int xPos;
     private final int yPos;
+
+    private boolean isEnabled = true;
 
     protected T componentHarness;
 
@@ -73,21 +76,33 @@ public class EnergyStorageComponent<T extends IComponentHarness> extends EnergyS
         this.update();
     }
 
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+
+    public void enable() {
+        this.isEnabled = true;
+    }
+
+    public void disable() {
+        this.isEnabled = false;
+    }
+
     @Override
     @Nonnull
     @OnlyIn(Dist.CLIENT)
     public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
-        return Lists.newArrayList(
-            () -> new EnergyBarScreenAddon(xPos, yPos, this)
-        );
+        List<IFactory<? extends IScreenAddon>> addons = new ArrayList<>();
+        if (isEnabled) addons.add(() -> new EnergyBarScreenAddon(xPos, yPos, this));
+        return addons;
     }
 
     @Override
     @Nonnull
     public List<IFactory<? extends IContainerAddon>> getContainerAddons() {
-        return Lists.newArrayList(
-            () -> new IntReferenceHolderAddon(new FunctionReferenceHolder(this::setEnergyStored, this::getEnergyStored))
-        );
+        List<IFactory<? extends IContainerAddon>> addons = new ArrayList<>();
+        if (isEnabled) addons.add(() -> new IntReferenceHolderAddon(new FunctionReferenceHolder(this::setEnergyStored, this::getEnergyStored)));
+        return addons;
     }
 
     public void setComponentHarness(T componentHarness) {

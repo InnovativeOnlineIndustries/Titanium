@@ -16,6 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -28,6 +29,8 @@ public class ButtonComponent implements IScreenAddonProvider {
     private final int sizeY;
     private int id;
     private BiConsumer<Player, CompoundTag> serverPredicate;
+
+    private boolean isVisible = true;
 
     public ButtonComponent(int posX, int posY, int sizeX, int sizeY) {
         this.posX = posX;
@@ -79,9 +82,23 @@ public class ButtonComponent implements IScreenAddonProvider {
         return this;
     }
 
+    public boolean isVisible() {
+        return isVisible;
+    }
+
+    public void show() {
+        this.isVisible = true;
+    }
+
+    public void hide() {
+        this.isVisible = false;
+    }
+
     @Override
     @OnlyIn(Dist.CLIENT)
     public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
-        return Collections.singletonList(() -> new BasicButtonAddon(this));
+        List<IFactory<? extends IScreenAddon>> addons = new ArrayList<>();
+        if (isVisible) addons.add(() -> new BasicButtonAddon(this));
+        return addons;
     }
 }
