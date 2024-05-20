@@ -7,7 +7,6 @@
 
 package com.hrznstudio.titanium.component.progress;
 
-import com.google.common.collect.Lists;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
@@ -31,7 +30,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import java.awt.*;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -52,6 +51,7 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
     private BarDirection barDirection;
     private DyeColor color;
     private boolean increaseType;
+    private boolean isEnabled = true;
 
     public ProgressBarComponent(int posX, int posY, int maxProgress) {
         this.posX = posX;
@@ -164,6 +164,18 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
     public ProgressBarComponent<T> setIncreaseType(boolean increaseType) {
         this.increaseType = increaseType;
         return this;
+    }
+
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+
+    public void enable() {
+        this.isEnabled = true;
+    }
+
+    public void disable() {
+        this.isEnabled = false;
     }
 
     /**
@@ -355,7 +367,9 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
     @Override
     @OnlyIn(Dist.CLIENT)
     public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
-        return Collections.singletonList(() -> new ProgressBarScreenAddon<>(posX, posY, this));
+        List<IFactory<? extends IScreenAddon>> addons = new ArrayList<>();
+        if (isEnabled) addons.add(() -> new ProgressBarScreenAddon<>(posX, posY, this));
+        return addons;
     }
 
     @Override
@@ -378,9 +392,9 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
 
     @Override
     public List<IFactory<? extends IContainerAddon>> getContainerAddons() {
-        return Lists.newArrayList(
-                () -> new IntArrayReferenceHolderAddon(new ProgressBarReferenceHolder(this))
-        );
+        List<IFactory<? extends IContainerAddon>> addons = new ArrayList<>();
+        if (isEnabled) addons.add(() -> new IntArrayReferenceHolderAddon(new ProgressBarReferenceHolder(this)));
+        return addons;
     }
 
     public enum BarDirection {

@@ -7,7 +7,6 @@
 
 package com.hrznstudio.titanium.component.fluid;
 
-import com.google.common.collect.Lists;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAssetType;
@@ -41,6 +40,8 @@ public class FluidTankComponent<T extends IComponentHarness> extends FluidTank i
     private Type tankType;
     private Action tankAction;
     private Runnable onContentChange;
+
+    private boolean isEnabled = true;
 
     public FluidTankComponent(String name, int amount, int posX, int posY) {
         super(amount);
@@ -171,19 +172,31 @@ public class FluidTankComponent<T extends IComponentHarness> extends FluidTank i
         this.fluid = fluidStack;
     }
 
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+
+    public void enable() {
+        this.isEnabled = true;
+    }
+
+    public void disable() {
+        this.isEnabled = false;
+    }
+
     @Override
     @OnlyIn(Dist.CLIENT)
     public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
         List<IFactory<? extends IScreenAddon>> addons = new ArrayList<>();
-        addons.add(() -> new TankScreenAddon(posX, posY, this, tankType));
+        if (isEnabled) addons.add(() -> new TankScreenAddon(posX, posY, this, tankType));
         return addons;
     }
 
     @Override
     public List<IFactory<? extends IContainerAddon>> getContainerAddons() {
-        return Lists.newArrayList(
-                () -> new IntArrayReferenceHolderAddon(new FluidTankReferenceHolder(this))
-        );
+        List<IFactory<? extends IContainerAddon>> addons = new ArrayList<>();
+        if (isEnabled) addons.add(() -> new IntArrayReferenceHolderAddon(new FluidTankReferenceHolder(this)));
+        return addons;
     }
 
     @Override
