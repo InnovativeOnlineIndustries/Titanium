@@ -58,11 +58,12 @@ neoForge {
     }
 }
 
-dependencies {    
-	compileOnly "mezz.jei:jei-1.21-common-api:$jei_version"
-    compileOnly "mezz.jei:jei-1.21-neoforge-api:$jei_version"
-    runtimeOnly "mezz.jei:jei-1.21-neoforge:$jei_version"
-	//implementation "curse.maven:refined-storage-243076:5165548"
+dependencies {
+  compileOnly "mezz.jei:jei-1.21-common-api:$jei_version"
+  compileOnly "mezz.jei:jei-1.21-neoforge-api:$jei_version"
+  runtimeOnly "mezz.jei:jei-1.21-neoforge:$jei_version"
+  compileOnly "com.almostreliable.mods:almostunified-neoforge:$almostunified_version:api"
+  //implementation "curse.maven:refined-storage-243076:5165548"
 }
 
 jar {

@@ -7,6 +7,7 @@
 
 package com.hrznstudio.titanium.compat.almostunified;
 
+import com.almostreliable.unified.api.AlmostUnified;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.neoforged.fml.ModList;
@@ -29,9 +30,7 @@ public class AlmostUnifiedAdapter {
 
     private static class Adapter {
         private static Item getPreferredItemForTag(TagKey<Item> tag) {
-            // TODO - fix
-            return null;
-            // return AlmostUnifiedLookup.INSTANCE.getPreferredItemForTag(tag);
+             return AlmostUnified.INSTANCE.getTagTargetItem(tag);
         }
     }
 }
