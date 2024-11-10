@@ -60,7 +60,7 @@ public class EnergyItem extends BasicItem {
             getEnergyStorage(stack).ifPresent(storage ->
                 tooltip.add(
                     Component.empty().withStyle(ChatFormatting.YELLOW)
-                        .append("Energy: ").withStyle(ChatFormatting.RED)
+                        .append(Component.translatable("tooltip.titanium.energy").getString()).withStyle(ChatFormatting.RED)
                         .append(String.valueOf(storage.getEnergyStored())).withStyle(ChatFormatting.YELLOW)
                         .append("/").withStyle(ChatFormatting.RED)
                         .append(String.valueOf(storage.getMaxEnergyStored())).withStyle(ChatFormatting.RESET)));

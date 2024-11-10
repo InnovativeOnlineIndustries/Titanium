@@ -48,7 +48,8 @@ public class BasicItem extends Item {
                 if (key.isDown()) {
                     addTooltipDetails(key, stack, tooltip, flagIn.isAdvanced());
                 } else {
-                    tooltip.add(Component.literal("Hold " + ChatFormatting.YELLOW + key.getSerializedName() + ChatFormatting.GRAY + " for more information"));
+                    String keyName = ChatFormatting.YELLOW + key.getSerializedName() + ChatFormatting.GRAY;
+                    tooltip.add(Component.literal(Component.translatable("tooltip.titanium.hold_moreinfo",keyName).getString()));
                 }
             }
         }
