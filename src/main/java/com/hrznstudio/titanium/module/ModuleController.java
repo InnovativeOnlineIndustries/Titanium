@@ -24,7 +24,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
-import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -83,10 +82,6 @@ public abstract class ModuleController {
     }
 
     public void onPostInit() {
-        AnnotationUtil.getFilteredAnnotatedClasses(ConfigFile.class, modid).forEach(aClass -> {
-            ConfigFile annotation = (ConfigFile) aClass.getAnnotation(ConfigFile.class);
-            addConfig(container, AnnotationConfigManager.Type.of(annotation.type(), aClass).setName(annotation.value()));
-        });
         EventManager.mod(ModConfigEvent.Loading.class).process(ev -> {
             configManager.inject(ev.getConfig().getSpec());
             this.modPluginManager.execute(PluginPhase.CONFIG_LOAD);
@@ -95,6 +90,10 @@ public abstract class ModuleController {
             configManager.inject(ev.getConfig().getSpec());
             this.modPluginManager.execute(PluginPhase.CONFIG_RELOAD);
         }).subscribe();
+        AnnotationUtil.getFilteredAnnotatedClasses(ConfigFile.class, modid).forEach(aClass -> {
+            ConfigFile annotation = (ConfigFile) aClass.getAnnotation(ConfigFile.class);
+            addConfig(container, AnnotationConfigManager.Type.of(annotation.type(), aClass).setName(annotation.value()));
+        });
         EventManager.mod(GatherDataEvent.class).process(this::addDataProvider).subscribe();
         EventManager.mod(FMLClientSetupEvent.class).process(fmlClientSetupEvent -> this.modPluginManager.execute(PluginPhase.CLIENT_SETUP)).subscribe();
         EventManager.mod(FMLCommonSetupEvent.class).process(fmlClientSetupEvent -> this.modPluginManager.execute(PluginPhase.COMMON_SETUP)).subscribe();

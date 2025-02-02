@@ -9,8 +9,9 @@ package com.hrznstudio.titanium._impl.test;
 
 import com.hrznstudio.titanium.annotation.config.ConfigFile;
 import com.hrznstudio.titanium.annotation.config.ConfigVal;
+import net.neoforged.fml.config.ModConfig;
 
-@ConfigFile
+@ConfigFile(type = ModConfig.Type.STARTUP)
 public class TitaniumConfig {
 
     @ConfigVal(comment = "A Boolean that is true by default")
