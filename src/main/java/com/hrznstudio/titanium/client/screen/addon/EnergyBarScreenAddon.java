@@ -48,7 +48,7 @@ public class EnergyBarScreenAddon extends BasicScreenAddon {
     }
 
     public static List<Component> getTooltip(int stored, int capacity) {
-        return Arrays.asList(Component.literal(ChatFormatting.GOLD + "Power:"), Component.literal(new DecimalFormat().format(stored) + ChatFormatting.GOLD + "/" + ChatFormatting.WHITE + new DecimalFormat().format(capacity) + ChatFormatting.DARK_AQUA + " FE"));
+        return Arrays.asList(Component.literal(ChatFormatting.GOLD + Component.translatable("tooltip.titanium.power").getString()), Component.literal(new DecimalFormat().format(stored) + ChatFormatting.GOLD + "/" + ChatFormatting.WHITE + new DecimalFormat().format(capacity) + ChatFormatting.DARK_AQUA + " FE"));
     }
 
     @Override

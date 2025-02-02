@@ -59,7 +59,7 @@ public class ProgressBarScreenAddon<T extends IComponentHarness> extends BasicSc
         tooltip.add(Component.literal(ChatFormatting.GOLD + Component.translatable("tooltip.titanium.progressbar.progress").getString() +  ChatFormatting.WHITE + new DecimalFormat().format(progressBar.getProgress()) + ChatFormatting.GOLD + "/" + ChatFormatting.WHITE + new DecimalFormat().format(progressBar.getMaxProgress())));
         int progress = (progressBar.getMaxProgress() - progressBar.getProgress());
         if (!progressBar.getIncreaseType()) progress = progressBar.getMaxProgress() - progress;
-        tooltip.add(Component.literal(ChatFormatting.GOLD + "ETA: " + ChatFormatting.WHITE + new DecimalFormat().format(Math.ceil(progress * progressBar.getTickingTime() / 20D / progressBar.getProgressIncrease())) + ChatFormatting.DARK_AQUA + "s"));
+        tooltip.add(Component.literal(ChatFormatting.GOLD + Component.translatable("tooltip.titanium.eta").getString() + ChatFormatting.WHITE + new DecimalFormat().format(Math.ceil(progress * progressBar.getTickingTime() / 20D / progressBar.getProgressIncrease())) + ChatFormatting.DARK_AQUA + Component.translatable("tooltip.titanium.sec_short").getString()));
         return tooltip;
     }
 }
