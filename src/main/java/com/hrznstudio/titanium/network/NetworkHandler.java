@@ -1,6 +1,6 @@
 /*
  * This file is part of Titanium
- * Copyright (C) 2024, Horizon Studio <contact@hrznstudio.com>.
+ * Copyright (C) 2025, Horizon Studio <contact@hrznstudio.com>.
  *
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
@@ -8,7 +8,6 @@
 package com.hrznstudio.titanium.network;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;

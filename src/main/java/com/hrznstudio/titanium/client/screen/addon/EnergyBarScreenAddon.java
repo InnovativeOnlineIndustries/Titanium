@@ -1,6 +1,6 @@
 /*
  * This file is part of Titanium
- * Copyright (C) 2024, Horizon Studio <contact@hrznstudio.com>.
+ * Copyright (C) 2025, Horizon Studio <contact@hrznstudio.com>.
  *
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
@@ -16,6 +16,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.energy.IEnergyStorage;
+
 import java.awt.*;
 import java.text.DecimalFormat;
 import java.util.Arrays;

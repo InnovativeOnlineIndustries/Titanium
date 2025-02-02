@@ -1,6 +1,6 @@
 /*
  * This file is part of Titanium
- * Copyright (C) 2024, Horizon Studio <contact@hrznstudio.com>.
+ * Copyright (C) 2025, Horizon Studio <contact@hrznstudio.com>.
  *
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
@@ -12,6 +12,7 @@ import com.hrznstudio.titanium.api.INBTHandler;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.neoforged.neoforge.items.ItemStackHandler;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 

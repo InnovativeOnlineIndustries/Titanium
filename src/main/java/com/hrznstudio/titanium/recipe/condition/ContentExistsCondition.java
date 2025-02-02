@@ -1,6 +1,6 @@
 /*
  * This file is part of Titanium
- * Copyright (C) 2024, Horizon Studio <contact@hrznstudio.com>.
+ * Copyright (C) 2025, Horizon Studio <contact@hrznstudio.com>.
  *
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
@@ -8,13 +8,10 @@
 package com.hrznstudio.titanium.recipe.condition;
 
 import com.hrznstudio.titanium.Titanium;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderGetter;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.HolderSetCodec;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;

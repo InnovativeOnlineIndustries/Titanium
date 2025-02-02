@@ -1,6 +1,6 @@
 /*
  * This file is part of Titanium
- * Copyright (C) 2024, Horizon Studio <contact@hrznstudio.com>.
+ * Copyright (C) 2025, Horizon Studio <contact@hrznstudio.com>.
  *
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
@@ -10,7 +10,6 @@ package com.hrznstudio.titanium.item;
 import com.hrznstudio.titanium.api.augment.IAugmentType;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.HashMap;

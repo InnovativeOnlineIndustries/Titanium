@@ -1,6 +1,6 @@
 /*
  * This file is part of Titanium
- * Copyright (C) 2024, Horizon Studio <contact@hrznstudio.com>.
+ * Copyright (C) 2025, Horizon Studio <contact@hrznstudio.com>.
  *
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
@@ -8,11 +8,12 @@
 package com.hrznstudio.titanium.annotation.config;
 
 
+import net.neoforged.fml.config.ModConfig;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import net.neoforged.fml.config.ModConfig;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})

@@ -1,22 +1,11 @@
 /*
  * This file is part of Titanium
- * Copyright (C) 2024, Horizon Studio <contact@hrznstudio.com>.
+ * Copyright (C) 2025, Horizon Studio <contact@hrznstudio.com>.
  *
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
 
 package com.hrznstudio.titanium.capability;
-
-import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.api.client.IScreenAddon;
-import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
-import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.IFluidTank;
-import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStack;
-import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
 
 // TODO - this needs a custom component
 //public class FluidHandlerScreenProviderItemStack extends FluidHandlerItemStack implements IScreenAddonProvider, IFluidTank {
