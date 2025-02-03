@@ -49,8 +49,8 @@ public class AnnotationConfigManager {
         String fileName = ModLoadingContext.get().getActiveContainer().getModId() + "/" + (type.fileName.isEmpty() ? ModLoadingContext.get().getActiveContainer().getModId() : type.fileName);
         if (!fileName.endsWith(".toml")) fileName = fileName + ".toml";
         specCache.spec = builder.build();
-        container.registerConfig(type.type, specCache.spec, fileName);
         specCaches.add(specCache);
+        container.registerConfig(type.type, specCache.spec, fileName);
     }
 
     private void scanClass(Class configClass, ModConfigSpec.Builder builder, SpecCache specCache) {
