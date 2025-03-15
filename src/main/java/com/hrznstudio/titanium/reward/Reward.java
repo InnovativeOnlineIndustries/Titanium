@@ -26,7 +26,7 @@ public class Reward {
     public static Calendar BUUZ_BIRTH_DATE = Calendar.getInstance();
 
     static {
-        BUUZ_BIRTH_DATE.set(2024, 02, 12);
+        BUUZ_BIRTH_DATE.set(BUUZ_BIRTH_DATE.get(Calendar.YEAR), Calendar.FEBRUARY, 12);
     }
 
     private final ResourceLocation resourceLocation;

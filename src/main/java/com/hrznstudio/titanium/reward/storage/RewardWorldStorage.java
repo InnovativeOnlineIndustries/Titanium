@@ -7,6 +7,7 @@
 
 package com.hrznstudio.titanium.reward.storage;
 
+import com.hrznstudio.titanium.reward.RewardManager;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -70,6 +71,18 @@ public class RewardWorldStorage extends SavedData {
         configuredPlayers.clear();
         CompoundTag configured = nbt.getCompound("ConfiguredPlayers");
         configured.getAllKeys().forEach(s -> configuredPlayers.add(UUID.fromString(s)));
+        //CLEAN
+        HashMap<UUID, ResourceLocation> toRemove = new HashMap<>();
+        RewardManager.get().getRewards().forEach((uuid, rewardGiver) -> {
+            rewardGiver.getRewards().forEach(reward -> {
+                for (UUID configuredPlayer : rewards.keySet()) {
+                    if (!reward.isPlayerValid(configuredPlayer)) {
+                        toRemove.put(configuredPlayer, reward.getResourceLocation());
+                    }
+                }
+            });
+        });
+        toRemove.forEach(this::remove);
         return this;
     }
 
