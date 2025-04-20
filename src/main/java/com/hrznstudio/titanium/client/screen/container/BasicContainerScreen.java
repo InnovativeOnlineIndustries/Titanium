@@ -182,6 +182,11 @@ public class BasicContainerScreen<T extends AbstractContainerMenu> extends Abstr
         return new ArrayList<>();
     }
 
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        return super.mouseScrolled(mouseX - xCenter, mouseY - yCenter, scrollX, scrollY);
+    }
+
     public void setAddons(List<IScreenAddon> addons) {
         this.addons = addons;
     }
