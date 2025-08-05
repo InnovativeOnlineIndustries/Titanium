@@ -314,4 +314,8 @@ public class NetworkManager extends SavedData {
 
         return tag;
     }
+
+    public Map<BlockPos, NetworkElement> getElements() {
+        return elements;
+    }
 }
