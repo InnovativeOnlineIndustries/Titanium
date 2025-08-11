@@ -65,6 +65,10 @@ public abstract class Network {
 
     public abstract ResourceLocation getType();
 
+    public NetworkGraph getGraph() {
+        return graph;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
