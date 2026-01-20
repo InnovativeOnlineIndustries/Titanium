@@ -32,17 +32,22 @@ public class MultiProgressBarHandler<T extends IComponentHarness> implements ISc
     }
 
     public void update() {
-        for (ProgressBarComponent<T> posWorkBar : progressBarComponents) {
-            if (posWorkBar.getCanIncrease().test(posWorkBar.getComponentHarness())) {
-                if (posWorkBar.getIncreaseType() && posWorkBar.getProgress() == 0) {
-                    posWorkBar.onStart();
+        // Используем индексированный цикл для избежания создания итератора
+        for (int i = 0, size = progressBarComponents.size(); i < size; i++) {
+            ProgressBarComponent<T> bar = progressBarComponents.get(i);
+            T harness = bar.getComponentHarness();
+
+            if (bar.getCanIncrease().test(harness)) {
+                boolean increaseType = bar.getIncreaseType();
+                int progress = bar.getProgress();
+
+                // Проверка onStart - один раз получаем increaseType
+                if (increaseType ? progress == 0 : progress == bar.getMaxProgress()) {
+                    bar.onStart();
                 }
-                if (!posWorkBar.getIncreaseType() && posWorkBar.getProgress() == posWorkBar.getMaxProgress()) {
-                    posWorkBar.onStart();
-                }
-                posWorkBar.tickBar();
-            } else if (posWorkBar.getCanReset().test(posWorkBar.getComponentHarness())) {
-                posWorkBar.setProgress(posWorkBar.getIncreaseType() ? 0 : posWorkBar.getMaxProgress());
+                bar.tickBar();
+            } else if (bar.getCanReset().test(harness)) {
+                bar.setProgress(bar.getIncreaseType() ? 0 : bar.getMaxProgress());
             }
         }
     }

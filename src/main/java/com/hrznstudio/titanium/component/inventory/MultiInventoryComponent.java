@@ -119,13 +119,34 @@ public class MultiInventoryComponent<T extends IComponentHarness> implements ISc
     public static class MultiInvCapabilityHandler<T extends IComponentHarness> extends ItemStackHandler {
 
         private final List<InventoryComponent<T>> inventoryHandlers;
-        private int slotAmount;
+        // Кеш для быстрого поиска handler по слоту - O(1) вместо O(n)
+        private final InventoryComponent<T>[] slotToHandler;
+        private final int[] slotToRelativeSlot;
+        private final int slotAmount;
 
+        @SuppressWarnings("unchecked")
         public MultiInvCapabilityHandler(List<InventoryComponent<T>> inventoryHandlers) {
             this.inventoryHandlers = inventoryHandlers;
-            this.slotAmount = 0;
-            for (InventoryComponent<T> inventoryHandler : this.inventoryHandlers) {
-                slotAmount += inventoryHandler.getSlots();
+
+            // Подсчитываем общее количество слотов
+            int totalSlots = 0;
+            for (InventoryComponent<T> handler : inventoryHandlers) {
+                totalSlots += handler.getSlots();
+            }
+            this.slotAmount = totalSlots;
+
+            // Предварительно вычисляем mapping слотов - избегаем линейного поиска каждый раз
+            this.slotToHandler = new InventoryComponent[totalSlots];
+            this.slotToRelativeSlot = new int[totalSlots];
+
+            int globalSlot = 0;
+            for (InventoryComponent<T> handler : inventoryHandlers) {
+                int handlerSlots = handler.getSlots();
+                for (int localSlot = 0; localSlot < handlerSlots; localSlot++) {
+                    slotToHandler[globalSlot] = handler;
+                    slotToRelativeSlot[globalSlot] = localSlot;
+                    globalSlot++;
+                }
             }
         }
 
@@ -137,48 +158,38 @@ public class MultiInventoryComponent<T extends IComponentHarness> implements ISc
         @Nonnull
         @Override
         public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            InventoryComponent<T> handler = getFromSlot(slot);
-            if (handler != null) {
-                int relativeSlot = getRelativeSlot(handler, slot);
-                if (handler.getInsertPredicate().test(stack, relativeSlot)) {
-                    return handler.insertItem(relativeSlot, stack, simulate);
-                } else {
-                    return stack;
-                }
+            if (slot < 0 || slot >= slotAmount) return stack;
+            InventoryComponent<T> handler = slotToHandler[slot];
+            int relativeSlot = slotToRelativeSlot[slot];
+            if (handler.getInsertPredicate().test(stack, relativeSlot)) {
+                return handler.insertItem(relativeSlot, stack, simulate);
             }
-            return super.insertItem(slot, stack, simulate);
+            return stack;
         }
 
         @Nonnull
         @Override
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            InventoryComponent<T> handler = getFromSlot(slot);
-            if (handler != null) {
-                int relativeSlot = getRelativeSlot(handler, slot);
-                if (!handler.getExtractPredicate().test(handler.getStackInSlot(relativeSlot), relativeSlot))
-                    return ItemStack.EMPTY;
-                return handler.extractItem(relativeSlot, amount, simulate);
+            if (slot < 0 || slot >= slotAmount) return ItemStack.EMPTY;
+            InventoryComponent<T> handler = slotToHandler[slot];
+            int relativeSlot = slotToRelativeSlot[slot];
+            if (!handler.getExtractPredicate().test(handler.getStackInSlot(relativeSlot), relativeSlot)) {
+                return ItemStack.EMPTY;
             }
-            return super.extractItem(slot, amount, simulate);
+            return handler.extractItem(relativeSlot, amount, simulate);
         }
 
         @Nonnull
         @Override
         public ItemStack getStackInSlot(int slot) {
-            InventoryComponent<T> handler = getFromSlot(slot);
-            if (handler != null) {
-                return handler.getStackInSlot(getRelativeSlot(handler, slot));
-            }
-            return super.getStackInSlot(slot);
+            if (slot < 0 || slot >= slotAmount) return ItemStack.EMPTY;
+            return slotToHandler[slot].getStackInSlot(slotToRelativeSlot[slot]);
         }
 
         @Override
         public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
-            InventoryComponent<T> handler = getFromSlot(slot);
-            if (handler != null) {
-                handler.setStackInSlot(getRelativeSlot(handler, slot), stack);
-            }
-            super.setStackInSlot(slot, stack);
+            if (slot < 0 || slot >= slotAmount) return;
+            slotToHandler[slot].setStackInSlot(slotToRelativeSlot[slot], stack);
         }
 
         @Override
@@ -189,29 +200,19 @@ public class MultiInventoryComponent<T extends IComponentHarness> implements ISc
 
         @Override
         public int getSlotLimit(int slot) {
-            InventoryComponent<T> handler = getFromSlot(slot);
-            if (handler != null) {
-                return handler.getSlotLimit(getRelativeSlot(handler, slot));
-            }
-            return super.getSlotLimit(slot);
+            if (slot < 0 || slot >= slotAmount) return 0;
+            return slotToHandler[slot].getSlotLimit(slotToRelativeSlot[slot]);
         }
 
+        // Оставляем для обратной совместимости
         public InventoryComponent<T> getFromSlot(int slot) {
-            for (InventoryComponent<T> handler : inventoryHandlers) {
-                slot -= handler.getSlots();
-                if (slot < 0) {
-                    return handler;
-                }
-            }
-            return null;
+            if (slot < 0 || slot >= slotAmount) return null;
+            return slotToHandler[slot];
         }
 
         public int getRelativeSlot(InventoryComponent<T> handler, int slot) {
-            for (InventoryComponent<T> h : inventoryHandlers) {
-                if (h.equals(handler)) return slot;
-                slot -= h.getSlots();
-            }
-            return 0;
+            if (slot < 0 || slot >= slotAmount) return 0;
+            return slotToRelativeSlot[slot];
         }
     }
 }

@@ -34,6 +34,21 @@ import java.util.Optional;
 
 public abstract class BasicTileBlock<T extends BasicTile<T>> extends BasicBlock implements EntityBlock {
 
+    // Кешированные тикеры - избегаем создания лямбды на каждый вызов getTicker()
+    @SuppressWarnings("rawtypes")
+    private static final BlockEntityTicker SERVER_TICKER = (level, pos, state, blockEntity) -> {
+        if (blockEntity instanceof ITickableBlockEntity tickable) {
+            tickable.serverTick(level, pos, state, blockEntity);
+        }
+    };
+
+    @SuppressWarnings("rawtypes")
+    private static final BlockEntityTicker CLIENT_TICKER = (level, pos, state, blockEntity) -> {
+        if (blockEntity instanceof ITickableBlockEntity tickable) {
+            tickable.clientTick(level, pos, state, blockEntity);
+        }
+    };
+
     private final Class<T> tileClass;
 
     public BasicTileBlock(Properties properties, Class<T> tileClass) {
@@ -72,18 +87,11 @@ public abstract class BasicTileBlock<T extends BasicTile<T>> extends BasicBlock 
         return tileClass;
     }
 
+    @SuppressWarnings("unchecked")
     @Nullable
     @Override
-    public <R extends BlockEntity> BlockEntityTicker<R> getTicker(Level p_153212_, BlockState p_153213_, BlockEntityType<R> p_153214_) {
-        return (level, pos, state, blockEntity) -> {
-            if (blockEntity instanceof ITickableBlockEntity) {
-                if (level.isClientSide()) {
-                    ((ITickableBlockEntity) blockEntity).clientTick(level, pos, state, blockEntity);
-                } else {
-                    ((ITickableBlockEntity) blockEntity).serverTick(level, pos, state, blockEntity);
-                }
-            }
-        };
+    public <R extends BlockEntity> BlockEntityTicker<R> getTicker(Level level, BlockState state, BlockEntityType<R> type) {
+        return (BlockEntityTicker<R>) (level.isClientSide() ? CLIENT_TICKER : SERVER_TICKER);
     }
 
     @Nullable
