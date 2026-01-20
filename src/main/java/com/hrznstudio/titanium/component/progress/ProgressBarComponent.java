@@ -170,23 +170,35 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
      * Ticks the bar so it can increase if possible, managed by {@link MultiProgressBarHandler#update()}
      */
     public void tickBar() {
-        if (componentHarness != null && componentHarness.getComponentWorld().getGameTime() % tickingTime == 0) {
-            if (increaseType && progress < maxProgress) {
-                setProgress(this.progress + progressIncrease);
-                this.onTickWork.run();
-            }
-            if (!increaseType && progress > 0) {
-                setProgress(this.progress - progressIncrease);
-                this.onTickWork.run();
+        // Быстрая проверка тикингового времени
+        if (tickingTime > 1 && componentHarness != null) {
+            if (componentHarness.getComponentWorld().getGameTime() % tickingTime != 0) {
+                return;
             }
         }
-        if (increaseType && progress >= maxProgress && canReset.test(componentHarness)) {
-            setProgress(0);
-            this.onFinishWork.run();
-        }
-        if (!increaseType && progress <= 0 && canReset.test(componentHarness)) {
-            setProgress(maxProgress);
-            this.onFinishWork.run();
+
+        if (increaseType) {
+            // Режим увеличения прогресса
+            if (progress < maxProgress) {
+                this.progress += progressIncrease;
+                this.onTickWork.run();
+            }
+            // Проверка завершения - только если прогресс достиг максимума
+            if (progress >= maxProgress && canReset.test(componentHarness)) {
+                this.progress = 0;
+                this.onFinishWork.run();
+            }
+        } else {
+            // Режим уменьшения прогресса
+            if (progress > 0) {
+                this.progress -= progressIncrease;
+                this.onTickWork.run();
+            }
+            // Проверка завершения - только если прогресс достиг нуля
+            if (progress <= 0 && canReset.test(componentHarness)) {
+                this.progress = maxProgress;
+                this.onFinishWork.run();
+            }
         }
     }
 
@@ -244,7 +256,6 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
      */
     public void setProgress(int progress) {
         this.progress = progress;
-        if (componentHarness != null) componentHarness.markComponentForUpdate(true);
     }
 
     /**

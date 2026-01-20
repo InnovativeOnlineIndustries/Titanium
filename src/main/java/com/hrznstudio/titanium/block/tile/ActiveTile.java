@@ -88,11 +88,62 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
 
     private List<IComponentBundle> bundles;
 
+    // Оптимизация: отложенное dirty обновление вместо мгновенного setChanged()
+    private boolean pendingDirty = false;
+
+    // Кеш для facing direction
+    private Direction cachedFacingDirection = null;
+    private long cachedFacingTick = -1;
+
+    // Кеш для IFacingComponent - избегаем instanceof проверок и создания итераторов каждый тик
+    private IFacingComponent[] cachedFacingInventories = null;
+    private IFacingComponent[] cachedFacingTanks = null;
+    private boolean facingComponentsCacheValid = false;
+
     public ActiveTile(BasicTileBlock<T> base, BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state) {
         super(base, blockEntityType,pos, state);
         this.guiAddons = new ArrayList<>();
         this.containerAddons = new ArrayList<>();
         this.bundles = new ArrayList<>();
+    }
+
+    /**
+     * Invalidates the facing components cache. Call this when inventory/tank components change.
+     */
+    protected void invalidateFacingComponentsCache() {
+        this.facingComponentsCacheValid = false;
+    }
+
+    private void rebuildFacingComponentsCache() {
+        if (facingComponentsCacheValid) return;
+
+        // Кешируем IFacingComponent inventories
+        if (multiInventoryComponent != null) {
+            List<IFacingComponent> facingInvs = new ArrayList<>();
+            for (InventoryComponent<T> inv : multiInventoryComponent.getInventoryHandlers()) {
+                if (inv instanceof IFacingComponent fc) {
+                    facingInvs.add(fc);
+                }
+            }
+            cachedFacingInventories = facingInvs.isEmpty() ? null : facingInvs.toArray(new IFacingComponent[0]);
+        } else {
+            cachedFacingInventories = null;
+        }
+
+        // Кешируем IFacingComponent tanks
+        if (multiTankComponent != null) {
+            List<IFacingComponent> facingTanks = new ArrayList<>();
+            for (FluidTankComponent<T> tank : multiTankComponent.getTanks()) {
+                if (tank instanceof IFacingComponent fc) {
+                    facingTanks.add(fc);
+                }
+            }
+            cachedFacingTanks = facingTanks.isEmpty() ? null : facingTanks.toArray(new IFacingComponent[0]);
+        } else {
+            cachedFacingTanks = null;
+        }
+
+        facingComponentsCacheValid = true;
     }
 
     @Override
@@ -224,21 +275,33 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
     @Override
     public void serverTick(Level level, BlockPos pos, BlockState state, T blockEntity) {
         if (multiProgressBarHandler != null) multiProgressBarHandler.update();
+
+        // Работа с facing компонентами - используем кешированные массивы
         if (level.getGameTime() % getFacingHandlerWorkTime() == 0) {
-            if (multiInventoryComponent != null) {
-                for (InventoryComponent<T> inventoryHandler : multiInventoryComponent.getInventoryHandlers()) {
-                    if (inventoryHandler instanceof IFacingComponent)
-                        ((IFacingComponent) inventoryHandler).work(this.level, this.worldPosition, this.getFacingDirection(), getFacingHandlerWorkAmount());
+            rebuildFacingComponentsCache();
+
+            if (cachedFacingInventories != null) {
+                Direction facing = this.getFacingDirection();
+                int workAmount = getFacingHandlerWorkAmount();
+                for (int i = 0; i < cachedFacingInventories.length; i++) {
+                    cachedFacingInventories[i].work(this.level, this.worldPosition, facing, workAmount);
                 }
             }
-            if (multiTankComponent != null) {
-                for (FluidTankComponent<T> tank : multiTankComponent.getTanks()) {
-                    if (tank instanceof IFacingComponent)
-                        ((IFacingComponent) tank).work(this.level, this.worldPosition, this.getFacingDirection(), getFacingHandlerWorkAmount());
+
+            if (cachedFacingTanks != null) {
+                Direction facing = this.getFacingDirection();
+                int workAmount = getFacingHandlerWorkAmount();
+                for (int i = 0; i < cachedFacingTanks.length; i++) {
+                    cachedFacingTanks[i].work(this.level, this.worldPosition, facing, workAmount);
                 }
             }
         }
 
+        // Обработка отложенного dirty в конце тика - один setChanged() вместо многих
+        if (pendingDirty) {
+            pendingDirty = false;
+            super.setChanged();
+        }
     }
 
     public int getFacingHandlerWorkTime() {
@@ -254,7 +317,31 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
     }
 
     public Direction getFacingDirection() {
-        return this.level.getBlockState(worldPosition).hasProperty(RotatableBlock.FACING_ALL) ? this.level.getBlockState(worldPosition).getValue(RotatableBlock.FACING_ALL) : (this.level.getBlockState(worldPosition).hasProperty(RotatableBlock.FACING_HORIZONTAL) ? this.level.getBlockState(worldPosition).getValue(RotatableBlock.FACING_HORIZONTAL) : Direction.NORTH);
+        // Кеширование facing direction - обновляется раз в тик
+        if (this.level != null) {
+            long currentTick = this.level.getGameTime();
+            if (cachedFacingTick != currentTick || cachedFacingDirection == null) {
+                cachedFacingTick = currentTick;
+                BlockState state = this.level.getBlockState(worldPosition);
+                if (state.hasProperty(RotatableBlock.FACING_ALL)) {
+                    cachedFacingDirection = state.getValue(RotatableBlock.FACING_ALL);
+                } else if (state.hasProperty(RotatableBlock.FACING_HORIZONTAL)) {
+                    cachedFacingDirection = state.getValue(RotatableBlock.FACING_HORIZONTAL);
+                } else {
+                    cachedFacingDirection = Direction.NORTH;
+                }
+            }
+            return cachedFacingDirection;
+        }
+        return Direction.NORTH;
+    }
+
+    /**
+     * Invalidates the cached facing direction. Call this when the block is rotated.
+     */
+    public void invalidateFacingCache() {
+        this.cachedFacingDirection = null;
+        this.cachedFacingTick = -1;
     }
 
     @Override
@@ -344,7 +431,8 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
 
     @Override
     public void markComponentDirty() {
-        super.setChanged();
+        // Отложенное обновление - setChanged() будет вызван один раз в конце тика
+        this.pendingDirty = true;
     }
 
     @Override
@@ -385,5 +473,29 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
         super.loadAdditional(compound, provider);
         if (multiInventoryComponent != null) multiInventoryComponent.rebuildCapability(FacingUtil.Sideness.values());
         if (multiTankComponent != null) multiTankComponent.rebuildCapability(FacingUtil.Sideness.values());
+    }
+
+    @Override
+    protected void saveAdditional(CompoundTag compoundTag, HolderLookup.Provider provider) {
+        // Сбрасываем pending dirty перед сохранением, чтобы гарантировать корректное состояние
+        this.pendingDirty = false;
+        super.saveAdditional(compoundTag, provider);
+    }
+
+    @Override
+    public void setRemoved() {
+        // Flush pending dirty перед удалением tile
+        if (pendingDirty && this.level != null && !this.level.isClientSide) {
+            pendingDirty = false;
+            // Не вызываем setChanged() здесь, т.к. tile уже удаляется
+        }
+        super.setRemoved();
+    }
+
+    @Override
+    public void setChanged() {
+        // Сбрасываем pending dirty при прямом вызове setChanged()
+        this.pendingDirty = false;
+        super.setChanged();
     }
 }
