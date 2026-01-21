@@ -176,27 +176,39 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
                 return;
             }
         }
+        tickBarDirect(increaseType, progress, maxProgress, componentHarness);
+    }
 
-        if (increaseType) {
+    /**
+     * Optimized tick method that receives pre-fetched values to avoid redundant getter calls.
+     * Called by MultiProgressBarHandler.update() for better performance.
+     *
+     * @param currentIncreaseType the cached increaseType value
+     * @param currentProgress the cached progress value
+     * @param currentMaxProgress the cached maxProgress value
+     * @param harness the component harness
+     */
+    void tickBarDirect(boolean currentIncreaseType, int currentProgress, int currentMaxProgress, T harness) {
+        if (currentIncreaseType) {
             // Режим увеличения прогресса
-            if (progress < maxProgress) {
-                this.progress += progressIncrease;
+            if (currentProgress < currentMaxProgress) {
+                this.progress = currentProgress + progressIncrease;
                 this.onTickWork.run();
             }
             // Проверка завершения - только если прогресс достиг максимума
-            if (progress >= maxProgress && canReset.test(componentHarness)) {
+            if (this.progress >= currentMaxProgress && canReset.test(harness)) {
                 this.progress = 0;
                 this.onFinishWork.run();
             }
         } else {
             // Режим уменьшения прогресса
-            if (progress > 0) {
-                this.progress -= progressIncrease;
+            if (currentProgress > 0) {
+                this.progress = currentProgress - progressIncrease;
                 this.onTickWork.run();
             }
             // Проверка завершения - только если прогресс достиг нуля
-            if (progress <= 0 && canReset.test(componentHarness)) {
-                this.progress = maxProgress;
+            if (this.progress <= 0 && canReset.test(harness)) {
+                this.progress = currentMaxProgress;
                 this.onFinishWork.run();
             }
         }
@@ -274,6 +286,7 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
      * @return Self
      */
     public ProgressBarComponent<T> setMaxProgress(int maxProgress) {
+        if (this.maxProgress == maxProgress) return this;
         this.maxProgress = maxProgress;
         return this;
     }
@@ -294,6 +307,7 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
      * @return Self
      */
     public ProgressBarComponent<T> setTickingTime(int tickingTime) {
+        if (this.tickingTime == tickingTime) return this;
         this.tickingTime = tickingTime;
         return this;
     }
@@ -314,6 +328,7 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
      * @return Self
      */
     public ProgressBarComponent<T> setProgressIncrease(int progressIncrease) {
+        if (this.progressIncrease == progressIncrease) return this;
         this.progressIncrease = progressIncrease;
         return this;
     }

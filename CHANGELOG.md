@@ -1,5 +1,33 @@
 # Changelog
 
+## [4.0.42] - 2025-01-21
+
+### Performance Optimizations
+
+Further optimizations for `ProgressBarComponent` and `MultiProgressBarHandler` reducing tick overhead.
+
+#### Changes
+
+**ProgressBarComponent.java**
+- Added early return in `setProgressIncrease()`, `setMaxProgress()`, `setTickingTime()` when value unchanged
+- New `tickBarDirect()` method accepts pre-fetched values to avoid redundant getter calls
+
+**MultiProgressBarHandler.java**
+- Early exit when progress bar list is empty
+- Cached `gameTime` - fetched once for all bars instead of per-bar `getComponentWorld().getGameTime()` calls
+- Moved `tickingTime` check from `tickBar()` to `update()` to skip bars entirely
+- Pass pre-computed `increaseType`, `progress`, `maxProgress` to `tickBarDirect()` avoiding duplicate getter calls
+
+#### Impact
+
+| Method | Optimization |
+|--------|--------------|
+| `getGameTime()` calls | N calls → 1 call per update |
+| Getter calls in hot path | Reduced by ~50% |
+| Empty handler overhead | Eliminated |
+
+---
+
 ## [4.0.41] - 2025-01-20
 
 ### Performance Optimizations

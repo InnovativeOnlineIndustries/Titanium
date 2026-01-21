@@ -32,20 +32,39 @@ public class MultiProgressBarHandler<T extends IComponentHarness> implements ISc
     }
 
     public void update() {
-        // Используем индексированный цикл для избежания создания итератора
-        for (int i = 0, size = progressBarComponents.size(); i < size; i++) {
+        final int size = progressBarComponents.size();
+        if (size == 0) return;
+
+        // Кешируем gameTime один раз для всех баров
+        long gameTime = -1;
+
+        for (int i = 0; i < size; i++) {
             ProgressBarComponent<T> bar = progressBarComponents.get(i);
             T harness = bar.getComponentHarness();
+
+            // Проверка tickingTime - вынесена из tickBar() чтобы избежать повторных getGameTime()
+            int tickingTime = bar.getTickingTime();
+            if (tickingTime > 1) {
+                if (gameTime == -1 && harness != null) {
+                    gameTime = harness.getComponentWorld().getGameTime();
+                }
+                if (gameTime != -1 && gameTime % tickingTime != 0) {
+                    continue;
+                }
+            }
 
             if (bar.getCanIncrease().test(harness)) {
                 boolean increaseType = bar.getIncreaseType();
                 int progress = bar.getProgress();
+                int maxProgress = bar.getMaxProgress();
 
-                // Проверка onStart - один раз получаем increaseType
-                if (increaseType ? progress == 0 : progress == bar.getMaxProgress()) {
+                // Проверка onStart
+                if (increaseType ? progress == 0 : progress == maxProgress) {
                     bar.onStart();
                 }
-                bar.tickBar();
+
+                // Inline tickBar логика - избегаем повторного получения increaseType/progress/maxProgress
+                bar.tickBarDirect(increaseType, progress, maxProgress, harness);
             } else if (bar.getCanReset().test(harness)) {
                 bar.setProgress(bar.getIncreaseType() ? 0 : bar.getMaxProgress());
             }
