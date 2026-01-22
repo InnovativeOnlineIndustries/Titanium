@@ -1,9 +1,8 @@
 plugins {
     id 'net.neoforged.moddev' version '0.1.112'
     id 'maven-publish'
-  id "com.modrinth.minotaur" version "2.+"
-  id 'net.darkhax.curseforgegradle' version '1.1.15'
-  id 'org.cadixdev.licenser' version '0.6.1'
+    id "com.modrinth.minotaur" version "2.+"
+    id 'net.darkhax.curseforgegradle' version '1.1.15'
 }
 
 final mcVersion = "1.21"
@@ -105,15 +104,6 @@ publishing {
 }
 
 
-license {
-  header = project.file('HEADER')
-  ext {
-    year = Calendar.getInstance().get(Calendar.YEAR)
-    name = 'Horizon Studio'
-    email = 'contact@hrznstudio.com'
-    mod = 'Titanium'
-  }
-}
 
 //tasks.publishCurseForge.enabled = System.env["CURSE_API"] != null
 
