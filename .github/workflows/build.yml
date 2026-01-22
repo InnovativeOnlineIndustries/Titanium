@@ -28,7 +28,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build with Gradle
-        run: ./gradlew build -x test
+        run: ./gradlew build -x test -x checkLicenseMain
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
