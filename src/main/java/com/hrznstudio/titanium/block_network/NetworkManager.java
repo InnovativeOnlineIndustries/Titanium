@@ -91,10 +91,18 @@ public class NetworkManager extends SavedData {
 
         for (NetworkElement candidate : candidates) {
             if (candidate.getNetwork() == null) {
-                throw new RuntimeException("Element network is null!");
+                LOGGER.warn("Element at {} has null network during merge, this may indicate incomplete initialization. Skipping.", candidate.getPos());
+                continue;
             }
 
             networkCandidates.add(candidate.getNetwork());
+        }
+
+        // Если после фильтрации не осталось валидных сетей, создаем новую сеть
+        if (networkCandidates.isEmpty()) {
+            LOGGER.debug("No valid networks found to merge, forming new network at {}", pos);
+            formNetworkAt(level, pos, candidates.iterator().next().getNetworkType());
+            return;
         }
 
         Iterator<Network> networks = networkCandidates.iterator();
@@ -292,6 +300,14 @@ public class NetworkManager extends SavedData {
 
         LOGGER.debug("Read {} elements", elements.size());
         LOGGER.debug("Read {} networks", networks.size());
+
+        // После загрузки связываем элементы с сетями через сканирование графов
+        // Это необходимо, чтобы элементы знали о своих сетях и не возникало NPE
+        for (Network network : networks.values()) {
+            network.scanGraph(level, network.getOriginPos());
+        }
+
+        LOGGER.debug("Completed network graph scanning after load");
     }
 
     @Override

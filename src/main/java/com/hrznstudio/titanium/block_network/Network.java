@@ -32,6 +32,10 @@ public abstract class Network {
         this.originPos = originPos;
     }
 
+    public BlockPos getOriginPos() {
+        return originPos;
+    }
+
     public String getId() {
         return id;
     }
