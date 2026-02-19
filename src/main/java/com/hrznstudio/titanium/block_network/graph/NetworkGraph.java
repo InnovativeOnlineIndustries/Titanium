@@ -8,6 +8,7 @@
 package com.hrznstudio.titanium.block_network.graph;
 
 import com.hrznstudio.titanium.block_network.Network;
+import com.hrznstudio.titanium.block_network.NetworkManager;
 import com.hrznstudio.titanium.block_network.element.NetworkElement;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -25,8 +26,8 @@ public class NetworkGraph {
         this.network = network;
     }
 
-    public NetworkGraphScannerResult scan(Level originLevel, BlockPos originPos) {
-        NetworkGraphScanner scanner = new NetworkGraphScanner(elements, network.getType());
+    public NetworkGraphScannerResult scan(Level originLevel, BlockPos originPos, NetworkManager manager) {
+        NetworkGraphScanner scanner = new NetworkGraphScanner(elements, network.getType(), manager);
 
         NetworkGraphScannerResult result = scanner.scanAt(originLevel, originPos);
 

@@ -23,14 +23,16 @@ public class NetworkGraphScanner {
 
     private final Set<NetworkElement> currentElements;
     private final ResourceLocation requiredNetworkType;
+    private final NetworkManager networkManager;
 
     private final List<NetworkGraphScannerRequest> allRequests = new ArrayList<>();
     private final Queue<NetworkGraphScannerRequest> requests = new ArrayDeque<>();
 
-    public NetworkGraphScanner(Set<NetworkElement> currentElements, ResourceLocation requiredNetworkType) {
+    public NetworkGraphScanner(Set<NetworkElement> currentElements, ResourceLocation requiredNetworkType, NetworkManager networkManager) {
         this.currentElements = currentElements;
         this.removedElements.addAll(currentElements);
         this.requiredNetworkType = requiredNetworkType;
+        this.networkManager = networkManager;
     }
 
     public NetworkGraphScannerResult scanAt(Level level, BlockPos pos) {
@@ -50,7 +52,7 @@ public class NetworkGraphScanner {
     }
 
     private void singleScanAt(NetworkGraphScannerRequest request) {
-        NetworkElement pipe = NetworkManager.get(request.getLevel()).getElement(request.getPos());
+        NetworkElement pipe = networkManager.getElement(request.getPos());
 
         if (pipe != null) {
             if (!requiredNetworkType.equals(pipe.getNetworkType())) {

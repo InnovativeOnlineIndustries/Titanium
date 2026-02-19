@@ -79,7 +79,7 @@ public class NetworkManager extends SavedData {
 
         addNetwork(network);
 
-        network.scanGraph(level, pos);
+        network.scanGraph(level, pos, this);
     }
 
     private void mergeNetworksIntoOne(Set<NetworkElement> candidates, Level level, BlockPos pos) {
@@ -124,7 +124,7 @@ public class NetworkManager extends SavedData {
             }
         }
 
-        mainNetwork.scanGraph(level, pos);
+        mainNetwork.scanGraph(level, pos, this);
 
         mergedNetworks.forEach(n -> n.onMergedWith(mainNetwork));
     }
@@ -192,7 +192,8 @@ public class NetworkManager extends SavedData {
 
             NetworkGraphScannerResult result = otherElementInNetwork.getNetwork().scanGraph(
                     otherElementInNetwork.getLevel(),
-                    otherElementInNetwork.getPos()
+                    otherElementInNetwork.getPos(),
+                    this
             );
 
             // For sanity checking
@@ -304,7 +305,7 @@ public class NetworkManager extends SavedData {
         // После загрузки связываем элементы с сетями через сканирование графов
         // Это необходимо, чтобы элементы знали о своих сетях и не возникало NPE
         for (Network network : networks.values()) {
-            network.scanGraph(level, network.getOriginPos());
+            network.scanGraph(level, network.getOriginPos(), this);
         }
 
         LOGGER.debug("Completed network graph scanning after load");

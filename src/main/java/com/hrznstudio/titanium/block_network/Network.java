@@ -41,7 +41,11 @@ public abstract class Network {
     }
 
     public NetworkGraphScannerResult scanGraph(Level level, BlockPos pos) {
-        return graph.scan(level, pos);
+        return scanGraph(level, pos, NetworkManager.get(level));
+    }
+
+    public NetworkGraphScannerResult scanGraph(Level level, BlockPos pos, NetworkManager manager) {
+        return graph.scan(level, pos, manager);
     }
 
     public CompoundTag writeToNbt(CompoundTag tag) {
