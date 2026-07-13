@@ -8,9 +8,9 @@
 package com.hrznstudio.titanium.api.filter;
 
 import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
+import com.hrznstudio.titanium.nbthandler.INBTSerializable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.util.INBTSerializable;
 
 import java.util.function.Predicate;
 

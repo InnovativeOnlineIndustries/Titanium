@@ -18,10 +18,10 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
-import net.minecraft.commands.arguments.ResourceLocationArgument;
+import net.minecraft.commands.arguments.IdentifierArgument;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
@@ -35,11 +35,11 @@ public class RewardCommand {
                 .then(Commands.argument("action", StringArgumentType.word())
                         .suggests((context, builder) -> {
                             return SharedSuggestionProvider.suggest(new String[]{"enable", "disable"}, builder);
-                        }).then(Commands.argument("reward", new ResourceLocationArgument())
+                        }).then(Commands.argument("reward", new IdentifierArgument())
                                 .suggests((context, builder) -> {
-                                    return SharedSuggestionProvider.suggest(getAvailableResourceLocations(context).stream().map(ResourceLocation::toString), builder);
+                                    return SharedSuggestionProvider.suggest(getAvailableIdentifiers(context).stream().map(Identifier::toString), builder);
                                 }).then(Commands.argument("option", StringArgumentType.word()).suggests((context, builder) -> {
-                                    return SharedSuggestionProvider.suggest(RewardManager.get().getReward(context.getArgument("reward", ResourceLocation.class)).getOptions(), builder);
+                                return SharedSuggestionProvider.suggest(RewardManager.get().getReward(context.getArgument("reward", Identifier.class)).getOptions(), builder);
                                 })
                                         .executes(context -> {
                                             execute(context);
@@ -67,7 +67,7 @@ public class RewardCommand {
         CommandSourceStack source = context.getSource();
         RewardWorldStorage rewardWorldStorage = RewardWorldStorage.get(source.getLevel());
         try {
-            rewardWorldStorage.remove(source.getPlayerOrException().getUUID(), context.getArgument("reward", ResourceLocation.class));
+            rewardWorldStorage.remove(source.getPlayerOrException().getUUID(), context.getArgument("reward", Identifier.class));
             rewardWorldStorage.setDirty();
             context.getSource().sendSuccess(() -> Component.literal("titanium.rewards.remove_success"), true);
             return true;
@@ -80,7 +80,7 @@ public class RewardCommand {
     private static boolean addReward(CommandContext<CommandSourceStack> context) {
         try {
             CommandSourceStack source = context.getSource();
-            ResourceLocation resourceLocation = context.getArgument("reward", ResourceLocation.class);
+            Identifier resourceLocation = context.getArgument("reward", Identifier.class);
             if (RewardManager.get().getReward(resourceLocation) == null || !RewardManager.get().getReward(resourceLocation).isPlayerValid(source.getPlayerOrException().getUUID()))
                 return false;
             RewardWorldStorage rewardWorldStorage = RewardWorldStorage.get(source.getLevel());
@@ -88,7 +88,7 @@ public class RewardCommand {
             if (!Arrays.asList(RewardManager.get().getReward(resourceLocation).getOptions()).contains(option)) {
                 return false;
             }
-            rewardWorldStorage.add(source.getPlayerOrException().getUUID(), context.getArgument("reward", ResourceLocation.class), option);
+            rewardWorldStorage.add(source.getPlayerOrException().getUUID(), context.getArgument("reward", Identifier.class), option);
             rewardWorldStorage.setDirty();
             context.getSource().sendSuccess(() -> Component.literal("titanium.rewards.enabled_success"), true);
             return true;
@@ -98,12 +98,12 @@ public class RewardCommand {
         return false;
     }
 
-    private static List<ResourceLocation> getAvailableResourceLocations(CommandContext<CommandSourceStack> context) {
+    private static List<Identifier> getAvailableIdentifiers(CommandContext<CommandSourceStack> context) {
         CommandSourceStack source = context.getSource();
         RewardWorldStorage rewardWorldStorage = RewardWorldStorage.get(source.getLevel());
-        List<ResourceLocation> resourceLocations = new ArrayList<>(rewardWorldStorage.getFreeRewards());
+        List<Identifier> resourceLocations = new ArrayList<>(rewardWorldStorage.getFreeRewards());
         try {
-            resourceLocations.addAll(RewardManager.get().collectRewardsResourceLocations(context.getSource().getPlayerOrException().getUUID()));
+            resourceLocations.addAll(RewardManager.get().collectRewardsIdentifiers(context.getSource().getPlayerOrException().getUUID()));
         } catch (CommandSyntaxException e) {
             e.printStackTrace();
         }

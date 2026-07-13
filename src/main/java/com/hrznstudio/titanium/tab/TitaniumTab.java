@@ -7,7 +7,7 @@
 
 package com.hrznstudio.titanium.tab;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 
 import java.util.ArrayList;
@@ -16,9 +16,9 @@ import java.util.List;
 public class TitaniumTab {
 
     private final List<Item> tabList;
-    private final ResourceLocation resourceLocation;
+    private final Identifier resourceLocation;
 
-    public TitaniumTab(ResourceLocation resourceLocation) {
+    public TitaniumTab(Identifier resourceLocation) {
         this.resourceLocation = resourceLocation;
         this.tabList = new ArrayList<>();
     }
@@ -27,7 +27,7 @@ public class TitaniumTab {
         return tabList;
     }
 
-    public ResourceLocation getResourceLocation() {
+    public Identifier getIdentifier() {
         return resourceLocation;
     }
 }

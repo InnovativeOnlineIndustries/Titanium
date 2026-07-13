@@ -7,6 +7,7 @@
 
 package com.hrznstudio.titanium.item;
 
+import com.hrznstudio.titanium.module.DeferredRegistryHelper;
 import com.hrznstudio.titanium.tab.TitaniumTab;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -15,13 +16,16 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 @ParametersAreNonnullByDefault
 public class BasicItem extends Item {
@@ -29,29 +33,31 @@ public class BasicItem extends Item {
     private TitaniumTab itemGroup = null;
 
     public BasicItem(Properties properties) {
-        super(properties);
+        super(DeferredRegistryHelper.applyItemRegistrationId(properties));
     }
 
     public BasicItem(String name, Properties properties) {
-        super(properties);
+        super(DeferredRegistryHelper.applyItemRegistrationId(properties));
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        super.appendHoverText(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, TooltipContext worldIn, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, display, tooltip, flagIn);
+        List<Component> lines = new ArrayList<>();
         if (hasTooltipDetails(null)) {
-            addTooltipDetails(null, stack, tooltip, flagIn.isAdvanced());
+            addTooltipDetails(null, stack, lines, flagIn.isAdvanced());
         }
         for (Key key : Key.values()) {
             if (hasTooltipDetails(key)) {
                 if (key.isDown()) {
-                    addTooltipDetails(key, stack, tooltip, flagIn.isAdvanced());
+                    addTooltipDetails(key, stack, lines, flagIn.isAdvanced());
                 } else {
                     String keyName = ChatFormatting.YELLOW + key.getSerializedName() + ChatFormatting.GRAY;
-                    tooltip.add(Component.literal(Component.translatable("tooltip.titanium.hold_moreinfo",keyName).getString()));
+                    lines.add(Component.literal(Component.translatable("tooltip.titanium.hold_moreinfo", keyName).getString()));
                 }
             }
         }
+        lines.forEach(tooltip);
     }
 
     public void addTooltipDetails(@Nullable Key key, ItemStack stack, List<Component> tooltip, boolean advanced) {
@@ -82,7 +88,7 @@ public class BasicItem extends Item {
 
         public boolean isDown() {
             for (int key : keys)
-                if (GLFW.glfwGetKey(Minecraft.getInstance().getWindow().getWindow(), key) == GLFW.GLFW_PRESS) //Main windows
+                if (GLFW.glfwGetKey(Minecraft.getInstance().getWindow().handle(), key) == GLFW.GLFW_PRESS) //Main windows
                     return true;
             return false;
         }

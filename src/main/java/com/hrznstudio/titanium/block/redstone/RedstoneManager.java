@@ -9,9 +9,9 @@ package com.hrznstudio.titanium.block.redstone;
 
 import com.hrznstudio.titanium.api.IEnumValues;
 import com.hrznstudio.titanium.api.redstone.IRedstoneAction;
+import com.hrznstudio.titanium.nbthandler.INBTSerializable;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.neoforged.neoforge.common.util.INBTSerializable;
 
 public class RedstoneManager<T extends IEnumValues<T> & IRedstoneAction> implements INBTSerializable<CompoundTag> {
 
@@ -63,9 +63,9 @@ public class RedstoneManager<T extends IEnumValues<T> & IRedstoneAction> impleme
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        this.action = this.action.getValue(nbt.getString("Name"));
-        this.lastRedstoneState = nbt.getBoolean("LastState");
-        this.shouldWork = nbt.getBoolean("ShouldWork");
+        this.action = this.action.getValue(nbt.getStringOr("Name", ""));
+        this.lastRedstoneState = nbt.getBooleanOr("LastState", false);
+        this.shouldWork = nbt.getBooleanOr("ShouldWork", false);
     }
 
 }

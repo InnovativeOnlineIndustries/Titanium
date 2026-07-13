@@ -8,9 +8,12 @@
 package com.hrznstudio.titanium.api.client;
 
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 
 import java.util.Collections;
@@ -29,7 +32,7 @@ public interface IScreenAddon extends GuiEventListener {
      * @param mouseY       The current mouse Y
      * @param partialTicks Partial ticks
      */
-    void drawBackgroundLayer(GuiGraphics guiGraphics, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks);
+    void drawBackgroundLayer(GuiGraphicsExtractor guiGraphics, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks);
 
     /**
      * Draws the component in the foreground layer
@@ -43,7 +46,7 @@ public interface IScreenAddon extends GuiEventListener {
      * @param mouseY       The current mouse Y
      * @param partialTicks Partial Ticks
      */
-    void drawForegroundLayer(GuiGraphics guiGraphics, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks);
+    void drawForegroundLayer(GuiGraphicsExtractor guiGraphics, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks);
 
     /**
      * A list of strings that will be drawn as a tooltip when `isInside` returns true
@@ -86,9 +89,13 @@ public interface IScreenAddon extends GuiEventListener {
      * @param button The Id of the button that was clicked
      * @return Returns whether the mouse was clicked successfully or not
      */
-    @Override
     default boolean mouseClicked(double mouseX, double mouseY, int button) {
         return false;
+    }
+
+    @Override
+    default boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        return mouseClicked(event.x(), event.y(), event.button());
     }
 
     /**
@@ -99,9 +106,13 @@ public interface IScreenAddon extends GuiEventListener {
      * @param button The Id of the mouse button that was released
      * @return Returns true if the mouse button release was handled
      */
-    @Override
     default boolean mouseReleased(double mouseX, double mouseY, int button) {
         return false;
+    }
+
+    @Override
+    default boolean mouseReleased(MouseButtonEvent event) {
+        return mouseReleased(event.x(), event.y(), event.button());
     }
 
     /**
@@ -114,9 +125,13 @@ public interface IScreenAddon extends GuiEventListener {
      * @param dragY The Y coordinate of the mouse where the drag was finished
      * @return Returns true if the drag was handled
      */
-    @Override
     default boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
         return false;
+    }
+
+    @Override
+    default boolean mouseDragged(MouseButtonEvent event, double dragX, double dragY) {
+        return mouseDragged(event.x(), event.y(), event.button(), dragX, dragY);
     }
 
     /**
@@ -139,9 +154,13 @@ public interface IScreenAddon extends GuiEventListener {
      * @param modifiers The 'bitfield' describing which modifiers keys were held down (ctrl, alt, shift, etc)
      * @return Returns true if the key press was handled
      */
-    @Override
     default boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         return false;
+    }
+
+    @Override
+    default boolean keyPressed(KeyEvent event) {
+        return keyPressed(event.key(), event.scancode(), event.modifiers());
     }
 
     /**
@@ -152,9 +171,13 @@ public interface IScreenAddon extends GuiEventListener {
      * @param modifiers The 'bitfield' describing which modifiers keys were held down (ctrl, alt, shift, etc)
      * @return Returns whether the key release was handled
      */
-    @Override
     default boolean keyReleased(int keyCode, int scanCode, int modifiers) {
         return false;
+    }
+
+    @Override
+    default boolean keyReleased(KeyEvent event) {
+        return keyReleased(event.key(), event.scancode(), event.modifiers());
     }
 
     /**
@@ -164,9 +187,13 @@ public interface IScreenAddon extends GuiEventListener {
      * @param modifiers The 'bitfield' describing which modifiers keys were held down (ctrl, alt, shift, etc)
      * @return Returns true if the 'Character' being typed was handled
      */
-    @Override
     default boolean charTyped(char codePoint, int modifiers) {
         return false;
+    }
+
+    @Override
+    default boolean charTyped(CharacterEvent event) {
+        return event.codepoint() <= Character.MAX_VALUE && charTyped((char) event.codepoint(), 0);
     }
 
     @Override

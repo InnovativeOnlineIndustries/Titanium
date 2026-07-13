@@ -9,81 +9,58 @@ package com.hrznstudio.titanium.energy;
 
 import com.hrznstudio.titanium.attachment.StoredEnergyAttachment;
 import com.hrznstudio.titanium.item.EnergyItem;
-import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.transfer.TransferPreconditions;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
-public class EnergyStorageItemStack implements IEnergyStorage {
-    private final ItemStack stack;
+public class EnergyStorageItemStack implements EnergyHandler {
+    private final ItemAccess access;
+    private final EnergyItem item;
 
-    public EnergyStorageItemStack(ItemStack stack) {
-        this.stack = stack;
+    public EnergyStorageItemStack(ItemAccess access, EnergyItem item) {
+        this.access = access;
+        this.item = item;
     }
 
     public void putInternal(int energy) {
-        save(new StoredEnergyAttachment(Math.min(getEnergyStored() + energy, getMaxEnergyStored()), getMaxEnergyStored(), getMaxReceive(), getMaxExtract()));
+        update(Math.min(getAmountAsInt() + energy, getCapacityAsInt()), null);
     }
 
     @Override
-    public int receiveEnergy(int maxReceive, boolean simulate) {
-        if (!canReceive())
-            return 0;
-        int energyReceived = Math.min(getMaxEnergyStored() - getEnergyStored(), Math.min(getMaxReceive(), maxReceive));
-
-        if (!simulate) {
-            if (energyReceived != 0) {
-                save(new StoredEnergyAttachment(getEnergyStored() + energyReceived, getMaxEnergyStored(), getMaxReceive(), getMaxExtract()));
-            }
-        }
-        return energyReceived;
+    public int insert(int amount, TransactionContext transaction) {
+        TransferPreconditions.checkNonNegative(amount);
+        int inserted = Math.min(getCapacityAsInt() - getAmountAsInt(), Math.min(item.getInput(), amount));
+        return inserted > 0 && update(getAmountAsInt() + inserted, transaction) ? inserted : 0;
     }
 
     @Override
-    public int extractEnergy(int maxExtract, boolean simulate) {
-        if (!canExtract())
-            return 0;
-        int energyExtracted = Math.min(getEnergyStored(), Math.min(getMaxExtract(), maxExtract));
-
-        if (!simulate) {
-            if (stack != null && energyExtracted != 0) {
-                save(new StoredEnergyAttachment(getEnergyStored() - energyExtracted, getMaxEnergyStored(), getMaxReceive(), getMaxExtract()));
-            }
-        }
-        return energyExtracted;
-    }
-
-    public int getMaxExtract() {
-        return get().out();
-    }
-
-    public int getMaxReceive() {
-        return get().in();
+    public int extract(int amount, TransactionContext transaction) {
+        TransferPreconditions.checkNonNegative(amount);
+        int extracted = Math.min(getAmountAsInt(), Math.min(item.getOutput(), amount));
+        return extracted > 0 && update(getAmountAsInt() - extracted, transaction) ? extracted : 0;
     }
 
     @Override
-    public int getEnergyStored() {
+    public long getAmountAsLong() {
         return get().stored();
     }
 
     @Override
-    public int getMaxEnergyStored() {
-        return get().capacity();
+    public long getCapacityAsLong() {
+        return item.getCapacity();
     }
 
-    @Override
-    public boolean canExtract() {
-        return getMaxExtract() > 0;
-    }
-
-    @Override
-    public boolean canReceive() {
-        return getMaxReceive() > 0;
-    }
-
-    public void save(StoredEnergyAttachment attachment) {
-        stack.set(StoredEnergyAttachment.TYPE, attachment);
+    private boolean update(int stored, TransactionContext transaction) {
+        ItemResource current = access.getResource();
+        if (!current.is(item)) return false;
+        StoredEnergyAttachment attachment = new StoredEnergyAttachment(stored, item.getCapacity(), item.getInput(), item.getOutput());
+        ItemResource updated = current.with(StoredEnergyAttachment.TYPE, attachment);
+        return !updated.isEmpty() && access.exchange(updated, access.getAmount(), transaction) == access.getAmount();
     }
 
     public StoredEnergyAttachment get() {
-        return stack.getOrDefault(StoredEnergyAttachment.TYPE, new StoredEnergyAttachment((EnergyItem) stack.getItem()));
+        return access.getResource().getOrDefault(StoredEnergyAttachment.TYPE, new StoredEnergyAttachment(item));
     }
 }

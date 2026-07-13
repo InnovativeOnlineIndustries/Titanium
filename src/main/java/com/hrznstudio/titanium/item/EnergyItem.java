@@ -12,7 +12,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -60,9 +61,9 @@ public class EnergyItem extends BasicItem {
                 tooltip.add(
                     Component.empty().withStyle(ChatFormatting.YELLOW)
                         .append(Component.translatable("tooltip.titanium.energy").getString()).withStyle(ChatFormatting.RED)
-                        .append(String.valueOf(storage.getEnergyStored())).withStyle(ChatFormatting.YELLOW)
+                        .append(String.valueOf(storage.getAmountAsLong())).withStyle(ChatFormatting.YELLOW)
                         .append("/").withStyle(ChatFormatting.RED)
-                        .append(String.valueOf(storage.getMaxEnergyStored())).withStyle(ChatFormatting.RESET)));
+                        .append(String.valueOf(storage.getCapacityAsLong())).withStyle(ChatFormatting.RESET)));
         }
     }
 
@@ -74,7 +75,7 @@ public class EnergyItem extends BasicItem {
 
     @Override
     public int getBarWidth(ItemStack stack) {
-        return (int) Math.round(getEnergyStorage(stack).map(storage -> 1 - (double) storage.getEnergyStored() / (double) storage.getMaxEnergyStored()).orElse(0.0) * 13);
+        return (int) Math.round(getEnergyStorage(stack).map(storage -> 1 - (double) storage.getAmountAsLong() / (double) storage.getCapacityAsLong()).orElse(0.0) * 13);
     }
 
     @Override
@@ -82,12 +83,12 @@ public class EnergyItem extends BasicItem {
         return 0x00E93232;
     }
 
-    public Optional<IEnergyStorage> getEnergyStorage(ItemStack stack) {
-        return Optional.ofNullable(stack.getCapability(Capabilities.EnergyStorage.ITEM, null));
+    public Optional<EnergyHandler> getEnergyStorage(ItemStack stack) {
+        return stack.isEmpty() ? Optional.empty() : Optional.ofNullable(ItemAccess.forStack(stack).getCapability(Capabilities.Energy.ITEM));
     }
 
-    public IEnergyStorage initEnergy(ItemStack stack) {
-        return new EnergyStorageItemStack(stack);
+    public EnergyHandler initEnergy(ItemAccess access) {
+        return new EnergyStorageItemStack(access, this);
     }
 
 }

@@ -19,8 +19,8 @@ import com.mojang.serialization.JsonOps;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
@@ -71,8 +71,8 @@ public class JSONSerializableDataHandler {
             }
             return stacks;
         });
-        map(ResourceLocation.class, type -> new JsonPrimitive(type.toString()), element -> ResourceLocation.parse(element.getAsString()));
-        map(Block.class, type -> new JsonPrimitive(BuiltInRegistries.BLOCK.getKey(type).toString()), element -> BuiltInRegistries.BLOCK.get(ResourceLocation.parse(element.getAsString())));
+        map(Identifier.class, type -> new JsonPrimitive(type.toString()), element -> Identifier.parse(element.getAsString()));
+        map(Block.class, type -> new JsonPrimitive(BuiltInRegistries.BLOCK.getKey(type).toString()), element -> BuiltInRegistries.BLOCK.getValue(Identifier.parse(element.getAsString())));
         map(FluidStack.class, JSONSerializableDataHandler::writeFluidStack, JSONSerializableDataHandler::readFluidStack);
 
         map(ResourceKey.class, JSONSerializableDataHandler::writeRegistryKey, JSONSerializableDataHandler::readRegistryKey);
@@ -82,7 +82,7 @@ public class JSONSerializableDataHandler {
                 object.addProperty("type", registryKeys[0].registry().toString());
                 JsonArray array = new JsonArray();
                 for (ResourceKey registryKey : registryKeys) {
-                    array.add(registryKey.location().toString());
+                    array.add(registryKey.identifier().toString());
                 }
                 object.add("values", array);
             }
@@ -94,7 +94,7 @@ public class JSONSerializableDataHandler {
                 int i = 0;
                 for (Iterator<JsonElement> iterator = element.getAsJsonObject().getAsJsonArray("values").iterator(); iterator.hasNext(); i++) {
                     JsonElement jsonElement = iterator.next();
-                    registryKeys[i] = ResourceKey.create(ResourceKey.createRegistryKey(ResourceLocation.parse(element.getAsJsonObject().get("type").getAsString())), ResourceLocation.parse(jsonElement.getAsString()));
+                    registryKeys[i] = ResourceKey.create(ResourceKey.createRegistryKey(Identifier.parse(element.getAsJsonObject().get("type").getAsString())), Identifier.parse(jsonElement.getAsString()));
                 }
             }
             return registryKeys;
@@ -120,25 +120,9 @@ public class JSONSerializableDataHandler {
             }
             return ingredients;
         });
-        map(Ingredient.Value.class, type -> writeCodec(Ingredient.Value.CODEC, type), element -> readCodec(Ingredient.Value.CODEC, element));
-        map(Ingredient.Value[].class, type -> {
-            JsonArray array = new JsonArray();
-            for (Ingredient.Value ingredient : type) {
-                array.add(write(Ingredient.Value.class, ingredient));
-            }
-            return array;
-        }, element -> {
-            Ingredient.Value[] ingredient = new Ingredient.Value[element.getAsJsonArray().size()];
-            int i = 0;
-            for (JsonElement jsonElement : element.getAsJsonArray()) {
-                ingredient[i] = read(Ingredient.Value.class, jsonElement);
-                ++i;
-            }
-            return ingredient;
-        });
         map(CompoundTag.class, type -> new JsonPrimitive(type.toString()), element -> {
             try {
-                return TagParser.parseTag(element.getAsString());
+                return TagParser.parseCompoundFully(element.getAsString());
             } catch (CommandSyntaxException e) {
                 Titanium.LOGGER.catching(e);
             }
@@ -205,7 +189,7 @@ public class JSONSerializableDataHandler {
 //        if (object.has("item")) {
 //            object.add("id", object.get("item"));
 //        }
-//        ItemStack stack = new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.parse(object.get("item").getAsString())),
+//        ItemStack stack = new ItemStack(BuiltInRegistries.ITEM.get(Identifier.parse(object.get("item").getAsString())),
 //                GsonHelper.getAsInt(object, "count", 1));
 //        if (object.has("nbt")) {
 //            try {
@@ -221,12 +205,12 @@ public class JSONSerializableDataHandler {
     public static JsonObject writeRegistryKey(ResourceKey<?> registryKey) {
         JsonObject object = new JsonObject();
         object.addProperty("key", registryKey.registry().toString());
-        object.addProperty("value", registryKey.location().toString());
+        object.addProperty("value", registryKey.identifier().toString());
         return object;
     }
 
     public static ResourceKey<?> readRegistryKey(JsonElement object) {
-        return ResourceKey.create(ResourceKey.createRegistryKey(ResourceLocation.parse(object.getAsJsonObject().get("key").getAsString())), ResourceLocation.parse(object.getAsJsonObject().get("value").getAsString()));
+        return ResourceKey.create(ResourceKey.createRegistryKey(Identifier.parse(object.getAsJsonObject().get("key").getAsString())), Identifier.parse(object.getAsJsonObject().get("value").getAsString()));
     }
 
     public interface Writer<T> {

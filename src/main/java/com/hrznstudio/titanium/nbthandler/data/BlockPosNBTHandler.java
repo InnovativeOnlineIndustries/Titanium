@@ -30,6 +30,6 @@ public class BlockPosNBTHandler implements INBTHandler<BlockPos> {
 
     @Override
     public BlockPos readFromNBT(net.minecraft.core.HolderLookup.Provider provider, @Nonnull CompoundTag compound, @Nonnull String name, @Nullable BlockPos current) {
-        return compound.contains(name) ? BlockPos.of(compound.getLong(name)) : current;
+        return compound.contains(name) ? BlockPos.of(compound.getLongOr(name, 0L)) : current;
     }
 }

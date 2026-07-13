@@ -9,7 +9,7 @@ package com.hrznstudio.titanium.client.screen.addon;
 
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 
 public class TextScreenAddon extends BasicScreenAddon {
@@ -40,18 +40,18 @@ public class TextScreenAddon extends BasicScreenAddon {
     }
 
     @Override
-    public void drawBackgroundLayer(GuiGraphics guiGraphics, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackgroundLayer(GuiGraphicsExtractor guiGraphics, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         if (shadow) {
             //drawStringWithShadow
-            guiGraphics.drawString(screen.getMinecraft().font, getText(), guiX + getPosX(), guiY + getPosY(), color, true);
+            guiGraphics.text(screen.getMinecraft().font, getText(), guiX + getPosX(), guiY + getPosY(), color, true);
         } else {
             //drawString
-            guiGraphics.drawString(screen.getMinecraft().font, getText(), guiX + getPosX(), guiY + getPosY(), color, false);
+            guiGraphics.text(screen.getMinecraft().font, getText(), guiX + getPosX(), guiY + getPosY(), color, false);
         }
     }
 
     @Override
-    public void drawForegroundLayer(GuiGraphics guiGraphics, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+    public void drawForegroundLayer(GuiGraphicsExtractor guiGraphics, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
     }
 
     public String getText() {

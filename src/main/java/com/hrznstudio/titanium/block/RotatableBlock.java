@@ -15,14 +15,14 @@ import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public abstract class RotatableBlock<T extends BasicTile<T>> extends BasicTileBlock<T> {
-    public static final DirectionProperty FACING_ALL = DirectionProperty.create("facing", Direction.values());
-    public static final DirectionProperty FACING_HORIZONTAL = DirectionProperty.create("subfacing", Direction.Plane.HORIZONTAL);
+    public static final EnumProperty<Direction> FACING_ALL = EnumProperty.create("facing", Direction.class);
+    public static final EnumProperty<Direction> FACING_HORIZONTAL = EnumProperty.create("subfacing", Direction.class, Direction.Plane.HORIZONTAL);
 
     public RotatableBlock(String name, Properties properties, Class<T> tileClass) {
         super(properties, tileClass);
@@ -71,9 +71,9 @@ public abstract class RotatableBlock<T extends BasicTile<T>> extends BasicTileBl
         }, FACING_ALL, FACING_HORIZONTAL);
 
         private final RotationHandler handler;
-        private final DirectionProperty[] properties;
+        private final EnumProperty<Direction>[] properties;
 
-        RotationType(RotationHandler handler, DirectionProperty... properties) {
+        RotationType(RotationHandler handler, EnumProperty<Direction>... properties) {
             this.handler = handler;
             this.properties = properties;
         }
@@ -82,7 +82,7 @@ public abstract class RotatableBlock<T extends BasicTile<T>> extends BasicTileBl
             return handler;
         }
 
-        public DirectionProperty[] getProperties() {
+        public EnumProperty<Direction>[] getProperties() {
             return properties;
         }
     }

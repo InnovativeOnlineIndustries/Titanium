@@ -13,7 +13,7 @@ import com.hrznstudio.titanium.api.client.IAssetType;
 import com.hrznstudio.titanium.api.client.assets.types.IBackgroundAsset;
 import com.hrznstudio.titanium.api.client.assets.types.ITankAsset;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import javax.annotation.Nullable;
 import java.awt.*;
@@ -111,7 +111,7 @@ public final class DefaultAssetProvider implements IAssetProvider {
         }
 
         @Override
-        public ResourceLocation getResourceLocation() {
+        public Identifier getIdentifier() {
             return DEFAULT_LOCATION_ALT;
         }
     };
@@ -122,7 +122,7 @@ public final class DefaultAssetProvider implements IAssetProvider {
         }
 
         @Override
-        public ResourceLocation getResourceLocation() {
+        public Identifier getIdentifier() {
             return DEFAULT_LOCATION_ALT;
         }
     };

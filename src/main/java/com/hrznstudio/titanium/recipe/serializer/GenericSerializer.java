@@ -20,21 +20,20 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.lang.reflect.Field;
 import java.util.function.Supplier;
 
-public class GenericSerializer<T extends Recipe<?>> implements RecipeSerializer<T> {
-    private final Class<T> recipeClass;
-    private final Supplier<RecipeType<?>> recipeTypeSupplier;
-    private final MapCodec<T> codec;
-    private final StreamCodec<RegistryFriendlyByteBuf, T> streamCodec = StreamCodec.ofMember((value, output) -> toNetwork(output, value), this::fromNetwork);
+public final class GenericSerializer {
+    private GenericSerializer() {
+    }
 
-    public GenericSerializer(Class<T> recipeClass, Supplier<RecipeType<?>> recipeTypeSupplier, MapCodec<T> codec) {
-        this.recipeClass = recipeClass;
-        this.recipeTypeSupplier = recipeTypeSupplier;
-        this.codec = codec;
+    public static <T extends Recipe<?>> RecipeSerializer<T> create(Class<T> recipeClass, Supplier<RecipeType<?>> recipeTypeSupplier, MapCodec<T> codec) {
+        StreamCodec<RegistryFriendlyByteBuf, T> streamCodec = StreamCodec.ofMember(
+            (value, output) -> toNetwork(recipeClass, output, value),
+            input -> fromNetwork(recipeClass, input));
+        return new RecipeSerializer<>(codec, streamCodec);
     }
 
     // Reading from a packet buffer
     @ParametersAreNonnullByDefault
-    public T fromNetwork(RegistryFriendlyByteBuf buffer) {
+    private static <T extends Recipe<?>> T fromNetwork(Class<T> recipeClass, RegistryFriendlyByteBuf buffer) {
         try {
             T recipe = recipeClass.getConstructor().newInstance();
             for (Field field : recipeClass.getFields()) {
@@ -51,7 +50,7 @@ public class GenericSerializer<T extends Recipe<?>> implements RecipeSerializer<
 
     // Writes a recipe to a buffer
     @ParametersAreNonnullByDefault
-    public void toNetwork(RegistryFriendlyByteBuf buffer, T recipe) {
+    private static <T extends Recipe<?>> void toNetwork(Class<T> recipeClass, RegistryFriendlyByteBuf buffer, T recipe) {
         try {
             for (Field field : recipeClass.getFields()) {
                 if (CompoundSerializableDataHandler.acceptField(field, field.getType())) {
@@ -63,13 +62,4 @@ public class GenericSerializer<T extends Recipe<?>> implements RecipeSerializer<
         }
     }
 
-    @Override
-    public StreamCodec<RegistryFriendlyByteBuf, T> streamCodec() {
-        return streamCodec;
-    }
-
-    @Override
-    public MapCodec<T> codec() {
-        return codec;
-    }
 }

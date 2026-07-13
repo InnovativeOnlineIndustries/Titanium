@@ -21,8 +21,8 @@ import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
@@ -32,7 +32,9 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.UUID;
 
 public class CompoundSerializableDataHandler {
 
@@ -59,7 +61,7 @@ public class CompoundSerializableDataHandler {
 
         map(byte[].class, (RegistryFriendlyByteBuf buf) -> buf.readByteArray(), RegistryFriendlyByteBuf::writeBytes);
         map(int[].class, FriendlyByteBuf::readVarIntArray, FriendlyByteBuf::writeVarIntArray);
-        map(long[].class, CompoundSerializableDataHandler::readLongArray, FriendlyByteBuf::writeLongArray);
+        map(long[].class, CompoundSerializableDataHandler::readLongArray, (buf, value) -> buf.writeLongArray(value));
 
         map(String.class, CompoundSerializableDataHandler::readString, FriendlyByteBuf::writeUtf);
         map(CompoundTag.class, ByteBufCodecs.TRUSTED_COMPOUND_TAG);
@@ -67,18 +69,16 @@ public class CompoundSerializableDataHandler {
         map(FluidStack.class, CompoundSerializableDataHandler::readFluidStack, CompoundSerializableDataHandler::writeFluidStack);
         map(BlockPos.class, BlockPos.STREAM_CODEC);
         map(Component.class, ComponentSerialization.STREAM_CODEC);
-        map(Date.class, FriendlyByteBuf::readDate, FriendlyByteBuf::writeDate);
+        map(Date.class, buf -> new Date(buf.readLong()), (buf, date) -> buf.writeLong(date.getTime()));
         map(UUID.class, UUIDUtil.STREAM_CODEC);
         map(ClientboundBlockEntityDataPacket.class, CompoundSerializableDataHandler::readUpdatePacket, CompoundSerializableDataHandler::writeUpdatePacket);
         map(LocatorInstance.class, LocatorFactory::readPacketBuffer, LocatorFactory::writePacketBuffer);
-        map(Ingredient.Value.class, CollectionItemList::new, CollectionItemList::serializeBuffer);
         map(Ingredient.class, Ingredient.CONTENTS_STREAM_CODEC);
-        map(Block.class, buf -> BuiltInRegistries.BLOCK.get(buf.readResourceLocation()), (buf, block) -> buf.writeResourceLocation(BuiltInRegistries.BLOCK.getKey(block)));
-        map(Ingredient.Value[].class, CompoundSerializableDataHandler::readIItemListArray, CompoundSerializableDataHandler::writeIItemListArray);
+        map(Block.class, buf -> BuiltInRegistries.BLOCK.getValue(buf.readIdentifier()), (buf, block) -> buf.writeIdentifier(BuiltInRegistries.BLOCK.getKey(block)));
         map(Ingredient[].class, CompoundSerializableDataHandler::readIngredientArray, CompoundSerializableDataHandler::writeIngredientArray);
         map(ResourceKey.class, CompoundSerializableDataHandler::readRegistryKey, CompoundSerializableDataHandler::writeRegistryKey);
         map(ResourceKey[].class, CompoundSerializableDataHandler::readRegistryArray, CompoundSerializableDataHandler::writeRegistryArray);
-        map(ResourceLocation.class, FriendlyByteBuf::readResourceLocation, FriendlyByteBuf::writeResourceLocation);
+        map(Identifier.class, FriendlyByteBuf::readIdentifier, FriendlyByteBuf::writeIdentifier);
 
     }
 
@@ -92,7 +92,7 @@ public class CompoundSerializableDataHandler {
     }
 
     private static long[] readLongArray(FriendlyByteBuf buf) {
-        return buf.readLongArray(new long[0]);
+        return buf.readLongArray();
     }
 
     private static String readString(FriendlyByteBuf buf) {
@@ -108,32 +108,18 @@ public class CompoundSerializableDataHandler {
     }
 
     public static ResourceKey<?> readRegistryKey(FriendlyByteBuf buffer) {
-        return ResourceKey.create(ResourceKey.createRegistryKey(buffer.readResourceLocation()), buffer.readResourceLocation());
+        return ResourceKey.create(ResourceKey.createRegistryKey(buffer.readIdentifier()), buffer.readIdentifier());
     }
 
     public static void writeRegistryKey(FriendlyByteBuf buffer, ResourceKey<?> biome) {
-        buffer.writeResourceLocation(biome.registry());
-        buffer.writeResourceLocation(biome.location());
+        buffer.writeIdentifier(biome.registry());
+        buffer.writeIdentifier(biome.identifier());
     }
 
     private static void writeUpdatePacket(RegistryFriendlyByteBuf buf, ClientboundBlockEntityDataPacket packet) {
         ClientboundBlockEntityDataPacket.STREAM_CODEC.encode(buf, packet);
     }
 
-    private static Ingredient.Value[] readIItemListArray(RegistryFriendlyByteBuf buf) {
-        Ingredient.Value[] list = new Ingredient.Value[buf.readInt()];
-        for (int i = 0; i < list.length; i++) {
-            list[i] = new CollectionItemList(buf);
-        }
-        return list;
-    }
-
-    private static void writeIItemListArray(RegistryFriendlyByteBuf buf, Ingredient.Value[] list) {
-        buf.writeInt(list.length);
-        for (Ingredient.Value iItemList : list) {
-            CollectionItemList.serializeBuffer(buf, iItemList);
-        }
-    }
 
     public static ResourceKey<?>[] readRegistryArray(FriendlyByteBuf buffer) {
         ResourceKey[] registryKeys = new ResourceKey[buffer.readInt()];
@@ -199,27 +185,4 @@ public class CompoundSerializableDataHandler {
         T read(RegistryFriendlyByteBuf buf) throws IOException;
     }
 
-    public static class CollectionItemList implements Ingredient.Value {
-
-        private List<ItemStack> stackList;
-
-        public CollectionItemList(RegistryFriendlyByteBuf buffer) {
-            this.stackList = new ArrayList<>();
-            int amount = buffer.readInt();
-            for (int i = 0; i < amount; i++) {
-                stackList.add(ItemStack.STREAM_CODEC.decode(buffer));
-            }
-        }
-
-        public static void serializeBuffer(RegistryFriendlyByteBuf buffer, Ingredient.Value list) {
-            buffer.writeInt(list.getItems().size());
-            list.getItems().forEach(stack -> ItemStack.STREAM_CODEC.encode(buffer, stack));
-        }
-
-        @Override
-        public Collection<ItemStack> getItems() {
-            return stackList;
-        }
-
-    }
 }

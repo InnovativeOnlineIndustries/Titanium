@@ -10,9 +10,10 @@ package com.hrznstudio.titanium.reward.storage;
 import com.hrznstudio.titanium.reward.RewardManager;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,10 +21,15 @@ import java.util.List;
 import java.util.UUID;
 
 public class RewardWorldStorage extends SavedData {
-    public static final SavedData.Factory<RewardWorldStorage> FACTORY = new Factory<>(RewardWorldStorage::new, (compoundTag, prov) -> new RewardWorldStorage().load(compoundTag, prov));
     public static String NAME = "TitaniumReward";
+    public static final SavedDataType<RewardWorldStorage> TYPE = new SavedDataType<>(
+        Identifier.fromNamespaceAndPath("titanium", "rewards"),
+        level -> new RewardWorldStorage(),
+        level -> CompoundTag.CODEC.xmap(
+            tag -> new RewardWorldStorage().load(tag, level.registryAccess()),
+            data -> data.save(new CompoundTag(), level.registryAccess())));
     private HashMap<UUID, EnabledRewards> rewards;
-    private List<ResourceLocation> freeRewards;
+    private List<Identifier> freeRewards;
     private List<UUID> configuredPlayers;
 
     private RewardWorldStorage() {
@@ -33,22 +39,22 @@ public class RewardWorldStorage extends SavedData {
     }
 
     public static RewardWorldStorage get(ServerLevel world) {
-        return world.getDataStorage().computeIfAbsent(FACTORY, NAME);
+        return world.getDataStorage().computeIfAbsent(TYPE);
     }
 
-    public void remove(UUID uuid, ResourceLocation resourceLocation) {
+    public void remove(UUID uuid, Identifier resourceLocation) {
         rewards.computeIfAbsent(uuid, uuid1 -> new EnabledRewards()).getEnabled().remove(resourceLocation);
     }
 
-    public void add(UUID uuid, ResourceLocation resourceLocation, String option) {
+    public void add(UUID uuid, Identifier resourceLocation, String option) {
         rewards.computeIfAbsent(uuid, uuid1 -> new EnabledRewards()).getEnabled().put(resourceLocation, option);
     }
 
-    public void addFree(ResourceLocation resourceLocation) {
+    public void addFree(Identifier resourceLocation) {
         freeRewards.add(resourceLocation);
     }
 
-    public List<ResourceLocation> getFreeRewards() {
+    public List<Identifier> getFreeRewards() {
         return freeRewards;
     }
 
@@ -58,26 +64,26 @@ public class RewardWorldStorage extends SavedData {
 
 
     public RewardWorldStorage load(CompoundTag nbt, HolderLookup.Provider provider) {
-        CompoundTag compoundNBT = nbt.getCompound(NAME);
+        CompoundTag compoundNBT = nbt.getCompoundOrEmpty(NAME);
         rewards.clear();
-        compoundNBT.getAllKeys().forEach(s -> {
+        compoundNBT.keySet().forEach(s -> {
             EnabledRewards rewards = new EnabledRewards();
-            rewards.deserializeNBT(provider, compoundNBT.getCompound(s));
+            rewards.deserializeNBT(provider, compoundNBT.getCompoundOrEmpty(s));
             this.rewards.put(UUID.fromString(s), rewards);
         });
         freeRewards.clear();
-        CompoundTag free = nbt.getCompound("FreeRewards");
-        free.getAllKeys().forEach(s -> freeRewards.add(ResourceLocation.parse(s)));
+        CompoundTag free = nbt.getCompoundOrEmpty("FreeRewards");
+        free.keySet().forEach(s -> freeRewards.add(Identifier.parse(s)));
         configuredPlayers.clear();
-        CompoundTag configured = nbt.getCompound("ConfiguredPlayers");
-        configured.getAllKeys().forEach(s -> configuredPlayers.add(UUID.fromString(s)));
+        CompoundTag configured = nbt.getCompoundOrEmpty("ConfiguredPlayers");
+        configured.keySet().forEach(s -> configuredPlayers.add(UUID.fromString(s)));
         //CLEAN
-        HashMap<UUID, ResourceLocation> toRemove = new HashMap<>();
+        HashMap<UUID, Identifier> toRemove = new HashMap<>();
         RewardManager.get().getRewards().forEach((uuid, rewardGiver) -> {
             rewardGiver.getRewards().forEach(reward -> {
                 for (UUID configuredPlayer : rewards.keySet()) {
                     if (!reward.isPlayerValid(configuredPlayer)) {
-                        toRemove.put(configuredPlayer, reward.getResourceLocation());
+                        toRemove.put(configuredPlayer, reward.getIdentifier());
                     }
                 }
             });
@@ -86,7 +92,6 @@ public class RewardWorldStorage extends SavedData {
         return this;
     }
 
-    @Override
     public CompoundTag save(CompoundTag compound, HolderLookup.Provider provider) {
         CompoundTag compoundNBT = new CompoundTag();
         rewards.forEach((uuid, enabledRewards) -> compoundNBT.put(uuid.toString(), enabledRewards.serializeNBT(provider)));

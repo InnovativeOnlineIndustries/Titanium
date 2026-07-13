@@ -25,10 +25,9 @@ import com.hrznstudio.titanium.network.messages.ButtonClickNetworkMessage;
 import com.hrznstudio.titanium.util.AssetUtil;
 import com.hrznstudio.titanium.util.FacingUtil;
 import com.hrznstudio.titanium.util.LangUtil;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -91,30 +90,28 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon {
     }
 
     @Override
-    public void drawBackgroundLayer(GuiGraphics guiGraphics, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackgroundLayer(GuiGraphicsExtractor guiGraphics, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         IBackgroundAsset backgroundInfo = provider.getAsset(AssetTypes.BACKGROUND);
         inventoryPoint = backgroundInfo.getInventoryPosition();
         this.xSize = provider.getAsset(AssetTypes.BUTTON_SIDENESS_MANAGER).getArea().width;
         this.ySize = provider.getAsset(AssetTypes.BUTTON_SIDENESS_MANAGER).getArea().height;
-        RenderSystem.setShaderColor(1, 1, 1, 1);
         AssetUtil.drawAsset(guiGraphics, screen, provider.getAsset(AssetTypes.BUTTON_SIDENESS_MANAGER), guiX + getPosX(), guiY + getPosY());
         int offset = 2;
         guiGraphics.fill(guiX + getPosX() + offset, guiY + getPosY() + offset, guiX + getPosX() + getXSize() - offset, guiY + getPosY() + getYSize() - offset, handler.getColor());
-        RenderSystem.setShaderColor(1, 1, 1, 1);
         if (isClicked()) {
             //draw the overlay for the slots
-            guiGraphics.blit(backgroundInfo.getResourceLocation(), guiX + backgroundInfo.getInventoryPosition().x - 1, guiY + backgroundInfo.getInventoryPosition().y - 1, 56, 185, 162, 54);
-            guiGraphics.blit(backgroundInfo.getResourceLocation(), guiX + backgroundInfo.getInventoryPosition().x - 1, guiY + backgroundInfo.getInventoryPosition().y - 1 + 18 * 3 + 4, 56, 185, 162, 17);
-            guiGraphics.blit(backgroundInfo.getResourceLocation(), guiX + backgroundInfo.getInventoryPosition().x - 1, guiY + backgroundInfo.getInventoryPosition().y - 1 + 18 * 3 + 4 + 17, 56, 185 + 53, 162, 1);
+            com.hrznstudio.titanium.util.AssetUtil.blit(guiGraphics, backgroundInfo.getIdentifier(), guiX + backgroundInfo.getInventoryPosition().x - 1, guiY + backgroundInfo.getInventoryPosition().y - 1, 56, 185, 162, 54);
+            com.hrznstudio.titanium.util.AssetUtil.blit(guiGraphics, backgroundInfo.getIdentifier(), guiX + backgroundInfo.getInventoryPosition().x - 1, guiY + backgroundInfo.getInventoryPosition().y - 1 + 18 * 3 + 4, 56, 185, 162, 17);
+            com.hrznstudio.titanium.util.AssetUtil.blit(guiGraphics, backgroundInfo.getIdentifier(), guiX + backgroundInfo.getInventoryPosition().x - 1, guiY + backgroundInfo.getInventoryPosition().y - 1 + 18 * 3 + 4 + 17, 56, 185 + 53, 162, 1);
         }
     }
 
     @Override
-    public void drawForegroundLayer(GuiGraphics guiGraphics, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
-        if (isMouseOver(mouseX - guiX, mouseY - guiY)) {
+    public void drawForegroundLayer(GuiGraphicsExtractor guiGraphics, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+        if (isMouseOver(mouseX, mouseY)) {
             AssetUtil.drawSelectingOverlay(guiGraphics, getPosX() + 1, getPosY() + 1, getPosX() + getXSize() - 1, getPosY() + getYSize() - 1);
         }
-        if (isMouseOver(mouseX - guiX, mouseY - guiY) || isClicked()) {
+        if (isMouseOver(mouseX, mouseY) || isClicked()) {
             IAsset asset = provider.getAsset(assetType);
             Rectangle area = handler.getRectangle(asset);
             AssetUtil.drawHorizontalLine(guiGraphics, area.x, area.x + area.width, area.y, handler.getColor());
@@ -144,7 +141,7 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon {
         if (button == 1) return false;
         Screen screen = Minecraft.getInstance().screen;
         if (screen instanceof IScreenAddonConsumer && screen instanceof AbstractContainerScreen) {
-            if (!isMouseOver(mouseX - ((AbstractContainerScreen<?>) screen).getGuiLeft(), mouseY - ((AbstractContainerScreen<?>) screen).getGuiTop()))
+            if (!isMouseOver(mouseX, mouseY))
                 return false;
             IScreenAddonConsumer screenAddonConsumer = (IScreenAddonConsumer) screen;
             AbstractContainerMenu container = ((MenuAccess<?>) screen).getMenu();
@@ -191,7 +188,7 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon {
                             Screen gui = Minecraft.getInstance().screen;
                             StateButtonInfo info = getStateInfo();
                             if (info != null && gui instanceof MenuAccess<?>) {
-                                if (!isMouseOver(mouseX - ((AbstractContainerScreen<?>) screen).getGuiLeft(), mouseY - ((AbstractContainerScreen<?>) screen).getGuiTop()))
+                                if (!isMouseOver(mouseX, mouseY))
                                     return false;
                                 CompoundTag compound = new CompoundTag();
                                 compound.putString("Facing", facing.name());

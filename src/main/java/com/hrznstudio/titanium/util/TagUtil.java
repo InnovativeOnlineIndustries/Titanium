@@ -12,7 +12,7 @@ import com.hrznstudio.titanium.compat.almostunified.AlmostUnifiedAdapter;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
@@ -48,24 +48,24 @@ public class TagUtil {
         return StreamSupport.stream(registry.getTagOrEmpty(tag).spliterator(), false).map(Holder::value).toList();
     }
 
-    public static <T> TagKey<T> getOrCreateTag(Registry<T> registry, ResourceLocation resourceLocation) {
+    public static <T> TagKey<T> getOrCreateTag(Registry<T> registry, Identifier resourceLocation) {
         return TagKey.create(registry.key(), resourceLocation);
     }
 
-    public static TagKey<Item> getItemTag(ResourceLocation resourceLocation) {
+    public static TagKey<Item> getItemTag(Identifier resourceLocation) {
         return getOrCreateTag(BuiltInRegistries.ITEM, resourceLocation);
     }
 
-    public static TagKey<Block> getBlockTag(ResourceLocation resourceLocation) {
+    public static TagKey<Block> getBlockTag(Identifier resourceLocation) {
         return getOrCreateTag(BuiltInRegistries.BLOCK, resourceLocation);
     }
 
-    public static TagKey<EntityType<?>> getEntityTypeTag(ResourceLocation resourceLocation) {
+    public static TagKey<EntityType<?>> getEntityTypeTag(Identifier resourceLocation) {
         return getOrCreateTag(BuiltInRegistries.ENTITY_TYPE, resourceLocation);
 
     }
 
-    public static TagKey<Fluid> getFluidTag(ResourceLocation resourceLocation) {
+    public static TagKey<Fluid> getFluidTag(Identifier resourceLocation) {
         return getOrCreateTag(BuiltInRegistries.FLUID, resourceLocation);
     }
 
@@ -75,9 +75,9 @@ public class TagUtil {
             return new ItemStack(preferredItem);
         }
 
-        var item = BuiltInRegistries.ITEM.getTag(tagKey);
-        if (item.isEmpty()) return ItemStack.EMPTY;
-        List<Item> elements = item.get().stream().map(Holder::value).toList();
+        List<Item> elements = java.util.stream.StreamSupport.stream(BuiltInRegistries.ITEM.getTagOrEmpty(tagKey).spliterator(), false)
+            .map(Holder::value).toList();
+        if (elements.isEmpty()) return ItemStack.EMPTY;
         for (String modid : TagConfig.ITEM_PREFERENCE) {
             for (Item allElement : elements) {
                 if (BuiltInRegistries.ITEM.getKey(allElement).getNamespace().equalsIgnoreCase(modid)) return new ItemStack(allElement);

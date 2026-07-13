@@ -16,11 +16,16 @@ import com.hrznstudio.titanium.component.IComponentHarness;
 import com.hrznstudio.titanium.container.addon.IContainerAddon;
 import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
 import com.hrznstudio.titanium.container.addon.SlotContainerAddon;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
@@ -34,8 +39,31 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public class InventoryComponent<T extends IComponentHarness> extends ItemStackHandler implements IScreenAddonProvider,
+public class InventoryComponent<T extends IComponentHarness> extends ItemStacksResourceHandler implements IScreenAddonProvider,
         IContainerAddonProvider {
+
+    public InventoryComponent(String name, int xPos, int yPos, int size) {
+        super(size);
+        this.name = name;
+        this.xPos = xPos;
+        this.yPos = yPos;
+        this.setRange(size, 1);
+        this.insertPredicate = (stack, integer) -> true;
+        this.extractPredicate = (stack, integer) -> true;
+        this.onSlotChanged = (stack, integer) -> {
+        };
+        this.slotAmountFilter = new HashMap<>();
+        this.slotToStackRenderMap = new HashMap<>();
+        this.colorGuiEnabled = false;
+        this.slotToColorRenderMap = new HashMap<>();
+        this.slotLimit = 64;
+        this.slotPosition = integer -> Pair.of(18 * (integer % xSize), 18 * (integer / xSize));
+        this.slotVisiblePredicate = integer -> true;
+    }
+
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+        return com.hrznstudio.titanium.util.ValueIOSerialization.save(provider, this);
+    }
 
     private final String name;
     private int xPos;
@@ -54,23 +82,8 @@ public class InventoryComponent<T extends IComponentHarness> extends ItemStackHa
     private Function<Integer, Pair<Integer, Integer>> slotPosition;
     private Predicate<Integer> slotVisiblePredicate;
 
-    public InventoryComponent(String name, int xPos, int yPos, int size) {
-        this.name = name;
-        this.xPos = xPos;
-        this.yPos = yPos;
-        this.setSize(size);
-        this.setRange(size, 1);
-        this.insertPredicate = (stack, integer) -> true;
-        this.extractPredicate = (stack, integer) -> true;
-        this.onSlotChanged = (stack, integer) -> {
-        };
-        this.slotAmountFilter = new HashMap<>();
-        this.slotToStackRenderMap = new HashMap<>();
-        this.colorGuiEnabled = false;
-        this.slotToColorRenderMap = new HashMap<>();
-        this.slotLimit = 64;
-        this.slotPosition = integer -> Pair.of(18 * (integer % xSize), 18 * (integer / xSize));
-        this.slotVisiblePredicate = integer -> true;
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
+        com.hrznstudio.titanium.util.ValueIOSerialization.load(provider, tag, this);
     }
 
     /**
@@ -119,48 +132,54 @@ public class InventoryComponent<T extends IComponentHarness> extends ItemStackHa
         return this;
     }
 
-    @Nonnull
-    @Override
     public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-        if (stack.isEmpty()) {
-            return ItemStack.EMPTY;
-        }
-        validateSlotIndex(slot);
-        ItemStack existingStack = this.stacks.get(slot);
-        int limit = getStackLimit(slot, stack);
-        if (!existingStack.isEmpty()) {
-            if (!ItemStack.isSameItemSameComponents(stack, existingStack)) {
-                return stack;
+        if (stack.isEmpty()) return ItemStack.EMPTY;
+        try (var transaction = Transaction.openRoot()) {
+            int inserted = insert(slot, ItemResource.of(stack), stack.getCount(), transaction);
+            if (!simulate) {
+                transaction.commit();
             }
-            limit -= existingStack.getCount();
+            return stack.copyWithCount(stack.getCount() - inserted);
         }
-        if (limit <= 0) {
-            return stack;
-        }
-        boolean reachedLimit = stack.getCount() > limit;
-        if (!simulate) {
-            if (existingStack.isEmpty()) {
-                this.stacks.set(slot, reachedLimit ? stack.copyWithCount(limit) : stack);
-            } else {
-                existingStack.grow(reachedLimit ? limit : stack.getCount());
-            }
-            onContentsChanged(slot);
-        }
-        return reachedLimit ? stack.copyWithCount(stack.getCount() - limit) : ItemStack.EMPTY;
     }
 
-    @Nonnull
-    @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        return super.extractItem(slot, amount, simulate);
+        ItemResource resource = getResource(slot);
+        if (resource.isEmpty()) return ItemStack.EMPTY;
+        try (var transaction = Transaction.openRoot()) {
+            int extracted = extract(slot, resource, amount, transaction);
+            if (!simulate) {
+                transaction.commit();
+            }
+            return resource.toStack(extracted);
+        }
     }
 
     @Override
-    protected void onContentsChanged(int slot) {
+    protected void onContentsChanged(int slot, ItemStack previousContents) {
         if (this.componentHarness != null) {
             componentHarness.markComponentDirty();
         }
         onSlotChanged.accept(getStackInSlot(slot), slot);
+    }
+
+    @Override
+    public int extract(int index, ItemResource resource, int amount, TransactionContext transaction) {
+        ItemStack stack = resource.toStack(Math.min(amount, getAmountAsInt(index)));
+        return extractPredicate.test(stack, index) ? super.extract(index, resource, amount, transaction) : 0;
+    }
+
+    public int getSlots() {
+        return size();
+    }
+
+    public ItemStack getStackInSlot(int slot) {
+        ItemResource resource = getResource(slot);
+        return resource.isEmpty() ? ItemStack.EMPTY : resource.toStack(getAmountAsInt(slot));
+    }
+
+    public void setStackInSlot(int slot, ItemStack stack) {
+        set(slot, ItemResource.of(stack), stack.getCount());
     }
 
     public String getName() {
@@ -339,9 +358,14 @@ public class InventoryComponent<T extends IComponentHarness> extends ItemStackHa
         return this;
     }
 
-    @Override
     public int getSlotLimit(int slot) {
         return slotAmountFilter.getOrDefault(slot, this.slotLimit);
+    }
+
+    @Override
+    protected int getCapacity(int index, ItemResource resource) {
+        int itemLimit = resource.isEmpty() ? slotLimit : resource.getMaxStackSize();
+        return Math.min(getSlotLimit(index), itemLimit);
     }
 
     public Function<Integer, Pair<Integer, Integer>> getSlotPosition() {
@@ -353,9 +377,13 @@ public class InventoryComponent<T extends IComponentHarness> extends ItemStackHa
         return this;
     }
 
-    @Override
     public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
         return insertPredicate.test(stack, slot);
+    }
+
+    @Override
+    public boolean isValid(int index, ItemResource resource) {
+        return !resource.isEmpty() && insertPredicate.test(resource.toStack(1), index);
     }
 
     @Override

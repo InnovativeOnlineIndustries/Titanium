@@ -33,7 +33,7 @@ import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
@@ -119,7 +119,9 @@ public class TestTile extends PoweredTile<TestTile> implements IRedstoneReader {
     public void serverTick(Level level, BlockPos pos, BlockState state, TestTile blockEntity) {
         super.serverTick(level, pos, state, blockEntity);
         if (Objects.requireNonNull(getLevel()).isRaining()) {
-            getLevel().getLevelData().setRaining(false);
+            if (getLevel() instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+                serverLevel.resetWeatherCycle();
+            }
         }
     }
 
@@ -137,11 +139,11 @@ public class TestTile extends PoweredTile<TestTile> implements IRedstoneReader {
 
     @Override
     @ParametersAreNonnullByDefault
-    public ItemInteractionResult onActivated(Player player, InteractionHand hand, Direction facing, double hitX, double hitY, double hitZ) {
-        ItemInteractionResult result = super.onActivated(player, hand, facing, hitX, hitY, hitZ);
-        if (result == ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION) {
+    public InteractionResult onActivated(Player player, InteractionHand hand, Direction facing, double hitX, double hitY, double hitZ) {
+        InteractionResult result = super.onActivated(player, hand, facing, hitX, hitY, hitZ);
+        if (result == InteractionResult.SUCCESS) {
             openGui(player);
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
         return result;
     }

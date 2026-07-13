@@ -27,6 +27,6 @@ public class StringNBTHandler implements INBTHandler<String> {
 
     @Override
     public String readFromNBT(net.minecraft.core.HolderLookup.Provider provider, @Nonnull CompoundTag compound, @Nonnull String name, @Nullable String current) {
-        return compound.contains(name) ? compound.getString(name) : current;
+        return compound.contains(name) ? compound.getStringOr(name, "") : current;
     }
 }

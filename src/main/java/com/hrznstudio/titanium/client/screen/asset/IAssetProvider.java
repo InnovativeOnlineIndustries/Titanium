@@ -10,15 +10,15 @@ package com.hrznstudio.titanium.client.screen.asset;
 import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.api.client.IAssetType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 
 public interface IAssetProvider {
-    ResourceLocation DEFAULT_LOCATION = ResourceLocation.fromNamespaceAndPath(Titanium.MODID, "textures/gui/background.png");
-    ResourceLocation DEFAULT_LOCATION_ALT = ResourceLocation.fromNamespaceAndPath(Titanium.MODID, "textures/gui/background_alt.png");
+    Identifier DEFAULT_LOCATION = Identifier.fromNamespaceAndPath(Titanium.MODID, "textures/gui/background.png");
+    Identifier DEFAULT_LOCATION_ALT = Identifier.fromNamespaceAndPath(Titanium.MODID, "textures/gui/background_alt.png");
 
     DefaultAssetProvider DEFAULT_PROVIDER = new DefaultAssetProvider();
 

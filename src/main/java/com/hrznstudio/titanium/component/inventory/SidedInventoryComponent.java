@@ -22,12 +22,13 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -123,11 +124,11 @@ public class SidedInventoryComponent<T extends IComponentHarness> extends Invent
         for (FacingUtil.Sideness sideness : facingModes.keySet()) {
             if (facingModes.get(sideness) == mode) {
                 Direction real = FacingUtil.getFacingFromSide(blockFacing, sideness);
-                var cap = level.getCapability(Capabilities.ItemHandler.BLOCK, pos.relative(real), real.getOpposite());
+                ResourceHandler<ItemResource> cap = level.getCapability(Capabilities.Item.BLOCK, pos.relative(real), real.getOpposite());
                 if (cap != null) {
-                    if (transfer(sideness, mode == FaceMode.PUSH ? this : cap, mode == FaceMode.PUSH ? cap : this, workAmount)) {
-                        return true;
-                    }
+                    ResourceHandler<ItemResource> from = mode == FaceMode.PUSH ? this : cap;
+                    ResourceHandler<ItemResource> to = mode == FaceMode.PUSH ? cap : this;
+                    if (ResourceHandlerUtil.move(from, to, resource -> true, workAmount, null) > 0) return true;
                 }
             }
         }
@@ -160,9 +161,8 @@ public class SidedInventoryComponent<T extends IComponentHarness> extends Invent
         return this;
     }
 
-    @Override
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        CompoundTag nbt = super.serializeNBT(provider);
+        CompoundTag nbt = com.hrznstudio.titanium.util.ValueIOSerialization.save(provider, this);
         CompoundTag compound = new CompoundTag();
         for (FacingUtil.Sideness facing : facingModes.keySet()) {
             compound.putString(facing.name(), facingModes.get(facing).name());
@@ -171,13 +171,12 @@ public class SidedInventoryComponent<T extends IComponentHarness> extends Invent
         return nbt;
     }
 
-    @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        super.deserializeNBT(provider, nbt);
+        com.hrznstudio.titanium.util.ValueIOSerialization.load(provider, nbt, this);
         if (nbt.contains("FacingModes")) {
-            CompoundTag compound = nbt.getCompound("FacingModes");
-            for (String face : compound.getAllKeys()) {
-                facingModes.put(FacingUtil.Sideness.valueOf(face), FaceMode.valueOf(compound.getString(face)));
+            CompoundTag compound = nbt.getCompoundOrEmpty("FacingModes");
+            for (String face : compound.keySet()) {
+                facingModes.put(FacingUtil.Sideness.valueOf(face), FaceMode.valueOf(compound.getStringOr(face, "")));
             }
         }
     }
@@ -191,43 +190,4 @@ public class SidedInventoryComponent<T extends IComponentHarness> extends Invent
         return addons;
     }
 
-    private int getNextSlot(IItemHandler handler, int currentSlot) {
-        for (int i = currentSlot; i < handler.getSlots(); i++) {
-            if (!handler.getStackInSlot(i).isEmpty()) return i;
-        }
-        return 0;
-    }
-
-    private boolean transfer(FacingUtil.Sideness sideness, IItemHandler from, IItemHandler to, int workAmount) {
-        if (from.getSlots() <= 0) return false;
-        int slot = slotCache.getOrDefault(sideness, getNextSlot(from, 0));
-        if (slot >= from.getSlots()) slot = 0;
-        ItemStack extracted = from.extractItem(slot, workAmount, true);
-        int outSlot = isValidForAnySlot(to, extracted);
-        if (!extracted.isEmpty() && outSlot != -1) {
-            int returnCount = extracted.getCount();
-
-            do {
-                extracted.setCount(to.insertItem(outSlot, extracted.copy(), false).getCount());
-                outSlot = isValidForAnySlot(to, extracted);
-                if (outSlot == -1) break;
-            } while (!extracted.isEmpty());
-
-            return !from.extractItem(slot, returnCount - extracted.getCount(), false).isEmpty();
-        }
-        slotCache.put(sideness, getNextSlot(from, slot + 1));
-        return false;
-    }
-
-    private int isValidForAnySlot(IItemHandler dest, ItemStack stack) {
-        for (int i = 0; i < dest.getSlots(); i++) {
-            if (!dest.isItemValid(i, stack)) continue;
-            ItemStack slotStack = dest.getStackInSlot(i);
-            if (slotStack.isEmpty() && dest.insertItem(i, stack, true).getCount() < stack.getCount()) return i;
-            if (ItemStack.isSameItemSameComponents(slotStack, stack) && dest.insertItem(i, stack, true).getCount() < stack.getCount()) {
-                return i;
-            }
-        }
-        return -1;
-    }
 }

@@ -17,10 +17,11 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -43,11 +44,16 @@ public class NetworkManager extends SavedData {
     }
 
     public static NetworkManager get(ServerLevel level) {
-        return level.getDataStorage().computeIfAbsent(new Factory<>(() -> new NetworkManager(level), (tag, provider) -> {
-            NetworkManager networkManager = new NetworkManager(level);
-            networkManager.load(tag);
-            return networkManager;
-        }), NAME);
+        SavedDataType<NetworkManager> type = new SavedDataType<>(
+            Identifier.fromNamespaceAndPath("titanium", NAME),
+            ignored -> new NetworkManager(level),
+            ignored -> CompoundTag.CODEC.xmap(tag -> {
+                NetworkManager manager = new NetworkManager(level);
+                manager.load(tag);
+                return manager;
+            }, manager -> manager.save(new CompoundTag(), level.registryAccess()))
+        );
+        return level.getDataStorage().computeIfAbsent(type);
     }
 
     public void addNetwork(Network network) {
@@ -74,7 +80,7 @@ public class NetworkManager extends SavedData {
         setDirty();
     }
 
-    private void formNetworkAt(Level level, BlockPos pos, ResourceLocation type) {
+    private void formNetworkAt(Level level, BlockPos pos, Identifier type) {
         Network network = NetworkRegistry.INSTANCE.getFactory(type).create(pos);
 
         addNetwork(network);
@@ -217,7 +223,7 @@ public class NetworkManager extends SavedData {
         }
     }
 
-    private Set<NetworkElement> findAdjacentElements(NetworkElement current, ResourceLocation networkType) {
+    private Set<NetworkElement> findAdjacentElements(NetworkElement current, Identifier networkType) {
         Set<NetworkElement> elements = new HashSet<>();
         for (Direction dir : Direction.values()) {
             NetworkElement element = getElement(current.getPos().relative(dir));
@@ -231,7 +237,7 @@ public class NetworkManager extends SavedData {
     }
 
     @Nullable
-    private NetworkElement findFirstAdjacentElement(NetworkElement current, ResourceLocation networkType) {
+    private NetworkElement findFirstAdjacentElement(NetworkElement current, Identifier networkType) {
         for (Direction dir : Direction.values()) {
             if (!current.canConnectFrom(dir)) continue;
             NetworkElement element = getElement(current.getPos().relative(dir));
@@ -253,12 +259,12 @@ public class NetworkManager extends SavedData {
     }
 
     public void load(CompoundTag tag) {
-        ListTag elements = tag.getList("elements", Tag.TAG_COMPOUND);
+        ListTag elements = tag.getListOrEmpty("elements");
         for (Tag elementTag : elements) {
             CompoundTag elementTagCompound = (CompoundTag) elementTag;
 
 
-            ResourceLocation factoryId = ResourceLocation.parse(elementTagCompound.getString("id"));
+            Identifier factoryId = Identifier.parse(elementTagCompound.getStringOr("id", ""));
 
             NetworkElementFactory factory = NetworkElementRegistry.INSTANCE.getFactory(factoryId);
             if (factory == null) {
@@ -271,7 +277,7 @@ public class NetworkManager extends SavedData {
             this.elements.put(element.getPos(), element);
         }
 
-        ListTag nets = tag.getList("networks", Tag.TAG_COMPOUND);
+        ListTag nets = tag.getListOrEmpty("networks");
         for (Tag netTag : nets) {
             CompoundTag netTagCompound = (CompoundTag) netTag;
             if (!netTagCompound.contains("type")) {
@@ -279,7 +285,7 @@ public class NetworkManager extends SavedData {
                 continue;
             }
 
-            ResourceLocation type = ResourceLocation.parse(netTagCompound.getString("type"));
+            Identifier type = Identifier.parse(netTagCompound.getStringOr("type", ""));
 
             NetworkFactory factory = NetworkRegistry.INSTANCE.getFactory(type);
             if (factory == null) {
@@ -296,7 +302,6 @@ public class NetworkManager extends SavedData {
         LOGGER.debug("Read {} networks", networks.size());
     }
 
-    @Override
     public CompoundTag save(CompoundTag tag, HolderLookup.Provider provider) {
         ListTag elements = new ListTag();
         this.elements.values().forEach(p -> {

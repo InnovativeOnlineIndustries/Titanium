@@ -22,12 +22,12 @@ public class ItemStackNBTHandler implements INBTHandler<ItemStack> {
 
     @Override
     public boolean storeToNBT(net.minecraft.core.HolderLookup.Provider provider, @Nonnull CompoundTag compound, @Nonnull String name, @Nonnull ItemStack object) {
-        compound.put(name, object.saveOptional(provider));
+        compound.put(name, com.hrznstudio.titanium.util.ItemStackSerialization.save(provider, object));
         return true;
     }
 
     @Override
     public ItemStack readFromNBT(net.minecraft.core.HolderLookup.Provider provider, @Nonnull CompoundTag compound, @Nonnull String name, @Nullable ItemStack currentValue) {
-        return ItemStack.parseOptional(provider, compound.getCompound(name));
+        return com.hrznstudio.titanium.util.ItemStackSerialization.load(provider, compound.getCompoundOrEmpty(name));
     }
 }

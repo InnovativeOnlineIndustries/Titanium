@@ -10,12 +10,12 @@ package com.hrznstudio.titanium.network;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.fml.ModList;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
@@ -28,7 +28,7 @@ import java.util.function.Consumer;
 
 public class NetworkHandler {
     private final String namespace;
-    private final Map<Class<? extends Message>, ResourceLocation> ids = new HashMap<>();
+    private final Map<Class<? extends Message>, Identifier> ids = new HashMap<>();
     private final List<Consumer<PayloadRegistrar>> registrar = new ArrayList<>();
     private int i;
 
@@ -43,17 +43,9 @@ public class NetworkHandler {
             });
     }
 
-    public record MessageWrapper(ResourceLocation id, Message message) implements CustomPacketPayload {
-
-        @Override
-        public Type<? extends CustomPacketPayload> type() {
-            return new CustomPacketPayload.Type<>(id);
-        }
-    }
-
     public <REQ extends Message> void registerMessage(String name, Class<REQ> message) {
         i++;
-        final ResourceLocation id = ResourceLocation.fromNamespaceAndPath(namespace, name);
+        final Identifier id = Identifier.fromNamespaceAndPath(namespace, name);
         ids.put(message, id);
         registrar.add(reg -> reg.playBidirectional(
             new CustomPacketPayload.Type<>(id), StreamCodec.of((buffer, payload) -> {
@@ -66,8 +58,13 @@ public class NetworkHandler {
                 } catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
                     throw new RuntimeException(e);
                 }
-            }), (payload, context) -> payload.message.handleMessage(context)
+            }), (payload, context) -> payload.message.handleServerMessage(context),
+            (payload, context) -> payload.message.handleClientMessage(context)
         ));
+    }
+
+    public void sendToServer(Message message) {
+        ClientPacketDistributor.sendToServer(wrap(message));
     }
 
     public CustomPacketPayload wrap(Message message) {
@@ -78,8 +75,12 @@ public class NetworkHandler {
         world.getEntitiesOfClass(ServerPlayer.class, new AABB(pos).inflate(distance)).forEach(playerEntity -> sendTo(message, playerEntity));
     }
 
-    public void sendToServer(Message message) {
-        PacketDistributor.sendToServer(wrap(message));
+    public record MessageWrapper(Identifier id, Message message) implements CustomPacketPayload {
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return new CustomPacketPayload.Type<>(id);
+        }
     }
 
     public void sendTo(Message message, ServerPlayer player) {

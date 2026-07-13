@@ -17,10 +17,11 @@ import com.hrznstudio.titanium.component.sideness.IFacingComponent;
 import com.hrznstudio.titanium.container.addon.IContainerAddon;
 import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
 import com.hrznstudio.titanium.util.FacingUtil;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -116,7 +117,7 @@ public class MultiInventoryComponent<T extends IComponentHarness> implements ISc
         return addons;
     }
 
-    public static class MultiInvCapabilityHandler<T extends IComponentHarness> extends ItemStackHandler {
+    public static class MultiInvCapabilityHandler<T extends IComponentHarness> implements ResourceHandler<ItemResource> {
 
         private final List<InventoryComponent<T>> inventoryHandlers;
         private int slotAmount;
@@ -125,80 +126,65 @@ public class MultiInventoryComponent<T extends IComponentHarness> implements ISc
             this.inventoryHandlers = inventoryHandlers;
             this.slotAmount = 0;
             for (InventoryComponent<T> inventoryHandler : this.inventoryHandlers) {
-                slotAmount += inventoryHandler.getSlots();
+                slotAmount += inventoryHandler.size();
             }
         }
 
         @Override
-        public int getSlots() {
+        public int size() {
             return slotAmount;
         }
 
-        @Nonnull
         @Override
-        public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+        public int insert(int slot, ItemResource resource, int amount, TransactionContext transaction) {
             InventoryComponent<T> handler = getFromSlot(slot);
             if (handler != null) {
                 int relativeSlot = getRelativeSlot(handler, slot);
-                if (handler.getInsertPredicate().test(stack, relativeSlot)) {
-                    return handler.insertItem(relativeSlot, stack, simulate);
-                } else {
-                    return stack;
-                }
+                return handler.insert(relativeSlot, resource, amount, transaction);
             }
-            return super.insertItem(slot, stack, simulate);
+            return 0;
         }
 
-        @Nonnull
         @Override
-        public ItemStack extractItem(int slot, int amount, boolean simulate) {
+        public int extract(int slot, ItemResource resource, int amount, TransactionContext transaction) {
             InventoryComponent<T> handler = getFromSlot(slot);
             if (handler != null) {
                 int relativeSlot = getRelativeSlot(handler, slot);
-                if (!handler.getExtractPredicate().test(handler.getStackInSlot(relativeSlot), relativeSlot))
-                    return ItemStack.EMPTY;
-                return handler.extractItem(relativeSlot, amount, simulate);
+                return handler.extract(relativeSlot, resource, amount, transaction);
             }
-            return super.extractItem(slot, amount, simulate);
+            return 0;
         }
 
-        @Nonnull
         @Override
-        public ItemStack getStackInSlot(int slot) {
+        public ItemResource getResource(int slot) {
             InventoryComponent<T> handler = getFromSlot(slot);
             if (handler != null) {
-                return handler.getStackInSlot(getRelativeSlot(handler, slot));
+                return handler.getResource(getRelativeSlot(handler, slot));
             }
-            return super.getStackInSlot(slot);
+            return ItemResource.EMPTY;
         }
 
         @Override
-        public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
+        public long getAmountAsLong(int slot) {
             InventoryComponent<T> handler = getFromSlot(slot);
-            if (handler != null) {
-                handler.setStackInSlot(getRelativeSlot(handler, slot), stack);
-            }
-            super.setStackInSlot(slot, stack);
+            return handler == null ? 0 : handler.getAmountAsLong(getRelativeSlot(handler, slot));
         }
 
         @Override
-        protected void validateSlotIndex(int slot) {
-            if (slot < 0 || slot >= slotAmount)
-                throw new RuntimeException("Slot " + slot + " not in valid range - [0," + slotAmount + ")");
-        }
-
-        @Override
-        public int getSlotLimit(int slot) {
+        public long getCapacityAsLong(int slot, ItemResource resource) {
             InventoryComponent<T> handler = getFromSlot(slot);
-            if (handler != null) {
-                return handler.getSlotLimit(getRelativeSlot(handler, slot));
-            }
-            return super.getSlotLimit(slot);
+            return handler == null ? 0 : handler.getCapacityAsLong(getRelativeSlot(handler, slot), resource);
+        }
+
+        @Override
+        public boolean isValid(int slot, ItemResource resource) {
+            InventoryComponent<T> handler = getFromSlot(slot);
+            return handler != null && handler.isValid(getRelativeSlot(handler, slot), resource);
         }
 
         public InventoryComponent<T> getFromSlot(int slot) {
             for (InventoryComponent<T> handler : inventoryHandlers) {
-                slot -= handler.getSlots();
+                slot -= handler.size();
                 if (slot < 0) {
                     return handler;
                 }
@@ -209,7 +195,7 @@ public class MultiInventoryComponent<T extends IComponentHarness> implements ISc
         public int getRelativeSlot(InventoryComponent<T> handler, int slot) {
             for (InventoryComponent<T> h : inventoryHandlers) {
                 if (h.equals(handler)) return slot;
-                slot -= h.getSlots();
+                slot -= h.size();
             }
             return 0;
         }

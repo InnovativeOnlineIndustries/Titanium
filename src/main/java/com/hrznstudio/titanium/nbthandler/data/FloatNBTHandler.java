@@ -28,6 +28,6 @@ public class FloatNBTHandler implements INBTHandler<Float> {
 
     @Override
     public Float readFromNBT(net.minecraft.core.HolderLookup.Provider provider, @Nonnull CompoundTag compound, @Nonnull String name, @Nullable Float currentValue) {
-        return compound.contains(name) ? compound.getFloat(name) : Unboxing.safelyUnbox(currentValue);
+        return compound.contains(name) ? compound.getFloatOr(name, 0.0F) : Unboxing.safelyUnbox(currentValue);
     }
 }

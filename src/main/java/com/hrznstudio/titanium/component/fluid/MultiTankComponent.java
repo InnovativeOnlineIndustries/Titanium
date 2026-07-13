@@ -19,8 +19,9 @@ import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -119,7 +120,7 @@ public class MultiTankComponent<T extends IComponentHarness> implements IScreenA
         return addons;
     }
 
-    public static class MultiTankCapabilityHandler<T extends IComponentHarness> implements IFluidHandler {
+    public static class MultiTankCapabilityHandler<T extends IComponentHarness> implements ResourceHandler<FluidResource> {
 
         private final List<FluidTankComponent<T>> tanks;
 
@@ -132,56 +133,38 @@ public class MultiTankComponent<T extends IComponentHarness> implements IScreenA
         }
 
         @Override
-        public int getTanks() {
+        public int size() {
             return tanks.size();
         }
 
-        @Nonnull
         @Override
-        public FluidStack getFluidInTank(int tank) {
-            return tanks.get(tank).getFluid();
+        public FluidResource getResource(int tank) {
+            return tanks.get(tank).getResource(0);
         }
 
         @Override
-        public int getTankCapacity(int tank) {
-            return tanks.get(tank).getTankCapacity(tank);
+        public long getAmountAsLong(int tank) {
+            return tanks.get(tank).getAmountAsLong(0);
         }
 
         @Override
-        public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
-            return tanks.get(tank).isFluidValid(stack);
+        public long getCapacityAsLong(int tank, FluidResource resource) {
+            return tanks.get(tank).getCapacityAsLong(0, resource);
         }
 
         @Override
-        public int fill(FluidStack resource, FluidAction action) {
-            for (FluidTankComponent<T> tank : tanks) {
-                if (tank.fill(resource, FluidAction.SIMULATE) != 0) {
-                    return tank.fill(resource, action);
-                }
-            }
-            return 0;
+        public boolean isValid(int tank, FluidResource resource) {
+            return tanks.get(tank).isValid(0, resource);
         }
 
-        @Nonnull
         @Override
-        public FluidStack drain(FluidStack resource, FluidAction action) {
-            for (FluidTankComponent<T> tank : tanks) {
-                if (!tank.drain(resource, FluidAction.SIMULATE).isEmpty()) {
-                    return tank.drain(resource, action);
-                }
-            }
-            return FluidStack.EMPTY;
+        public int insert(int tank, FluidResource resource, int amount, TransactionContext transaction) {
+            return tanks.get(tank).insert(0, resource, amount, transaction);
         }
 
-        @Nonnull
         @Override
-        public FluidStack drain(int maxDrain, FluidAction action) {
-            for (FluidTankComponent<T> tank : tanks) {
-                if (!tank.drain(maxDrain, FluidAction.SIMULATE).isEmpty()) {
-                    return tank.drain(maxDrain, action);
-                }
-            }
-            return FluidStack.EMPTY;
+        public int extract(int tank, FluidResource resource, int amount, TransactionContext transaction) {
+            return tanks.get(tank).extract(0, resource, amount, transaction);
         }
     }
 }

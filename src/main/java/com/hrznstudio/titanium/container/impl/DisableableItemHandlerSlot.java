@@ -8,21 +8,21 @@
 package com.hrznstudio.titanium.container.impl;
 
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.SlotItemHandler;
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
+import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
 
 import javax.annotation.Nonnull;
 import java.util.function.BooleanSupplier;
 
-public class DisableableItemHandlerSlot extends SlotItemHandler {
+public class DisableableItemHandlerSlot extends ResourceHandlerSlot {
     private final BooleanSupplier isDisabled;
 
-    public DisableableItemHandlerSlot(IItemHandler itemHandler, int index, int xPosition, int yPosition, BasicInventoryContainer basicInventoryContainer) {
+    public DisableableItemHandlerSlot(ItemStacksResourceHandler itemHandler, int index, int xPosition, int yPosition, BasicInventoryContainer basicInventoryContainer) {
         this(itemHandler, index, xPosition, yPosition, basicInventoryContainer::isDisabled);
     }
 
-    public DisableableItemHandlerSlot(IItemHandler itemHandler, int index, int xPosition, int yPosition, BooleanSupplier isDisabled) {
-        super(itemHandler, index, xPosition, yPosition);
+    public DisableableItemHandlerSlot(ItemStacksResourceHandler itemHandler, int index, int xPosition, int yPosition, BooleanSupplier isDisabled) {
+        super(itemHandler, itemHandler::set, index, xPosition, yPosition);
         this.isDisabled = isDisabled;
     }
 

@@ -9,7 +9,7 @@ package com.hrznstudio.titanium.reward;
 
 import com.google.gson.JsonParser;
 import com.hrznstudio.titanium.util.URLUtil;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
 
 import java.io.IOException;
@@ -29,14 +29,14 @@ public class Reward {
         BUUZ_BIRTH_DATE.set(BUUZ_BIRTH_DATE.get(Calendar.YEAR), Calendar.FEBRUARY, 12);
     }
 
-    private final ResourceLocation resourceLocation;
+    private final Identifier resourceLocation;
     private final URL contributorsURL;
     private String unlocalizedName;
     private List<UUID> players;
     private Supplier<Consumer<Dist>> register;
     private String[] options;
 
-    public Reward(ResourceLocation resourceLocation, URL contributorsURL, Supplier<Consumer<Dist>> register, String[] options) {
+    public Reward(Identifier resourceLocation, URL contributorsURL, Supplier<Consumer<Dist>> register, String[] options) {
         this.resourceLocation = resourceLocation;
         this.contributorsURL = contributorsURL;
         this.players = new ArrayList<>();
@@ -67,7 +67,7 @@ public class Reward {
         this.register.get().accept(dist);
     }
 
-    public ResourceLocation getResourceLocation() {
+    public Identifier getIdentifier() {
         return resourceLocation;
     }
 

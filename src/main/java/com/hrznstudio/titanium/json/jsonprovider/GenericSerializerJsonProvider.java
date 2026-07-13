@@ -12,7 +12,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.hrznstudio.titanium.json.IJsonProvider;
 import com.hrznstudio.titanium.recipe.serializer.JSONSerializableDataHandler;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -27,9 +27,9 @@ public class GenericSerializerJsonProvider<T> implements IJsonProvider<T> {
     }
 
     @Override
-    public T provide(ResourceLocation targetID, JsonObject jsonObject) throws JsonParseException {
+    public T provide(Identifier targetID, JsonObject jsonObject) throws JsonParseException {
         try {
-            T target = tClass.getConstructor(ResourceLocation.class).newInstance(targetID);
+            T target = tClass.getConstructor(Identifier.class).newInstance(targetID);
             for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
                 if (fieldExists(entry.getKey()) && JSONSerializableDataHandler.acceptField(tClass.getField(entry.getKey()), tClass.getField(entry.getKey()).getType())) {
                     tClass.getField(entry.getKey()).set(target, JSONSerializableDataHandler.read(tClass.getField(entry.getKey()).getType(), entry.getValue()));

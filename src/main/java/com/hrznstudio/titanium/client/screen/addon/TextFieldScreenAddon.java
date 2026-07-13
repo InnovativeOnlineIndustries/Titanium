@@ -12,12 +12,12 @@ import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.util.AssetUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
-
 
 
 public class TextFieldScreenAddon extends BasicScreenAddon {
@@ -30,14 +30,14 @@ public class TextFieldScreenAddon extends BasicScreenAddon {
     }
 
     @Override
-    public void drawBackgroundLayer(GuiGraphics guiGraphics, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackgroundLayer(GuiGraphicsExtractor guiGraphics, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         AssetUtil.drawAsset(guiGraphics, screen, this.getAsset(provider), this.getPosX() + guiX, this.getPosY() + guiY);
         // render
-        textFieldWidget.renderWidget(guiGraphics, mouseX, mouseY, partialTicks);
+        textFieldWidget.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     @Override
-    public void drawForegroundLayer(GuiGraphics guiGraphics, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+    public void drawForegroundLayer(GuiGraphicsExtractor guiGraphics, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
     }
 
     @Override
@@ -71,7 +71,7 @@ public class TextFieldScreenAddon extends BasicScreenAddon {
     @Override
     public boolean keyPressed(int key, int scan, int modifiers) {
         // keypressed
-        return textFieldWidget.keyPressed(key, scan, modifiers) || textFieldWidget.canConsumeInput();
+        return textFieldWidget.keyPressed(new KeyEvent(key, scan, modifiers)) || textFieldWidget.canConsumeInput();
     }
 
     private IAsset getAsset(IAssetProvider assetProvider) {

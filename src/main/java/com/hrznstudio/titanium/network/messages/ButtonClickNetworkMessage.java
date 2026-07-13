@@ -33,7 +33,7 @@ public class ButtonClickNetworkMessage extends Message {
     }
 
     @Override
-    protected void handleMessage(IPayloadContext context) {
+    protected void handleServerMessage(IPayloadContext context) {
         Optional.of(context.player())
             .flatMap(locatorInstance::locale)
             .flatMap(CastingUtil.attemptCast(IButtonHandler.class))

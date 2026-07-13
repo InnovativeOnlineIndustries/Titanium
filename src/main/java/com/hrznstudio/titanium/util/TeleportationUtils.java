@@ -7,13 +7,11 @@
 
 package com.hrznstudio.titanium.util;
 
-import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.portal.DimensionTransition;
+import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
 
@@ -27,30 +25,19 @@ public class TeleportationUtils {
     }
 
     public static Entity teleportEntityTo(Entity entity, Vector3f target, ResourceKey<Level> destinationDimension, float yaw, float pitch) {
-        if (entity.getCommandSenderWorld().dimension() == destinationDimension) {
+        if (entity.level().dimension() == destinationDimension) {
             entity.setYRot(yaw);
             entity.setXRot(pitch);
             entity.teleportTo(target.x() + 0.5, target.y(), target.z() + 0.5);
 
-            if (!entity.getPassengers().isEmpty()) {
-                //Force re-apply any passengers so that players don't get "stuck" outside what they may be riding
-                ((ServerChunkCache) entity.getCommandSenderWorld().getChunkSource()).broadcast(entity, new ClientboundSetPassengersPacket(entity));
-            }
             return entity;
         } else {
-            ServerLevel newWorld = ((ServerLevel) entity.getCommandSenderWorld()).getServer().getLevel(destinationDimension);
+            ServerLevel newWorld = ((ServerLevel) entity.level()).getServer().getLevel(destinationDimension);
             if (newWorld != null) {
                 Vec3 destination = new Vec3(target.x() + 0.5, target.y(), target.z() + 0.5);
-                //Note: We grab the passengers here instead of in placeEntity as changeDimension starts by removing any passengers
-                List<Entity> passengers = entity.getPassengers();
-                var transition = new DimensionTransition(
-                    newWorld, destination, entity.getDeltaMovement(), entity.getYRot(), entity.getXRot(), et -> {
-                    //Teleport all passengers to the other dimension and then make them start riding the entity again
-                    for (Entity passenger : passengers) {
-                        teleportPassenger(newWorld, et, passenger);
-                    }
-                });
-                return entity.changeDimension(transition);
+                var transition = new TeleportTransition(
+                    newWorld, destination, entity.getDeltaMovement(), yaw, pitch, TeleportTransition.DO_NOTHING);
+                return entity.teleport(transition);
             }
         }
         return null;
@@ -59,10 +46,10 @@ public class TeleportationUtils {
     private static void teleportPassenger(ServerLevel destWorld, Entity repositionedEntity, Entity passenger) {
         //Note: We grab the passengers here instead of in placeEntity as changeDimension starts by removing any passengers
         List<Entity> passengers = passenger.getPassengers();
-        passenger.changeDimension(new DimensionTransition(
+        passenger.teleport(new TeleportTransition(
             destWorld, repositionedEntity.position(), passenger.getDeltaMovement(), passenger.getYRot(), passenger.getXRot(), et -> {
             //Force our passenger to start riding the new entity again
-            repositionedEntity.startRiding(repositionedEntity, true);
+            et.startRiding(repositionedEntity, true, true);
             //Teleport "nested" passengers
             for (Entity pas : passengers) {
                 teleportPassenger(destWorld, et, pas);

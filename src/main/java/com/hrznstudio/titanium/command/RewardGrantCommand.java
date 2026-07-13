@@ -16,16 +16,16 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
-import net.minecraft.commands.arguments.ResourceLocationArgument;
+import net.minecraft.commands.arguments.IdentifierArgument;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class RewardGrantCommand {
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("titanium-rewards-grant")
-                .then(Commands.argument("reward", new ResourceLocationArgument()).suggests((context, builder) -> {
-                    return SharedSuggestionProvider.suggest(RewardManager.get().getGiver(context.getSource().getPlayerOrException().getUUID(), context.getSource().getTextName()).getRewards().stream().map(reward -> reward.getResourceLocation().toString()), builder);
+            .then(Commands.argument("reward", new IdentifierArgument()).suggests((context, builder) -> {
+                    return SharedSuggestionProvider.suggest(RewardManager.get().getGiver(context.getSource().getPlayerOrException().getUUID(), context.getSource().getTextName()).getRewards().stream().map(reward -> reward.getIdentifier().toString()), builder);
                 })
                         .executes(context -> {
                             execute(context);
@@ -34,9 +34,9 @@ public class RewardGrantCommand {
     }
 
     private static void execute(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        ResourceLocation resourceLocation = context.getArgument("reward", ResourceLocation.class);
+        Identifier resourceLocation = context.getArgument("reward", Identifier.class);
         for (Reward reward : RewardManager.get().getGiver(context.getSource().getPlayerOrException().getUUID(), context.getSource().getTextName()).getRewards()) {
-            if (reward.getResourceLocation().equals(resourceLocation)) {
+            if (reward.getIdentifier().equals(resourceLocation)) {
                 RewardWorldStorage rewardWorldStorage = RewardWorldStorage.get(context.getSource().getLevel());
                 rewardWorldStorage.addFree(resourceLocation);
                 rewardWorldStorage.setDirty();

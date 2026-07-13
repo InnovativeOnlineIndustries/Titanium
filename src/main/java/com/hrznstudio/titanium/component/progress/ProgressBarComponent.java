@@ -20,15 +20,15 @@ import com.hrznstudio.titanium.container.addon.IContainerAddon;
 import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
 import com.hrznstudio.titanium.container.addon.IntArrayReferenceHolderAddon;
 import com.hrznstudio.titanium.container.referenceholder.ProgressBarReferenceHolder;
+import com.hrznstudio.titanium.nbthandler.INBTSerializable;
 import com.hrznstudio.titanium.util.AssetUtil;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.DyeColor;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.common.util.INBTSerializable;
 
 import java.awt.*;
 import java.util.Collections;
@@ -368,8 +368,8 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        progress = nbt.getInt("Tick");
-        maxProgress = nbt.getInt("MaxProgress");
+        progress = nbt.getIntOr("Tick", 0);
+        maxProgress = nbt.getIntOr("MaxProgress", 0);
     }
 
     public void onStart() {
@@ -386,30 +386,29 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
     public enum BarDirection {
         VERTICAL_UP {
             @Override
-            public <T extends IComponentHarness> void render(GuiGraphics guiGraphics, Screen screen, int guiX, int guiY, IAssetProvider provider, ProgressBarScreenAddon<T> addon) {
+            public <T extends IComponentHarness> void render(GuiGraphicsExtractor guiGraphics, Screen screen, int guiX, int guiY, IAssetProvider provider, ProgressBarScreenAddon<T> addon) {
                 IAsset assetBorder = IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_BORDER_VERTICAL);
                 Point offset = assetBorder.getOffset();
                 Rectangle area = assetBorder.getArea();
-                guiGraphics.blit(assetBorder.getResourceLocation(), guiX + addon.getPosX() + offset.x, guiY + addon.getPosY() + offset.y, area.x, area.y, area.width, area.height);
+                com.hrznstudio.titanium.util.AssetUtil.blit(guiGraphics, assetBorder.getIdentifier(), guiX + addon.getPosX() + offset.x, guiY + addon.getPosY() + offset.y, area.x, area.y, area.width, area.height);
                 var colors = getTextureDiffuseColors(addon.getProgressBar().getColor());
-                guiGraphics.setColor(colors[0], colors[1], colors[2], 1);
+                int tint = AssetUtil.color(colors[0], colors[1], colors[2], 1);
                 IAsset assetBar = IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_BACKGROUND_VERTICAL);
                 offset = assetBar.getOffset();
                 area = assetBar.getArea();
-                guiGraphics.blit(assetBar.getResourceLocation(), guiX + addon.getPosX() + offset.x, guiY + addon.getPosY() + offset.y, area.x, area.y, area.width, area.height);
+                com.hrznstudio.titanium.util.AssetUtil.blit(guiGraphics, assetBar.getIdentifier(), guiX + addon.getPosX() + offset.x, guiY + addon.getPosY() + offset.y, area.x, area.y, area.width, area.height, tint);
                 IAsset asset = IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_VERTICAL);
                 offset = asset.getOffset();
                 area = asset.getArea();
                 int progress = addon.getProgressBar().getProgress();
                 int maxProgress = addon.getProgressBar().getMaxProgress();
                 int progressOffset = progress * area.height / Math.max(maxProgress, 1);
-                guiGraphics.blit(asset.getResourceLocation(), addon.getPosX() + offset.x + guiX,
+                com.hrznstudio.titanium.util.AssetUtil.blit(guiGraphics, asset.getIdentifier(), addon.getPosX() + offset.x + guiX,
                     addon.getPosY() + offset.y + area.height - progressOffset + guiY,
                     area.x,
                     area.y + (area.height - progressOffset),
                     area.width,
-                    progressOffset);
-                guiGraphics.setColor(1, 1, 1, 1);
+                    progressOffset, tint);
             }
 
             @Override
@@ -424,7 +423,7 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
         },
         ARROW_RIGHT {
             @Override
-            public <T extends IComponentHarness> void render(GuiGraphics guiGraphics, Screen screen, int guiX, int guiY, IAssetProvider provider, ProgressBarScreenAddon<T> addon) {
+            public <T extends IComponentHarness> void render(GuiGraphicsExtractor guiGraphics, Screen screen, int guiX, int guiY, IAssetProvider provider, ProgressBarScreenAddon<T> addon) {
                 AssetUtil.drawAsset(guiGraphics, screen, IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_BACKGROUND_ARROW_HORIZONTAL), addon.getPosX() + guiX, addon.getPosY() + guiY);
                 IAsset asset = IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_ARROW_HORIZONTAL);
                 Point offset = asset.getOffset();
@@ -433,9 +432,8 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
                 int maxProgress = addon.getProgressBar().getMaxProgress();
                 int progressOffset = progress * area.width / Math.max(maxProgress, 1);
                 var colors = getTextureDiffuseColors(addon.getProgressBar().getColor());
-                guiGraphics.setColor(colors[0], colors[1], colors[2], 1);
-                guiGraphics.blit(asset.getResourceLocation(), addon.getPosX() + offset.x + guiX, addon.getPosY() + offset.y + guiY, area.x, area.y, progressOffset, area.height);
-                guiGraphics.setColor(1, 1, 1, 1);
+                int tint = AssetUtil.color(colors[0], colors[1], colors[2], 1);
+                com.hrznstudio.titanium.util.AssetUtil.blit(guiGraphics, asset.getIdentifier(), addon.getPosX() + offset.x + guiX, addon.getPosY() + offset.y + guiY, area.x, area.y, progressOffset, area.height, tint);
             }
 
             @Override
@@ -451,7 +449,7 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
 
         ARROW_DOWN {
             @Override
-            public <T extends IComponentHarness> void render(GuiGraphics guiGraphics, Screen screen, int guiX, int guiY, IAssetProvider provider, ProgressBarScreenAddon<T> addon) {
+            public <T extends IComponentHarness> void render(GuiGraphicsExtractor guiGraphics, Screen screen, int guiX, int guiY, IAssetProvider provider, ProgressBarScreenAddon<T> addon) {
                 AssetUtil.drawAsset(guiGraphics, screen, IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_BACKGROUND_ARROW_DOWN), addon.getPosX() + guiX, addon.getPosY() + guiY);
                 IAsset asset = IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_ARROW_DOWN);
                 Point offset = asset.getOffset();
@@ -460,9 +458,8 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
                 int maxProgress = addon.getProgressBar().getMaxProgress();
                 int progressOffset = progress * area.height / Math.max(maxProgress, 1);
                 var colors = getTextureDiffuseColors(addon.getProgressBar().getColor());
-                guiGraphics.setColor(colors[0], colors[1], colors[2], 1);
-                guiGraphics.blit(asset.getResourceLocation(), addon.getPosX() + offset.x + guiX, addon.getPosY() + offset.y + guiY, area.x, area.y, area.width, progressOffset);
-                guiGraphics.setColor(1, 1, 1, 1);
+                int tint = AssetUtil.color(colors[0], colors[1], colors[2], 1);
+                com.hrznstudio.titanium.util.AssetUtil.blit(guiGraphics, asset.getIdentifier(), addon.getPosX() + offset.x + guiX, addon.getPosY() + offset.y + guiY, area.x, area.y, area.width, progressOffset, tint);
             }
 
             @Override
@@ -477,7 +474,7 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
         };
 
         @OnlyIn(Dist.CLIENT)
-        public abstract <T extends IComponentHarness> void render(GuiGraphics guiGraphics, Screen screen, int guiX, int guiY, IAssetProvider provider, ProgressBarScreenAddon<T> addon);
+        public abstract <T extends IComponentHarness> void render(GuiGraphicsExtractor guiGraphics, Screen screen, int guiX, int guiY, IAssetProvider provider, ProgressBarScreenAddon<T> addon);
 
         @OnlyIn(Dist.CLIENT)
         public abstract int getXSize(IAssetProvider provider);

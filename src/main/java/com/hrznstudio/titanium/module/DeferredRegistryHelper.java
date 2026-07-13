@@ -34,6 +34,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class DeferredRegistryHelper {
+    private static final ThreadLocal<ResourceKey<Block>> CURRENT_BLOCK_KEY = new ThreadLocal<>();
+    private static final ThreadLocal<ResourceKey<Item>> CURRENT_ITEM_KEY = new ThreadLocal<>();
 
     private final String modId;
     private final HashMap<ResourceKey<? extends Registry<?>>, DeferredRegister<?>> registries;
@@ -52,9 +54,31 @@ public class DeferredRegistryHelper {
         return deferredRegister;
     }
 
+    public static Block.Properties applyBlockRegistrationId(Block.Properties properties) {
+        ResourceKey<Block> key = CURRENT_BLOCK_KEY.get();
+        return key == null ? properties : properties.setId(key);
+    }
+
+    public static Item.Properties applyItemRegistrationId(Item.Properties properties) {
+        ResourceKey<Item> key = CURRENT_ITEM_KEY.get();
+        return key == null ? properties : properties.setId(key);
+    }
+
     private  <T> DeferredHolder<T, T> register(ResourceKey<? extends Registry<T>> key, String name, Supplier<T> object) {
         DeferredRegister<T> deferredRegister = getRegistry(key);
-        return deferredRegister.register(name, object);
+        return deferredRegister.register(name, id -> {
+            if (Registries.BLOCK.equals(key)) {
+                CURRENT_BLOCK_KEY.set(ResourceKey.create(Registries.BLOCK, id));
+            } else if (Registries.ITEM.equals(key)) {
+                CURRENT_ITEM_KEY.set(ResourceKey.create(Registries.ITEM, id));
+            }
+            try {
+                return object.get();
+            } finally {
+                CURRENT_BLOCK_KEY.remove();
+                CURRENT_ITEM_KEY.remove();
+            }
+        });
     }
 
     public <T> DeferredRegister<T> getRegistry(ResourceKey<? extends Registry<T>> key) {
@@ -67,7 +91,16 @@ public class DeferredRegistryHelper {
     }
 
     public <T> DeferredHolder<T, T> registerGeneric(ResourceKey<? extends Registry<T>> key, String name, Supplier<T> object) {
-        return this.register(key, name, object);
+        DeferredHolder<T, T> holder = this.register(key, name, object);
+        if (Registries.ITEM.equals(key)) {
+            bus.addListener((RegisterCapabilitiesEvent event) -> {
+                Item item = (Item) holder.value();
+                if (item instanceof com.hrznstudio.titanium.item.EnergyItem energyItem) {
+                    event.registerItem(Capabilities.Energy.ITEM, (stack, access) -> energyItem.initEnergy(access), item);
+                }
+            });
+        }
+        return holder;
     }
 
     public <T, R extends T> DeferredHolder<T, R> registerTyped(ResourceKey<? extends Registry<T>> key, String name, Supplier<R> object) {
@@ -97,7 +130,7 @@ public class DeferredRegistryHelper {
     public DeferredHolder<Block, Block> registerBlockWithItem(String name, Supplier<? extends BasicBlock> blockSupplier, @Nullable TitaniumTab tab) {
         var blockRegistryObject = registerGeneric(Registries.BLOCK, name, blockSupplier::get);
         registerGeneric(Registries.ITEM, name, () -> {
-            var item = new BlockItem(blockRegistryObject.get(), new Item.Properties());
+            var item = new BlockItem(blockRegistryObject.get(), applyItemRegistrationId(new Item.Properties()));
             if (tab != null) tab.getTabList().add(item);
             return item;
         });
@@ -117,7 +150,7 @@ public class DeferredRegistryHelper {
     public void registerCapabilities(Holder<BlockEntityType<?>> type) {
         bus.addListener((final RegisterCapabilitiesEvent event) -> {
             event.registerBlockEntity(
-                Capabilities.EnergyStorage.BLOCK, type.value(), (object, context) -> {
+                Capabilities.Energy.BLOCK, type.value(), (object, context) -> {
                     if (object instanceof PoweredTile<?> powered) {
                         return powered.getEnergyStorage();
                     }
@@ -125,7 +158,7 @@ public class DeferredRegistryHelper {
                 }
             );
             event.registerBlockEntity(
-                Capabilities.FluidHandler.BLOCK, type.value(), (object, context) -> {
+                Capabilities.Fluid.BLOCK, type.value(), (object, context) -> {
                     if (object instanceof ActiveTile<?> tile) {
                         return tile.getFluidHandler(context);
                     }
@@ -133,7 +166,7 @@ public class DeferredRegistryHelper {
                 }
             );
             event.registerBlockEntity(
-                Capabilities.ItemHandler.BLOCK, type.value(), (object, context) -> {
+                Capabilities.Item.BLOCK, type.value(), (object, context) -> {
                     if (object instanceof ActiveTile<?> tile) {
                         return tile.getItemHandler(context);
                     }
@@ -145,14 +178,14 @@ public class DeferredRegistryHelper {
 
     public BlockWithTile registerBlockWithTile(String name, Supplier<BasicTileBlock<?>> blockSupplier, @Nullable TitaniumTab tab){
         DeferredHolder<Block, Block> blockRegistryObject = registerBlockWithItem(name, blockSupplier, tab);
-        var type = registerBlockEntityType(name, () -> BlockEntityType.Builder.of(((BasicTileBlock<?>)blockRegistryObject.get()).getTileEntityFactory(), blockRegistryObject.get()).build(null));
+        var type = registerBlockEntityType(name, () -> new BlockEntityType<>(((BasicTileBlock<?>) blockRegistryObject.get()).getTileEntityFactory(), blockRegistryObject.get()));
         registerCapabilities(type);
         return new BlockWithTile(blockRegistryObject, type);
     }
 
     public BlockWithTile registerBlockWithTileItem(String name, Supplier<BasicTileBlock<?>> blockSupplier, Function<DeferredHolder<Block, Block>, Supplier<Item>> itemSupplier, @Nullable TitaniumTab tab){
         DeferredHolder<Block, Block> blockRegistryObject = registerBlockWithItem(name, blockSupplier, itemSupplier, tab);
-        var type = registerBlockEntityType(name, () -> BlockEntityType.Builder.of(((BasicTileBlock<?>)blockRegistryObject.get()).getTileEntityFactory(), blockRegistryObject.get()).build(null));
+        var type = registerBlockEntityType(name, () -> new BlockEntityType<>(((BasicTileBlock<?>) blockRegistryObject.get()).getTileEntityFactory(), blockRegistryObject.get()));
         registerCapabilities(type);
         return new BlockWithTile(blockRegistryObject, type);
     }

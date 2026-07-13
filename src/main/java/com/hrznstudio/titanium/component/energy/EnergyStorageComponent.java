@@ -17,15 +17,19 @@ import com.hrznstudio.titanium.container.addon.IContainerAddon;
 import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
 import com.hrznstudio.titanium.container.addon.IntReferenceHolderAddon;
 import com.hrznstudio.titanium.container.referenceholder.FunctionReferenceHolder;
+import com.hrznstudio.titanium.nbthandler.INBTSerializable;
+import com.hrznstudio.titanium.util.ValueIOSerialization;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.energy.EnergyStorage;
+import net.neoforged.neoforge.transfer.energy.SimpleEnergyHandler;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public class EnergyStorageComponent<T extends IComponentHarness> extends EnergyStorage implements
-    IScreenAddonProvider, IContainerAddonProvider {
+public class EnergyStorageComponent<T extends IComponentHarness> extends SimpleEnergyHandler implements
+    IScreenAddonProvider, IContainerAddonProvider, INBTSerializable<CompoundTag> {
 
     private final int xPos;
     private final int yPos;
@@ -46,31 +50,21 @@ public class EnergyStorageComponent<T extends IComponentHarness> extends EnergyS
         this.yPos = yPos;
     }
 
-    @Override
-    public int receiveEnergy(int maxReceive, boolean simulate) {
-        int amount = super.receiveEnergy(maxReceive, simulate);
-        if (!simulate && amount > 0) {
-            this.update();
-        }
-        return amount;
-    }
-
-    @Override
-    public int extractEnergy(int maxExtract, boolean simulate) {
-        int amount = super.extractEnergy(maxExtract, simulate);
-        if (!simulate && amount > 0) {
-            this.update();
-        }
-        return amount;
+    public int getEnergyStored() {
+        return getAmountAsInt();
     }
 
     public void setEnergyStored(int energy) {
-        if (energy > this.getMaxEnergyStored()) {
-            this.energy = this.getMaxEnergyStored();
-        } else {
-            this.energy = Math.max(energy, 0);
-        }
-        this.update();
+        set(Math.min(Math.max(energy, 0), getCapacityAsInt()));
+    }
+
+    public int getMaxEnergyStored() {
+        return getCapacityAsInt();
+    }
+
+    @Override
+    protected void onEnergyChanged(int previousAmount) {
+        update();
     }
 
     @Override
@@ -106,6 +100,16 @@ public class EnergyStorageComponent<T extends IComponentHarness> extends EnergyS
 
     public int getY() {
         return yPos;
+    }
+
+    @Override
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+        return ValueIOSerialization.save(provider, this);
+    }
+
+    @Override
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+        ValueIOSerialization.load(provider, nbt, this);
     }
 }
 

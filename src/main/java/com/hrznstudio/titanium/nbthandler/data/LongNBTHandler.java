@@ -50,6 +50,6 @@ public class LongNBTHandler implements INBTHandler<Long> {
      */
     @Override
     public Long readFromNBT(net.minecraft.core.HolderLookup.Provider provider, @Nonnull CompoundTag compound, @Nonnull String name, @Nullable Long current) {
-        return compound.contains(name) ? compound.getLong(name) : Unboxing.safelyUnbox(current);
+        return compound.contains(name) ? compound.getLongOr(name, 0L) : Unboxing.safelyUnbox(current);
     }
 }

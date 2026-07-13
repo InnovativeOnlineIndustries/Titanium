@@ -21,6 +21,7 @@ import com.hrznstudio.titanium.component.button.ButtonComponent;
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.hrznstudio.titanium.component.inventory.SidedInventoryComponent;
 import com.hrznstudio.titanium.container.addon.IContainerAddon;
+import com.hrznstudio.titanium.nbthandler.INBTSerializable;
 import com.hrznstudio.titanium.util.LangUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderLookup;
@@ -29,7 +30,6 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.common.util.INBTSerializable;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
@@ -107,7 +107,7 @@ public class LockableInventoryBundle<T extends BasicTile & IComponentHarness> im
         compoundNBT.putBoolean("Locked", this.isLocked);
         ListTag nbt = new ListTag();
         for (ItemStack stack : this.filter) {
-            nbt.add(stack.saveOptional(provider));
+            nbt.add(com.hrznstudio.titanium.util.ItemStackSerialization.save(provider, stack));
         }
         compoundNBT.put("Filter", nbt);
         return compoundNBT;
@@ -115,13 +115,13 @@ public class LockableInventoryBundle<T extends BasicTile & IComponentHarness> im
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        this.inventory.deserializeNBT(provider, nbt.getCompound("Inventory"));
-        this.isLocked = nbt.getBoolean("Locked");
+        this.inventory.deserializeNBT(provider, nbt.getCompoundOrEmpty("Inventory"));
+        this.isLocked = nbt.getBooleanOr("Locked", false);
         ListTag list = (ListTag) nbt.get("Filter");
         this.filter = new ItemStack[list.size()];
         Arrays.fill(this.filter, ItemStack.EMPTY);
         for (int i = 0; i < list.size(); i++) {
-            this.filter[i] = ItemStack.parseOptional(provider, list.getCompound(i));
+            this.filter[i] = com.hrznstudio.titanium.util.ItemStackSerialization.load(provider, list.getCompoundOrEmpty(i));
         }
         updateFilter();
     }

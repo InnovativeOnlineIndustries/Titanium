@@ -10,7 +10,6 @@ package com.hrznstudio.titanium._impl.test.recipe;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -27,20 +26,24 @@ public class TestSerializableRecipe implements Recipe<CraftingInput> {
     public static Holder<RecipeSerializer<?>> SERIALIZER;
     public static Holder<RecipeType<?>> RECIPE_TYPE;
     public static final List<TestSerializableRecipe> RECIPES = new ArrayList<>();
-
-    static {
-        new TestSerializableRecipe(Ingredient.of(new ItemStack(Items.OAK_SAPLING)), new ItemStack(Items.STICK, 3), Blocks.STONE);
-        new TestSerializableRecipe(Ingredient.of(new ItemStack(Blocks.DIRT)), new ItemStack(Items.DIAMOND, 1), Blocks.DIRT);
-        ItemStack pick = new ItemStack(Items.DIAMOND_PICKAXE, 1);
-        pick.setDamageValue(100);
-        new TestSerializableRecipe(Ingredient.of(new ItemStack(Blocks.STONE)), pick, Blocks.DIRT);
-    }
-
     public static final MapCodec<TestSerializableRecipe> CODEC = RecordCodecBuilder.mapCodec(in -> in.group(
-        Ingredient.CODEC_NONEMPTY.fieldOf("input").forGetter(i -> i.input),
+        Ingredient.CODEC.fieldOf("input").forGetter(i -> i.input),
         ItemStack.CODEC.fieldOf("output").forGetter(i -> i.output),
         BuiltInRegistries.BLOCK.byNameCodec().fieldOf("block").forGetter(i -> i.block)
     ).apply(in, TestSerializableRecipe::new));
+    private static boolean examplesInitialized;
+
+    public static synchronized void initializeExamples() {
+        if (examplesInitialized) {
+            return;
+        }
+        examplesInitialized = true;
+        new TestSerializableRecipe(Ingredient.of(Items.OAK_SAPLING), new ItemStack(Items.STICK, 3), Blocks.STONE);
+        new TestSerializableRecipe(Ingredient.of(Blocks.DIRT), new ItemStack(Items.DIAMOND, 1), Blocks.DIRT);
+        ItemStack pick = new ItemStack(Items.DIAMOND_PICKAXE, 1);
+        pick.setDamageValue(100);
+        new TestSerializableRecipe(Ingredient.of(Blocks.STONE), pick, Blocks.DIRT);
+    }
 
     public Ingredient input;
     public ItemStack output;
@@ -62,33 +65,40 @@ public class TestSerializableRecipe implements Recipe<CraftingInput> {
     }
 
     @Override
-    public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
+    public ItemStack assemble(CraftingInput input) {
         return this.output.copy();
     }
 
     @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return false;
+    public boolean showNotification() {
+        return true;
     }
 
     @Override
-    public ItemStack getResultItem(HolderLookup.Provider registries) {
-        return output;
+    public String group() {
+        return "";
     }
 
     @Override
-    public ItemStack getToastSymbol() {
-        return this.output;
+    public PlacementInfo placementInfo() {
+        return PlacementInfo.create(input);
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
-        return SERIALIZER.value();
+    public RecipeBookCategory recipeBookCategory() {
+        return RecipeBookCategories.CRAFTING_MISC;
     }
 
     @Override
-    public RecipeType<?> getType() {
-        return RECIPE_TYPE.value();
+    @SuppressWarnings("unchecked")
+    public RecipeSerializer<? extends Recipe<CraftingInput>> getSerializer() {
+        return (RecipeSerializer<? extends Recipe<CraftingInput>>) SERIALIZER.value();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public RecipeType<? extends Recipe<CraftingInput>> getType() {
+        return (RecipeType<? extends Recipe<CraftingInput>>) RECIPE_TYPE.value();
     }
 
     public boolean isValid(ItemStack input, Block block) {

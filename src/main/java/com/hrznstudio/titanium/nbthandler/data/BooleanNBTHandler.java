@@ -29,6 +29,6 @@ public class BooleanNBTHandler implements INBTHandler<Boolean> {
 
     @Override
     public Boolean readFromNBT(net.minecraft.core.HolderLookup.Provider provider, @Nonnull CompoundTag compound, @Nonnull String name, @Nullable Boolean currentValue) {
-        return compound.contains(name) ? compound.getBoolean(name) : Unboxing.safelyUnbox(currentValue);
+        return compound.contains(name) ? compound.getBooleanOr(name, false) : Unboxing.safelyUnbox(currentValue);
     }
 }

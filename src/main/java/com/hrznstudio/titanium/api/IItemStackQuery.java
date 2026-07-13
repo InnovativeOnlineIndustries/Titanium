@@ -124,7 +124,7 @@ public interface IItemStackQuery extends Predicate<ItemStack> {
 
         @Override
         public ItemStack[] getMatchingStacks() {
-            return ingredient.getItems();
+            return ingredient.items().map(holder -> new ItemStack(holder.value())).toArray(ItemStack[]::new);
         }
 
         public Ingredient getIngredient() {

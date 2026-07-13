@@ -7,47 +7,58 @@
 
 package com.hrznstudio.titanium.recipe.generator;
 
-import net.minecraft.advancements.critereon.InventoryChangeTrigger;
-import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.advancements.criterion.InventoryChangeTrigger;
+import net.minecraft.advancements.criterion.ItemPredicate;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 
-public class TitaniumShapelessRecipeBuilder extends ShapelessRecipeBuilder {
-
+public class TitaniumShapelessRecipeBuilder {
+    private final ShapelessRecipeBuilder delegate;
     private boolean criterion;
 
-    public TitaniumShapelessRecipeBuilder(RecipeCategory recipeCategory, ItemLike resultIn, int countIn) {
-        super(recipeCategory, resultIn, countIn);
-        this.criterion = false;
+    public TitaniumShapelessRecipeBuilder(HolderGetter<Item> items, RecipeCategory category, ItemLike result, int count) {
+        this.delegate = ShapelessRecipeBuilder.shapeless(items, category, result, count);
     }
 
-    public static TitaniumShapelessRecipeBuilder shapelessRecipe(ItemLike resultIn) {
-        return new TitaniumShapelessRecipeBuilder(RecipeCategory.MISC, resultIn, 1);
+    public static TitaniumShapelessRecipeBuilder shapelessRecipe(ItemLike result) {
+        return shapelessRecipe(result, 1);
     }
 
-    public static TitaniumShapelessRecipeBuilder shapelessRecipe(ItemLike resultIn, int countIn) {
-        return new TitaniumShapelessRecipeBuilder(RecipeCategory.MISC, resultIn, countIn);
+    public static TitaniumShapelessRecipeBuilder shapelessRecipe(ItemLike result, int count) {
+        return new TitaniumShapelessRecipeBuilder(BuiltInRegistries.ITEM, RecipeCategory.MISC, result, count);
     }
 
-    @Override
-    public ShapelessRecipeBuilder requires(Ingredient ingredientIn, int quantity) {
-        if (!this.criterion) {
-            this.criterion = true;
-            unlockedBy("has_item", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(ingredientIn.getItems()[0].getItem()).build()));
+    public TitaniumShapelessRecipeBuilder requires(ItemLike item) {
+        return requires(Ingredient.of(item), 1);
+    }
+
+    public TitaniumShapelessRecipeBuilder requires(Ingredient ingredient, int quantity) {
+        if (!criterion) {
+            criterion = true;
+            ingredient.items().findFirst().ifPresent(item ->
+                delegate.unlockedBy("has_item", InventoryChangeTrigger.TriggerInstance.hasItems(item.value())));
         }
-        return super.requires(ingredientIn, quantity);
+        delegate.requires(ingredient, quantity);
+        return this;
     }
 
-    @Override
-    public ShapelessRecipeBuilder requires(TagKey<Item> tagIn) {
-        if (!this.criterion) {
-            this.criterion = true;
-            unlockedBy("has_item", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(tagIn).build()));
+    public TitaniumShapelessRecipeBuilder requires(TagKey<Item> tag) {
+        if (!criterion) {
+            criterion = true;
+            delegate.unlockedBy("has_item", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(BuiltInRegistries.ITEM, tag).build()));
         }
-        return super.requires(tagIn);
+        delegate.requires(tag);
+        return this;
+    }
+
+    public void save(RecipeOutput output) {
+        delegate.save(output);
     }
 }

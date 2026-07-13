@@ -18,7 +18,7 @@ import com.hrznstudio.titanium.component.IComponentHarness;
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
 import com.hrznstudio.titanium.container.addon.IContainerAddon;
-import com.hrznstudio.titanium.util.TitaniumFluidUtil;
+import com.hrznstudio.titanium.nbthandler.INBTSerializable;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.DyeColor;
@@ -27,11 +27,11 @@ import net.minecraft.world.item.Items;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.common.util.INBTSerializable;
-import net.neoforged.neoforge.fluids.FluidActionResult;
-import net.neoforged.neoforge.fluids.FluidUtil;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 import java.util.Collections;
 import java.util.List;
@@ -40,14 +40,14 @@ import java.util.function.Supplier;
 
 public class TankInteractionBundle<T extends BasicTile & IComponentHarness> implements IComponentBundle, INBTSerializable<CompoundTag> {
 
-    private final Supplier<Optional<IFluidHandler>> fluidHandler;
+    private final Supplier<Optional<ResourceHandler<FluidResource>>> fluidHandler;
     private int posX;
     private int posY;
     private InventoryComponent<T> input;
     private InventoryComponent<T> output;
     private ProgressBarComponent<T> bar;
 
-    public TankInteractionBundle(Supplier<Optional<IFluidHandler>> fluidHandler, int posX, int posY, T componentHarness, int maxProgress) {
+    public TankInteractionBundle(Supplier<Optional<ResourceHandler<FluidResource>>> fluidHandler, int posX, int posY, T componentHarness, int maxProgress) {
         this.fluidHandler = fluidHandler;
         this.posX = posX;
         this.posY = posY;
@@ -55,7 +55,7 @@ public class TankInteractionBundle<T extends BasicTile & IComponentHarness> impl
             .setSlotToItemStackRender(0, new ItemStack(Items.BUCKET))
             .setOutputFilter((stack, integer) -> false)
             .setSlotToColorRender(0, DyeColor.BLUE)
-            .setInputFilter((stack, integer) -> stack.getCapability(Capabilities.FluidHandler.ITEM) != null)
+            .setInputFilter((stack, integer) -> hasFluidHandler(stack))
             .setComponentHarness(componentHarness);
         this.output = new InventoryComponent<T>("tank_output", posX + 5, posY + 60, 1)
             .setSlotToItemStackRender(0, new ItemStack(Items.BUCKET))
@@ -65,13 +65,14 @@ public class TankInteractionBundle<T extends BasicTile & IComponentHarness> impl
         this.bar = new ProgressBarComponent<T>(posX + 5, posY + 30, maxProgress)
             .setBarDirection(ProgressBarComponent.BarDirection.ARROW_DOWN)
             .setCanReset(t -> true)
-            .setCanIncrease(t -> !this.input.getStackInSlot(0).isEmpty() && this.input.getStackInSlot(0).getCapability(Capabilities.FluidHandler.ITEM) != null && !getOutputStack(false).isEmpty() && (this.output.getStackInSlot(0).isEmpty() || ItemStack.isSameItemSameComponents(getOutputStack(false), this.input.getStackInSlot(0))))
+            .setCanIncrease(t -> !this.input.getStackInSlot(0).isEmpty() && hasFluidHandler(this.input.getStackInSlot(0)) && !getOutputStack(false).isEmpty() && (this.output.getStackInSlot(0).isEmpty() || ItemStack.isSameItemSameComponents(getOutputStack(false), this.output.getStackInSlot(0))))
             .setOnFinishWork(() -> {
                 ItemStack result = getOutputStack(false);
-                if (ItemHandlerHelper.insertItem(this.output, result, true).isEmpty()) {
+                if (this.output.insertItem(0, result, true).isEmpty()) {
                     result = getOutputStack(true);
-                    ItemHandlerHelper.insertItem(this.output, result, false);
-                    this.input.getStackInSlot(0).shrink(1);
+                    this.output.insertItem(0, result, false);
+                    ItemStack inputStack = this.input.getStackInSlot(0);
+                    this.input.setStackInSlot(0, inputStack.copyWithCount(inputStack.getCount() - 1));
                     componentHarness.setChanged();
                 }
             })
@@ -86,16 +87,28 @@ public class TankInteractionBundle<T extends BasicTile & IComponentHarness> impl
         }
     }
 
+    private static boolean hasFluidHandler(ItemStack stack) {
+        return !stack.isEmpty() && ItemAccess.forStack(stack).oneByOne().getCapability(Capabilities.Fluid.ITEM) != null;
+    }
+
     public ItemStack getOutputStack(boolean execute) {
-        if (!fluidHandler.get().isPresent()) return ItemStack.EMPTY;
-        var iFluidHandler = fluidHandler.get().get();
+        if (fluidHandler.get().isEmpty()) return ItemStack.EMPTY;
+        var tank = fluidHandler.get().get();
         ItemStack stack = this.input.getStackInSlot(0).copy();
         stack.setCount(1);
-        FluidActionResult result = FluidUtil.tryFillContainer(stack, iFluidHandler, Integer.MAX_VALUE, null, execute);
-        if (result.isSuccess()) return result.getResult();
-        result = TitaniumFluidUtil.tryEmptyContainer(stack, iFluidHandler, Integer.MAX_VALUE, execute);
-        if (result.isSuccess()) return result.getResult();
-        return ItemStack.EMPTY;
+        ItemAccess access = ItemAccess.forStack(stack).oneByOne();
+        ResourceHandler<FluidResource> itemHandler = access.getCapability(Capabilities.Fluid.ITEM);
+        if (itemHandler == null) return ItemStack.EMPTY;
+        try (var transaction = Transaction.openRoot()) {
+            int moved = ResourceHandlerUtil.move(tank, itemHandler, resource -> true, Integer.MAX_VALUE, transaction);
+            if (moved == 0) {
+                moved = ResourceHandlerUtil.move(itemHandler, tank, resource -> true, Integer.MAX_VALUE, transaction);
+            }
+            if (moved == 0) return ItemStack.EMPTY;
+            ItemStack result = access.getResource().toStack(access.getAmount());
+            if (execute) transaction.commit();
+            return result;
+        }
     }
 
     @Override
@@ -120,8 +133,8 @@ public class TankInteractionBundle<T extends BasicTile & IComponentHarness> impl
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        this.input.deserializeNBT(provider, nbt.getCompound("Input"));
-        this.output.deserializeNBT(provider, nbt.getCompound("Output"));
-        this.bar.deserializeNBT(provider, nbt.getCompound("Bar"));
+        this.input.deserializeNBT(provider, nbt.getCompoundOrEmpty("Input"));
+        this.output.deserializeNBT(provider, nbt.getCompoundOrEmpty("Output"));
+        this.bar.deserializeNBT(provider, nbt.getCompoundOrEmpty("Bar"));
     }
 }

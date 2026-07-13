@@ -12,7 +12,7 @@ import com.hrznstudio.titanium.block_network.graph.NetworkGraph;
 import com.hrznstudio.titanium.block_network.graph.NetworkGraphScannerResult;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 
 import java.util.Objects;
@@ -63,7 +63,7 @@ public abstract class Network {
 
     public abstract void onMergedWith(Network mainNetwork);
 
-    public abstract ResourceLocation getType();
+    public abstract Identifier getType();
 
     public NetworkGraph getGraph() {
         return graph;

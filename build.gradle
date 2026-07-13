@@ -1,12 +1,12 @@
 plugins {
-    id 'net.neoforged.moddev' version '0.1.112'
+  id 'java-library'
+  id 'net.neoforged.moddev' version '2.0.141'
     id 'maven-publish'
-  id "com.modrinth.minotaur" version "2.+"
+  id "com.modrinth.minotaur" version "2.9.0"
   id 'net.darkhax.curseforgegradle' version '1.1.15'
-  id 'org.cadixdev.licenser' version '0.6.1'
 }
 
-final mcVersion = "1.21"
+final mcVersion = "26.1.2"
 version = mcVersion + "-" + api_version
 group = modGroup
 
@@ -31,16 +31,11 @@ base {
     archivesName = modBaseName
 }
 
-// Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+// Minecraft 26.1.2 ships with Java 25.
+java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
 neoForge {
     version = "${neo_version}"
-
-    parchment {
-        minecraftVersion = '1.21'
-        mappingsVersion = '2024.06.23'
-    }
 
     runs {
         client {
@@ -48,6 +43,7 @@ neoForge {
         }
         server {
             server()
+          programArgument '--nogui'
         }
     }
 
@@ -59,10 +55,9 @@ neoForge {
 }
 
 dependencies {
-  compileOnly "mezz.jei:jei-1.21.1-common-api:$jei_version"
-  compileOnly "mezz.jei:jei-1.21.1-neoforge-api:$jei_version"
-  runtimeOnly "mezz.jei:jei-1.21.1-neoforge:$jei_version"
-  compileOnly "com.almostreliable.mods:almostunified-neoforge:$almostunified_version:api"
+  compileOnly "mezz.jei:jei-${mcVersion}-common-api:$jei_version"
+  compileOnly "mezz.jei:jei-${mcVersion}-neoforge-api:$jei_version"
+  runtimeOnly "mezz.jei:jei-${mcVersion}-neoforge:$jei_version"
   //runtimeOnly "curse.maven:industrial-foregoing-266515:5866238"
   //runtimeOnly "curse.maven:functional-storage-556861:5861256"
   //runtimeOnly "curse.maven:super-factory-manager-306935:5664209"
@@ -78,7 +73,7 @@ jar {
                 "Implementation-Version"  : "${project.api_version + "." + System.getenv('BUILD_NUMBER')}",
                 "Implementation-Vendor"   : "Horizon Studio",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                "Maven-Artifact"          : "${group}:${archivesBaseName}:${version}",
+                "Maven-Artifact": "${group}:${base.archivesName.get()}:${version}",
                 "ModSide"                 : "BOTH",
                 "Automatic-Module-Name"   : "com.hrznstdio.titanium"
     ])
@@ -88,6 +83,7 @@ jar {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+  options.compilerArgs.addAll(['-Xmaxerrs', '1000', '-Xmaxwarns', '1000'])
 }
 
 publishing {
@@ -104,32 +100,15 @@ publishing {
   }
 }
 
-
-license {
-  header = project.file('HEADER')
-  ext {
-    year = Calendar.getInstance().get(Calendar.YEAR)
-    name = 'Horizon Studio'
-    email = 'contact@hrznstudio.com'
-    mod = 'Titanium'
-  }
-}
-
-//tasks.publishCurseForge.enabled = System.env["CURSE_API"] != null
-
-task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
-
+tasks.register('publishCurseForge', net.darkhax.curseforgegradle.TaskPublishCurseForge) {
   apiToken = System.env["CURSE_API"]
 
-  // The main file to upload
   def mainFile = upload(287342, jar)
-
   mainFile.releaseType = 'beta'
   mainFile.changelog = 'https://github.com/InnovativeOnlineIndustries/Titanium/blob/changelog/CHANGELOG.md'
   mainFile.changelogType = 'markdown'
   mainFile.addModLoader("NeoForge")
-  mainFile.addGameVersion("1.21")
-  mainFile.addGameVersion("1.21.1")
+  mainFile.addGameVersion("26.1.2")
 }
 
 tasks.modrinth.enabled = System.env["MODRINTH_TOKEN"] != null
@@ -140,7 +119,7 @@ modrinth {
   projectId = "1Ro7m06l" // This can be the project ID or the slug. Either will work!
   versionType = "beta" // This is the default -- can also be `beta` or `alpha`
   uploadFile = jar // With Loom, this MUST be set to `remapJar` instead of `jar`!
-  gameVersions = ["1.21", "1.21.1"] // Must be an array, even with only one version
+  gameVersions = ["26.1.2"] // Must be an array, even with only one version
   loaders = ["neoforge"] // Must also be an array - no need to specify this if you're using Loom or ForgeGradle
   dependencies { // A special DSL for creating dependencies
 

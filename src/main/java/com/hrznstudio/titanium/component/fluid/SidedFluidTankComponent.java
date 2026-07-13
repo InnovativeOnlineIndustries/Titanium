@@ -27,9 +27,9 @@ import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 import java.awt.*;
 import java.util.EnumMap;
@@ -103,9 +103,11 @@ public class SidedFluidTankComponent<T extends IComponentHarness> extends FluidT
         for (FacingUtil.Sideness sideness : facingModes.keySet()) {
             if (facingModes.get(sideness) == mode) {
                 Direction real = FacingUtil.getFacingFromSide(blockFacing, sideness);
-                var cap = level.getCapability(Capabilities.FluidHandler.BLOCK, pos.relative(real), real.getOpposite());
+                var cap = level.getCapability(Capabilities.Fluid.BLOCK, pos.relative(real), real.getOpposite());
                 if (cap != null) {
-                    if (transfer(mode == FaceMode.PUSH ? this : cap, mode == FaceMode.PUSH ? cap : this, workAmount)) {
+                    ResourceHandler<FluidResource> from = mode == FaceMode.PUSH ? this : cap;
+                    ResourceHandler<FluidResource> to = mode == FaceMode.PUSH ? cap : this;
+                    if (ResourceHandlerUtil.move(from, to, resource -> true, workAmount * 100, null) > 0) {
                         return true;
                     }
                 }
@@ -141,19 +143,6 @@ public class SidedFluidTankComponent<T extends IComponentHarness> extends FluidT
         return this;
     }
 
-    private boolean transfer(IFluidHandler from, IFluidHandler to, int workAmount) {
-        for (int tank = 0; tank < from.getTanks(); tank++) {
-            FluidStack fluidStack = from.getFluidInTank(tank);
-            fluidStack = fluidStack.copyWithAmount(Math.min(workAmount * 100, fluidStack.getAmount()));
-            fluidStack = from.drain(fluidStack, FluidAction.SIMULATE);
-            if (fluidStack.isEmpty()) continue;
-            fluidStack = fluidStack.copyWithAmount(to.fill(fluidStack, FluidAction.EXECUTE));
-            fluidStack = from.drain(fluidStack, FluidAction.EXECUTE);
-            if (!fluidStack.isEmpty()) return true;
-        }
-        return false;
-    }
-
     @Override
     @OnlyIn(Dist.CLIENT)
     public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
@@ -163,20 +152,19 @@ public class SidedFluidTankComponent<T extends IComponentHarness> extends FluidT
         return addons;
     }
 
-    @Override
-    public FluidTank readFromNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+    public FluidTankComponent<T> readFromNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         if (nbt.contains("FacingModes")) {
-            CompoundTag compound = nbt.getCompound("FacingModes");
-            for (String face : compound.getAllKeys()) {
-                facingModes.put(FacingUtil.Sideness.valueOf(face), FaceMode.valueOf(compound.getString(face)));
+            CompoundTag compound = nbt.getCompoundOrEmpty("FacingModes");
+            for (String face : compound.keySet()) {
+                facingModes.put(FacingUtil.Sideness.valueOf(face), FaceMode.valueOf(compound.getStringOr(face, "")));
             }
         }
-        return super.readFromNBT(provider, nbt);
+        com.hrznstudio.titanium.util.ValueIOSerialization.load(provider, nbt, this);
+        return this;
     }
 
-    @Override
     public CompoundTag writeToNBT(HolderLookup.Provider provider, CompoundTag comp) {
-        CompoundTag nbt = super.writeToNBT(provider, comp);
+        CompoundTag nbt = com.hrznstudio.titanium.util.ValueIOSerialization.save(provider, this);
         CompoundTag compound = new CompoundTag();
         for (FacingUtil.Sideness facing : facingModes.keySet()) {
             compound.putString(facing.name(), facingModes.get(facing).name());

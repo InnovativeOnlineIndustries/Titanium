@@ -50,6 +50,6 @@ public class ShortNBTHandler implements INBTHandler<Short> {
      */
     @Override
     public Short readFromNBT(net.minecraft.core.HolderLookup.Provider provider, @Nonnull CompoundTag compound, @Nonnull String name, @Nullable Short current) {
-        return compound.contains(name) ? compound.getShort(name) : Unboxing.safelyUnbox(current);
+        return compound.getShortOr(name, Unboxing.safelyUnbox(current));
     }
 }

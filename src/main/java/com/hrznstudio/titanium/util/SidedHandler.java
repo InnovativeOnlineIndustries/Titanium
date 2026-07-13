@@ -17,7 +17,7 @@ public final class SidedHandler {
     }
 
     public static Dist getSide() {
-        return FMLEnvironment.dist;
+        return FMLEnvironment.getDist();
     }
 
     public static void runOn(Dist side, Supplier<Runnable> toRun) {

@@ -13,6 +13,7 @@ import com.hrznstudio.titanium.block.tile.ActiveTile;
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.hrznstudio.titanium.datagenerator.loot.block.BasicBlockLootTables;
 import com.hrznstudio.titanium.datagenerator.loot.block.IBlockLootTableProvider;
+import com.hrznstudio.titanium.module.DeferredRegistryHelper;
 import com.hrznstudio.titanium.tab.TitaniumTab;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -44,7 +45,7 @@ public abstract class BasicBlock extends Block implements IRecipeProvider, IBloc
     private TitaniumTab itemGroup = null;
 
     public BasicBlock(Properties properties) {
-        super(properties);
+        super(DeferredRegistryHelper.applyBlockRegistrationId(properties));
     }
 
     @Nullable
@@ -115,12 +116,10 @@ public abstract class BasicBlock extends Block implements IRecipeProvider, IBloc
 
     @Override
     @SuppressWarnings("deprecation")
-    public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (!state.is(newState.getBlock())) {
-            Containers.dropContents(worldIn, pos, getDynamicDrops(state, worldIn, pos, newState, isMoving));
-            worldIn.updateNeighbourForOutputSignal(pos, this);
-        }
-        super.onRemove(state, worldIn, pos, newState, isMoving);
+    protected void affectNeighborsAfterRemoval(BlockState state, net.minecraft.server.level.ServerLevel worldIn, BlockPos pos, boolean isMoving) {
+        Containers.dropContents(worldIn, pos, getDynamicDrops(state, worldIn, pos, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState(), isMoving));
+        worldIn.updateNeighbourForOutputSignal(pos, this);
+        super.affectNeighborsAfterRemoval(state, worldIn, pos, isMoving);
     }
 
     public NonNullList<ItemStack> getDynamicDrops(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {

@@ -10,7 +10,7 @@ package com.hrznstudio.titanium.client.screen.container;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.container.BasicAddonContainer;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -26,8 +26,8 @@ public class BasicAddonScreen extends BasicContainerScreen<BasicAddonContainer> 
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         this.getMenu().update();
-        super.renderBg(guiGraphics, partialTicks, mouseX, mouseY);
+        super.extractBackground(guiGraphics, mouseX, mouseY, partialTicks);
     }
 }

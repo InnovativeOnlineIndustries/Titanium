@@ -68,8 +68,7 @@ public class BlockRegistryObjectGroup<B extends Block, I extends Item, T extends
         this.register(blockRegistry, itemRegistry);
         if (tileSupplier != null) {
             //noinspection ConstantConditions
-            tileEntity = tileEntityTypeRegistry.register(name, () -> BlockEntityType.Builder.of(tileSupplier, this.getBlock())
-                    .build(null));
+            tileEntity = tileEntityTypeRegistry.register(name, () -> new BlockEntityType<>(tileSupplier, this.getBlock()));
         }
         return this;
     }

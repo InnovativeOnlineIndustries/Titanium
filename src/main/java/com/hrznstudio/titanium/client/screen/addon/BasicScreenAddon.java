@@ -8,6 +8,9 @@
 package com.hrznstudio.titanium.client.screen.addon;
 
 import com.hrznstudio.titanium.api.client.IScreenAddon;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 
 public abstract class BasicScreenAddon implements IScreenAddon {
 
@@ -23,6 +26,11 @@ public abstract class BasicScreenAddon implements IScreenAddon {
 
     @Override
     public boolean isMouseOver(double mouseX, double mouseY) {
+        Screen screen = Minecraft.getInstance().screen;
+        if (screen instanceof AbstractContainerScreen abstractContainerScreen) {
+            mouseX -= abstractContainerScreen.getLeftPos();
+            mouseY -= abstractContainerScreen.getTopPos();
+        }
         return mouseX >= this.getPosX() && mouseX <= this.getPosX() + getXSize() && mouseY >= this.getPosY() && mouseY <= this.getPosY() + getYSize();
     }
 

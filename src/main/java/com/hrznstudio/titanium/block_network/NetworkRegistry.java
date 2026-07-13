@@ -8,7 +8,7 @@
 package com.hrznstudio.titanium.block_network;
 
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,12 +19,12 @@ import java.util.Map;
 public class NetworkRegistry {
     public static final NetworkRegistry INSTANCE = new NetworkRegistry();
     private static final Logger LOGGER = LogManager.getLogger(NetworkRegistry.class);
-    private final Map<ResourceLocation, NetworkFactory> factories = new HashMap<>();
+    private final Map<Identifier, NetworkFactory> factories = new HashMap<>();
 
     private NetworkRegistry() {
     }
 
-    public void addFactory(ResourceLocation type, NetworkFactory factory) {
+    public void addFactory(Identifier type, NetworkFactory factory) {
         if (factories.containsKey(type)) {
             throw new RuntimeException("Cannot register duplicate network type " + type.toString());
         }
@@ -35,7 +35,7 @@ public class NetworkRegistry {
     }
 
     @Nullable
-    public NetworkFactory getFactory(ResourceLocation type) {
+    public NetworkFactory getFactory(Identifier type) {
         return factories.get(type);
     }
 }

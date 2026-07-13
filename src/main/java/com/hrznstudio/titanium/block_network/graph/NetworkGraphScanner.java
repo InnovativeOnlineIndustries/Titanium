@@ -11,7 +11,7 @@ import com.hrznstudio.titanium.block_network.NetworkManager;
 import com.hrznstudio.titanium.block_network.element.NetworkElement;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 
 import java.util.*;
@@ -22,12 +22,12 @@ public class NetworkGraphScanner {
     private final Set<NetworkElement> removedElements = new HashSet<>();
 
     private final Set<NetworkElement> currentElements;
-    private final ResourceLocation requiredNetworkType;
+    private final Identifier requiredNetworkType;
 
     private final List<NetworkGraphScannerRequest> allRequests = new ArrayList<>();
     private final Queue<NetworkGraphScannerRequest> requests = new ArrayDeque<>();
 
-    public NetworkGraphScanner(Set<NetworkElement> currentElements, ResourceLocation requiredNetworkType) {
+    public NetworkGraphScanner(Set<NetworkElement> currentElements, Identifier requiredNetworkType) {
         this.currentElements = currentElements;
         this.removedElements.addAll(currentElements);
         this.requiredNetworkType = requiredNetworkType;

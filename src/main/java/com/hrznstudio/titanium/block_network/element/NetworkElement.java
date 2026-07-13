@@ -11,7 +11,7 @@ import com.hrznstudio.titanium.block_network.Network;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.apache.logging.log4j.LogManager;
@@ -74,9 +74,9 @@ public abstract class NetworkElement {
         return tag;
     }
 
-    public abstract ResourceLocation getId();
+    public abstract Identifier getId();
 
-    public abstract ResourceLocation getNetworkType();
+    public abstract Identifier getNetworkType();
 
     public abstract boolean canConnectFrom(Direction direction);
     @Override

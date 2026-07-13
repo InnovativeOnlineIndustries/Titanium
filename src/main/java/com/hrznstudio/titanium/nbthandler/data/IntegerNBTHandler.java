@@ -50,6 +50,6 @@ public class IntegerNBTHandler implements INBTHandler<Integer> {
      */
     @Override
     public Integer readFromNBT(net.minecraft.core.HolderLookup.Provider provider, @Nonnull CompoundTag compound, @Nonnull String name, @Nullable Integer current) {
-        return compound.contains(name) ? compound.getInt(name) : Unboxing.safelyUnbox(current);
+        return compound.contains(name) ? compound.getIntOr(name, 0) : Unboxing.safelyUnbox(current);
     }
 }

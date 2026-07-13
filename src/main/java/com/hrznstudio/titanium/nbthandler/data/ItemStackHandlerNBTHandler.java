@@ -11,28 +11,28 @@ package com.hrznstudio.titanium.nbthandler.data;
 import com.hrznstudio.titanium.api.INBTHandler;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class ItemStackHandlerNBTHandler implements INBTHandler<ItemStackHandler> {
+public class ItemStackHandlerNBTHandler implements INBTHandler<ItemStacksResourceHandler> {
     @Override
     public boolean isClassValid(Class<?> aClass) {
-        return ItemStackHandler.class.isAssignableFrom(aClass);
+        return ItemStacksResourceHandler.class.isAssignableFrom(aClass);
     }
 
     @Override
-    public boolean storeToNBT(HolderLookup.Provider provider, @Nonnull CompoundTag compound, @Nonnull String name, @Nonnull ItemStackHandler object) {
-        compound.put(name, object.serializeNBT(provider));
+    public boolean storeToNBT(HolderLookup.Provider provider, @Nonnull CompoundTag compound, @Nonnull String name, @Nonnull ItemStacksResourceHandler object) {
+        compound.put(name, com.hrznstudio.titanium.util.ValueIOSerialization.save(provider, object));
         return true;
     }
 
     @Override
-    public ItemStackHandler readFromNBT(HolderLookup.Provider provider, @Nonnull CompoundTag compound, @Nonnull String name, @Nullable ItemStackHandler current) {
+    public ItemStacksResourceHandler readFromNBT(HolderLookup.Provider provider, @Nonnull CompoundTag compound, @Nonnull String name, @Nullable ItemStacksResourceHandler current) {
         if (compound.contains(name)) {
-            if (current == null) current = new ItemStackHandler();
-            current.deserializeNBT(provider, compound.getCompound(name));
+            if (current == null) current = new ItemStacksResourceHandler(1);
+            com.hrznstudio.titanium.util.ValueIOSerialization.load(provider, compound.getCompoundOrEmpty(name), current);
             return current;
         }
         return current;

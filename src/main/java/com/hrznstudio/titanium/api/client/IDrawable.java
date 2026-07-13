@@ -8,7 +8,7 @@
 package com.hrznstudio.titanium.api.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 
 import java.awt.*;
@@ -18,5 +18,5 @@ public interface IDrawable {
         return new DefaultDrawable(asset, matrixStack);
     }
 
-    void draw(GuiGraphics guiGraphics, Screen gui, Point position, Point mousePosition);
+    void draw(GuiGraphicsExtractor guiGraphics, Screen gui, Point position, Point mousePosition);
 }

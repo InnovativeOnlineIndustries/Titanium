@@ -36,7 +36,8 @@ import com.mojang.serialization.Codec;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
@@ -47,7 +48,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.loading.FMLLoader;
-import net.neoforged.neoforge.client.event.RenderHighlightEvent;
+import net.neoforged.neoforge.client.event.ExtractBlockOutlineRenderStateEvent;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -103,9 +104,9 @@ public class Titanium extends ModuleController {
             .registerTyped(Registries.DATA_COMPONENT_TYPE, "augments", () -> DataComponentType.<Map<String, Float>>builder()
                 .persistent(Codec.unboundedMap(Codec.STRING, Codec.FLOAT))
                 .build());
-        if (!FMLLoader.isProduction()) { //ENABLE IN DEV
-            TestSerializableRecipe.SERIALIZER = getRegistries().registerGeneric(Registries.RECIPE_SERIALIZER, "test_serializer", () -> new GenericSerializer<>(TestSerializableRecipe.class, TestSerializableRecipe.RECIPE_TYPE::value, TestSerializableRecipe.CODEC));
-            TestSerializableRecipe.RECIPE_TYPE = getRegistries().registerGeneric(Registries.RECIPE_TYPE, "test_recipe_type", () -> RecipeType.simple(ResourceLocation.fromNamespaceAndPath(MODID, "test_recipe_type")));
+        if (!FMLLoader.getCurrent().isProduction()) { //ENABLE IN DEV
+            TestSerializableRecipe.SERIALIZER = getRegistries().registerGeneric(Registries.RECIPE_SERIALIZER, "test_serializer", () -> GenericSerializer.create(TestSerializableRecipe.class, TestSerializableRecipe.RECIPE_TYPE::value, TestSerializableRecipe.CODEC));
+            TestSerializableRecipe.RECIPE_TYPE = getRegistries().registerGeneric(Registries.RECIPE_TYPE, "test_recipe_type", () -> RecipeType.simple(Identifier.fromNamespaceAndPath(MODID, "test_recipe_type")));
             TestBlock.TEST = getRegistries().registerBlockWithTile("block_test", () -> (TestBlock) new TestBlock(), null);
             TwentyFourTestBlock.TEST = getRegistries().registerBlockWithTile("block_twenty_four_test", () -> (TwentyFourTestBlock) new TwentyFourTestBlock(), null);
             AssetTestBlock.TEST = getRegistries().registerBlockWithTile("block_asset_test", () -> (AssetTestBlock) new AssetTestBlock(), null);
@@ -119,10 +120,13 @@ public class Titanium extends ModuleController {
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
+        if (!FMLLoader.getCurrent().isProduction()) {
+            //event.enqueueWork(TestSerializableRecipe::initializeExamples);
+        }
         RewardManager.get().getRewards().values().forEach(rewardGiver -> rewardGiver.getRewards().forEach(reward -> reward.register(Dist.DEDICATED_SERVER)));
         LocatorTypes.register();
         EventManager.forge(LevelTickEvent.Post.class)
-            .filter(worldTickEvent -> !worldTickEvent.getLevel().isClientSide)
+            .filter(worldTickEvent -> !worldTickEvent.getLevel().isClientSide())
             .process(worldTickEvent -> {
                 NetworkManager.get(worldTickEvent.getLevel()).getNetworks().forEach(network -> network.update(worldTickEvent.getLevel()));
             }).subscribe();
@@ -130,24 +134,25 @@ public class Titanium extends ModuleController {
 
     @OnlyIn(Dist.CLIENT)
     private void clientSetup(FMLClientSetupEvent event) {
-        EventManager.forge(RenderHighlightEvent.Block.class).process(TitaniumClient::blockOverlayEvent).subscribe();
+        EventManager.forge(ExtractBlockOutlineRenderStateEvent.class).process(TitaniumClient::blockOverlayEvent).subscribe();
         TitaniumClient.registerModelLoader();
         RewardManager.get().getRewards().values().forEach(rewardGiver -> rewardGiver.getRewards().forEach(reward -> reward.register(Dist.CLIENT)));
     }
 
     private void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-        event.getEntity().getServer().execute(() -> {
-            RewardWorldStorage storage = RewardWorldStorage.get(event.getEntity().getServer().getLevel(Level.OVERWORLD));
+        if (!(event.getEntity() instanceof ServerPlayer player)) return;
+        player.level().getServer().execute(() -> {
+            RewardWorldStorage storage = RewardWorldStorage.get(player.level().getServer().getLevel(Level.OVERWORLD));
             if (!storage.getConfiguredPlayers().contains(event.getEntity().getUUID())) {
-                for (ResourceLocation collectRewardsResourceLocation : RewardManager.get().collectRewardsResourceLocations(event.getEntity().getUUID())) {
-                    Reward reward = RewardManager.get().getReward(collectRewardsResourceLocation);
-                    storage.add(event.getEntity().getUUID(), reward.getResourceLocation(), reward.getOptions()[0]);
+                for (Identifier collectRewardsIdentifier : RewardManager.get().collectRewardsIdentifiers(event.getEntity().getUUID())) {
+                    Reward reward = RewardManager.get().getReward(collectRewardsIdentifier);
+                    storage.add(event.getEntity().getUUID(), reward.getIdentifier(), reward.getOptions()[0]);
                 }
                 storage.getConfiguredPlayers().add(event.getEntity().getUUID());
                 storage.setDirty();
             }
             CompoundTag nbt = storage.serializeSimple(event.getEntity().level().registryAccess());
-            event.getEntity().getServer().getPlayerList().getPlayers().forEach(serverPlayerEntity -> Titanium.NETWORK.sendTo(new RewardSyncMessage(nbt), serverPlayerEntity));
+            player.level().getServer().getPlayerList().getPlayers().forEach(serverPlayerEntity -> Titanium.NETWORK.sendTo(new RewardSyncMessage(nbt), serverPlayerEntity));
         });
     }
 

@@ -94,12 +94,13 @@ public abstract class ModuleController {
             ConfigFile annotation = (ConfigFile) aClass.getAnnotation(ConfigFile.class);
             addConfig(container, AnnotationConfigManager.Type.of(annotation.type(), aClass).setName(annotation.value()));
         });
-        EventManager.mod(GatherDataEvent.class).process(this::addDataProvider).subscribe();
+        EventManager.mod(GatherDataEvent.Client.class).process(this::addDataProvider).subscribe();
+        EventManager.mod(GatherDataEvent.Server.class).process(this::addDataProvider).subscribe();
         EventManager.mod(FMLClientSetupEvent.class).process(fmlClientSetupEvent -> this.modPluginManager.execute(PluginPhase.CLIENT_SETUP)).subscribe();
         EventManager.mod(FMLCommonSetupEvent.class).process(fmlClientSetupEvent -> this.modPluginManager.execute(PluginPhase.COMMON_SETUP)).subscribe();
         EventManager.mod(BuildCreativeModeTabContentsEvent.class).process(buildCreativeModeTabContentsEvent -> {
             for (TitaniumTab titaniumTab : titaniumTabs) {
-                if (titaniumTab.getResourceLocation().equals(buildCreativeModeTabContentsEvent.getTabKey().location())){
+                if (titaniumTab.getIdentifier().equals(buildCreativeModeTabContentsEvent.getTabKey().identifier())) {
                     for (Item item : titaniumTab.getTabList()) {
                         if (item instanceof ISpecialCreativeTabItem specialCreativeTabItem){
                             specialCreativeTabItem.addToTab(buildCreativeModeTabContentsEvent);

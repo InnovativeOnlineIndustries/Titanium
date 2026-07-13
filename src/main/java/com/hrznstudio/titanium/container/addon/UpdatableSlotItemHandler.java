@@ -8,25 +8,27 @@
 package com.hrznstudio.titanium.container.addon;
 
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.SlotItemHandler;
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
+import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class UpdatableSlotItemHandler extends SlotItemHandler {
+public class UpdatableSlotItemHandler extends ResourceHandlerSlot {
 
     private boolean enabled;
+    private final ItemStacksResourceHandler itemHandler;
 
-    public UpdatableSlotItemHandler(IItemHandler itemHandler, int index, int xPosition, int yPosition) {
-        super(itemHandler, index, xPosition, yPosition);
+    public UpdatableSlotItemHandler(ItemStacksResourceHandler itemHandler, int index, int xPosition, int yPosition) {
+        super(itemHandler, itemHandler::set, index, xPosition, yPosition);
+        this.itemHandler = itemHandler;
         this.enabled = true;
     }
 
     public void update() {
-        if (this.getItemHandler() instanceof InventoryComponent) {
-            Pair<Integer, Integer> pos = ((InventoryComponent<?>) this.getItemHandler()).getSlotPosition().apply(this.getSlotIndex());
-            this.x = ((InventoryComponent<?>) this.getItemHandler()).getXPos() + pos.getLeft();
-            this.y = ((InventoryComponent<?>) this.getItemHandler()).getYPos() + pos.getRight();
-            this.enabled = ((InventoryComponent<?>) this.getItemHandler()).getSlotVisiblePredicate().test(this.getSlotIndex());
+        if (itemHandler instanceof InventoryComponent<?> inventory) {
+            Pair<Integer, Integer> pos = inventory.getSlotPosition().apply(this.getSlotIndex());
+            this.x = inventory.getXPos() + pos.getLeft();
+            this.y = inventory.getYPos() + pos.getRight();
+            this.enabled = inventory.getSlotVisiblePredicate().test(this.getSlotIndex());
         }
     }
 

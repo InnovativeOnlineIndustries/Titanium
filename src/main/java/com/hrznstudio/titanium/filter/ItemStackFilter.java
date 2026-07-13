@@ -108,7 +108,7 @@ public class ItemStackFilter implements IFilter<ItemStack> {
         CompoundTag filter = new CompoundTag();
         for (FilterSlot<ItemStack> itemStackFilterSlot : this.filter) {
             if (itemStackFilterSlot != null && !itemStackFilterSlot.getFilter().isEmpty())
-                filter.put(itemStackFilterSlot.getFilterID() + "", itemStackFilterSlot.getFilter().saveOptional(provider));
+                filter.put(itemStackFilterSlot.getFilterID() + "", com.hrznstudio.titanium.util.ItemStackSerialization.save(provider, itemStackFilterSlot.getFilter()));
         }
         compoundNBT.put("Filter", filter);
         compoundNBT.putString("Type", type.name());
@@ -117,15 +117,15 @@ public class ItemStackFilter implements IFilter<ItemStack> {
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        pointer = nbt.getInt("Pointer");
-        CompoundTag filter = nbt.getCompound("Filter");
+        pointer = nbt.getIntOr("Pointer", 0);
+        CompoundTag filter = nbt.getCompoundOrEmpty("Filter");
         for (FilterSlot<ItemStack> filterSlot : this.filter) {
             filterSlot.setFilter(ItemStack.EMPTY);
         }
-        for (String key : filter.getAllKeys()) {
-            this.filter[Integer.parseInt(key)].setFilter(ItemStack.parseOptional(provider, filter.getCompound(key)));
+        for (String key : filter.keySet()) {
+            this.filter[Integer.parseInt(key)].setFilter(com.hrznstudio.titanium.util.ItemStackSerialization.load(provider, filter.getCompoundOrEmpty(key)));
         }
-        this.type = Type.valueOf(nbt.getString("Type"));
+        this.type = Type.valueOf(nbt.getStringOr("Type", ""));
     }
 
     @Override

@@ -25,7 +25,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.Level;
@@ -77,8 +77,25 @@ public class BasicAddonContainer extends BasicInventoryContainer implements IObj
             blockPos.getY() + 0.5D, blockPos.getZ() + 0.5D) <= 64.0D, true) || !(provider instanceof IContainerAddonProvider) || ((IContainerAddonProvider) provider).canInteract();
     }
 
+    public static BasicAddonContainer create(int id, Inventory inventory, RegistryFriendlyByteBuf packetBuffer) {
+        LocatorInstance instance = LocatorFactory.readPacketBuffer(packetBuffer);
+        if (instance != null) {
+            Player playerEntity = inventory.player;
+            Level world = playerEntity.level();
+            BasicAddonContainer container = instance.locale(playerEntity)
+                .map(located -> new BasicAddonContainer(located, instance, instance.getWorldPosCallable(world),
+                    inventory, id))
+                .orElse(null);
+            if (container != null) {
+                return container;
+            }
+        }
+        Titanium.LOGGER.error("Failed to find locate instance to create Container for");
+        return new BasicAddonContainer(new Object(), new EmptyLocatorInstance(), ContainerLevelAccess.NULL, inventory, id);
+    }
+
     @Override
-    public void clicked(int slotId, int dragType, ClickType clickTypeIn, Player player) {
+    public void clicked(int slotId, int dragType, ContainerInput clickTypeIn, Player player) {
         if (locatorInstance instanceof InventoryStackLocatorInstance) {
             int slot = ((InventoryStackLocatorInstance) locatorInstance).getInventorySlot();
             if (slot < 9){
@@ -92,23 +109,6 @@ public class BasicAddonContainer extends BasicInventoryContainer implements IObj
             }
         }
         super.clicked(slotId, dragType, clickTypeIn, player);
-    }
-
-    public static BasicAddonContainer create(int id, Inventory inventory, RegistryFriendlyByteBuf packetBuffer) {
-        LocatorInstance instance = LocatorFactory.readPacketBuffer(packetBuffer);
-        if (instance != null) {
-            Player playerEntity = inventory.player;
-            Level world = playerEntity.getCommandSenderWorld();
-            BasicAddonContainer container = instance.locale(playerEntity)
-                .map(located -> new BasicAddonContainer(located, instance, instance.getWorldPosCallable(world),
-                    inventory, id))
-                .orElse(null);
-            if (container != null) {
-                return container;
-            }
-        }
-        Titanium.LOGGER.error("Failed to find locate instance to create Container for");
-        return new BasicAddonContainer(new Object(), new EmptyLocatorInstance(), ContainerLevelAccess.NULL, inventory, id);
     }
 
     public Object getProvider() {

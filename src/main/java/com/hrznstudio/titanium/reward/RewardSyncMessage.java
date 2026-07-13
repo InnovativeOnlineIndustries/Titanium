@@ -25,7 +25,12 @@ public class RewardSyncMessage extends Message {
     }
 
     @Override
-    protected void handleMessage(IPayloadContext context) {
+    protected void handleServerMessage(IPayloadContext context) {
+
+    }
+
+    @Override
+    public void handleClientMessage(IPayloadContext context) {
         ClientRewardStorage.REWARD_STORAGE.deserializeNBT(context.player().level().registryAccess(), compoundNBT);
     }
 }

@@ -7,10 +7,10 @@
 
 package com.hrznstudio.titanium.json.jsondirector;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public interface IJsonDirector<T> {
-    void put(ResourceLocation resourceLocation, T value);
+    void put(Identifier resourceLocation, T value);
 
     void clear();
 }

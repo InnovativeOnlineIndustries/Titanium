@@ -20,19 +20,21 @@ import com.hrznstudio.titanium.container.addon.IContainerAddon;
 import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
 import com.hrznstudio.titanium.container.addon.IntArrayReferenceHolderAddon;
 import com.hrznstudio.titanium.container.referenceholder.FluidTankReferenceHolder;
+import com.hrznstudio.titanium.nbthandler.INBTSerializable;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.fluid.FluidStacksResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidUtil;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FluidTankComponent<T extends IComponentHarness> extends FluidTank implements IScreenAddonProvider,
+public class FluidTankComponent<T extends IComponentHarness> extends FluidStacksResourceHandler implements IScreenAddonProvider,
         IContainerAddonProvider, INBTSerializable<CompoundTag> {
 
     private final int posX;
@@ -44,7 +46,7 @@ public class FluidTankComponent<T extends IComponentHarness> extends FluidTank i
     private Runnable onContentChange;
 
     public FluidTankComponent(String name, int amount, int posX, int posY) {
-        super(amount);
+        super(1, amount);
         this.posX = posX;
         this.posY = posY;
         this.name = name;
@@ -70,8 +72,7 @@ public class FluidTankComponent<T extends IComponentHarness> extends FluidTank i
     }
 
     @Override
-    protected void onContentsChanged() {
-        super.onContentsChanged();
+    protected void onContentsChanged(int index, FluidStack previousContents) {
         if (componentHarness != null) {
             componentHarness.markComponentForUpdate(true);
         }
@@ -114,62 +115,41 @@ public class FluidTankComponent<T extends IComponentHarness> extends FluidTank i
     }
 
     @Override
-    public int fill(FluidStack resource, FluidAction action) {
-        return getTankAction().canFill() ? super.fill(resource, action) : 0;
+    public int insert(int index, FluidResource resource, int amount, TransactionContext transaction) {
+        return getTankAction().canFill() ? super.insert(index, resource, amount, transaction) : 0;
     }
 
-    @Nonnull
     @Override
-    public FluidStack drain(FluidStack resource, FluidAction action) {
-        return getTankAction().canDrain() ? drainInternal(resource, action) : FluidStack.EMPTY;
+    public int extract(int index, FluidResource resource, int amount, TransactionContext transaction) {
+        return getTankAction().canDrain() ? super.extract(index, resource, amount, transaction) : 0;
     }
 
-    private FluidStack drainInternal(FluidStack resource, FluidAction action) {
-        if (resource.isEmpty() || !FluidStack.isSameFluidSameComponents(resource, fluid)) {
-            return FluidStack.EMPTY;
-        }
-        return drain(resource.getAmount(), action);
+    public FluidStack getFluid() {
+        return FluidUtil.getStack(this, 0);
     }
 
-    @Nonnull
-    @Override
-    public FluidStack drain(int maxDrain, FluidAction action) {
-        return getTankAction().canDrain() ? drainInternal(maxDrain, action) : FluidStack.EMPTY;
+    public int getFluidAmount() {
+        return getAmountAsInt(0);
     }
 
-    @Nonnull
-    private FluidStack drainInternal(int maxDrain, FluidAction action) {
-        int drained = maxDrain;
-        if (fluid.getAmount() < drained) {
-            drained = fluid.getAmount();
-        }
-        FluidStack stack = fluid.copyWithAmount(drained);
-        if (action.execute() && drained > 0) {
-            fluid.shrink(drained);
-            onContentsChanged();
-        }
-        return stack;
+    public int getCapacity() {
+        return getCapacityAsInt(0, FluidResource.EMPTY);
     }
 
-    public int fillForced(FluidStack resource, FluidAction action) {
-        return super.fill(resource, action);
+    public int insertForced(FluidResource resource, int amount, TransactionContext transaction) {
+        return super.insert(0, resource, amount, transaction);
     }
 
-    @Nonnull
-    public FluidStack drainForced(FluidStack resource, FluidAction action) {
-        if (resource.isEmpty() || !FluidStack.isSameFluidSameComponents(resource, fluid)) {
-            return FluidStack.EMPTY;
-        }
-        return drainForced(resource.getAmount(), action);
+    public int extractForced(FluidResource resource, int amount, TransactionContext transaction) {
+        return super.extract(0, resource, amount, transaction);
     }
 
-    @Nonnull
-    public FluidStack drainForced(int maxDrain, FluidAction action) {
-        return drainInternal(maxDrain, action);
+    public boolean isFluidValid(FluidStack stack) {
+        return !stack.isEmpty() && isValid(0, FluidResource.of(stack));
     }
 
     public void setFluidStack(FluidStack fluidStack) {
-        this.fluid = fluidStack;
+        set(0, FluidResource.of(fluidStack), fluidStack.getAmount());
     }
 
     @Override
@@ -189,12 +169,12 @@ public class FluidTankComponent<T extends IComponentHarness> extends FluidTank i
 
     @Override
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        return this.writeToNBT(provider, new CompoundTag());
+        return com.hrznstudio.titanium.util.ValueIOSerialization.save(provider, this);
     }
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        this.readFromNBT(provider, nbt);
+        com.hrznstudio.titanium.util.ValueIOSerialization.load(provider, nbt, this);
     }
 
     public enum Type {

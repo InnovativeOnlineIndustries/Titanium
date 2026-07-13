@@ -14,7 +14,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 
 import javax.annotation.Nonnull;
@@ -42,7 +42,7 @@ public class BlockItemModelGeneratorProvider implements DataProvider {
 
     private static JsonObject createModel(Block block) {
         JsonObject object = new JsonObject();
-        ResourceLocation blockRL = BuiltInRegistries.BLOCK.getKey(block);
+        Identifier blockRL = BuiltInRegistries.BLOCK.getKey(block);
         object.addProperty("parent", blockRL.getNamespace() + ":block/" + blockRL.getPath());
         return object;
     }

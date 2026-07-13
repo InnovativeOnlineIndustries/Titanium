@@ -14,11 +14,12 @@ import com.hrznstudio.titanium.component.energy.EnergyStorageComponent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -32,11 +33,15 @@ public class CreativeFEGeneratorTile extends PoweredTile<CreativeFEGeneratorTile
     @Override
     public void serverTick(Level level, BlockPos pos, BlockState state, CreativeFEGeneratorTile blockEntity) {
         super.serverTick(level, pos, state, blockEntity);
-        this.getEnergyStorage().receiveEnergy(Integer.MAX_VALUE, false);
+        this.getEnergyStorage().setEnergyStored(Integer.MAX_VALUE);
         for (Direction direction : Direction.values()) {
-            var iEnergyStorage = this.level.getCapability(Capabilities.EnergyStorage.BLOCK, this.getBlockPos().relative(direction), direction.getOpposite());
-            if (iEnergyStorage != null)
-                iEnergyStorage.receiveEnergy(Integer.MAX_VALUE, false);
+            var energyHandler = this.level.getCapability(Capabilities.Energy.BLOCK, this.getBlockPos().relative(direction), direction.getOpposite());
+            if (energyHandler != null) {
+                try (var transaction = Transaction.openRoot()) {
+                    energyHandler.insert(Integer.MAX_VALUE, transaction);
+                    transaction.commit();
+                }
+            }
         }
         markForUpdate();
     }
@@ -49,12 +54,12 @@ public class CreativeFEGeneratorTile extends PoweredTile<CreativeFEGeneratorTile
 
     @Override
     @ParametersAreNonnullByDefault
-    public ItemInteractionResult onActivated(Player player, InteractionHand hand, Direction facing, double hitX, double hitY, double hitZ) {
-        if (super.onActivated(player, hand, facing, hitX, hitY, hitZ) == ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION) {
+    public InteractionResult onActivated(Player player, InteractionHand hand, Direction facing, double hitX, double hitY, double hitZ) {
+        if (super.onActivated(player, hand, facing, hitX, hitY, hitZ) == InteractionResult.SUCCESS) {
             openGui(player);
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
-        return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.SUCCESS;
     }
 
     @Nonnull

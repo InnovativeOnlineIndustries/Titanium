@@ -26,6 +26,6 @@ public abstract class EnumNBTHandler<E extends Enum<E>> implements INBTHandler<E
 
     @Override
     public final E readFromNBT(net.minecraft.core.HolderLookup.Provider provider, @Nonnull CompoundTag compound, @Nonnull String name, @Nullable E currentValue) {
-        return compound.contains(name) ? getFromId(compound.getInt(name)) : currentValue;
+        return compound.contains(name) ? getFromId(compound.getIntOr(name, 0)) : currentValue;
     }
 }

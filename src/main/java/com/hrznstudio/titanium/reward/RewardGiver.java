@@ -7,7 +7,7 @@
 
 package com.hrznstudio.titanium.reward;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +34,7 @@ public class RewardGiver {
         return rewards;
     }
 
-    public List<ResourceLocation> collectRewardsResourceLocations(UUID uuid) {
-        return rewards.stream().filter(reward -> reward.isPlayerValid(uuid)).map(Reward::getResourceLocation).collect(Collectors.toList());
+    public List<Identifier> collectRewardsIdentifiers(UUID uuid) {
+        return rewards.stream().filter(reward -> reward.isPlayerValid(uuid)).map(Reward::getIdentifier).collect(Collectors.toList());
     }
 }

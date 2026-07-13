@@ -29,6 +29,6 @@ public class DoubleNBTHandler implements INBTHandler<Double> {
 
     @Override
     public Double readFromNBT(net.minecraft.core.HolderLookup.Provider provider, @Nonnull CompoundTag compound, @Nonnull String name, @Nullable Double currentValue) {
-        return compound.contains(name) ? compound.getDouble(name) : Unboxing.safelyUnbox(currentValue);
+        return compound.contains(name) ? compound.getDoubleOr(name, 0.0D) : Unboxing.safelyUnbox(currentValue);
     }
 }

@@ -8,13 +8,13 @@
 package com.hrznstudio.titanium.api.client;
 
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.awt.*;
 
 public interface IAsset {
 
-    default ResourceLocation getResourceLocation() {
+    default Identifier getIdentifier() {
         return IAssetProvider.DEFAULT_LOCATION;
     }
 

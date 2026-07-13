@@ -15,7 +15,11 @@ import java.lang.reflect.Field;
 
 public abstract class Message implements Serializable {
 
-    protected abstract void handleMessage(IPayloadContext context);
+    protected abstract void handleServerMessage(IPayloadContext context);
+
+    public void handleClientMessage(IPayloadContext context) {
+
+    }
 
     public final void fromBytes(RegistryFriendlyByteBuf buf) {
         try {

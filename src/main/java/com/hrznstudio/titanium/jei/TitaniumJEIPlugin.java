@@ -13,7 +13,7 @@ import com.hrznstudio.titanium.client.screen.container.BasicContainerScreen;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import javax.annotation.Nonnull;
 
@@ -21,8 +21,8 @@ import javax.annotation.Nonnull;
 public class TitaniumJEIPlugin implements IModPlugin {
     @Override
     @Nonnull
-    public ResourceLocation getPluginUid() {
-        return ResourceLocation.fromNamespaceAndPath(Titanium.MODID, "default");
+    public Identifier getPluginUid() {
+        return Identifier.fromNamespaceAndPath(Titanium.MODID, "default");
     }
 
     @Override

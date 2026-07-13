@@ -7,77 +7,85 @@
 
 package com.hrznstudio.titanium.recipe.generator;
 
-import net.minecraft.advancements.critereon.InventoryChangeTrigger;
-import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.advancements.criterion.InventoryChangeTrigger;
+import net.minecraft.advancements.criterion.ItemPredicate;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.conditions.ICondition;
-import net.neoforged.neoforge.common.conditions.ItemExistsCondition;
+import net.neoforged.neoforge.common.conditions.RegisteredCondition;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TitaniumShapedRecipeBuilder extends ShapedRecipeBuilder {
-
-    private ResourceLocation resourceLocation;
-    private final List<ICondition> conditions;
+public class TitaniumShapedRecipeBuilder {
+    private final ShapedRecipeBuilder delegate;
+    private final List<ICondition> conditions = new ArrayList<>();
+    private Identifier resourceLocation;
     private boolean criterion;
 
-    public TitaniumShapedRecipeBuilder(RecipeCategory recipeCategory, ItemLike resultIn, int countIn) {
-        super(recipeCategory, resultIn, countIn);
-        this.resourceLocation = BuiltInRegistries.ITEM.getKey(resultIn.asItem());
-        this.conditions = new ArrayList<>();
-        condition(new ItemExistsCondition(resourceLocation));
+    public TitaniumShapedRecipeBuilder(HolderGetter<Item> items, RecipeCategory category, ItemLike result, int count) {
+        this.delegate = ShapedRecipeBuilder.shaped(items, category, result, count);
+        this.resourceLocation = BuiltInRegistries.ITEM.getKey(result.asItem());
+        condition(new RegisteredCondition<>(ResourceKey.create(Registries.ITEM, resourceLocation)));
     }
 
-    public static TitaniumShapedRecipeBuilder shapedRecipe(ItemLike resultIn) {
-        return shapedRecipe(resultIn, 1);
+    public static TitaniumShapedRecipeBuilder shapedRecipe(ItemLike result) {
+        return shapedRecipe(result, 1);
     }
 
-    /**
-     * Creates a new builder for a shaped recipe.
-     */
-    public static TitaniumShapedRecipeBuilder shapedRecipe(ItemLike resultIn, int countIn) {
-        return new TitaniumShapedRecipeBuilder(RecipeCategory.MISC, resultIn, countIn);
+    public static TitaniumShapedRecipeBuilder shapedRecipe(ItemLike result, int count) {
+        return new TitaniumShapedRecipeBuilder(BuiltInRegistries.ITEM, RecipeCategory.MISC, result, count);
     }
 
-    @Override
-    public void save(RecipeOutput pRecipeOutput) {
-        super.save(pRecipeOutput.withConditions(conditions.toArray(ICondition[]::new)));
+    public TitaniumShapedRecipeBuilder pattern(String row) {
+        delegate.pattern(row);
+        return this;
     }
 
-    @Override
-    public ShapedRecipeBuilder define(Character symbol, TagKey<Item> tagIn) {
-        if (!this.criterion) {
-            this.criterion = true;
-            unlockedBy("has_item", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(tagIn).build()));
+    public TitaniumShapedRecipeBuilder define(Character symbol, ItemLike item) {
+        return define(symbol, Ingredient.of(item));
+    }
+
+    public TitaniumShapedRecipeBuilder define(Character symbol, TagKey<Item> tag) {
+        if (!criterion) {
+            criterion = true;
+            delegate.unlockedBy("has_item", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(BuiltInRegistries.ITEM, tag).build()));
         }
-        return super.define(symbol, tagIn);
+        delegate.define(symbol, tag);
+        return this;
     }
 
-    @Override
-    public ShapedRecipeBuilder define(Character symbol, Ingredient ingredientIn) {
-        if (!this.criterion) {
-            this.criterion = true;
-            unlockedBy("has_item", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(ingredientIn.getItems()[0].getItem()).build()));
+    public TitaniumShapedRecipeBuilder define(Character symbol, Ingredient ingredient) {
+        if (!criterion) {
+            criterion = true;
+            ingredient.items().findFirst().ifPresent(item ->
+                delegate.unlockedBy("has_item", InventoryChangeTrigger.TriggerInstance.hasItems(item.value())));
         }
-        return super.define(symbol, ingredientIn);
+        delegate.define(symbol, ingredient);
+        return this;
     }
 
-    public TitaniumShapedRecipeBuilder setName(ResourceLocation resourceLocation) {
+    public TitaniumShapedRecipeBuilder setName(Identifier resourceLocation) {
         this.resourceLocation = resourceLocation;
         return this;
     }
 
     public TitaniumShapedRecipeBuilder condition(ICondition condition) {
-        this.conditions.add(condition);
+        conditions.add(condition);
         return this;
+    }
+
+    public void save(RecipeOutput output) {
+        delegate.save(output.withConditions(conditions.toArray(ICondition[]::new)), ResourceKey.create(Registries.RECIPE, resourceLocation));
     }
 }

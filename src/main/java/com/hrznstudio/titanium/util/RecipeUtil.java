@@ -7,12 +7,8 @@
 
 package com.hrznstudio.titanium.util;
 
-import com.google.common.collect.Multimap;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.SmeltingRecipe;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
@@ -24,10 +20,12 @@ import java.util.stream.Collectors;
 public class RecipeUtil {
 
     public static <T extends Recipe<?>> List<T> getRecipes(Level world, RecipeType<T> recipeType) {
-        Multimap<RecipeType<?>, RecipeHolder<?>> recipes = world.getRecipeManager().byType;
-        if (recipes != null) {
-            var typedRecipes = recipes.get(recipeType);
-            return typedRecipes.stream().map(h -> (T) h.value()).collect(Collectors.toList());
+        if (world.recipeAccess() instanceof RecipeManager recipeManager) {
+            return recipeManager.getRecipes().stream()
+                .map(RecipeHolder::value)
+                .filter(recipe -> recipe.getType() == recipeType)
+                .map(recipe -> (T) recipe)
+                .collect(Collectors.toList());
         }
         return new ArrayList<>();
     }
@@ -38,7 +36,7 @@ public class RecipeUtil {
 
     @Nullable
     public static SmeltingRecipe getSmelingRecipeFor(Level world, ItemStack stack) {
-        return getCookingRecipes(world).stream().filter(furnaceRecipe -> furnaceRecipe.getIngredients().get(0).test(stack)).findFirst().orElse(null);
+        return getCookingRecipes(world).stream().filter(furnaceRecipe -> furnaceRecipe.input().test(stack)).findFirst().orElse(null);
     }
 
 }

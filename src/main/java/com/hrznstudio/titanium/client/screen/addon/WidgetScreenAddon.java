@@ -8,9 +8,13 @@
 package com.hrznstudio.titanium.client.screen.addon;
 
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 
 
 public class WidgetScreenAddon extends BasicScreenAddon {
@@ -29,14 +33,14 @@ public class WidgetScreenAddon extends BasicScreenAddon {
     }
 
     @Override
-    public void drawBackgroundLayer(GuiGraphics guiGraphics, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackgroundLayer(GuiGraphicsExtractor guiGraphics, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
     }
 
     @Override
-    public void drawForegroundLayer(GuiGraphics guiGraphics, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+    public void drawForegroundLayer(GuiGraphicsExtractor guiGraphics, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         widget.setX(getPosX());
         widget.setY(getPosY());
-        widget.render(guiGraphics, mouseX, mouseY, partialTicks);
+        widget.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
         widget.setX(guiX + getPosX());
         widget.setY(guiY + getPosY());
     }
@@ -58,17 +62,17 @@ public class WidgetScreenAddon extends BasicScreenAddon {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        return widget.mouseClicked(mouseX, mouseY, button);
+        return widget.mouseClicked(new MouseButtonEvent(mouseX, mouseY, new MouseButtonInfo(button, 0)), false);
     }
 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        return widget.mouseReleased(mouseX, mouseY, button);
+        return widget.mouseReleased(new MouseButtonEvent(mouseX, mouseY, new MouseButtonInfo(button, 0)));
     }
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
-        return widget.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+        return widget.mouseDragged(new MouseButtonEvent(mouseX, mouseY, new MouseButtonInfo(button, 0)), dragX, dragY);
     }
 
     @Override
@@ -78,17 +82,17 @@ public class WidgetScreenAddon extends BasicScreenAddon {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        return widget.keyPressed(keyCode, scanCode, modifiers);
+        return widget.keyPressed(new KeyEvent(keyCode, scanCode, modifiers));
     }
 
     @Override
     public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
-        return widget.keyReleased(keyCode, scanCode, modifiers);
+        return widget.keyReleased(new KeyEvent(keyCode, scanCode, modifiers));
     }
 
     @Override
     public boolean charTyped(char codePoint, int modifiers) {
-        return widget.charTyped(codePoint, modifiers);
+        return widget.charTyped(new CharacterEvent(codePoint));
     }
 
     @Override

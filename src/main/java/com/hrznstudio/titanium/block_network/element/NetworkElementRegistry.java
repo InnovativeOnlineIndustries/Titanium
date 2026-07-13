@@ -7,7 +7,7 @@
 
 package com.hrznstudio.titanium.block_network.element;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -17,12 +17,12 @@ public class NetworkElementRegistry {
 
     public static final NetworkElementRegistry INSTANCE = new NetworkElementRegistry();
 
-    private final Map<ResourceLocation, NetworkElementFactory> factories = new HashMap<>();
+    private final Map<Identifier, NetworkElementFactory> factories = new HashMap<>();
 
     private NetworkElementRegistry() {
     }
 
-    public void addFactory(ResourceLocation id, NetworkElementFactory factory) {
+    public void addFactory(Identifier id, NetworkElementFactory factory) {
         if (factories.containsKey(id)) {
             throw new RuntimeException("Cannot register duplicate pipe factory " + id.toString());
         }
@@ -31,7 +31,7 @@ public class NetworkElementRegistry {
     }
 
     @Nullable
-    public NetworkElementFactory getFactory(ResourceLocation id) {
+    public NetworkElementFactory getFactory(Identifier id) {
         return factories.get(id);
     }
 

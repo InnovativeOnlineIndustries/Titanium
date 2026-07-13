@@ -26,9 +26,11 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import javax.annotation.Nullable;
-import java.util.function.Consumer;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class TitaniumFluidInstance {
+    private static final List<TitaniumFluidInstance> INSTANCES = new CopyOnWriteArrayList<>();
 
     private DeferredHolder<FluidType, FluidType> fluidType;
     private DeferredHolder<Fluid, Fluid> flowingFluid;
@@ -36,23 +38,22 @@ public class TitaniumFluidInstance {
     private DeferredHolder<Item, Item> bucketFluid;
     private DeferredHolder<Block, Block> blockFluid;
     private final String fluid;
+    private final IClientFluidTypeExtensions renderProperties;
 
     public TitaniumFluidInstance(DeferredRegistryHelper helper, String fluid, FluidType.Properties fluidTypeProperties, IClientFluidTypeExtensions renderProperties, @Nullable TitaniumTab group) {
         this.fluid = fluid;
+        this.renderProperties = renderProperties;
+        INSTANCES.add(this);
         this.sourceFluid = helper.registerGeneric(Registries.FLUID, fluid, () -> new TitaniumFluid.Source(this));
         this.flowingFluid = helper.registerGeneric(Registries.FLUID, fluid + "_flowing", () -> new TitaniumFluid.Flowing(this));
         this.fluidType = helper.registerGeneric(NeoForgeRegistries.Keys.FLUID_TYPES, fluid, () -> new FluidType(fluidTypeProperties) {
-            @Override
-            public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
-                consumer.accept(renderProperties);
-            }
         });
         this.bucketFluid = helper.registerGeneric(Registries.ITEM, fluid + "_bucket", () -> {
-            var item = new BucketItem(this.sourceFluid.get(), new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
+            var item = new BucketItem(this.sourceFluid.get(), DeferredRegistryHelper.applyItemRegistrationId(new Item.Properties()).craftRemainder(Items.BUCKET).stacksTo(1));
             if (group != null) group.getTabList().add(item);
             return item;
         });
-        this.blockFluid = helper.registerGeneric(Registries.BLOCK, fluid, () -> new LiquidBlock((FlowingFluid) sourceFluid.get(), Block.Properties.of().mapColor(MapColor.WATER).replaceable().noCollission().strength(100.0F).pushReaction(PushReaction.DESTROY).noLootTable().liquid().sound(SoundType.EMPTY)));
+        this.blockFluid = helper.registerGeneric(Registries.BLOCK, fluid, () -> new LiquidBlock((FlowingFluid) sourceFluid.get(), DeferredRegistryHelper.applyBlockRegistrationId(Block.Properties.of()).mapColor(MapColor.WATER).replaceable().noCollision().strength(100.0F).pushReaction(PushReaction.DESTROY).noLootTable().liquid().sound(SoundType.EMPTY)));
     }
 
     public DeferredHolder<FluidType, FluidType> getFluidType() {
@@ -76,5 +77,18 @@ public class TitaniumFluidInstance {
 
     public String getFluid() {
         return fluid;
+    }
+
+    public static List<TitaniumFluidInstance> getInstances() {
+        return List.copyOf(INSTANCES);
+    }
+
+    public IClientFluidTypeExtensions getRenderProperties() {
+        return renderProperties;
+    }
+
+    @Nullable
+    public TitaniumFluidRenderProperties getFluidRenderProperties() {
+        return renderProperties instanceof TitaniumFluidRenderProperties properties ? properties : null;
     }
 }

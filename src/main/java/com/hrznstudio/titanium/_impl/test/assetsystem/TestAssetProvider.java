@@ -15,7 +15,7 @@ import com.hrznstudio.titanium.api.client.assets.types.IBackgroundAsset;
 import com.hrznstudio.titanium.api.client.assets.types.ITankAsset;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import javax.annotation.Nullable;
 import java.awt.*;
@@ -25,7 +25,7 @@ import java.util.Map;
 
 public class TestAssetProvider implements IAssetProvider {
     private static Map<IAssetType, IAsset> assetMap;
-    private static ResourceLocation TEST_LOCATION = ResourceLocation.fromNamespaceAndPath(Titanium.MODID, "textures/gui/carpenter_dev.png");
+    private static Identifier TEST_LOCATION = Identifier.fromNamespaceAndPath(Titanium.MODID, "textures/gui/carpenter_dev.png");
 
     private static final IBackgroundAsset BACKGROUND_ASSET = new IBackgroundAsset() {
         @Override
@@ -44,7 +44,7 @@ public class TestAssetProvider implements IAssetProvider {
         }
 
         @Override
-        public ResourceLocation getResourceLocation() {
+        public Identifier getIdentifier() {
             return TEST_LOCATION;
         }
     };
@@ -56,7 +56,7 @@ public class TestAssetProvider implements IAssetProvider {
         }
 
         @Override
-        public ResourceLocation getResourceLocation() {
+        public Identifier getIdentifier() {
             return TEST_LOCATION;
         }
     };
@@ -73,7 +73,7 @@ public class TestAssetProvider implements IAssetProvider {
         }
 
         @Override
-        public ResourceLocation getResourceLocation() {
+        public Identifier getIdentifier() {
             return TEST_LOCATION;
         }
     };
@@ -90,7 +90,7 @@ public class TestAssetProvider implements IAssetProvider {
         }
 
         @Override
-        public ResourceLocation getResourceLocation() {
+        public Identifier getIdentifier() {
             return TEST_LOCATION;
         }
     };

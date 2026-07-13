@@ -21,12 +21,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -67,15 +68,18 @@ public class TwentyFourTestTile extends PoweredTile<TwentyFourTestTile> {
 
     @Override
     @ParametersAreNonnullByDefault
-    public ItemInteractionResult onActivated(Player player, InteractionHand hand, Direction facing, double hitX, double hitY, double hitZ) {
+    public InteractionResult onActivated(Player player, InteractionHand hand, Direction facing, double hitX, double hitY, double hitZ) {
         openGui(player);
-        return ItemInteractionResult.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
     public void serverTick(Level level, BlockPos pos, BlockState state, TwentyFourTestTile blockEntity) {
         super.serverTick(level, pos, state, blockEntity);
-        this.getEnergyStorage().receiveEnergy(10, false);
+        try (var transaction = Transaction.openRoot()) {
+            this.getEnergyStorage().insert(10, transaction);
+            transaction.commit();
+        }
         markForUpdate();
     }
 /*

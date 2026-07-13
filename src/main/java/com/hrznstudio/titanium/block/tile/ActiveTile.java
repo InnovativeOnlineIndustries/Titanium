@@ -37,13 +37,12 @@ import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -52,7 +51,7 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.MilkBucketItem;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -61,9 +60,12 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.FluidUtil;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.fluid.FluidUtil;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -97,11 +99,11 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
 
     @Override
     @ParametersAreNonnullByDefault
-    public ItemInteractionResult onActivated(Player player, InteractionHand hand, Direction facing, double hitX, double hitY, double hitZ) {
-        if (multiTankComponent != null && FluidUtil.interactWithFluidHandler(player, hand, multiTankComponent.getCapabilityForSide(null).orElse(new MultiTankComponent.MultiTankCapabilityHandler(new ArrayList<>())))) {
-            return ItemInteractionResult.SUCCESS;
+    public InteractionResult onActivated(Player player, InteractionHand hand, Direction facing, double hitX, double hitY, double hitZ) {
+        if (multiTankComponent != null && FluidUtil.interactWithFluidHandler(player, hand, worldPosition, multiTankComponent.getCapabilityForSide(null).orElse(new MultiTankComponent.MultiTankCapabilityHandler(new ArrayList<>())), null)) {
+            return InteractionResult.SUCCESS;
         }
-        return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
@@ -278,50 +280,46 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
     public void handleButtonMessage(int id, Player playerEntity, CompoundTag compound) {
         if (id == -3) {
             if (!compound.contains("Invalid") && compound.contains("Fill") && !playerEntity.containerMenu.getCarried().isEmpty()) {
-                boolean fill = compound.getBoolean("Fill");
-                String name = compound.getString("Name");
+                boolean fill = compound.getBooleanOr("Fill", false);
+                String name = compound.getStringOr("Name", "");
                 if (multiTankComponent != null) {
                     for (FluidTankComponent<T> fluidTankComponent : multiTankComponent.getTanks()) {
-                        if (fluidTankComponent.getName().equalsIgnoreCase(name))
-                            Optional.ofNullable(playerEntity.containerMenu.getCarried().getCapability(Capabilities.FluidHandler.ITEM)).ifPresent(iFluidHandlerItem -> {
-                                Item carriedItem = playerEntity.containerMenu.getCarried().getItem();
-                                boolean isBucket = carriedItem instanceof BucketItem || carriedItem instanceof MilkBucketItem;
-
-                                if (fill) {
-                                    int amount = isBucket ? FluidType.BUCKET_VOLUME : Integer.MAX_VALUE;
-                                    amount = fluidTankComponent.fill(iFluidHandlerItem.drain(amount, IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.EXECUTE);
-                                    iFluidHandlerItem.drain(amount, IFluidHandler.FluidAction.EXECUTE);
-                                } else {
-                                    int amount = isBucket ? FluidType.BUCKET_VOLUME : Integer.MAX_VALUE;
-                                    amount = iFluidHandlerItem.fill(fluidTankComponent.drain(amount, IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.EXECUTE);
-                                    fluidTankComponent.drain(amount, IFluidHandler.FluidAction.EXECUTE);
-                                }
-                                playerEntity.containerMenu.setCarried(iFluidHandlerItem.getContainer().copy());
+                        if (fluidTankComponent.getName().equalsIgnoreCase(name)) {
+                            ItemStack carriedStack = playerEntity.containerMenu.getCarried();
+                            var itemAccess = ItemAccess.forPlayerCursor(playerEntity, playerEntity.containerMenu).oneByOne();
+                            Optional.ofNullable(itemAccess.getCapability(Capabilities.Fluid.ITEM)).ifPresent(itemHandler -> {
+                                Item carriedItem = carriedStack.getItem();
+                                boolean isBucket = carriedItem instanceof BucketItem || carriedItem == Items.MILK_BUCKET;
+                                int amount = isBucket ? FluidType.BUCKET_VOLUME : Integer.MAX_VALUE;
+                                ResourceHandler<FluidResource> from = fill ? itemHandler : fluidTankComponent;
+                                ResourceHandler<FluidResource> to = fill ? fluidTankComponent : itemHandler;
+                                ResourceHandlerUtil.move(from, to, resource -> true, amount, null);
                                 if (playerEntity instanceof ServerPlayer) {
                                     playerEntity.containerMenu.broadcastChanges();
                                 }
                             });
+                        }
                     }
                 }
             }
         }
         if (id == -2) {
-            String name = compound.getString("Name");
+            String name = compound.getStringOr("Name", "");
             if (multiFilterComponent != null) {
                 for (IFilter<?> filter : multiFilterComponent.getFilters()) {
                     if (filter.getName().equals(name)) {
-                        int slot = compound.getInt("Slot");
-                        filter.setFilter(slot, ItemStack.parseOptional(level.registryAccess(), compound.getCompound("Filter")));
-                        markForUpdate();
+                        int slot = compound.getIntOr("Slot", 0);
+                        filter.setFilter(slot, com.hrznstudio.titanium.util.ItemStackSerialization.load(level.registryAccess(), compound.getCompoundOrEmpty("Filter")));
+                        markComponentDirty();
                         break;
                     }
                 }
             }
         }
         if (id == -1) {
-            String name = compound.getString("Name");
-            FacingUtil.Sideness facing = FacingUtil.Sideness.valueOf(compound.getString("Facing"));
-            int faceMode = compound.getInt("Next");
+            String name = compound.getStringOr("Name", "");
+            FacingUtil.Sideness facing = FacingUtil.Sideness.valueOf(compound.getStringOr("Facing", ""));
+            int faceMode = compound.getIntOr("Next", 0);
             if (multiInventoryComponent != null && multiInventoryComponent.handleFacingChange(name, facing, faceMode)) {
                 invalidateCapabilities();
                 markForUpdate();
@@ -368,11 +366,11 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
         return multiTankComponent;
     }
 
-    public IFluidHandler getFluidHandler(@Nullable Direction direction) {
+    public ResourceHandler<FluidResource> getFluidHandler(@Nullable Direction direction) {
         return multiTankComponent == null ? null : multiTankComponent.getCapabilityForSide(FacingUtil.getFacingRelative(getFacingDirection(), direction)).orElse(null);
     }
 
-    public IItemHandler getItemHandler(@Nullable Direction direction) {
+    public ResourceHandler<ItemResource> getItemHandler(@Nullable Direction direction) {
         return multiInventoryComponent == null ? null : multiInventoryComponent.getCapabilityForSide(FacingUtil.getFacingRelative(getFacingDirection(), direction)).orElse(null);
     }
 
@@ -381,8 +379,8 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
     }
 
     @Override
-    public void loadAdditional(CompoundTag compound, HolderLookup.Provider provider) {
-        super.loadAdditional(compound, provider);
+    protected void loadAdditional(net.minecraft.world.level.storage.ValueInput input) {
+        super.loadAdditional(input);
         if (multiInventoryComponent != null) multiInventoryComponent.rebuildCapability(FacingUtil.Sideness.values());
         if (multiTankComponent != null) multiTankComponent.rebuildCapability(FacingUtil.Sideness.values());
     }
