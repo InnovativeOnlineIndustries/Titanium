@@ -12,6 +12,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.fml.ModList;
@@ -75,7 +76,10 @@ public class NetworkHandler {
     }
 
     public void sendToNearby(Level world, BlockPos pos, int distance, Message message) {
-        world.getEntitiesOfClass(ServerPlayer.class, new AABB(pos).inflate(distance)).forEach(playerEntity -> sendTo(message, playerEntity));
+        if (world instanceof ServerLevel serverLevel) {
+            var centre = pos.getCenter();
+            PacketDistributor.sendToPlayersNear(serverLevel, null, centre.x, centre.y, centre.z, distance, wrap(message));
+        }
     }
 
     public void sendToServer(Message message) {
