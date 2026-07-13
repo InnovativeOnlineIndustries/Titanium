@@ -184,7 +184,7 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
         if (cap == ForgeCapabilities.FLUID_HANDLER && multiTankComponent != null) {
             return multiTankComponent.getCapabilityForSide(FacingUtil.getFacingRelative(this.getFacingDirection(), side)).cast();
         }
-        return LazyOptional.empty();
+        return super.getCapability(cap, side);
     }
 
     public MultiInventoryComponent<T> getMultiInventoryComponent() {
