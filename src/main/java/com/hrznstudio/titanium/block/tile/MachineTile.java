@@ -34,6 +34,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public abstract class MachineTile<T extends MachineTile<T>> extends PoweredTile<T> implements IMachine {
@@ -75,12 +76,12 @@ public abstract class MachineTile<T extends MachineTile<T>> extends PoweredTile<
 
     @Override
     public List<ItemStack> getInstalledAugments() {
-        return getItemStackAugments().stream().filter(AugmentWrapper::isAugment).collect(Collectors.toList());
+        return getItemStackAugments(AugmentWrapper::isAugment);
     }
 
     @Override
     public List<ItemStack> getInstalledAugments(IAugmentType filter) {
-        return getItemStackAugments().stream().filter(AugmentWrapper::isAugment).filter(stack -> AugmentWrapper.hasType(stack, filter)).collect(Collectors.toList());
+        return getItemStackAugments(stack -> AugmentWrapper.hasType(stack, filter));
     }
 
     @Override
@@ -101,12 +102,19 @@ public abstract class MachineTile<T extends MachineTile<T>> extends PoweredTile<
         return () -> new AssetScreenAddon(AssetTypes.AUGMENT_BACKGROUND, 175, 4, true);
     }
 
-    private List<ItemStack> getItemStackAugments() {
+    private List<ItemStack> getItemStackAugments(Predicate<ItemStack> predicate) {
         List<ItemStack> augments = new ArrayList<>();
         for (int i = 0; i < augmentInventory.getSlots(); i++) {
-            augments.add(augmentInventory.getStackInSlot(i));
+            var stack = augmentInventory.getStackInSlot(i);
+            if (predicate.test(stack)) {
+                augments.add(augmentInventory.getStackInSlot(i));
+            }
         }
         return augments;
+    }
+
+    private List<ItemStack> getItemStackAugments() {
+        return this.getItemStackAugments(ignored -> true);
     }
 
     @Override
