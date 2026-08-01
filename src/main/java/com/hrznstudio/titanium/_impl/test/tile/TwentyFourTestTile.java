@@ -12,21 +12,15 @@ import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.IItemStackQuery;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.block.tile.PoweredTile;
-import com.hrznstudio.titanium.client.screen.addon.WidgetScreenAddon;
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 import javax.annotation.Nonnull;
@@ -56,14 +50,6 @@ public class TwentyFourTestTile extends PoweredTile<TwentyFourTestTile> {
         this.addInventory(third = new InventoryComponent<TwentyFourTestTile>("test3", 80, 60, 1)
             .setComponentHarness(this)
             .setInputFilter(IItemStackQuery.ANYTHING.toSlotFilter()));
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void initClient() {
-        super.initClient();
-        //this.addGuiAddonFactory(() -> new WidgetScreenAddon(30, 185, new ForgeSlider(Minecraft.getInstance(), 0, 0, SoundSource.HOSTILE, 120)));
-        this.addGuiAddonFactory(() -> new WidgetScreenAddon(30, -25, new EditBox(Minecraft.getInstance().font, 0, 0, 120, 20, Component.literal(""))));
     }
 
     @Override

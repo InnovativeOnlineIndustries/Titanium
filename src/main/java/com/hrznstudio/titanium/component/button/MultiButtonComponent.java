@@ -8,13 +8,10 @@
 package com.hrznstudio.titanium.component.button;
 
 import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.component.IComponentHandler;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,11 +33,10 @@ public class MultiButtonComponent implements IScreenAddonProvider, IComponentHan
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
-        List<IFactory<? extends IScreenAddon>> addons = new ArrayList<>();
+    public List<IFactory<?>> getScreenAddons() {
+        List<IFactory<?>> addons = new ArrayList<>();
         for (ButtonComponent basicButtonAddon : basicButtonAddons) {
-            List<IFactory<? extends IScreenAddon>> addon = basicButtonAddon.getScreenAddons();
+            List<IFactory<?>> addon = basicButtonAddon.getScreenAddons();
             if (addon != null) addons.addAll(addon);
         }
         return addons;

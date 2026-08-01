@@ -8,7 +8,6 @@
 package com.hrznstudio.titanium.block.tile;
 
 import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.api.filter.IFilter;
 import com.hrznstudio.titanium.block.BasicTileBlock;
@@ -56,8 +55,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.transfer.ResourceHandler;
@@ -84,7 +81,7 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
     private MultiButtonComponent multiButtonComponent;
     private MultiFilterComponent multiFilterComponent;
 
-    private List<IFactory<? extends IScreenAddon>> guiAddons;
+    private List<IFactory<?>> guiAddons;
 
     private List<IFactory<? extends IContainerAddon>> containerAddons;
 
@@ -173,7 +170,6 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void initClient() {
         super.initClient();
         this.bundles.stream().forEach(iComponentBundle -> iComponentBundle.getScreenAddons().forEach(this::addGuiAddonFactory));
@@ -188,8 +184,7 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
         Client
      */
 
-    @OnlyIn(Dist.CLIENT)
-    public void addGuiAddonFactory(IFactory<? extends IScreenAddon> factory) {
+    public void addGuiAddonFactory(IFactory<?> factory) {
         this.guiAddons.add(factory);
     }
 
@@ -199,8 +194,8 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
 
 
     @Override
-    public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
-        List<IFactory<? extends IScreenAddon>> addons = new ArrayList<>(guiAddons);
+    public List<IFactory<?>> getScreenAddons() {
+        List<IFactory<?>> addons = new ArrayList<>(guiAddons);
         if (multiInventoryComponent != null) addons.addAll(multiInventoryComponent.getScreenAddons());
         if (multiProgressBarHandler != null) addons.addAll(multiProgressBarHandler.getScreenAddons());
         if (multiTankComponent != null) addons.addAll(multiTankComponent.getScreenAddons());

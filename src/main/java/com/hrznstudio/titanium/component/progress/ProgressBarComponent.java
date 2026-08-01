@@ -11,7 +11,6 @@ import com.google.common.collect.Lists;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
-import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.client.screen.addon.ProgressBarScreenAddon;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
@@ -27,8 +26,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.DyeColor;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import java.awt.*;
 import java.util.Collections;
@@ -353,8 +350,7 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
      * @return A list of GUI addon factories
      */
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
+    public List<IFactory<?>> getScreenAddons() {
         return Collections.singletonList(() -> new ProgressBarScreenAddon<>(posX, posY, this));
     }
 
@@ -473,13 +469,10 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
             }
         };
 
-        @OnlyIn(Dist.CLIENT)
         public abstract <T extends IComponentHarness> void render(GuiGraphicsExtractor guiGraphics, Screen screen, int guiX, int guiY, IAssetProvider provider, ProgressBarScreenAddon<T> addon);
 
-        @OnlyIn(Dist.CLIENT)
         public abstract int getXSize(IAssetProvider provider);
 
-        @OnlyIn(Dist.CLIENT)
         public abstract int getYSize(IAssetProvider provider);
     }
 

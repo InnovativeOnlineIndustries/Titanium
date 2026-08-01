@@ -9,7 +9,6 @@ package com.hrznstudio.titanium.component.energy;
 
 import com.google.common.collect.Lists;
 import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.client.screen.addon.EnergyBarScreenAddon;
 import com.hrznstudio.titanium.component.IComponentHarness;
@@ -21,8 +20,6 @@ import com.hrznstudio.titanium.nbthandler.INBTSerializable;
 import com.hrznstudio.titanium.util.ValueIOSerialization;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.transfer.energy.SimpleEnergyHandler;
 
 import javax.annotation.Nonnull;
@@ -69,8 +66,7 @@ public class EnergyStorageComponent<T extends IComponentHarness> extends SimpleE
 
     @Override
     @Nonnull
-    @OnlyIn(Dist.CLIENT)
-    public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
+    public List<IFactory<?>> getScreenAddons() {
         return Lists.newArrayList(
             () -> new EnergyBarScreenAddon(xPos, yPos, this)
         );

@@ -10,7 +10,6 @@ package com.hrznstudio.titanium.block.tile;
 import com.google.common.collect.Sets;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.component.energy.EnergyStorageComponent;
 import com.hrznstudio.titanium.container.addon.IContainerAddon;
@@ -51,8 +50,8 @@ public abstract class PoweredTile<T extends PoweredTile<T>> extends ActiveTile<T
 
     @Override
     @Nonnull
-    public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
-        List<IFactory<? extends IScreenAddon>> screenAddons = super.getScreenAddons();
+    public List<IFactory<?>> getScreenAddons() {
+        List<IFactory<?>> screenAddons = super.getScreenAddons();
         if (showEnergy) {
             screenAddons.addAll(this.getEnergyStorage().getScreenAddons());
         }

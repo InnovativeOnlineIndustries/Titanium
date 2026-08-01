@@ -31,7 +31,6 @@ import com.hrznstudio.titanium.reward.Reward;
 import com.hrznstudio.titanium.reward.RewardManager;
 import com.hrznstudio.titanium.reward.RewardSyncMessage;
 import com.hrznstudio.titanium.reward.storage.RewardWorldStorage;
-import com.hrznstudio.titanium.util.SidedHandler;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
@@ -42,13 +41,10 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.loading.FMLLoader;
-import net.neoforged.neoforge.client.event.ExtractBlockOutlineRenderStateEvent;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -74,7 +70,6 @@ public class Titanium extends ModuleController {
         NETWORK.registerMessage("button_click", ButtonClickNetworkMessage.class);
         NETWORK.registerMessage("reward_sync", RewardSyncMessage.class);
         NETWORK.registerMessage("tile_field", TileFieldNetworkMessage.class);
-        SidedHandler.runOn(Dist.CLIENT, () -> () -> EventManager.mod(FMLClientSetupEvent.class).process(this::clientSetup).subscribe());
         EventManager.mod(FMLCommonSetupEvent.class).process(this::commonSetup).subscribe();
         EventManager.forge(PlayerEvent.PlayerLoggedInEvent.class).process(this::onPlayerLoggedIn).subscribe();
         EventManager.forge(ServerStartingEvent.class).process(this::onServerStart).subscribe();
@@ -130,13 +125,6 @@ public class Titanium extends ModuleController {
             .process(worldTickEvent -> {
                 NetworkManager.get(worldTickEvent.getLevel()).getNetworks().forEach(network -> network.update(worldTickEvent.getLevel()));
             }).subscribe();
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    private void clientSetup(FMLClientSetupEvent event) {
-        EventManager.forge(ExtractBlockOutlineRenderStateEvent.class).process(TitaniumClient::blockOverlayEvent).subscribe();
-        TitaniumClient.registerModelLoader();
-        RewardManager.get().getRewards().values().forEach(rewardGiver -> rewardGiver.getRewards().forEach(reward -> reward.register(Dist.CLIENT)));
     }
 
     private void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {

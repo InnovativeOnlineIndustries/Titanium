@@ -26,13 +26,15 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 public class BasicTile<T extends BasicTile<T>> extends BlockEntity implements IScreenInfoProvider {
+    private static final Map<Class<?>, Consumer<BasicTile<?>>> CLIENT_INITIALIZERS = new ConcurrentHashMap<>();
 
     private final BasicTileBlock<T> basicTileBlock;
 
@@ -58,9 +60,15 @@ public class BasicTile<T extends BasicTile<T>> extends BlockEntity implements IS
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
-    public void initClient() {
+    public static <T extends BasicTile<?>> void registerClientInitializer(Class<T> type, Consumer<T> initializer) {
+        CLIENT_INITIALIZERS.put(type, tile -> initializer.accept(type.cast(tile)));
+    }
 
+    public void initClient() {
+        Consumer<BasicTile<?>> initializer = CLIENT_INITIALIZERS.get(getClass());
+        if (initializer != null) {
+            initializer.accept(this);
+        }
     }
 
     // BlockEntity.Read

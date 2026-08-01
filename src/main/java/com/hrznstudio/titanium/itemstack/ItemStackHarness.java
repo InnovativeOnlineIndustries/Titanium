@@ -9,7 +9,6 @@ package com.hrznstudio.titanium.itemstack;
 
 import com.google.common.collect.Lists;
 import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.container.addon.IContainerAddon;
 import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
@@ -38,8 +37,8 @@ public class ItemStackHarness implements IContainerAddonProvider, IScreenAddonPr
 
     @Override
     @Nonnull
-    public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
-        List<IFactory<? extends IScreenAddon>> screenAddons = Lists.newArrayList();
+    public List<IFactory<?>> getScreenAddons() {
+        List<IFactory<?>> screenAddons = Lists.newArrayList();
         if (defaultProvider != null) screenAddons.addAll(defaultProvider.getScreenAddons());
         for (var capability : capabilities) {
             screenAddons.addAll(Optional.ofNullable(itemStack.getCapability(capability))

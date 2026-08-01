@@ -12,7 +12,6 @@ import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.IMachine;
 import com.hrznstudio.titanium.api.augment.IAugmentType;
 import com.hrznstudio.titanium.api.client.AssetTypes;
-import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.client.screen.addon.AssetScreenAddon;
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
@@ -29,8 +28,6 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +49,6 @@ public abstract class MachineTile<T extends MachineTile<T>> extends PoweredTile<
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void initClient() {
         super.initClient();
         addGuiAddonFactory(getAugmentBackground());
@@ -96,8 +92,7 @@ public abstract class MachineTile<T extends MachineTile<T>> extends PoweredTile<
                 .setRange(1, 4);
     }
 
-    @OnlyIn(Dist.CLIENT)
-    public IFactory<? extends IScreenAddon> getAugmentBackground() {
+    public IFactory<?> getAugmentBackground() {
         return () -> new AssetScreenAddon(AssetTypes.AUGMENT_BACKGROUND, 175, 4, true);
     }
 

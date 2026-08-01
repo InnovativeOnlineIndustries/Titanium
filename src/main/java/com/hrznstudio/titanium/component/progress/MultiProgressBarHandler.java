@@ -8,7 +8,6 @@
 package com.hrznstudio.titanium.component.progress;
 
 import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.component.IComponentHandler;
 import com.hrznstudio.titanium.component.IComponentHarness;
@@ -48,8 +47,8 @@ public class MultiProgressBarHandler<T extends IComponentHarness> implements ISc
     }
 
     @Override
-    public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
-        List<IFactory<? extends IScreenAddon>> list = new ArrayList<>();
+    public List<IFactory<?>> getScreenAddons() {
+        List<IFactory<?>> list = new ArrayList<>();
         for (ProgressBarComponent<T> progressBarComponent : progressBarComponents) {
             list.addAll(progressBarComponent.getScreenAddons());
         }

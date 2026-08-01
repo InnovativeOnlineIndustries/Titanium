@@ -14,6 +14,6 @@ import java.util.List;
 
 public interface IScreenAddonProvider {
     @Nonnull
-    List<IFactory<? extends IScreenAddon>> getScreenAddons();
+    List<IFactory<?>> getScreenAddons();
 
 }

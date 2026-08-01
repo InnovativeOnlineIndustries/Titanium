@@ -8,6 +8,7 @@
 package com.hrznstudio.titanium.client.screen.container;
 
 import com.hrznstudio.titanium.api.IFactory;
+import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.container.BasicAddonContainer;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -21,6 +22,7 @@ public class BasicAddonScreen extends BasicContainerScreen<BasicAddonContainer> 
             ((IScreenAddonProvider) container.getProvider()).getScreenAddons()
                 .stream()
                 .map(IFactory::create)
+                .map(IScreenAddon.class::cast)
                 .forEach(this.getAddons()::add);
         }
     }
