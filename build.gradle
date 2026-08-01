@@ -3,7 +3,7 @@ plugins {
   id 'net.neoforged.moddev' version '2.0.141'
     id 'maven-publish'
   id "com.modrinth.minotaur" version "2.9.0"
-  id 'net.darkhax.curseforgegradle' version '1.1.15'
+  id 'net.darkhax.curseforgegradle' version '1.3.33'
 }
 
 final mcVersion = "26.1.2"
@@ -105,10 +105,11 @@ tasks.register('publishCurseForge', net.darkhax.curseforgegradle.TaskPublishCurs
 
   def mainFile = upload(287342, jar)
   mainFile.releaseType = 'beta'
-  mainFile.changelog = 'https://github.com/InnovativeOnlineIndustries/Titanium/blob/changelog/CHANGELOG.md'
+  mainFile.changelog = 'https://github.com/InnovativeOnlineIndustries/Titanium/blob/26.1.2/CHANGELOG.md'
   mainFile.changelogType = 'markdown'
   mainFile.addModLoader("NeoForge")
   mainFile.addGameVersion("26.1.2")
+  mainFile.addEnvironment("Client", "Server")
 }
 
 tasks.modrinth.enabled = System.env["MODRINTH_TOKEN"] != null
@@ -124,5 +125,5 @@ modrinth {
   dependencies { // A special DSL for creating dependencies
 
   }
-  changelog = "https://github.com/InnovativeOnlineIndustries/Titanium/blob/changelog/CHANGELOG.md"
+  changelog = "https://github.com/InnovativeOnlineIndustries/Titanium/blob/26.1.2/CHANGELOG.md"
 }
