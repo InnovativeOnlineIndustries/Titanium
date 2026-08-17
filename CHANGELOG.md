@@ -1,6 +1,7 @@
 # 4.0.4
 
 * Fixed text transparency in the TextScreenAddon
+* Fixed tile syncing issues
 
 # 4.0.3
 

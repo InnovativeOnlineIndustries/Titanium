@@ -95,7 +95,7 @@ public class BasicTile<T extends BasicTile<T>> extends BlockEntity implements IS
     @Override
     @Nonnull
     public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
-        CompoundTag compoundTag = new CompoundTag();
+        CompoundTag compoundTag = saveWithoutMetadata(provider);
         NBTManager.getInstance().writeTileEntity(this, compoundTag);
         return compoundTag;
     }
