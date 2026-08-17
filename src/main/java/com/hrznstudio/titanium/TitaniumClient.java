@@ -25,6 +25,7 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.ShapeRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
@@ -78,10 +79,13 @@ public class TitaniumClient {
                 double d0 = info.position().x();
                 double d1 = info.position().y();
                 double d2 = info.position().z();
+
+                BlockOutlineRenderState state = event.getLevelRenderState().blockOutlineRenderState;
+                int outlineColor = state.highContrast() ? -11010079 : ARGB.black(102);
                 event.addCustomRenderer((renderState, buffer, stack, translucentPass, levelRenderState) -> {
                     VertexConsumer builder = buffer.getBuffer(RenderTypes.lines());
                     ShapeRenderer.renderShape(stack, builder, shape, blockpos.getX() - d0,
-                        blockpos.getY() - d1, blockpos.getZ() - d2, ARGB.colorFromFloat(0.5F, 0, 0, 0), 2.0F);
+                        blockpos.getY() - d1, blockpos.getZ() - d2, outlineColor, Minecraft.getInstance().gameRenderer.getGameRenderState().windowRenderState.appropriateLineWidth);
                     return true;
                 });
             }

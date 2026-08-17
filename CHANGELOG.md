@@ -1,3 +1,7 @@
+# 4.0.7
+
+* Improved outline rendering
+
 # 4.0.6
 
 * Added useBlockDescriptionPrefix to the default block registration
