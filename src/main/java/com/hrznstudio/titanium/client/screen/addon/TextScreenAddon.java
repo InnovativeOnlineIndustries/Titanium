@@ -43,10 +43,10 @@ public class TextScreenAddon extends BasicScreenAddon {
     public void drawBackgroundLayer(GuiGraphicsExtractor guiGraphics, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         if (shadow) {
             //drawStringWithShadow
-            guiGraphics.text(screen.getMinecraft().font, getText(), guiX + getPosX(), guiY + getPosY(), color, true);
+            guiGraphics.text(screen.getMinecraft().font, getText(), guiX + getPosX(), guiY + getPosY(), 0xff000000 | color, true);
         } else {
             //drawString
-            guiGraphics.text(screen.getMinecraft().font, getText(), guiX + getPosX(), guiY + getPosY(), color, false);
+            guiGraphics.text(screen.getMinecraft().font, getText(), guiX + getPosX(), guiY + getPosY(), 0xff000000 | color, false);
         }
     }
 

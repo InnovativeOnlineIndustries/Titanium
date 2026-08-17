@@ -1,3 +1,7 @@
+# 4.0.4
+
+* Fixed text transparency in the TextScreenAddon
+
 # 4.0.3
 
 * Fixed ActiveTile interaction result passing success when they should fail
