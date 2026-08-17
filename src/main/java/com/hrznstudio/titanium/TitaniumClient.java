@@ -81,7 +81,7 @@ public class TitaniumClient {
                 double d2 = info.position().z();
 
                 BlockOutlineRenderState state = event.getLevelRenderState().blockOutlineRenderState;
-                int outlineColor = state.highContrast() ? -11010079 : ARGB.black(102);
+                int outlineColor = state != null && state.highContrast() ? -11010079 : ARGB.black(102);
                 event.addCustomRenderer((renderState, buffer, stack, translucentPass, levelRenderState) -> {
                     VertexConsumer builder = buffer.getBuffer(RenderTypes.lines());
                     ShapeRenderer.renderShape(stack, builder, shape, blockpos.getX() - d0,

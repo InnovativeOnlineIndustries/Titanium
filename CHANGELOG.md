@@ -1,3 +1,7 @@
+# 4.0.8
+
+* Fixed a crash with the level render state was null
+
 # 4.0.7
 
 * Improved outline rendering
