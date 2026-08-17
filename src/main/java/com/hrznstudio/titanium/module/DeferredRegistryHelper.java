@@ -130,7 +130,7 @@ public class DeferredRegistryHelper {
     public DeferredHolder<Block, Block> registerBlockWithItem(String name, Supplier<? extends BasicBlock> blockSupplier, @Nullable TitaniumTab tab) {
         var blockRegistryObject = registerGeneric(Registries.BLOCK, name, blockSupplier::get);
         registerGeneric(Registries.ITEM, name, () -> {
-            var item = new BlockItem(blockRegistryObject.get(), applyItemRegistrationId(new Item.Properties()));
+            var item = new BlockItem(blockRegistryObject.get(), applyItemRegistrationId(new Item.Properties().useBlockDescriptionPrefix()));
             if (tab != null) tab.getTabList().add(item);
             return item;
         });

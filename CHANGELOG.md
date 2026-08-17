@@ -1,3 +1,7 @@
+# 4.0.6
+
+* Added useBlockDescriptionPrefix to the default block registration
+
 # 4.0.5
 
 * Fixed line width for custom selection boxes
