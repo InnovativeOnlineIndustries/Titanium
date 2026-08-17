@@ -81,7 +81,7 @@ public class TitaniumClient {
                 event.addCustomRenderer((renderState, buffer, stack, translucentPass, levelRenderState) -> {
                     VertexConsumer builder = buffer.getBuffer(RenderTypes.lines());
                     ShapeRenderer.renderShape(stack, builder, shape, blockpos.getX() - d0,
-                        blockpos.getY() - d1, blockpos.getZ() - d2, ARGB.colorFromFloat(0.5F, 0, 0, 0), 1.0F);
+                        blockpos.getY() - d1, blockpos.getZ() - d2, ARGB.colorFromFloat(0.5F, 0, 0, 0), 2.0F);
                     return true;
                 });
             }

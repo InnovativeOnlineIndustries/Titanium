@@ -1,3 +1,7 @@
+# 4.0.5
+
+* Fixed line width for custom selection boxes
+
 # 4.0.4
 
 * Fixed text transparency in the TextScreenAddon
