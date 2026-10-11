@@ -20,6 +20,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.common.Tags;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
@@ -32,6 +33,8 @@ public class MachineTestTile extends MachineTile<MachineTestTile> {
     private TankInteractionBundle<MachineTestTile> tankBundle;
     @Save
     private InventoryComponent<MachineTestTile> movingSlot;
+    @Save
+    private ItemStackFilter restrictedFilter;
 
     public MachineTestTile(BlockPos blockPos, BlockState state) {
         super((BasicTileBlock<MachineTestTile>) MachineTestBlock.TEST.getBlock(), MachineTestBlock.TEST.type().get(), blockPos, state);
@@ -46,6 +49,15 @@ public class MachineTestTile extends MachineTile<MachineTestTile> {
             }
         }
         this.setShowEnergy(false);
+        this.addFilter(this.restrictedFilter = new ItemStackFilter("restricted_filter", 1){
+            @Override
+            public boolean acceptsAsFilter(ItemStack filter) {
+                return  filter.is(Tags.Items.STORAGE_BLOCKS);
+            }
+        });
+        FilterSlot<ItemStack> restrictedSlot = new FilterSlot<>(20 + (3*18) + 20, 20, 0, ItemStack.EMPTY);
+        this.restrictedFilter.setFilter(0, restrictedSlot);
+
         this.addBundle(tankBundle = new TankInteractionBundle<>(() -> Optional.ofNullable(level.getCapability(Capabilities.FluidHandler.BLOCK, blockPos, null)), 175, 94, this, 10));
         this.addInventory(this.movingSlot = new InventoryComponent<MachineTestTile>("moving_slot", 0, 0, 1).setInputFilter((stack, integer) -> this.movingSlot.getSlotVisiblePredicate().test(integer)).setSlotVisiblePredicate(integer -> this.level.getGameTime() % 100 > 40).setSlotPosition(integer -> Pair.of((int) this.level.getGameTime() % 100, 50 + (int) this.level.getGameTime() % 50 - 25)));
     }

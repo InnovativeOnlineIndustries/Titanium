@@ -323,7 +323,10 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
                 for (IFilter<?> filter : multiFilterComponent.getFilters()) {
                     if (filter.getName().equals(name)) {
                         int slot = compound.getInt("Slot");
-                        filter.setFilter(slot, ItemStack.parseOptional(level.registryAccess(), compound.getCompound("Filter")));
+                        ItemStack stack = ItemStack.parseOptional(level.registryAccess(), compound.getCompound("Filter"));
+                        if(stack == ItemStack.EMPTY || filter.acceptsAsFilter(stack)) {
+                            filter.setFilter(slot, stack);
+                        }
                         markForUpdate();
                         break;
                     }
