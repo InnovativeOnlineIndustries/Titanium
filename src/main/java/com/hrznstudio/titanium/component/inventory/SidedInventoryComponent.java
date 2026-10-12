@@ -16,6 +16,7 @@ import com.hrznstudio.titanium.component.IComponentHarness;
 import com.hrznstudio.titanium.component.sideness.IFacingComponent;
 import com.hrznstudio.titanium.component.sideness.SidedComponentManager;
 import com.hrznstudio.titanium.util.FacingUtil;
+import com.hrznstudio.titanium.util.ValueIOSerialization;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -159,7 +160,7 @@ public class SidedInventoryComponent<T extends IComponentHarness> extends Invent
     }
 
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        CompoundTag nbt = com.hrznstudio.titanium.util.ValueIOSerialization.save(provider, this);
+        CompoundTag nbt = ValueIOSerialization.save(provider, this);
         CompoundTag compound = new CompoundTag();
         for (FacingUtil.Sideness facing : facingModes.keySet()) {
             compound.putString(facing.name(), facingModes.get(facing).name());
@@ -169,7 +170,7 @@ public class SidedInventoryComponent<T extends IComponentHarness> extends Invent
     }
 
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        com.hrznstudio.titanium.util.ValueIOSerialization.load(provider, nbt, this);
+        ValueIOSerialization.load(provider, nbt, this);
         if (nbt.contains("FacingModes")) {
             CompoundTag compound = nbt.getCompoundOrEmpty("FacingModes");
             for (String face : compound.keySet()) {

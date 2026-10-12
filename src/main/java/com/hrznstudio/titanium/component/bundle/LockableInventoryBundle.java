@@ -21,6 +21,7 @@ import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.hrznstudio.titanium.component.inventory.SidedInventoryComponent;
 import com.hrznstudio.titanium.container.addon.IContainerAddon;
 import com.hrznstudio.titanium.nbthandler.INBTSerializable;
+import com.hrznstudio.titanium.util.ItemStackSerialization;
 import com.hrznstudio.titanium.util.LangUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderLookup;
@@ -102,7 +103,7 @@ public class LockableInventoryBundle<T extends BasicTile & IComponentHarness> im
         compoundNBT.putBoolean("Locked", this.isLocked);
         ListTag nbt = new ListTag();
         for (ItemStack stack : this.filter) {
-            nbt.add(com.hrznstudio.titanium.util.ItemStackSerialization.save(provider, stack));
+            nbt.add(ItemStackSerialization.save(provider, stack));
         }
         compoundNBT.put("Filter", nbt);
         return compoundNBT;
@@ -116,7 +117,7 @@ public class LockableInventoryBundle<T extends BasicTile & IComponentHarness> im
         this.filter = new ItemStack[list.size()];
         Arrays.fill(this.filter, ItemStack.EMPTY);
         for (int i = 0; i < list.size(); i++) {
-            this.filter[i] = com.hrznstudio.titanium.util.ItemStackSerialization.load(provider, list.getCompoundOrEmpty(i));
+            this.filter[i] = ItemStackSerialization.load(provider, list.getCompoundOrEmpty(i));
         }
         updateFilter();
     }

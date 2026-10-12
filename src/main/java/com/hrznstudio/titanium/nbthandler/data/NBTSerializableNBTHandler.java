@@ -9,6 +9,7 @@ package com.hrznstudio.titanium.nbthandler.data;
 
 import com.hrznstudio.titanium.api.INBTHandler;
 import com.hrznstudio.titanium.nbthandler.INBTSerializable;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 
 import javax.annotation.Nonnull;
@@ -22,13 +23,13 @@ public class NBTSerializableNBTHandler implements INBTHandler<INBTSerializable> 
     }
 
     @Override
-    public boolean storeToNBT(net.minecraft.core.HolderLookup.Provider provider, @Nonnull CompoundTag compound, @Nonnull String name, @Nonnull INBTSerializable object) {
+    public boolean storeToNBT(HolderLookup.Provider provider, @Nonnull CompoundTag compound, @Nonnull String name, @Nonnull INBTSerializable object) {
         compound.put(name, object.serializeNBT(provider));
         return true;
     }
 
     @Override
-    public INBTSerializable readFromNBT(net.minecraft.core.HolderLookup.Provider provider, @Nonnull CompoundTag compound, @Nonnull String name, @Nullable INBTSerializable currentValue) {
+    public INBTSerializable readFromNBT(HolderLookup.Provider provider, @Nonnull CompoundTag compound, @Nonnull String name, @Nullable INBTSerializable currentValue) {
         if (compound.contains(name) && currentValue != null) {
             currentValue.deserializeNBT(provider, compound.get(name));
             return currentValue;

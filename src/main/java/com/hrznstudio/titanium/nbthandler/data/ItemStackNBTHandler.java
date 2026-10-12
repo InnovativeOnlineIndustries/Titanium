@@ -8,6 +8,8 @@
 package com.hrznstudio.titanium.nbthandler.data;
 
 import com.hrznstudio.titanium.api.INBTHandler;
+import com.hrznstudio.titanium.util.ItemStackSerialization;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
@@ -21,13 +23,13 @@ public class ItemStackNBTHandler implements INBTHandler<ItemStack> {
     }
 
     @Override
-    public boolean storeToNBT(net.minecraft.core.HolderLookup.Provider provider, @Nonnull CompoundTag compound, @Nonnull String name, @Nonnull ItemStack object) {
-        compound.put(name, com.hrznstudio.titanium.util.ItemStackSerialization.save(provider, object));
+    public boolean storeToNBT(HolderLookup.Provider provider, @Nonnull CompoundTag compound, @Nonnull String name, @Nonnull ItemStack object) {
+        compound.put(name, ItemStackSerialization.save(provider, object));
         return true;
     }
 
     @Override
-    public ItemStack readFromNBT(net.minecraft.core.HolderLookup.Provider provider, @Nonnull CompoundTag compound, @Nonnull String name, @Nullable ItemStack currentValue) {
+    public ItemStack readFromNBT(HolderLookup.Provider provider, @Nonnull CompoundTag compound, @Nonnull String name, @Nullable ItemStack currentValue) {
         return com.hrznstudio.titanium.util.ItemStackSerialization.load(provider, compound.getCompoundOrEmpty(name));
     }
 }

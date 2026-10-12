@@ -9,6 +9,7 @@ package com.hrznstudio.titanium.nbthandler.data;
 
 import com.hrznstudio.titanium.api.INBTHandler;
 import com.hrznstudio.titanium.util.Unboxing;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 
 import javax.annotation.Nonnull;
@@ -36,7 +37,7 @@ public class ShortNBTHandler implements INBTHandler<Short> {
      * @return true if the Object was successfully stored in the NBT
      */
     @Override
-    public boolean storeToNBT(net.minecraft.core.HolderLookup.Provider provider, @Nonnull CompoundTag compound, @Nonnull String name, @Nonnull Short object) {
+    public boolean storeToNBT(HolderLookup.Provider provider, @Nonnull CompoundTag compound, @Nonnull String name, @Nonnull Short object) {
         compound.putShort(name, object);
         return true;
     }
@@ -49,7 +50,7 @@ public class ShortNBTHandler implements INBTHandler<Short> {
      * @return The object if it was successfully stored or null if it wasn't giving the next handlers a chance to store the value.
      */
     @Override
-    public Short readFromNBT(net.minecraft.core.HolderLookup.Provider provider, @Nonnull CompoundTag compound, @Nonnull String name, @Nullable Short current) {
+    public Short readFromNBT(HolderLookup.Provider provider, @Nonnull CompoundTag compound, @Nonnull String name, @Nullable Short current) {
         return compound.getShortOr(name, Unboxing.safelyUnbox(current));
     }
 }

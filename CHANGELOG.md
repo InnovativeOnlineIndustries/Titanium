@@ -1,3 +1,8 @@
+# 4.0.9
+
+* Fixed container slots picking up items blocking extraction when the filter was set up to not allow extraction for
+  automation
+
 # 4.0.8
 
 * Fixed a crash with the level render state was null

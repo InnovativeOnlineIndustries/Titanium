@@ -15,6 +15,7 @@ import com.hrznstudio.titanium.component.IComponentHarness;
 import com.hrznstudio.titanium.container.addon.IContainerAddon;
 import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
 import com.hrznstudio.titanium.container.addon.SlotContainerAddon;
+import com.hrznstudio.titanium.util.ValueIOSerialization;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.DyeColor;
@@ -59,7 +60,7 @@ public class InventoryComponent<T extends IComponentHarness> extends ItemStacksR
     }
 
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        return com.hrznstudio.titanium.util.ValueIOSerialization.save(provider, this);
+        return ValueIOSerialization.save(provider, this);
     }
 
     private final String name;
@@ -80,7 +81,7 @@ public class InventoryComponent<T extends IComponentHarness> extends ItemStacksR
     private Predicate<Integer> slotVisiblePredicate;
 
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
-        com.hrznstudio.titanium.util.ValueIOSerialization.load(provider, tag, this);
+        ValueIOSerialization.load(provider, tag, this);
     }
 
     /**

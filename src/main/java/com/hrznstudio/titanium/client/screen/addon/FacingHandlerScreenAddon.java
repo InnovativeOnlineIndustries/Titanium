@@ -100,9 +100,9 @@ public class FacingHandlerScreenAddon extends BasicScreenAddon {
         guiGraphics.fill(guiX + getPosX() + offset, guiY + getPosY() + offset, guiX + getPosX() + getXSize() - offset, guiY + getPosY() + getYSize() - offset, handler.getColor());
         if (isClicked()) {
             //draw the overlay for the slots
-            com.hrznstudio.titanium.util.AssetUtil.blit(guiGraphics, backgroundInfo.getIdentifier(), guiX + backgroundInfo.getInventoryPosition().x - 1, guiY + backgroundInfo.getInventoryPosition().y - 1, 56, 185, 162, 54);
-            com.hrznstudio.titanium.util.AssetUtil.blit(guiGraphics, backgroundInfo.getIdentifier(), guiX + backgroundInfo.getInventoryPosition().x - 1, guiY + backgroundInfo.getInventoryPosition().y - 1 + 18 * 3 + 4, 56, 185, 162, 17);
-            com.hrznstudio.titanium.util.AssetUtil.blit(guiGraphics, backgroundInfo.getIdentifier(), guiX + backgroundInfo.getInventoryPosition().x - 1, guiY + backgroundInfo.getInventoryPosition().y - 1 + 18 * 3 + 4 + 17, 56, 185 + 53, 162, 1);
+            AssetUtil.blit(guiGraphics, backgroundInfo.getIdentifier(), guiX + backgroundInfo.getInventoryPosition().x - 1, guiY + backgroundInfo.getInventoryPosition().y - 1, 56, 185, 162, 54);
+            AssetUtil.blit(guiGraphics, backgroundInfo.getIdentifier(), guiX + backgroundInfo.getInventoryPosition().x - 1, guiY + backgroundInfo.getInventoryPosition().y - 1 + 18 * 3 + 4, 56, 185, 162, 17);
+            AssetUtil.blit(guiGraphics, backgroundInfo.getIdentifier(), guiX + backgroundInfo.getInventoryPosition().x - 1, guiY + backgroundInfo.getInventoryPosition().y - 1 + 18 * 3 + 4 + 17, 56, 185 + 53, 162, 1);
         }
     }
 

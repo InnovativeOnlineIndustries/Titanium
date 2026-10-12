@@ -9,6 +9,7 @@ package com.hrznstudio.titanium.nbthandler.data;
 
 
 import com.hrznstudio.titanium.api.INBTHandler;
+import com.hrznstudio.titanium.util.ValueIOSerialization;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
@@ -24,7 +25,7 @@ public class ItemStackHandlerNBTHandler implements INBTHandler<ItemStacksResourc
 
     @Override
     public boolean storeToNBT(HolderLookup.Provider provider, @Nonnull CompoundTag compound, @Nonnull String name, @Nonnull ItemStacksResourceHandler object) {
-        compound.put(name, com.hrznstudio.titanium.util.ValueIOSerialization.save(provider, object));
+        compound.put(name, ValueIOSerialization.save(provider, object));
         return true;
     }
 
@@ -32,7 +33,7 @@ public class ItemStackHandlerNBTHandler implements INBTHandler<ItemStacksResourc
     public ItemStacksResourceHandler readFromNBT(HolderLookup.Provider provider, @Nonnull CompoundTag compound, @Nonnull String name, @Nullable ItemStacksResourceHandler current) {
         if (compound.contains(name)) {
             if (current == null) current = new ItemStacksResourceHandler(1);
-            com.hrznstudio.titanium.util.ValueIOSerialization.load(provider, compound.getCompoundOrEmpty(name), current);
+            ValueIOSerialization.load(provider, compound.getCompoundOrEmpty(name), current);
             return current;
         }
         return current;

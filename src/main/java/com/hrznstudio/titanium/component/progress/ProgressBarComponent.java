@@ -386,20 +386,20 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
                 IAsset assetBorder = IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_BORDER_VERTICAL);
                 Point offset = assetBorder.getOffset();
                 Rectangle area = assetBorder.getArea();
-                com.hrznstudio.titanium.util.AssetUtil.blit(guiGraphics, assetBorder.getIdentifier(), guiX + addon.getPosX() + offset.x, guiY + addon.getPosY() + offset.y, area.x, area.y, area.width, area.height);
+                AssetUtil.blit(guiGraphics, assetBorder.getIdentifier(), guiX + addon.getPosX() + offset.x, guiY + addon.getPosY() + offset.y, area.x, area.y, area.width, area.height);
                 var colors = getTextureDiffuseColors(addon.getProgressBar().getColor());
                 int tint = AssetUtil.color(colors[0], colors[1], colors[2], 1);
                 IAsset assetBar = IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_BACKGROUND_VERTICAL);
                 offset = assetBar.getOffset();
                 area = assetBar.getArea();
-                com.hrznstudio.titanium.util.AssetUtil.blit(guiGraphics, assetBar.getIdentifier(), guiX + addon.getPosX() + offset.x, guiY + addon.getPosY() + offset.y, area.x, area.y, area.width, area.height, tint);
+                AssetUtil.blit(guiGraphics, assetBar.getIdentifier(), guiX + addon.getPosX() + offset.x, guiY + addon.getPosY() + offset.y, area.x, area.y, area.width, area.height, tint);
                 IAsset asset = IAssetProvider.getAsset(provider, AssetTypes.PROGRESS_BAR_VERTICAL);
                 offset = asset.getOffset();
                 area = asset.getArea();
                 int progress = addon.getProgressBar().getProgress();
                 int maxProgress = addon.getProgressBar().getMaxProgress();
                 int progressOffset = progress * area.height / Math.max(maxProgress, 1);
-                com.hrznstudio.titanium.util.AssetUtil.blit(guiGraphics, asset.getIdentifier(), addon.getPosX() + offset.x + guiX,
+                AssetUtil.blit(guiGraphics, asset.getIdentifier(), addon.getPosX() + offset.x + guiX,
                     addon.getPosY() + offset.y + area.height - progressOffset + guiY,
                     area.x,
                     area.y + (area.height - progressOffset),
@@ -429,7 +429,7 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
                 int progressOffset = progress * area.width / Math.max(maxProgress, 1);
                 var colors = getTextureDiffuseColors(addon.getProgressBar().getColor());
                 int tint = AssetUtil.color(colors[0], colors[1], colors[2], 1);
-                com.hrznstudio.titanium.util.AssetUtil.blit(guiGraphics, asset.getIdentifier(), addon.getPosX() + offset.x + guiX, addon.getPosY() + offset.y + guiY, area.x, area.y, progressOffset, area.height, tint);
+                AssetUtil.blit(guiGraphics, asset.getIdentifier(), addon.getPosX() + offset.x + guiX, addon.getPosY() + offset.y + guiY, area.x, area.y, progressOffset, area.height, tint);
             }
 
             @Override
@@ -455,7 +455,7 @@ public class ProgressBarComponent<T extends IComponentHarness> implements INBTSe
                 int progressOffset = progress * area.height / Math.max(maxProgress, 1);
                 var colors = getTextureDiffuseColors(addon.getProgressBar().getColor());
                 int tint = AssetUtil.color(colors[0], colors[1], colors[2], 1);
-                com.hrznstudio.titanium.util.AssetUtil.blit(guiGraphics, asset.getIdentifier(), addon.getPosX() + offset.x + guiX, addon.getPosY() + offset.y + guiY, area.x, area.y, area.width, progressOffset, tint);
+                AssetUtil.blit(guiGraphics, asset.getIdentifier(), addon.getPosX() + offset.x + guiX, addon.getPosY() + offset.y + guiY, area.x, area.y, area.width, progressOffset, tint);
             }
 
             @Override

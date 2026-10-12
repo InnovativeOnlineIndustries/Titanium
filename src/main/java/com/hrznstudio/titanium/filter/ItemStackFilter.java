@@ -12,6 +12,7 @@ import com.hrznstudio.titanium.api.filter.FilterAction;
 import com.hrznstudio.titanium.api.filter.FilterSlot;
 import com.hrznstudio.titanium.api.filter.IFilter;
 import com.hrznstudio.titanium.client.screen.addon.ItemstackFilterScreenAddon;
+import com.hrznstudio.titanium.util.ItemStackSerialization;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -105,7 +106,7 @@ public class ItemStackFilter implements IFilter<ItemStack> {
         CompoundTag filter = new CompoundTag();
         for (FilterSlot<ItemStack> itemStackFilterSlot : this.filter) {
             if (itemStackFilterSlot != null && !itemStackFilterSlot.getFilter().isEmpty())
-                filter.put(itemStackFilterSlot.getFilterID() + "", com.hrznstudio.titanium.util.ItemStackSerialization.save(provider, itemStackFilterSlot.getFilter()));
+                filter.put(itemStackFilterSlot.getFilterID() + "", ItemStackSerialization.save(provider, itemStackFilterSlot.getFilter()));
         }
         compoundNBT.put("Filter", filter);
         compoundNBT.putString("Type", type.name());
@@ -120,7 +121,7 @@ public class ItemStackFilter implements IFilter<ItemStack> {
             filterSlot.setFilter(ItemStack.EMPTY);
         }
         for (String key : filter.keySet()) {
-            this.filter[Integer.parseInt(key)].setFilter(com.hrznstudio.titanium.util.ItemStackSerialization.load(provider, filter.getCompoundOrEmpty(key)));
+            this.filter[Integer.parseInt(key)].setFilter(ItemStackSerialization.load(provider, filter.getCompoundOrEmpty(key)));
         }
         this.type = Type.valueOf(nbt.getStringOr("Type", ""));
     }

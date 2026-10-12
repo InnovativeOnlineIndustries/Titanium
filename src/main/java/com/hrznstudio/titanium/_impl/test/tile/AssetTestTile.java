@@ -55,6 +55,7 @@ public class AssetTestTile extends PoweredTile<AssetTestTile>{
         this.addInventory(inventory = (SidedInventoryComponent<AssetTestTile>) new SidedInventoryComponent<AssetTestTile>("inventory", 8, 88, 18, 0)
             .setFacingHandlerPos(-15, 1).setRange(9, 2)
             .setComponentHarness(this)
+            .setOutputFilter((stack, integer) -> false)
             .setInputFilter((stack, integer) -> IItemStackQuery.ANYTHING.test(stack)));
         this.addInventory(recipe = new InventoryComponent<AssetTestTile>("recipe", 10, 20, 9)
             .setRange(3, 3)

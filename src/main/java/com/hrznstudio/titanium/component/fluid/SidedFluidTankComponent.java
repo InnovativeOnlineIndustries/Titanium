@@ -17,6 +17,7 @@ import com.hrznstudio.titanium.component.IComponentHarness;
 import com.hrznstudio.titanium.component.sideness.IFacingComponent;
 import com.hrznstudio.titanium.component.sideness.SidedComponentManager;
 import com.hrznstudio.titanium.util.FacingUtil;
+import com.hrznstudio.titanium.util.ValueIOSerialization;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -155,12 +156,12 @@ public class SidedFluidTankComponent<T extends IComponentHarness> extends FluidT
                 facingModes.put(FacingUtil.Sideness.valueOf(face), FaceMode.valueOf(compound.getStringOr(face, "")));
             }
         }
-        com.hrznstudio.titanium.util.ValueIOSerialization.load(provider, nbt, this);
+        ValueIOSerialization.load(provider, nbt, this);
         return this;
     }
 
     public CompoundTag writeToNBT(HolderLookup.Provider provider, CompoundTag comp) {
-        CompoundTag nbt = com.hrznstudio.titanium.util.ValueIOSerialization.save(provider, this);
+        CompoundTag nbt = ValueIOSerialization.save(provider, this);
         CompoundTag compound = new CompoundTag();
         for (FacingUtil.Sideness facing : facingModes.keySet()) {
             compound.putString(facing.name(), facingModes.get(facing).name());

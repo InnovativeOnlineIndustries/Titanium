@@ -20,6 +20,7 @@ import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
 import com.hrznstudio.titanium.container.addon.IntArrayReferenceHolderAddon;
 import com.hrznstudio.titanium.container.referenceholder.FluidTankReferenceHolder;
 import com.hrznstudio.titanium.nbthandler.INBTSerializable;
+import com.hrznstudio.titanium.util.ValueIOSerialization;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -165,12 +166,12 @@ public class FluidTankComponent<T extends IComponentHarness> extends FluidStacks
 
     @Override
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        return com.hrznstudio.titanium.util.ValueIOSerialization.save(provider, this);
+        return ValueIOSerialization.save(provider, this);
     }
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        com.hrznstudio.titanium.util.ValueIOSerialization.load(provider, nbt, this);
+        ValueIOSerialization.load(provider, nbt, this);
     }
 
     public enum Type {

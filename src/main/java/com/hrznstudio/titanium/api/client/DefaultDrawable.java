@@ -7,6 +7,7 @@
 
 package com.hrznstudio.titanium.api.client;
 
+import com.hrznstudio.titanium.util.AssetUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
@@ -25,6 +26,6 @@ public class DefaultDrawable implements IDrawable {
     @Override
     public void draw(GuiGraphicsExtractor guiGraphics, Screen gui, Point position, Point mousePosition) {
         Rectangle area = asset.getArea();
-        com.hrznstudio.titanium.util.AssetUtil.blit(guiGraphics, asset.getIdentifier(), position.x, position.y, area.x, area.y, area.width, area.height);
+        AssetUtil.blit(guiGraphics, asset.getIdentifier(), position.x, position.y, area.x, area.y, area.width, area.height);
     }
 }

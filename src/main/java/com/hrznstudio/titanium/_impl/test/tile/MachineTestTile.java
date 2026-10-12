@@ -23,7 +23,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import org.apache.commons.lang3.tuple.Pair;
+import net.neoforged.neoforge.capabilities.Capabilities;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -55,8 +55,12 @@ public class MachineTestTile extends MachineTile<MachineTestTile> {
             }
         }
         this.setShowEnergy(false);
-        this.addBundle(tankBundle = new TankInteractionBundle<>(() -> Optional.ofNullable(level.getCapability(net.neoforged.neoforge.capabilities.Capabilities.Fluid.BLOCK, blockPos, null)), 175, 94, this, 10));
-        this.addInventory(this.movingSlot = new InventoryComponent<MachineTestTile>("moving_slot", 0, 0, 1).setInputFilter((stack, integer) -> this.movingSlot.getSlotVisiblePredicate().test(integer)).setSlotVisiblePredicate(integer -> this.level.getGameTime() % 100 > 40).setSlotPosition(integer -> Pair.of((int) this.level.getGameTime() % 100, 50 + (int) this.level.getGameTime() % 50 - 25)));
+        this.addBundle(tankBundle = new TankInteractionBundle<>(() -> Optional.ofNullable(level.getCapability(Capabilities.Fluid.BLOCK, blockPos, null)), 175, 94, this, 10));
+        this.addInventory(this.movingSlot = new InventoryComponent<MachineTestTile>("moving_slot", 0, 0, 1)
+            .setInputFilter((stack, integer) -> this.movingSlot.getSlotVisiblePredicate().test(integer))
+            //.setSlotVisiblePredicate(integer -> this.level.getGameTime() % 100 > 40)
+            .setOutputFilter((itemStack, integer) -> false));
+        //.setSlotPosition(integer -> Pair.of((int) this.level.getGameTime() % 100, 50 + (int) this.level.getGameTime() % 50 - 25)));
     }
 
     @Nonnull

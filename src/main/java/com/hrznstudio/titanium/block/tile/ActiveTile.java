@@ -33,6 +33,7 @@ import com.hrznstudio.titanium.network.IButtonHandler;
 import com.hrznstudio.titanium.network.locator.LocatorFactory;
 import com.hrznstudio.titanium.network.locator.instance.TileEntityLocatorInstance;
 import com.hrznstudio.titanium.util.FacingUtil;
+import com.hrznstudio.titanium.util.ItemStackSerialization;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -304,7 +305,7 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
                 for (IFilter<?> filter : multiFilterComponent.getFilters()) {
                     if (filter.getName().equals(name)) {
                         int slot = compound.getIntOr("Slot", 0);
-                        filter.setFilter(slot, com.hrznstudio.titanium.util.ItemStackSerialization.load(level.registryAccess(), compound.getCompoundOrEmpty("Filter")));
+                        filter.setFilter(slot, ItemStackSerialization.load(level.registryAccess(), compound.getCompoundOrEmpty("Filter")));
                         markComponentDirty();
                         break;
                     }

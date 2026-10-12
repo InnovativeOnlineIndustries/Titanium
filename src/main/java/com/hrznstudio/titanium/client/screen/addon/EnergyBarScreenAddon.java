@@ -45,7 +45,7 @@ public class EnergyBarScreenAddon extends BasicScreenAddon {
         Point offset = asset.getOffset();
         Rectangle area = asset.getArea();
         int powerOffset = (int) ((stored / Math.max(capacity, 1)) * area.height);
-        com.hrznstudio.titanium.util.AssetUtil.blit(guiGraphics, asset.getIdentifier(), handlerPosX + offset.x, handlerPosY + offset.y + area.height - powerOffset, area.x, area.y + (area.height - powerOffset), area.width, powerOffset);
+        AssetUtil.blit(guiGraphics, asset.getIdentifier(), handlerPosX + offset.x, handlerPosY + offset.y + area.height - powerOffset, area.x, area.y + (area.height - powerOffset), area.width, powerOffset);
     }
 
     public static List<Component> getTooltip(long stored, long capacity) {

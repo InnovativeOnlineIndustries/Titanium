@@ -8,6 +8,7 @@
 package com.hrznstudio.titanium.container.addon;
 
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
 import org.apache.commons.lang3.tuple.Pair;
@@ -35,5 +36,14 @@ public class UpdatableSlotItemHandler extends ResourceHandlerSlot {
     @Override
     public boolean isActive() {
         return enabled;
+    }
+
+    @Override
+    public boolean mayPickup(Player player) {
+        var resource = this.itemHandler.getResource(this.getSlotIndex());
+        if (resource.isEmpty()) {
+            return false;
+        }
+        return true;
     }
 }
