@@ -9,6 +9,7 @@ package com.hrznstudio.titanium.container.addon;
 
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
 import org.apache.commons.lang3.tuple.Pair;
@@ -43,6 +44,20 @@ public class UpdatableSlotItemHandler extends ResourceHandlerSlot {
         var resource = this.itemHandler.getResource(this.getSlotIndex());
         if (resource.isEmpty()) {
             return false;
+        }
+        if (itemHandler instanceof InventoryComponent<?> inventory) {
+            return inventory.getExtractGUIPredicate().test(resource.toStack(), this.getSlotIndex());
+        }
+        return true;
+    }
+
+    @Override
+    public boolean mayPlace(ItemStack stack) {
+        if (stack.isEmpty()) {
+            return false;
+        }
+        if (itemHandler instanceof InventoryComponent<?> inventory) {
+            return inventory.getInsertGUIPredicate().test(stack, this.getSlotIndex());
         }
         return true;
     }

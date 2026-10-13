@@ -40,6 +40,25 @@ import java.util.function.Predicate;
 public class InventoryComponent<T extends IComponentHarness> extends ItemStacksResourceHandler implements IScreenAddonProvider,
         IContainerAddonProvider {
 
+    private final String name;
+    private int xPos;
+    private int yPos;
+    private int xSize;
+    private int ySize;
+    private T componentHarness;
+    private BiPredicate<ItemStack, Integer> insertPredicate;
+    private BiPredicate<ItemStack, Integer> extractPredicate;
+    private BiPredicate<ItemStack, Integer> insertGUIPredicate;
+    private BiPredicate<ItemStack, Integer> extractGUIPredicate;
+    private BiConsumer<ItemStack, Integer> onSlotChanged;
+    private Map<Integer, Integer> slotAmountFilter;
+    private Map<Integer, ItemStack> slotToStackRenderMap;
+    private boolean colorGuiEnabled;
+    private Map<Integer, Color> slotToColorRenderMap;
+    private int slotLimit;
+    private Function<Integer, Pair<Integer, Integer>> slotPosition;
+    private Predicate<Integer> slotVisiblePredicate;
+
     public InventoryComponent(String name, int xPos, int yPos, int size) {
         super(size);
         this.name = name;
@@ -48,6 +67,8 @@ public class InventoryComponent<T extends IComponentHarness> extends ItemStacksR
         this.setRange(size, 1);
         this.insertPredicate = (stack, integer) -> true;
         this.extractPredicate = (stack, integer) -> true;
+        this.insertGUIPredicate = (stack, integer) -> true;
+        this.extractGUIPredicate = (stack, integer) -> true;
         this.onSlotChanged = (stack, integer) -> {
         };
         this.slotAmountFilter = new HashMap<>();
@@ -62,23 +83,6 @@ public class InventoryComponent<T extends IComponentHarness> extends ItemStacksR
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         return ValueIOSerialization.save(provider, this);
     }
-
-    private final String name;
-    private int xPos;
-    private int yPos;
-    private int xSize;
-    private int ySize;
-    private T componentHarness;
-    private BiPredicate<ItemStack, Integer> insertPredicate;
-    private BiPredicate<ItemStack, Integer> extractPredicate;
-    private BiConsumer<ItemStack, Integer> onSlotChanged;
-    private Map<Integer, Integer> slotAmountFilter;
-    private Map<Integer, ItemStack> slotToStackRenderMap;
-    private boolean colorGuiEnabled;
-    private Map<Integer, Color> slotToColorRenderMap;
-    private int slotLimit;
-    private Function<Integer, Pair<Integer, Integer>> slotPosition;
-    private Predicate<Integer> slotVisiblePredicate;
 
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
         ValueIOSerialization.load(provider, tag, this);
@@ -377,6 +381,24 @@ public class InventoryComponent<T extends IComponentHarness> extends ItemStacksR
 
     public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
         return insertPredicate.test(stack, slot);
+    }
+
+    public BiPredicate<ItemStack, Integer> getInsertGUIPredicate() {
+        return insertGUIPredicate;
+    }
+
+    public InventoryComponent<T> setInsertGUIPredicate(BiPredicate<ItemStack, Integer> insertGUIPredicate) {
+        this.insertGUIPredicate = insertGUIPredicate;
+        return this;
+    }
+
+    public BiPredicate<ItemStack, Integer> getExtractGUIPredicate() {
+        return extractGUIPredicate;
+    }
+
+    public InventoryComponent<T> setExtractGUIPredicate(BiPredicate<ItemStack, Integer> extractGUIPredicate) {
+        this.extractGUIPredicate = extractGUIPredicate;
+        return this;
     }
 
     @Override

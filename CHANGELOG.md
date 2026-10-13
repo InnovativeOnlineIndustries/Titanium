@@ -1,3 +1,7 @@
+# 4.0.12
+
+* Added methods to restrict item insertion and extraction in container slots
+
 # 4.0.9
 
 * Fixed container slots picking up items blocking extraction when the filter was set up to not allow extraction for
