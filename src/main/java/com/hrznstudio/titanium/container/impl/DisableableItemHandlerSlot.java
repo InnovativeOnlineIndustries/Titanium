@@ -33,6 +33,6 @@ public class DisableableItemHandlerSlot extends ResourceHandlerSlot {
 
     @Override
     public boolean mayPlace(@Nonnull ItemStack stack) {
-        return !isDisabled.getAsBoolean();
+        return !isDisabled.getAsBoolean() && super.mayPlace(stack);
     }
 }

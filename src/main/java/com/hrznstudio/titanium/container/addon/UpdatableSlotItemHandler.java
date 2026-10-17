@@ -53,7 +53,7 @@ public class UpdatableSlotItemHandler extends ResourceHandlerSlot {
 
     @Override
     public boolean mayPlace(ItemStack stack) {
-        if (stack.isEmpty()) {
+        if (!super.mayPlace(stack)) {
             return false;
         }
         if (itemHandler instanceof InventoryComponent<?> inventory) {
