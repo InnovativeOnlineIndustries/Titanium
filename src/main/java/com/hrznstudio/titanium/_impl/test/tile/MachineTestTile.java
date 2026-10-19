@@ -63,9 +63,7 @@ public class MachineTestTile extends MachineTile<MachineTestTile> {
         this.addFilter(this.restrictedFilter = new ItemStackFilter("restricted_filter", 1){
             @Override
             public boolean acceptsAsFilter(ItemStack filter) {
-                boolean output = filter.is(Tags.Items.STORAGE_BLOCKS);
-                Titanium.LOGGER.info("Filtering: " + output);
-                return output;
+                return filter.is(Tags.Items.STORAGE_BLOCKS);
             }
 
             @Override
