@@ -12,6 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.Level;
 
@@ -36,9 +37,12 @@ public class RecipeUtil {
         return getRecipes(world, RecipeType.SMELTING);
     }
 
+    private static final GenericRecipeCache<SmeltingRecipe, SingleRecipeInput> SMELTING_CACHE = new GenericRecipeCache<>(RecipeType.SMELTING, 8);
+
     @Nullable
     public static SmeltingRecipe getSmelingRecipeFor(Level world, ItemStack stack) {
-        return getCookingRecipes(world).stream().filter(furnaceRecipe -> furnaceRecipe.getIngredients().get(0).test(stack)).findFirst().orElse(null);
+        var holder = SMELTING_CACHE.get(world, new SingleRecipeInput(stack));
+        return holder != null ? holder.value() : null;
     }
 
 }
