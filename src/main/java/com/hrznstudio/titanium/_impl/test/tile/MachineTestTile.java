@@ -7,6 +7,7 @@
 
 package com.hrznstudio.titanium._impl.test.tile;
 
+import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium._impl.test.MachineTestBlock;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.filter.FilterSlot;
@@ -24,6 +25,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.common.Tags;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -36,6 +38,9 @@ public class MachineTestTile extends MachineTile<MachineTestTile> {
     private TankInteractionBundle<MachineTestTile> tankBundle;
     @Save
     private InventoryComponent<MachineTestTile> movingSlot;
+
+    @Save
+    private ItemStackFilter restrictedFilter;
 
     public MachineTestTile(BlockPos blockPos, BlockState state) {
         super((BasicTileBlock<MachineTestTile>) MachineTestBlock.TEST.getBlock(), MachineTestBlock.TEST.type().get(), blockPos, state);
@@ -55,6 +60,19 @@ public class MachineTestTile extends MachineTile<MachineTestTile> {
             }
         }
         this.setShowEnergy(false);
+        this.addFilter(this.restrictedFilter = new ItemStackFilter("restricted_filter", 1){
+            @Override
+            public boolean acceptsAsFilter(ItemStack filter) {
+                return filter.is(Tags.Items.STORAGE_BLOCKS);
+            }
+
+            @Override
+            public void onContentChanged() {
+                syncObject(restrictedFilter);
+            }
+        });
+        FilterSlot<ItemStack> restrictedSlot = new FilterSlot<>(20 + (3*18) + 20, 20, 0, ItemStack.EMPTY);
+        this.restrictedFilter.setFilter(0, restrictedSlot);
         this.addBundle(tankBundle = new TankInteractionBundle<>(() -> Optional.ofNullable(level.getCapability(Capabilities.Fluid.BLOCK, blockPos, null)), 175, 94, this, 10));
         this.addInventory(this.movingSlot = new InventoryComponent<MachineTestTile>("moving_slot", 0, 0, 1)
             .setInputFilter((stack, integer) -> this.movingSlot.getSlotVisiblePredicate().test(integer))

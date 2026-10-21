@@ -305,7 +305,10 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
                 for (IFilter<?> filter : multiFilterComponent.getFilters()) {
                     if (filter.getName().equals(name)) {
                         int slot = compound.getIntOr("Slot", 0);
-                        filter.setFilter(slot, ItemStackSerialization.load(level.registryAccess(), compound.getCompoundOrEmpty("Filter")));
+                        ItemStack stack = ItemStackSerialization.load(level.registryAccess(), compound.getCompoundOrEmpty("Filter"));
+                        if(stack == ItemStack.EMPTY || filter.acceptsAsFilter(stack)) {
+                            filter.setFilter(slot, stack);
+                        }
                         markComponentDirty();
                         break;
                     }
