@@ -39,7 +39,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -126,12 +125,12 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
     @Override
     @Nonnull
     public Component getDisplayName() {
-        return Component.translatable(getBasicTileBlock().getDescriptionId()).setStyle(Style.EMPTY.withColor(ChatFormatting.DARK_GRAY));
+        return Component.translatable(getBasicTileBlock().getDescriptionId()).withStyle(ChatFormatting.DARK_GRAY);
     }
 
     /*
-            Capability Handling
-         */
+                Capability Handling
+             */
     public void addInventory(InventoryComponent<T> handler) {
         if (multiInventoryComponent == null) multiInventoryComponent = new MultiInventoryComponent<>();
         multiInventoryComponent.add(handler.setComponentHarness(this.getSelf()));

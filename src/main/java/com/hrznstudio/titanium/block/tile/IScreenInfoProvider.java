@@ -11,7 +11,7 @@ import net.minecraft.ChatFormatting;
 
 public interface IScreenInfoProvider {
     default int getTitleColor() {
-        return ChatFormatting.DARK_GRAY.getColor();
+        return 0xFF000000 | ChatFormatting.DARK_GRAY.getColor();
     }
 
     default float getTitleXPos(float titleWidth, float screenWidth, float screenHeight, float guiWidth, float guiHeight) {
