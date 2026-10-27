@@ -37,11 +37,9 @@ public class RecipeUtil {
         return getRecipes(world, RecipeType.SMELTING);
     }
 
-    private static final GenericRecipeCache<SmeltingRecipe, SingleRecipeInput> SMELTING_CACHE = new GenericRecipeCache<>(RecipeType.SMELTING, 8);
-
     @Nullable
     public static SmeltingRecipe getSmelingRecipeFor(Level world, ItemStack stack) {
-        var holder = SMELTING_CACHE.get(world, new SingleRecipeInput(stack));
+        var holder = GenericRecipeCache.SMELTING_CACHE.get(world, new SingleRecipeInput(stack));
         return holder != null ? holder.value() : null;
     }
 

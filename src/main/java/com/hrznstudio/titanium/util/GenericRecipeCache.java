@@ -10,30 +10,60 @@ import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
+import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayDeque;
 
 public class GenericRecipeCache<R extends Recipe<I>, I extends RecipeInput> {
+    public static final GenericRecipeCache<SmeltingRecipe, SingleRecipeInput> SMELTING_CACHE = new GenericRecipeCache<>(RecipeType.SMELTING, 8);
+
     public final RecipeType<R> recipeType;
-    protected final ArrayDeque<RecipeHolder<? extends Recipe<I>>> cache;
-    protected final int size;
+    protected ArrayDeque<RecipeHolder<? extends Recipe<I>>> cache;
+    protected int size;
+
+    protected int ticksAboveSize = 0b0000_0000_0000_0000_0000_0000_0000_0000;
+    protected int additionsThisTick = 0;
 
     public GenericRecipeCache(RecipeType<R> recipeType, int size) {
         this.recipeType = recipeType;
         this.size = size;
         this.cache = new ArrayDeque<>(this.size);
         NeoForge.EVENT_BUS.addListener(this::onDatapackReload);
+        NeoForge.EVENT_BUS.addListener(this::onServerTick);
     }
 
     protected void onDatapackReload(OnDatapackSyncEvent event) {
         if (event.getPlayer() == null) {
             this.clear();
         }
+    }
+
+    protected void onServerTick(ServerTickEvent.Post event) {
+        if (this.additionsThisTick > this.size) {
+            this.ticksAboveSize = (this.ticksAboveSize << 1) + 1;
+            if (Integer.bitCount(this.ticksAboveSize) >= 16) {
+                var highestBit = Integer.highestOneBit(this.additionsThisTick);
+                if (this.additionsThisTick == highestBit) {
+                    this.size = this.additionsThisTick;
+                } else {
+                    this.size = highestBit << 1;
+                }
+
+                ArrayDeque<RecipeHolder<? extends Recipe<I>>> newCache = new ArrayDeque<>(this.size);
+                newCache.addAll(this.cache);
+                this.cache = newCache;
+            }
+        } else {
+            this.ticksAboveSize <<= 1;
+        }
+
+        this.additionsThisTick = 0;
     }
 
     @SuppressWarnings("unchecked")
