@@ -125,7 +125,7 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
     @Override
     @Nonnull
     public Component getDisplayName() {
-        return Component.translatable(getBasicTileBlock().getDescriptionId()).withStyle(ChatFormatting.DARK_GRAY);
+        return Component.translatable(getBasicTileBlock().asItem().getDescriptionId()).withStyle(ChatFormatting.DARK_GRAY);
     }
 
     /*
