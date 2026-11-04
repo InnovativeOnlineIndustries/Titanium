@@ -33,8 +33,8 @@ public class TileFieldNetworkMessage extends Message {
     protected void handleMessage(NetworkEvent.Context context) {
         context.enqueueWork(() -> {
             BlockEntity entity = Minecraft.getInstance().player.getCommandSenderWorld().getBlockEntity(pos);
-            if (entity instanceof BasicTile){
-                ((BasicTile<?>) entity).handleSyncObject(data);
+            if (entity instanceof BasicTile basicTile && basicTile.isClient()) {
+                basicTile.handleSyncObject(data);
             }
         });
     }
