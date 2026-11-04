@@ -30,8 +30,8 @@ public class TileFieldNetworkMessage extends Message {
     @Override
     protected void handleMessage(IPayloadContext context) {
         BlockEntity entity = context.player().getCommandSenderWorld().getBlockEntity(pos);
-        if (entity instanceof BasicTile){
-            ((BasicTile<?>) entity).handleSyncObject(data);
+        if (entity instanceof BasicTile basicTile && basicTile.isClient()) {
+            basicTile.handleSyncObject(data);
         }
     }
 }
