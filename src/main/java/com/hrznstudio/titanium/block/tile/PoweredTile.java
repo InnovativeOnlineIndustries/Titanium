@@ -33,8 +33,6 @@ public abstract class PoweredTile<T extends PoweredTile<T>> extends ActiveTile<T
     private final EnergyStorageComponent<T> energyStorage;
     private final LazyOptional<IEnergyStorage> lazyEnergyStorage = LazyOptional.of(this::getEnergyStorage);
 
-    private boolean showEnergy = true;
-
     public PoweredTile(BasicTileBlock<T> base, BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state) {
         super(base, blockEntityType, pos, state);
         this.energyStorage = this.createEnergyStorage();
@@ -59,7 +57,7 @@ public abstract class PoweredTile<T extends PoweredTile<T>> extends ActiveTile<T
     @Nonnull
     public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
         List<IFactory<? extends IScreenAddon>> screenAddons = super.getScreenAddons();
-        if (showEnergy) {
+        if (this.getEnergyStorage().isEnabled()) {
             screenAddons.addAll(this.getEnergyStorage().getScreenAddons());
         }
         return screenAddons;
@@ -69,7 +67,7 @@ public abstract class PoweredTile<T extends PoweredTile<T>> extends ActiveTile<T
     @Nonnull
     public List<IFactory<? extends IContainerAddon>> getContainerAddons() {
         List<IFactory<? extends IContainerAddon>> containerAddons = super.getContainerAddons();
-        if (showEnergy) {
+        if (this.getEnergyStorage().isEnabled()) {
             containerAddons.addAll(this.getEnergyStorage().getContainerAddons());
         }
         return containerAddons;
@@ -84,8 +82,12 @@ public abstract class PoweredTile<T extends PoweredTile<T>> extends ActiveTile<T
         return super.getCapability(cap, side);
     }
 
-    public void setShowEnergy(boolean showEnergy) {
-        this.showEnergy = showEnergy;
+    public void showEnergyStorage() {
+        this.getEnergyStorage().enable();
+    }
+
+    public void hideEnergyStorage() {
+        this.getEnergyStorage().disable();
     }
 
     @Override
