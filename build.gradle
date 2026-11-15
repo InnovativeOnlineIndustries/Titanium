@@ -2,7 +2,7 @@ plugins {
     id 'net.neoforged.moddev' version '0.1.112'
     id 'maven-publish'
   id "com.modrinth.minotaur" version "2.+"
-  id 'net.darkhax.curseforgegradle' version '1.1.15'
+  id 'net.darkhax.curseforgegradle' version '1.1.28'
   id 'org.cadixdev.licenser' version '0.6.1'
 }
 
@@ -63,8 +63,8 @@ dependencies {
   compileOnly "mezz.jei:jei-1.21.1-neoforge-api:$jei_version"
   runtimeOnly "mezz.jei:jei-1.21.1-neoforge:$jei_version"
   compileOnly "com.almostreliable.mods:almostunified-neoforge:$almostunified_version:api"
-  runtimeOnly "curse.maven:industrial-foregoing-266515:5866238"
-  runtimeOnly "curse.maven:functional-storage-556861:5861256"
+  //runtimeOnly "curse.maven:industrial-foregoing-266515:5866238"
+  //runtimeOnly "curse.maven:functional-storage-556861:5861256"
   //runtimeOnly "curse.maven:super-factory-manager-306935:5664209"
   //implementation "curse.maven:refined-storage-243076:5165548"
 }
@@ -130,6 +130,7 @@ task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge)
   mainFile.addModLoader("NeoForge")
   mainFile.addGameVersion("1.21")
   mainFile.addGameVersion("1.21.1")
+  mainFile.addEnvironment("Client", "Server")
 }
 
 tasks.modrinth.enabled = System.env["MODRINTH_TOKEN"] != null

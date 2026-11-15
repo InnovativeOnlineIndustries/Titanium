@@ -1,6 +1,6 @@
 /*
  * This file is part of Titanium
- * Copyright (C) 2024, Horizon Studio <contact@hrznstudio.com>.
+ * Copyright (C) 2026, Horizon Studio <contact@hrznstudio.com>.
  *
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
@@ -42,6 +42,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Clearable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -74,7 +75,7 @@ import java.util.Optional;
 
 public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> implements IScreenAddonProvider,
     ITickableBlockEntity<T>, MenuProvider, IButtonHandler, IFacingComponentHarness, IContainerAddonProvider,
-    IHasAssetProvider {
+    IHasAssetProvider, Clearable {
 
     private MultiInventoryComponent<T> multiInventoryComponent;
     private MultiProgressBarHandler<T> multiProgressBarHandler;
@@ -135,6 +136,17 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
     public void addInventory(InventoryComponent<T> handler) {
         if (multiInventoryComponent == null) multiInventoryComponent = new MultiInventoryComponent<>();
         multiInventoryComponent.add(handler.setComponentHarness(this.getSelf()));
+    }
+
+    @Override
+    public void clearContent() {
+        if (multiInventoryComponent != null) {
+            for (var inventoryHandler: multiInventoryComponent.getInventoryHandlers()) {
+                for (int i = 0; i < inventoryHandler.getSlots(); i++) {
+                    inventoryHandler.setStackInSlot(i, ItemStack.EMPTY);
+                }
+            }
+        }
     }
 
     public void addProgressBar(ProgressBarComponent<T> progressBarComponent) {
@@ -311,7 +323,10 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
                 for (IFilter<?> filter : multiFilterComponent.getFilters()) {
                     if (filter.getName().equals(name)) {
                         int slot = compound.getInt("Slot");
-                        filter.setFilter(slot, ItemStack.parseOptional(level.registryAccess(), compound.getCompound("Filter")));
+                        ItemStack stack = ItemStack.parseOptional(level.registryAccess(), compound.getCompound("Filter"));
+                        if(stack == ItemStack.EMPTY || filter.acceptsAsFilter(stack)) {
+                            filter.setFilter(slot, stack);
+                        }
                         markForUpdate();
                         break;
                     }
@@ -323,8 +338,10 @@ public abstract class ActiveTile<T extends ActiveTile<T>> extends BasicTile<T> i
             FacingUtil.Sideness facing = FacingUtil.Sideness.valueOf(compound.getString("Facing"));
             int faceMode = compound.getInt("Next");
             if (multiInventoryComponent != null && multiInventoryComponent.handleFacingChange(name, facing, faceMode)) {
+                invalidateCapabilities();
                 markForUpdate();
             } else if (multiTankComponent != null && multiTankComponent.handleFacingChange(name, facing, faceMode)) {
+                invalidateCapabilities();
                 markForUpdate();
             }
         } else if (multiButtonComponent != null) {

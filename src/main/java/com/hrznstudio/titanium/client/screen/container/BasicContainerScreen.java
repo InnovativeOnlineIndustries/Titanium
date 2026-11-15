@@ -1,6 +1,6 @@
 /*
  * This file is part of Titanium
- * Copyright (C) 2024, Horizon Studio <contact@hrznstudio.com>.
+ * Copyright (C) 2026, Horizon Studio <contact@hrznstudio.com>.
  *
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
@@ -180,6 +180,11 @@ public class BasicContainerScreen<T extends AbstractContainerMenu> extends Abstr
             return collect;
         }
         return new ArrayList<>();
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        return super.mouseScrolled(mouseX - xCenter, mouseY - yCenter, scrollX, scrollY);
     }
 
     public void setAddons(List<IScreenAddon> addons) {

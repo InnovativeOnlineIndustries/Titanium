@@ -1,6 +1,6 @@
 /*
  * This file is part of Titanium
- * Copyright (C) 2024, Horizon Studio <contact@hrznstudio.com>.
+ * Copyright (C) 2026, Horizon Studio <contact@hrznstudio.com>.
  *
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
@@ -49,8 +49,8 @@ public class AnnotationConfigManager {
         String fileName = ModLoadingContext.get().getActiveContainer().getModId() + "/" + (type.fileName.isEmpty() ? ModLoadingContext.get().getActiveContainer().getModId() : type.fileName);
         if (!fileName.endsWith(".toml")) fileName = fileName + ".toml";
         specCache.spec = builder.build();
-        container.registerConfig(type.type, specCache.spec, fileName);
         specCaches.add(specCache);
+        container.registerConfig(type.type, specCache.spec, fileName);
     }
 
     private void scanClass(Class configClass, ModConfigSpec.Builder builder, SpecCache specCache) {

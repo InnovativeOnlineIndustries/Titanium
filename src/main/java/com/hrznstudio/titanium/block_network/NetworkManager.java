@@ -1,6 +1,6 @@
 /*
  * This file is part of Titanium
- * Copyright (C) 2024, Horizon Studio <contact@hrznstudio.com>.
+ * Copyright (C) 2026, Horizon Studio <contact@hrznstudio.com>.
  *
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
@@ -91,7 +91,9 @@ public class NetworkManager extends SavedData {
 
         for (NetworkElement candidate : candidates) {
             if (candidate.getNetwork() == null) {
-                throw new RuntimeException("Element network is null!");
+                Network network = NetworkRegistry.INSTANCE.getFactory(candidate.getNetworkType()).create(pos);
+                addNetwork(network);
+                candidate.joinNetwork(network);
             }
 
             networkCandidates.add(candidate.getNetwork());
@@ -313,5 +315,9 @@ public class NetworkManager extends SavedData {
         tag.put("networks", networks);
 
         return tag;
+    }
+
+    public Map<BlockPos, NetworkElement> getElements() {
+        return elements;
     }
 }

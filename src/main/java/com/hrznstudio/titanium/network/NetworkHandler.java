@@ -1,6 +1,6 @@
 /*
  * This file is part of Titanium
- * Copyright (C) 2024, Horizon Studio <contact@hrznstudio.com>.
+ * Copyright (C) 2026, Horizon Studio <contact@hrznstudio.com>.
  *
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
@@ -8,11 +8,11 @@
 package com.hrznstudio.titanium.network;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.fml.ModList;
@@ -76,7 +76,10 @@ public class NetworkHandler {
     }
 
     public void sendToNearby(Level world, BlockPos pos, int distance, Message message) {
-        world.getEntitiesOfClass(ServerPlayer.class, new AABB(pos).inflate(distance)).forEach(playerEntity -> sendTo(message, playerEntity));
+        if (world instanceof ServerLevel serverLevel) {
+            var centre = pos.getCenter();
+            PacketDistributor.sendToPlayersNear(serverLevel, null, centre.x, centre.y, centre.z, distance, wrap(message));
+        }
     }
 
     public void sendToServer(Message message) {

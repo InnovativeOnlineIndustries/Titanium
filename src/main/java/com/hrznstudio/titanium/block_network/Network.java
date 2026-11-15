@@ -1,6 +1,6 @@
 /*
  * This file is part of Titanium
- * Copyright (C) 2024, Horizon Studio <contact@hrznstudio.com>.
+ * Copyright (C) 2026, Horizon Studio <contact@hrznstudio.com>.
  *
  * This code is licensed under GNU Lesser General Public License v3.0, the full license text can be found in LICENSE.txt
  */
@@ -64,6 +64,10 @@ public abstract class Network {
     public abstract void onMergedWith(Network mainNetwork);
 
     public abstract ResourceLocation getType();
+
+    public NetworkGraph getGraph() {
+        return graph;
+    }
 
     @Override
     public boolean equals(Object o) {
