@@ -39,6 +39,11 @@ public class AssetScreenAddon extends BasicScreenAddon {
     }
 
     @Override
+    public boolean isMouseOver(double mouseX, double mouseY) {
+        return false;
+    }
+
+    @Override
     public void drawBackgroundLayer(GuiGraphicsExtractor stack, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         if (assetType != null && isBackground()) {
             IAsset asset = provider.getAsset(assetType);
